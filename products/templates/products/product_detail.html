@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ product.name }} - MarketHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .product-image {
+      width: 100%;
+      height: 400px;
+      object-fit: cover;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .favorite-btn {
+      background: linear-gradient(45deg, #ff6b6b, #e74c3c);
+      border: none;
+      border-radius: 50px;
+      padding: 12px 20px;
+      color: white;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    .favorite-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+    }
+    .favorite-btn.favorited {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+    }
+    .favorite-btn.not-favorited {
+      background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+    }
+    .price-display {
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      color: white;
+      padding: 15px 25px;
+      border-radius: 50px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: inline-block;
+      margin: 20px 0;
+    }
+    .location-badge {
+      background: linear-gradient(45deg, #87CEEB, #4682B4);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .category-badge {
+      background: linear-gradient(45deg, #9b59b6, #8e44ad);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      display: inline-block;
+    }
+    .back-btn {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      border: none;
+      border-radius: 25px;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+    .back-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+      color: white;
+      text-decoration: none;
+    }
+    .product-details {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="position-relative">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+          {% else %}
+            <img src="https://via.placeholder.com/600x400?text=No+Image" alt="No Image" class="product-image">
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="col-lg-6">
+        <div class="product-details">
+          <h1 class="mb-3">{{ product.name }}</h1>
+          
+          <div class="mb-3">
+            <div class="location-badge">
+              <i class="fas fa-map-marker-alt me-2"></i>{{ product.get_location_display }}
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <span class="category-badge">
+              <i class="fas fa-tag me-2"></i>{{ product.get_category_display }}
+            </span>
+          </div>
+          
+          <div class="price-display">
+            <i class="fas fa-dollar-sign me-2"></i>R{{ product.price }}
+          </div>
+          
+          {% if product.description %}
+            <div class="mb-4">
+              <h5>Description</h5>
+              <p class="text-muted">{{ product.description }}</p>
+            </div>
+          {% endif %}
+          
+          <div class="d-flex gap-3 align-items-center">
+            {% if user.is_authenticated %}
+              <button class="favorite-btn {% if is_favorited %}favorited{% else %}not-favorited{% endif %}" 
+                      onclick="toggleFavorite({{ product.id }}, this)">
+                <i class="fas fa-heart me-2"></i>
+                <span class="favorite-text">{% if is_favorited %}Remove from Favorites{% else %}Add to Favorites{% endif %}</span>
+              </button>
+            {% endif %}
+            
+            <a href="{% url 'product_list' %}" class="back-btn">
+              <i class="fas fa-arrow-left me-2"></i>Back to Products
+            </a>
+          </div>
+          
+          {% if not user.is_authenticated %}
+            <div class="alert alert-info mt-3">
+              <i class="fas fa-info-circle me-2"></i>
+              <a href="{% url 'login' %}">Login</a> to add products to your favorites!
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleFavorite(productId, button) {
+      fetch(`/products/${productId}/toggle-favorite/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        const favoriteText = button.querySelector('.favorite-text');
+        if (data.is_favorited) {
+          button.classList.remove('not-favorited');
+          button.classList.add('favorited');
+          favoriteText.textContent = 'Remove from Favorites';
+        } else {
+          button.classList.remove('favorited');
+          button.classList.add('not-favorited');
+          favoriteText.textContent = 'Add to Favorites';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
+  
+  <!-- Add CSRF token for AJAX requests -->
+  {% csrf_token %}
+</body>
+</html>

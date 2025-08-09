@@ -1,0 +1,274 @@
+{% extends 'homepage/base.html' %}
+{% load currency_filters %}
+
+{% block title %}Shopping Cart - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Modern Header Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="text-center">
+            <div class="d-inline-flex align-items-center bg-success bg-opacity-10 rounded-pill px-4 py-2 mb-3 modern-cart-badge">
+                <i class="bi bi-cart-check-fill text-success me-2"></i>
+                <span class="badge bg-success rounded-pill cart-items-count">
+                    {% if cart.items.all %}{{ cart.get_total_items }}{% else %}0{% endif %} Items
+                </span>
+            </div>
+            <h1 class="display-4 text-gradient mb-3">Shopping Cart</h1>
+            <p class="lead text-muted">Review your selected items before checkout</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            {% if cart.items.all %}
+                <!-- Cart Header -->
+                <div class="card-header border-0 rounded-top-4 p-4" 
+                     style="background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 class="mb-0 fw-bold text-dark">
+                            <i class="bi bi-cart-dash-fill text-success me-2"></i>Your Items
+                        </h4>
+                        <div class="text-muted">
+                            <small><i class="bi bi-info-circle me-1"></i>{{ cart.get_total_items }} item{% if cart.get_total_items != 1 %}s{% endif %} in cart</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cart Items -->
+                <div class="card-body p-0">
+                    {% for item in cart.items.all %}
+                        <div class="cart-item p-4 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div class="row align-items-center">
+                                <!-- Product Image -->
+                                <div class="col-lg-2 col-md-3 mb-3 mb-md-0">
+                                    {% if item.product.image %}
+                                        <img src="{{ item.product.image.url }}" 
+                                             class="img-fluid rounded-3 shadow-sm" 
+                                             alt="{{ item.product.name }}"
+                                             style="height: 80px; width: 80px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-light rounded-3 d-flex align-items-center justify-content-center shadow-sm" 
+                                             style="height: 80px; width: 80px;">
+                                            <i class="bi bi-image text-muted" style="font-size: 1.5rem;"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Product Info -->
+                                <div class="col-lg-4 col-md-5 mb-3 mb-md-0">
+                                    <h6 class="mb-1 fw-semibold text-dark">{{ item.product.name }}</h6>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-light text-dark rounded-pill px-2 py-1">
+                                            <i class="bi bi-tag-fill me-1"></i>{{ item.product.get_category_display }}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">
+                                        <i class="bi bi-currency-exchange"></i>{{ item.product.price|rand_format }} per item
+                                    </small>
+                                </div>
+                                
+                                <!-- Quantity Control -->
+                                <div class="col-lg-3 col-md-2 mb-3 mb-md-0">
+                                    <form method="post" action="{% url 'update_cart_item' item.id %}" class="quantity-form">
+                                        {% csrf_token %}
+                                        <div class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden">
+                                            <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="decrease">
+                                                <i class="bi bi-dash"></i>
+                                            </button>
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" 
+                                                   min="1" max="99" class="form-control text-center fw-semibold" 
+                                                   style="border-left: 0; border-right: 0;">
+                                            <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="increase">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
+                                            <button type="submit" class="btn btn-primary btn-sm d-none">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <!-- Price and Actions -->
+                                <div class="col-lg-3 col-md-2 text-end">
+                                    <div class="price-total mb-2">
+                                        <h5 class="mb-0 fw-bold text-success">{{ item.get_total_price|rand_format }}</h5>
+                                        <small class="text-muted">{{ item.quantity }} × {{ item.product.price|rand_format }}</small>
+                                    </div>
+                                    <a href="{% url 'remove_from_cart' item.id %}" 
+                                       class="btn btn-outline-danger btn-sm rounded-pill"
+                                       onclick="return confirm('Remove this item from cart?')">
+                                        <i class="bi bi-trash3 me-1"></i>Remove
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty Cart State -->
+                <div class="card-body text-center py-5">
+                    <div class="empty-cart-icon mb-4">
+                        <div class="icon-circle bg-light mx-auto modern-empty-cart-icon" style="width: 120px; height: 120px;">
+                            <i class="bi bi-cart-x-fill text-muted" style="font-size: 3.5rem;"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-muted mb-3">Your Cart is Empty</h3>
+                    <p class="text-muted mb-4 lead">Looks like you haven't added any items to your cart yet.<br>
+                       Start exploring our amazing products!</p>
+                    <div class="d-flex gap-3 justify-content-center flex-wrap">
+                        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg rounded-pill px-4">
+                            <i class="bi bi-grid me-2"></i>Browse Products
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                            <i class="bi bi-house me-2"></i>Back to Home
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Order Summary Sidebar -->
+    {% if cart.items.all %}
+    <div class="col-lg-4">
+        <div class="sticky-top" style="top: 20px;">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header border-0 rounded-top-4 p-4"
+                     style="background: var(--success-gradient); color: white;">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-receipt me-2"></i>Order Summary
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Summary Details -->
+                    <div class="summary-row d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">
+                            <i class="bi bi-cart3 me-1"></i>Total Items:
+                        </span>
+                        <span class="fw-semibold">{{ cart.get_total_items }}</span>
+                    </div>
+                    
+                    <div class="summary-row d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">
+                            <i class="bi bi-calculator me-1"></i>Subtotal:
+                        </span>
+                        <span class="fw-semibold">{{ cart.get_total_price|rand_format }}</span>
+                    </div>
+                    
+                    <div class="summary-row d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">
+                            <i class="bi bi-truck me-1"></i>Shipping:
+                        </span>
+                        <span class="fw-semibold text-success">Free</span>
+                    </div>
+                    
+                    <div class="summary-row d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">
+                            <i class="bi bi-percent me-1"></i>Tax:
+                        </span>
+                        <span class="fw-semibold">R0.00</span>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <!-- Total -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="mb-0 fw-bold">Total:</h5>
+                        <h4 class="mb-0 fw-bold text-success">{{ cart.get_total_price|rand_format }}</h4>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'checkout' %}" class="btn btn-success btn-lg rounded-pill" style="background: var(--success-gradient); border: none;">
+                            <i class="bi bi-credit-card-2-front me-2"></i>Proceed to Checkout
+                        </a>
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-primary btn-lg rounded-pill">
+                            <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                        </a>
+                    </div>
+                    
+                    <!-- Security Badge -->
+                    <div class="mt-4 text-center">
+                        <small class="text-muted d-flex align-items-center justify-content-center">
+                            <i class="bi bi-shield-check text-success me-2"></i>
+                            Secure checkout guaranteed
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Enhanced Cart JavaScript with API Integration -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quantity button handlers with API integration
+    document.querySelectorAll('.quantity-btn').forEach(button => {
+        button.addEventListener('click', async function() {
+            const form = this.closest('form');
+            const input = form.querySelector('input[name="quantity"]');
+            let currentValue = parseInt(input.value);
+            let newValue = currentValue;
+            
+            if (this.dataset.action === 'increase') {
+                if (currentValue < 99) {
+                    newValue = currentValue + 1;
+                }
+            } else if (this.dataset.action === 'decrease') {
+                if (currentValue > 1) {
+                    newValue = currentValue - 1;
+                }
+            }
+            
+            if (newValue !== currentValue) {
+                input.value = newValue;
+                await updateCartItemAPI(form, newValue);
+            }
+        });
+    });
+});
+
+// Update cart item via API
+async function updateCartItemAPI(form, newQuantity) {
+    const actionUrl = form.getAttribute('action');
+    const itemId = actionUrl ? actionUrl.match(/\/(\d+)\//)?.[1] : null;
+    
+    if (window.MarketHubAPI && itemId) {
+        try {
+            const cartItem = form.closest('.cart-item');
+            cartItem.classList.add('api-loading');
+            
+            await window.MarketHubAPI.updateCartItem(itemId, newQuantity);
+            
+            // Show success message
+            window.MarketHubAPI.handleSuccess('Cart updated successfully!');
+            
+            // Reload page to reflect changes
+            setTimeout(() => {
+                window.location.reload();
+            }, 500);
+            
+        } catch (error) {
+            window.MarketHubAPI.handleError(error, 'Update cart');
+            // Revert the input value on error
+            const input = form.querySelector('input[name="quantity"]');
+            if (input) {
+                input.value = input.dataset.originalValue || 1;
+            }
+        } finally {
+            const cartItem = form.closest('.cart-item');
+            cartItem.classList.remove('api-loading');
+        }
+    } else {
+        // Fallback to form submission
+        setTimeout(() => {
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.click();
+        }, 300);
+    }
+}
+</script>
+{% endblock %}

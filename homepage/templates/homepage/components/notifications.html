@@ -1,0 +1,248 @@
+<!-- Enhanced Notification System -->
+<div class="notification-container position-fixed top-0 end-0 p-3" style="z-index: 1090; max-width: 400px;">
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show notification-alert shadow-lg rounded-4 border-0 mb-2" 
+                 role="alert" 
+                 style="animation: slideInRight 0.3s ease-out;"
+                 data-auto-dismiss="5000">
+                <div class="d-flex align-items-start">
+                    <div class="me-3 mt-1">
+                        {% if message.tags == 'success' %}
+                            <div class="notification-icon bg-success bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                            </div>
+                        {% elif message.tags == 'error' or message.tags == 'danger' %}
+                            <div class="notification-icon bg-danger bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                            </div>
+                        {% elif message.tags == 'warning' %}
+                            <div class="notification-icon bg-warning bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                            </div>
+                        {% elif message.tags == 'info' %}
+                            <div class="notification-icon bg-info bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-info-circle-fill text-info"></i>
+                            </div>
+                        {% else %}
+                            <div class="notification-icon bg-primary bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-bell-fill text-primary"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold mb-1">
+                            {% if message.tags == 'success' %}
+                                Success!
+                            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                                Error!
+                            {% elif message.tags == 'warning' %}
+                                Warning!
+                            {% elif message.tags == 'info' %}
+                                Information
+                            {% else %}
+                                Notification
+                            {% endif %}
+                        </div>
+                        <div class="notification-message">{{ message }}</div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <!-- Progress bar for auto-dismiss -->
+                <div class="notification-progress position-absolute bottom-0 start-0 w-100" style="height: 3px;">
+                    <div class="progress-bar bg-white bg-opacity-30" style="width: 100%; height: 100%; animation: shrinkWidth 5s linear;"></div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+<!-- Custom CSS for Notifications -->
+<style>
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes shrinkWidth {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+.notification-alert {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 380px;
+}
+
+.notification-icon i {
+    font-size: 1.2rem;
+}
+
+.notification-message {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+/* Custom colors for different alert types */
+.alert-success {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+    color: #155724;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+    color: #721c24;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 193, 7, 0.05) 100%);
+    color: #856404;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, rgba(13, 202, 240, 0.1) 0%, rgba(13, 202, 240, 0.05) 100%);
+    color: #055160;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .notification-container {
+        left: 1rem;
+        right: 1rem;
+        max-width: none;
+    }
+    
+    .notification-alert {
+        max-width: none;
+    }
+}
+</style>
+
+<!-- Enhanced JavaScript for Notifications -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-dismiss notifications
+    const notifications = document.querySelectorAll('[data-auto-dismiss]');
+    
+    notifications.forEach(notification => {
+        const dismissTime = parseInt(notification.getAttribute('data-auto-dismiss'));
+        
+        if (dismissTime > 0) {
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, dismissTime);
+        }
+    });
+    
+    // Manual dismiss with animation
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-close') && e.target.closest('.notification-alert')) {
+            const notification = e.target.closest('.notification-alert');
+            notification.style.animation = 'slideOutRight 0.3s ease-in';
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }
+    });
+});
+
+// JavaScript API for showing custom notifications
+window.MarketHubNotifications = {
+    show: function(message, type = 'info', duration = 5000) {
+        const container = document.querySelector('.notification-container');
+        if (!container) return;
+        
+        const icons = {
+            success: 'check-circle-fill',
+            error: 'exclamation-triangle-fill',
+            warning: 'exclamation-circle-fill',
+            info: 'info-circle-fill'
+        };
+        
+        const titles = {
+            success: 'Success!',
+            error: 'Error!',
+            warning: 'Warning!',
+            info: 'Information'
+        };
+        
+        const alertType = type === 'error' ? 'danger' : type;
+        
+        const notificationHTML = `
+            <div class="alert alert-${alertType} alert-dismissible fade show notification-alert shadow-lg rounded-4 border-0 mb-2" 
+                 role="alert" 
+                 style="animation: slideInRight 0.3s ease-out;"
+                 data-auto-dismiss="${duration}">
+                <div class="d-flex align-items-start">
+                    <div class="me-3 mt-1">
+                        <div class="notification-icon bg-${alertType} bg-opacity-10 rounded-circle p-2">
+                            <i class="bi bi-${icons[type] || icons.info} text-${alertType}"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold mb-1">${titles[type] || titles.info}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white opacity-75" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                
+                <div class="notification-progress position-absolute bottom-0 start-0 w-100" style="height: 3px;">
+                    <div class="progress-bar bg-white bg-opacity-30" style="width: 100%; height: 100%; animation: shrinkWidth ${duration}ms linear;"></div>
+                </div>
+            </div>
+        `;
+        
+        container.insertAdjacentHTML('beforeend', notificationHTML);
+        
+        // Auto-dismiss
+        if (duration > 0) {
+            const newNotification = container.lastElementChild;
+            setTimeout(() => {
+                newNotification.style.animation = 'slideOutRight 0.3s ease-in';
+                setTimeout(() => {
+                    newNotification.remove();
+                }, 300);
+            }, duration);
+        }
+    },
+    
+    success: function(message, duration = 5000) {
+        this.show(message, 'success', duration);
+    },
+    
+    error: function(message, duration = 7000) {
+        this.show(message, 'error', duration);
+    },
+    
+    warning: function(message, duration = 6000) {
+        this.show(message, 'warning', duration);
+    },
+    
+    info: function(message, duration = 5000) {
+        this.show(message, 'info', duration);
+    }
+};
+</script>

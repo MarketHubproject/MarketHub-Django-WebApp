@@ -1,0 +1,155 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Login - MarketHub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+        <!-- Modern Login Card -->
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <!-- Header with Gradient -->
+            <div class="card-header border-0 text-center py-4" 
+                 style="background: var(--primary-gradient); color: white;">
+                <div class="mb-3">
+                    <div class="icon-circle mx-auto bg-white bg-opacity-20" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-circle" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                </div>
+                <h3 class="mb-1 fw-bold">Welcome Back!</h3>
+                <p class="mb-0 opacity-90">Sign in to your MarketHub account</p>
+            </div>
+            
+            <!-- Form Body -->
+            <div class="card-body p-4">
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Username Field -->
+                    <div class="mb-4">
+                        <label for="id_username" class="form-label fw-semibold">
+                            <i class="bi bi-person text-primary me-2"></i>Username
+                        </label>
+                        <input type="text" name="username" id="id_username" 
+                               class="form-control form-control-lg rounded-pill" 
+                               placeholder="Enter your username"
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label fw-semibold">
+                            <i class="bi bi-lock text-primary me-2"></i>Password
+                        </label>
+                        <div class="position-relative">
+                            <input type="password" name="password" id="id_password" 
+                                   class="form-control form-control-lg rounded-pill pe-5" 
+                                   placeholder="Enter your password"
+                                   required>
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y me-3 p-0 password-toggle" 
+                                    style="border: none; background: none; color: #6c757d;">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label text-muted" for="rememberMe">
+                                <small>Remember me</small>
+                            </label>
+                        </div>
+                        <a href="#" class="text-decoration-none small">
+                            <i class="bi bi-question-circle me-1"></i>Forgot password?
+                        </a>
+                    </div>
+                    
+                    <!-- Form Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-pill" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Login Button -->
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill" 
+                                style="background: var(--primary-gradient); border: none;">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Divider -->
+                <div class="text-center mb-4">
+                    <div class="position-relative">
+                        <hr class="my-4">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
+                            <small>New to MarketHub?</small>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Sign Up Link -->
+                <div class="text-center">
+                    <p class="mb-3 text-muted">Don't have an account yet?</p>
+                    <a href="{% url 'signup' %}" class="btn btn-outline-primary btn-lg rounded-pill">
+                        <i class="bi bi-person-plus me-2"></i>Create Account
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="card-footer border-0 bg-light text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    Your data is secure with us
+                </small>
+            </div>
+        </div>
+        
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-link text-decoration-none">
+                <i class="bi bi-arrow-left me-2"></i>Back to MarketHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Password Toggle Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleBtn = document.querySelector('.password-toggle');
+    const passwordField = document.querySelector('#id_password');
+    
+    if (toggleBtn && passwordField) {
+        toggleBtn.addEventListener('click', function() {
+            const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordField.setAttribute('type', type);
+            
+            const icon = this.querySelector('i');
+            icon.classList.toggle('bi-eye');
+            icon.classList.toggle('bi-eye-slash');
+        });
+    }
+});
+</script>
+{% endblock %}
+
+

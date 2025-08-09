@@ -1,0 +1,289 @@
+<!-- MarketHub API Client -->
+<script>
+/**
+ * MarketHub API Client
+ * Handles all API interactions between frontend and backend
+ */
+class MarketHubAPI {
+    constructor() {
+        this.baseURL = window.location.origin + '/api';
+        this.token = this.getAuthToken();
+        this.csrfToken = this.getCSRFToken();
+    }
+
+    // Get CSRF token from Django
+    getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return cookieValue ? cookieValue.split('=')[1] : null;
+    }
+
+    // Get authentication token from localStorage or sessionStorage
+    getAuthToken() {
+        return localStorage.getItem('markethub_token') || sessionStorage.getItem('markethub_token');
+    }
+
+    // Set authentication token
+    setAuthToken(token, remember = false) {
+        if (remember) {
+            localStorage.setItem('markethub_token', token);
+        } else {
+            sessionStorage.setItem('markethub_token', token);
+        }
+        this.token = token;
+    }
+
+    // Remove authentication token
+    removeAuthToken() {
+        localStorage.removeItem('markethub_token');
+        sessionStorage.removeItem('markethub_token');
+        this.token = null;
+    }
+
+    // Get default headers for API requests
+    getHeaders(includeAuth = true) {
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': this.csrfToken
+        };
+
+        if (includeAuth && this.token) {
+            headers['Authorization'] = `Token ${this.token}`;
+        }
+
+        return headers;
+    }
+
+    // Generic API request method
+    async request(endpoint, options = {}) {
+        const url = `${this.baseURL}${endpoint}`;
+        const config = {
+            headers: this.getHeaders(options.auth !== false),
+            ...options
+        };
+
+        try {
+            const response = await fetch(url, config);
+            const data = await response.json().catch(() => null);
+
+            if (!response.ok) {
+                throw new Error(data?.error || data?.message || `HTTP ${response.status}`);
+            }
+
+            return { data, status: response.status, ok: response.ok };
+        } catch (error) {
+            console.error(`API Error (${endpoint}):`, error);
+            throw error;
+        }
+    }
+
+    // Authentication methods
+    async login(username, password, remember = false) {
+        const result = await this.request('/login/', {
+            method: 'POST',
+            body: JSON.stringify({ username, password }),
+            auth: false
+        });
+
+        if (result.data.token) {
+            this.setAuthToken(result.data.token, remember);
+        }
+
+        return result;
+    }
+
+    async logout() {
+        try {
+            await this.request('/logout/', { method: 'POST' });
+        } finally {
+            this.removeAuthToken();
+        }
+    }
+
+    // Product methods
+    async getProducts(params = {}) {
+        const queryString = new URLSearchParams(params).toString();
+        const endpoint = `/products/${queryString ? `?${queryString}` : ''}`;
+        return this.request(endpoint, { auth: false });
+    }
+
+    async getProduct(id) {
+        return this.request(`/products/${id}/`, { auth: false });
+    }
+
+    async createProduct(productData) {
+        const formData = new FormData();
+        Object.keys(productData).forEach(key => {
+            if (productData[key] !== null && productData[key] !== undefined) {
+                formData.append(key, productData[key]);
+            }
+        });
+
+        return fetch(`${this.baseURL}/products/`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Token ${this.token}`,
+                'X-CSRFToken': this.csrfToken
+            },
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        });
+    }
+
+    async updateProduct(id, productData) {
+        return this.request(`/products/${id}/`, {
+            method: 'PATCH',
+            body: JSON.stringify(productData)
+        });
+    }
+
+    async deleteProduct(id) {
+        return this.request(`/products/${id}/`, {
+            method: 'DELETE'
+        });
+    }
+
+    async getCategories() {
+        return this.request('/categories/', { auth: false });
+    }
+
+    // Cart methods
+    async getCart() {
+        return this.request('/cart/');
+    }
+
+    async addToCart(productId, quantity = 1) {
+        return this.request(`/cart/add/${productId}/`, {
+            method: 'POST',
+            body: JSON.stringify({ quantity })
+        });
+    }
+
+    async updateCartItem(itemId, quantity) {
+        return this.request(`/cart/item/${itemId}/`, {
+            method: 'PUT',
+            body: JSON.stringify({ quantity })
+        });
+    }
+
+    async removeFromCart(itemId) {
+        return this.request(`/cart/item/${itemId}/`, {
+            method: 'DELETE'
+        });
+    }
+
+    // User methods
+    async getUserProfile() {
+        return this.request('/profile/');
+    }
+
+    // Search methods (enhanced)
+    async searchProducts(query, filters = {}) {
+        const params = { search: query, ...filters };
+        return this.getProducts(params);
+    }
+
+    // Real-time suggestions
+    async getSearchSuggestions(query) {
+        // This could be enhanced with a dedicated endpoint
+        const result = await this.searchProducts(query);
+        return result.data.results.slice(0, 5); // Return top 5 results
+    }
+}
+
+// Create global API instance
+window.MarketHubAPI = new MarketHubAPI();
+
+// API Response handlers
+window.MarketHubAPI.handleError = function(error, context = 'Operation') {
+    console.error(`${context} failed:`, error);
+    
+    let message = error.message || 'An unexpected error occurred';
+    
+    // Handle common error types
+    if (error.message.includes('401')) {
+        message = 'Authentication required. Please log in.';
+    } else if (error.message.includes('403')) {
+        message = 'You don\'t have permission to perform this action.';
+    } else if (error.message.includes('404')) {
+        message = 'The requested item was not found.';
+    } else if (error.message.includes('500')) {
+        message = 'Server error. Please try again later.';
+    }
+
+    // Show notification if available
+    if (window.MarketHubNotifications) {
+        window.MarketHubNotifications.error(message);
+    } else {
+        alert(message);
+    }
+
+    return message;
+};
+
+window.MarketHubAPI.handleSuccess = function(message, data = null) {
+    if (window.MarketHubNotifications) {
+        window.MarketHubNotifications.success(message);
+    }
+    return data;
+};
+
+// Initialize API client when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('MarketHub API Client initialized');
+    
+    // Check if user is authenticated via API
+    if (window.MarketHubAPI.token) {
+        window.MarketHubAPI.getUserProfile().then(result => {
+            console.log('User authenticated via API:', result.data);
+        }).catch(error => {
+            console.log('API token invalid, removing...');
+            window.MarketHubAPI.removeAuthToken();
+        });
+    }
+});
+</script>
+
+<!-- API Integration Styles -->
+<style>
+.api-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.api-error {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.api-success {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.api-suggestions {
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1050;
+}
+
+.suggestion-highlight {
+    background-color: #f8f9fa !important;
+}
+
+/* Real-time update animations */
+@keyframes apiUpdate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+.api-updated {
+    animation: apiUpdate 0.3s ease-in-out;
+}
+</style>

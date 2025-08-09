@@ -1,0 +1,67 @@
+<!-- Load promotion styles -->
+{% load static %}
+<link rel="stylesheet" href="{% static 'homepage/css/promotions.css' %}">
+
+<!-- Promotional Banners Section -->
+{% if promotions %}
+<section class="promotion-banners-section mb-5">
+    <div class="container-fluid px-0">
+        <div class="row g-3 mx-0">
+            {% for promotion in promotions|slice:":2" %}
+            <div class="col-lg-6 col-md-6 px-2">
+                <div class="promotion-banner position-relative overflow-hidden rounded-4 shadow-lg h-100">
+                    <!-- Background Image -->
+                    <div class="promotion-bg-image">
+                        {% if promotion.image %}
+                            <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}" class="w-100 h-100 object-cover">
+                        {% else %}
+                            <div class="promotion-placeholder d-flex align-items-center justify-content-center">
+                                <i class="fas fa-image text-white opacity-50" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="promotion-gradient-overlay"></div>
+                    
+                    <!-- Content -->
+                    <div class="promotion-content position-absolute w-100 h-100 d-flex align-items-center">
+                        <div class="container-fluid px-4">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-10 col-12">
+                                    <div class="promotion-text text-white">
+                                        <h2 class="promotion-title display-5 fw-bold mb-3 text-shadow">
+                                            {{ promotion.title }}
+                                        </h2>
+                                        <p class="promotion-description lead mb-4 text-shadow">
+                                            {{ promotion.text|truncatewords:20 }}
+                                        </p>
+                                        <div class="promotion-cta">
+                                            <a href="{{ promotion.link }}" 
+                                               class="btn btn-light btn-lg px-4 py-3 fw-bold rounded-pill shadow-lg hover-transform"
+                                               target="_blank" rel="noopener">
+                                                <i class="fas fa-gift me-2"></i>
+                                                Shop Now
+                                                <i class="fas fa-arrow-right ms-2"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Validity Badge -->
+                    <div class="promotion-badge position-absolute top-0 end-0 m-3">
+                        <span class="badge bg-danger px-3 py-2 rounded-pill shadow">
+                            <i class="fas fa-clock me-1"></i>
+                            Limited Time
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}

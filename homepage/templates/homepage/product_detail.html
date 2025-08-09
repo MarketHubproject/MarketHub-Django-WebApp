@@ -1,0 +1,340 @@
+{% extends 'homepage/base.html' %}
+{% load currency_filters %}
+
+{% block title %}{{ product.name }} - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light rounded-pill px-4 py-2">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'product_list' %}" class="text-decoration-none">Products</a></li>
+        <li class="breadcrumb-item active text-truncate" aria-current="page">{{ product.name }}</li>
+    </ol>
+</nav>
+
+<div class="row g-5">
+    <!-- Product Images -->
+    <div class="col-lg-6">
+        <div class="product-gallery">
+            <!-- Main Product Image -->
+            <div class="main-image-container mb-4">
+                <div class="card border-0 shadow rounded-4 overflow-hidden">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" 
+                             class="img-fluid product-main-image" 
+                             alt="{{ product.name }}"
+                             style="height: 500px; width: 100%; object-fit: cover; cursor: zoom-in;"
+                             onclick="openImageModal(this.src)">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-gradient" 
+                             style="height: 500px; background: var(--primary-gradient);">
+                            <div class="text-center text-white">
+                                <i class="bi bi-image" style="font-size: 5rem; opacity: 0.7;"></i>
+                                <h4 class="mt-3 opacity-75">No Image Available</h4>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Image Overlay Badge -->
+                    <div class="position-absolute top-0 start-0 m-3">
+                        <span class="badge bg-white text-dark shadow rounded-pill px-3 py-2">
+                            <i class="bi bi-tag-fill me-1"></i>{{ product.get_category_display }}
+                        </span>
+                    </div>
+                    
+                    <!-- Favorite Button -->
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <button class="btn btn-light rounded-circle shadow-sm favorite-btn" 
+                                data-product-id="{{ product.id }}" 
+                                title="Add to favorites">
+                            <i class="bi bi-heart text-danger"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Additional Product Info Cards -->
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="card border-0 bg-light rounded-4 p-3 h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon bg-success bg-opacity-10 text-success me-3">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 fw-semibold">Quality Guarantee</h6>
+                                <small class="text-muted">30-day return policy</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card border-0 bg-light rounded-4 p-3 h-100">
+                        <div class="d-flex align-items-center">
+                            <div class="feature-icon bg-primary bg-opacity-10 text-primary me-3">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1 fw-semibold">Free Delivery</h6>
+                                <small class="text-muted">Within Cape Town</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Product Information -->
+    <div class="col-lg-6">
+        <div class="product-info">
+            <!-- Product Title & Rating -->
+            <div class="mb-4">
+                <h1 class="display-5 fw-bold text-dark mb-3">{{ product.name }}</h1>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rating">
+                        <div class="d-flex align-items-center">
+                            <div class="stars me-2">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star text-warning"></i>
+                            </div>
+                            <span class="text-muted">(4.0)</span>
+                            <span class="text-muted ms-2">•</span>
+                            <a href="#reviews" class="text-decoration-none text-muted ms-2">12 reviews</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stock Status -->
+                <div class="mb-3">
+                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-2">
+                        <i class="bi bi-check-circle-fill me-1"></i>In Stock
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Price Section -->
+            <div class="price-section mb-5">
+                <div class="d-flex align-items-baseline gap-3 mb-3">
+                    <h2 class="display-4 fw-bold text-success mb-0">{{ product.price|rand_format }}</h2>
+                    <span class="text-muted text-decoration-line-through h5">{{ product.price|add:50|rand_format }}</span>
+                    <span class="badge bg-danger rounded-pill">-15%</span>
+                </div>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Price includes all taxes. Free delivery within Cape Town.
+                </p>
+            </div>
+            
+            <!-- Product Description -->
+            <div class="description-section mb-5">
+                <h5 class="fw-semibold mb-3">
+                    <i class="bi bi-file-text text-primary me-2"></i>Description
+                </h5>
+                <div class="card border-0 bg-light rounded-4 p-4">
+                    <p class="mb-0 text-muted lh-lg">{{ product.description }}</p>
+                </div>
+            </div>
+            
+            <!-- Quantity & Add to Cart -->
+            {% if user.is_authenticated %}
+            <div class="purchase-section mb-5">
+                <h5 class="fw-semibold mb-3">
+                    <i class="bi bi-cart-plus text-success me-2"></i>Add to Cart
+                </h5>
+                <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Quantity:</label>
+                            <div class="input-group shadow-sm rounded-pill overflow-hidden">
+                                <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="decrease">
+                                    <i class="bi bi-dash"></i>
+                                </button>
+                                <input type="number" name="quantity" value="1" min="1" max="99" 
+                                       class="form-control text-center fw-semibold" style="border-left: 0; border-right: 0;">
+                                <button type="button" class="btn btn-outline-secondary quantity-btn" data-action="increase">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="d-grid gap-2 d-md-flex">
+                                <button type="submit" class="btn btn-success btn-lg rounded-pill flex-fill" 
+                                        style="background: var(--success-gradient); border: none;">
+                                    <i class="bi bi-cart-plus-fill me-2"></i>Add to Cart
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-lg rounded-pill" 
+                                        onclick="addToWishlist({{ product.id }})">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {% else %}
+            <div class="login-prompt mb-5">
+                <div class="card border-0 rounded-4 p-4" style="background: linear-gradient(135deg, rgba(108, 117, 125, 0.1) 0%, rgba(108, 117, 125, 0.05) 100%);">
+                    <div class="text-center">
+                        <i class="bi bi-lock text-muted mb-3" style="font-size: 2rem;"></i>
+                        <h5 class="fw-semibold mb-2">Login Required</h5>
+                        <p class="text-muted mb-3">Please log in to add items to your cart</p>
+                        <div class="d-flex gap-2 justify-content-center">
+                            <a href="{% url 'login' %}" class="btn btn-primary rounded-pill px-4">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                            </a>
+                            <a href="{% url 'signup' %}" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="bi bi-person-plus me-2"></i>Sign Up
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Product Specifications -->
+            <div class="specifications mb-5">
+                <h5 class="fw-semibold mb-3">
+                    <i class="bi bi-list-check text-info me-2"></i>Specifications
+                </h5>
+                <div class="card border-0 bg-light rounded-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <strong class="text-dark">Category:</strong>
+                                <span class="text-muted ms-2">{{ product.get_category_display }}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong class="text-dark">Product ID:</strong>
+                                <span class="text-muted ms-2">#{{ product.id|stringformat:"05d" }}</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong class="text-dark">Availability:</strong>
+                                <span class="text-success ms-2"><i class="bi bi-check-circle me-1"></i>In Stock</span>
+                            </div>
+                            <div class="col-sm-6">
+                                <strong class="text-dark">Shipping:</strong>
+                                <span class="text-muted ms-2">Free (2-3 business days)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seller Actions (if owner) -->
+            {% if user.is_authenticated and product.seller == user %}
+            <div class="seller-actions">
+                <h5 class="fw-semibold mb-3">
+                    <i class="bi bi-gear text-warning me-2"></i>Manage Product
+                </h5>
+                <div class="d-flex gap-2">
+                    <a href="{% url 'edit_product' product.pk %}" class="btn btn-warning rounded-pill">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Product
+                    </a>
+                    <button class="btn btn-danger rounded-pill" onclick="confirmDelete({{ product.pk }})">
+                        <i class="bi bi-trash me-2"></i>Delete Product
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Related Products Section -->
+<div class="row mt-5">
+    <div class="col-12">
+        <hr class="my-5">
+        <h3 class="text-center mb-4">
+            <i class="bi bi-collection text-primary me-2"></i>You Might Also Like
+        </h3>
+        <div class="row g-4">
+            <!-- Placeholder for related products - you can implement this logic in views -->
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 border-0 shadow-sm rounded-4 product-card">
+                    <div class="card-body text-center p-4">
+                        <i class="bi bi-plus-circle text-muted mb-3" style="font-size: 3rem;"></i>
+                        <h6 class="card-title text-muted">More Products</h6>
+                        <p class="card-text text-muted small">Check out our full catalog</p>
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-primary rounded-pill btn-sm">
+                            <i class="bi bi-grid me-1"></i>Browse All
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">{{ product.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <img src="" alt="{{ product.name }}" class="img-fluid w-100 modal-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quantity controls
+    document.querySelectorAll('.quantity-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const input = this.closest('.input-group').querySelector('input[name="quantity"]');
+            let currentValue = parseInt(input.value);
+            
+            if (this.dataset.action === 'increase' && currentValue < 99) {
+                input.value = currentValue + 1;
+            } else if (this.dataset.action === 'decrease' && currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        });
+    });
+    
+    // Favorite button toggle
+    document.querySelector('.favorite-btn')?.addEventListener('click', function() {
+        const icon = this.querySelector('i');
+        icon.classList.toggle('bi-heart');
+        icon.classList.toggle('bi-heart-fill');
+        
+        // Add animation effect
+        this.classList.add('animate__animated', 'animate__pulse');
+        setTimeout(() => {
+            this.classList.remove('animate__animated', 'animate__pulse');
+        }, 600);
+    });
+});
+
+// Image modal functionality
+function openImageModal(imageSrc) {
+    const modal = new bootstrap.Modal(document.getElementById('imageModal'));
+    document.querySelector('.modal-image').src = imageSrc;
+    modal.show();
+}
+
+// Wishlist functionality (placeholder)
+function addToWishlist(productId) {
+    // Future implementation for wishlist
+    alert('Added to wishlist! (Feature coming soon)');
+}
+
+// Delete confirmation
+function confirmDelete(productId) {
+    if (confirm('Are you sure you want to delete this product? This action cannot be undone.')) {
+        window.location.href = `/products/${productId}/delete/`;
+    }
+}
+</script>
+{% endblock %}

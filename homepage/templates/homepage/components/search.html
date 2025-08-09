@@ -1,0 +1,472 @@
+<!-- Enhanced Search Component -->
+<div class="search-component position-relative">
+    <form method="GET" action="{% url 'product_list' %}" class="search-form" role="search">
+        <div class="input-group input-group-lg rounded-pill overflow-hidden shadow-sm">
+            <span class="input-group-text bg-white border-0 ps-4">
+                <i class="bi bi-search text-muted"></i>
+            </span>
+            <input type="text" 
+                   name="q" 
+                   id="searchInput" 
+                   class="form-control border-0 search-input" 
+                   placeholder="Search products, categories, or brands..."
+                   value="{{ request.GET.q }}"
+                   autocomplete="off"
+                   data-bs-toggle="tooltip" 
+                   data-bs-placement="bottom" 
+                   title="Press Enter to search or use suggestions below">
+            <button type="submit" class="btn btn-primary border-0 px-4 search-btn">
+                <i class="bi bi-search me-2"></i>Search
+            </button>
+        </div>
+        
+        <!-- Search Suggestions Dropdown -->
+        <div class="search-suggestions position-absolute w-100 bg-white shadow-lg rounded-4 border-0 mt-2" 
+             id="searchSuggestions" 
+             style="z-index: 1050; display: none; max-height: 300px; overflow-y: auto;">
+            <!-- Dynamic suggestions will be populated here -->
+        </div>
+        
+        <!-- Quick Filters -->
+        <div class="quick-filters mt-3 d-flex flex-wrap gap-2">
+            <small class="text-muted me-2 align-self-center">Quick filters:</small>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill quick-filter" data-category="electronics">
+                <i class="bi bi-phone me-1"></i>Electronics
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill quick-filter" data-category="clothing">
+                <i class="bi bi-bag me-1"></i>Clothing
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill quick-filter" data-category="home">
+                <i class="bi bi-house me-1"></i>Home
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill quick-filter" data-category="books">
+                <i class="bi bi-book me-1"></i>Books
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill quick-filter" data-category="sports">
+                <i class="bi bi-trophy me-1"></i>Sports
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Search Component Styles -->
+<style>
+.search-component {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input:focus {
+    box-shadow: none;
+    outline: none;
+}
+
+.search-suggestions {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.suggestion-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #f8f9fa;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    font-size: 0.9rem;
+}
+
+.suggestion-content {
+    flex: 1;
+}
+
+.suggestion-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #333;
+}
+
+.suggestion-meta {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.quick-filter {
+    transition: all 0.3s ease;
+}
+
+.quick-filter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.quick-filter.active {
+    background-color: var(--bs-primary);
+    color: white;
+    border-color: var(--bs-primary);
+}
+
+/* Loading animation */
+.search-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #666;
+}
+
+.search-loading .spinner-border {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 10px;
+}
+
+/* No results state */
+.no-suggestions {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.no-suggestions i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .search-component {
+        max-width: none;
+    }
+    
+    .quick-filters {
+        justify-content: center;
+    }
+    
+    .search-btn {
+        padding: 0 20px;
+    }
+    
+    .search-btn .bi {
+        display: none;
+    }
+}
+</style>
+
+<!-- Enhanced Search JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const suggestionsContainer = document.getElementById('searchSuggestions');
+    const quickFilters = document.querySelectorAll('.quick-filter');
+    let searchTimeout;
+    let currentSuggestionIndex = -1;
+
+    // Sample search data (in a real app, this would come from an API)
+    const searchData = [
+        { type: 'product', title: 'iPhone 13', category: 'Electronics', price: '$699' },
+        { type: 'product', title: 'Samsung Galaxy S21', category: 'Electronics', price: '$599' },
+        { type: 'product', title: 'Nike Air Max', category: 'Clothing', price: '$120' },
+        { type: 'product', title: 'Adidas Ultraboost', category: 'Sports', price: '$180' },
+        { type: 'product', title: 'MacBook Pro', category: 'Electronics', price: '$1299' },
+        { type: 'category', title: 'Electronics', count: '150+ products' },
+        { type: 'category', title: 'Clothing', count: '80+ products' },
+        { type: 'category', title: 'Home & Garden', count: '60+ products' },
+        { type: 'brand', title: 'Apple', count: '25+ products' },
+        { type: 'brand', title: 'Samsung', count: '18+ products' }
+    ];
+
+    // Search input event handler with real API integration
+    searchInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        currentSuggestionIndex = -1;
+
+        if (query.length >= 2) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(async () => {
+                await showRealSuggestions(query);
+            }, 300);
+        } else {
+            hideSuggestions();
+        }
+    });
+    
+    // Enable suggestions on focus
+    searchInput.addEventListener('focus', function() {
+        if (this.value.trim().length >= 2) {
+            showRealSuggestions(this.value.trim());
+        }
+    });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const suggestions = suggestionsContainer.querySelectorAll('.suggestion-item');
+        
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            currentSuggestionIndex = Math.min(currentSuggestionIndex + 1, suggestions.length - 1);
+            updateSuggestionHighlight(suggestions);
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            currentSuggestionIndex = Math.max(currentSuggestionIndex - 1, -1);
+            updateSuggestionHighlight(suggestions);
+        } else if (e.key === 'Enter' && currentSuggestionIndex >= 0) {
+            e.preventDefault();
+            suggestions[currentSuggestionIndex].click();
+        } else if (e.key === 'Escape') {
+            hideSuggestions();
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-component')) {
+            hideSuggestions();
+        }
+    });
+
+    // Quick filter handlers
+    quickFilters.forEach(filter => {
+        filter.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Toggle active state
+            quickFilters.forEach(f => f.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Add category to search and submit
+            const form = document.querySelector('.search-form');
+            let categoryInput = form.querySelector('input[name="category"]');
+            
+            if (!categoryInput) {
+                categoryInput = document.createElement('input');
+                categoryInput.type = 'hidden';
+                categoryInput.name = 'category';
+                form.appendChild(categoryInput);
+            }
+            
+            categoryInput.value = category;
+            form.submit();
+        });
+    });
+
+    // Real API search suggestions function
+    async function showRealSuggestions(query) {
+        try {
+            // Show loading state
+            suggestionsContainer.innerHTML = `
+                <div class="search-loading">
+                    <div class="spinner-border spinner-border-sm" role="status"></div>
+                    <span>Searching products...</span>
+                </div>
+            `;
+            suggestionsContainer.style.display = 'block';
+
+            // Make API call if MarketHubAPI is available
+            if (window.MarketHubAPI) {
+                const result = await window.MarketHubAPI.searchProducts(query);
+                const products = result.data.results || [];
+                
+                if (products.length > 0) {
+                    renderRealSuggestions(products.slice(0, 5));
+                } else {
+                    showNoResults(query);
+                }
+            } else {
+                // Fallback to static data if API not available
+                showSuggestions(query);
+            }
+        } catch (error) {
+            console.error('Search suggestions error:', error);
+            // Fallback to static suggestions on error
+            showSuggestions(query);
+        }
+    }
+
+    // Render real API suggestions
+    function renderRealSuggestions(products) {
+        const html = products.map(product => {
+            return `
+                <div class="suggestion-item" data-type="product" data-id="${product.id}" data-title="${product.name}">
+                    <div class="suggestion-icon bg-primary bg-opacity-10 text-primary">
+                        <i class="bi bi-box-seam"></i>
+                    </div>
+                    <div class="suggestion-content">
+                        <div class="suggestion-title">${highlightMatch(product.name, searchInput.value)}</div>
+                        <div class="suggestion-meta">
+                            ${product.category_display} • $${product.price}
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-right text-muted"></i>
+                </div>
+            `;
+        }).join('');
+
+        suggestionsContainer.innerHTML = html;
+
+        // Add click handlers for real suggestions
+        suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const productId = this.dataset.id;
+                const productName = this.dataset.title;
+                
+                // Navigate to product detail page or search
+                if (productId) {
+                    window.location.href = `/products/${productId}/`;
+                } else {
+                    searchInput.value = productName;
+                    document.querySelector('.search-form').submit();
+                }
+                
+                hideSuggestions();
+            });
+        });
+    }
+
+    function showSuggestions(query) {
+        // Show loading state
+        suggestionsContainer.innerHTML = `
+            <div class="search-loading">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span>Searching...</span>
+            </div>
+        `;
+        suggestionsContainer.style.display = 'block';
+
+        // Simulate API delay
+        setTimeout(() => {
+            const filteredResults = searchData.filter(item => 
+                item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.category?.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredResults.length > 0) {
+                renderSuggestions(filteredResults);
+            } else {
+                showNoResults(query);
+            }
+        }, 200);
+    }
+
+    function renderSuggestions(results) {
+        const html = results.map(item => {
+            const iconClass = getIconClass(item.type);
+            const iconBg = getIconBg(item.type);
+            
+            return `
+                <div class="suggestion-item" data-type="${item.type}" data-title="${item.title}">
+                    <div class="suggestion-icon bg-${iconBg} bg-opacity-10 text-${iconBg}">
+                        <i class="bi bi-${iconClass}"></i>
+                    </div>
+                    <div class="suggestion-content">
+                        <div class="suggestion-title">${highlightMatch(item.title, searchInput.value)}</div>
+                        <div class="suggestion-meta">
+                            ${item.category ? `in ${item.category}` : ''}
+                            ${item.price ? ` • ${item.price}` : ''}
+                            ${item.count ? ` • ${item.count}` : ''}
+                        </div>
+                    </div>
+                    <i class="bi bi-arrow-right text-muted"></i>
+                </div>
+            `;
+        }).join('');
+
+        suggestionsContainer.innerHTML = html;
+
+        // Add click handlers
+        suggestionsContainer.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.dataset.title;
+                const type = this.dataset.type;
+                
+                if (type === 'product') {
+                    searchInput.value = title;
+                    document.querySelector('.search-form').submit();
+                } else if (type === 'category') {
+                    window.location.href = `{% url 'product_list' %}?category=${title.toLowerCase().replace(' & ', '_').replace(' ', '_')}`;
+                } else if (type === 'brand') {
+                    searchInput.value = title;
+                    document.querySelector('.search-form').submit();
+                }
+                
+                hideSuggestions();
+            });
+        });
+    }
+
+    function showNoResults(query) {
+        suggestionsContainer.innerHTML = `
+            <div class="no-suggestions">
+                <i class="bi bi-search d-block"></i>
+                <div class="fw-semibold mb-1">No results found</div>
+                <small class="text-muted">Try searching for "${query}" in all products</small>
+                <div class="mt-2">
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill" onclick="document.querySelector('.search-form').submit();">
+                        <i class="bi bi-search me-1"></i>Search All Products
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function hideSuggestions() {
+        suggestionsContainer.style.display = 'none';
+        currentSuggestionIndex = -1;
+    }
+
+    function updateSuggestionHighlight(suggestions) {
+        suggestions.forEach((suggestion, index) => {
+            if (index === currentSuggestionIndex) {
+                suggestion.style.backgroundColor = '#f8f9fa';
+                suggestion.scrollIntoView({ block: 'nearest' });
+            } else {
+                suggestion.style.backgroundColor = '';
+            }
+        });
+    }
+
+    function getIconClass(type) {
+        const icons = {
+            'product': 'box-seam',
+            'category': 'grid',
+            'brand': 'award'
+        };
+        return icons[type] || 'search';
+    }
+
+    function getIconBg(type) {
+        const colors = {
+            'product': 'primary',
+            'category': 'success',
+            'brand': 'warning'
+        };
+        return colors[type] || 'secondary';
+    }
+
+    function highlightMatch(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark class="bg-warning bg-opacity-25 fw-semibold">$1</mark>');
+    }
+});
+</script>

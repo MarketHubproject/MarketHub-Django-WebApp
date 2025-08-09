@@ -1,0 +1,194 @@
+<!-- Advanced Product Search and Filter Component -->
+<div class="search-filter-container mb-4 p-4 bg-light rounded shadow-sm">
+    <form method="GET" action="{% url 'home' %}" class="row g-3" id="searchFilterForm">
+        <!-- Search Input -->
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text">
+                    <i class="fas fa-search text-primary"></i>
+                </span>
+                <input type="text" 
+                       class="form-control form-control-lg" 
+                       name="search" 
+                       placeholder="Search products by name or description..." 
+                       value="{{ request.GET.search|default:'' }}"
+                       id="searchInput">
+                <button class="btn btn-primary" type="submit">
+                    <i class="fas fa-search me-1"></i>Search
+                </button>
+            </div>
+        </div>
+        
+        <!-- Category Filter -->
+        <div class="col-md-3">
+            <select name="category" class="form-select form-select-lg" id="categoryFilter">
+                <option value="">All Categories</option>
+                {% for value, label in category_choices %}
+                    <option value="{{ value }}" 
+                            {% if request.GET.category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <!-- Price Range -->
+        <div class="col-md-3">
+            <div class="d-flex gap-2">
+                <input type="number" 
+                       class="form-control form-control-lg" 
+                       name="min_price" 
+                       placeholder="Min $" 
+                       value="{{ request.GET.min_price|default:'' }}"
+                       min="0" 
+                       step="0.01">
+                <input type="number" 
+                       class="form-control form-control-lg" 
+                       name="max_price" 
+                       placeholder="Max $" 
+                       value="{{ request.GET.max_price|default:'' }}"
+                       min="0" 
+                       step="0.01">
+            </div>
+        </div>
+    </form>
+    
+    <!-- Active Filters Display -->
+    {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
+    <div class="active-filters mt-3">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <span class="text-muted me-2">
+                <i class="fas fa-filter me-1"></i>Active Filters:
+            </span>
+            
+            {% if request.GET.search %}
+            <span class="badge bg-primary rounded-pill d-flex align-items-center">
+                Search: "{{ request.GET.search }}"
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'search' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" 
+                   class="text-white ms-2 text-decoration-none">
+                    <i class="fas fa-times"></i>
+                </a>
+            </span>
+            {% endif %}
+            
+            {% if request.GET.category %}
+            <span class="badge bg-success rounded-pill d-flex align-items-center">
+                Category: {{ request.GET.category|title }}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'category' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" 
+                   class="text-white ms-2 text-decoration-none">
+                    <i class="fas fa-times"></i>
+                </a>
+            </span>
+            {% endif %}
+            
+            {% if request.GET.min_price or request.GET.max_price %}
+            <span class="badge bg-info rounded-pill d-flex align-items-center">
+                Price: 
+                {% if request.GET.min_price %}${{ request.GET.min_price }}{% else %}$0{% endif %}
+                -
+                {% if request.GET.max_price %}${{ request.GET.max_price }}{% else %}∞{% endif %}
+                <a href="?{% for key, value in request.GET.items %}{% if key != 'min_price' and key != 'max_price' %}{{ key }}={{ value }}&{% endif %}{% endfor %}" 
+                   class="text-white ms-2 text-decoration-none">
+                    <i class="fas fa-times"></i>
+                </a>
+            </span>
+            {% endif %}
+            
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-times me-1"></i>Clear All
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Results Summary -->
+    <div class="results-summary mt-3 d-flex justify-content-between align-items-center">
+        <div class="text-muted">
+            {% if products %}
+                Showing {{ products|length }} 
+                {% if products.has_other_pages %}
+                    of {{ products.paginator.count }}
+                {% endif %}
+                product{{ products.paginator.count|pluralize }}
+                {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
+                    matching your filters
+                {% endif %}
+            {% else %}
+                No products found
+                {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
+                    matching your filters
+                {% endif %}
+            {% endif %}
+        </div>
+        
+        <!-- Sort Options -->
+        <div class="sort-options">
+            <select name="sort" class="form-select form-select-sm" id="sortSelect" onchange="updateSort()">
+                <option value="-created_at" {% if request.GET.sort == "-created_at" or not request.GET.sort %}selected{% endif %}>
+                    Newest First
+                </option>
+                <option value="created_at" {% if request.GET.sort == "created_at" %}selected{% endif %}>
+                    Oldest First
+                </option>
+                <option value="name" {% if request.GET.sort == "name" %}selected{% endif %}>
+                    Name A-Z
+                </option>
+                <option value="-name" {% if request.GET.sort == "-name" %}selected{% endif %}>
+                    Name Z-A
+                </option>
+                <option value="price" {% if request.GET.sort == "price" %}selected{% endif %}>
+                    Price Low to High
+                </option>
+                <option value="-price" {% if request.GET.sort == "-price" %}selected{% endif %}>
+                    Price High to Low
+                </option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-submit on category change
+document.getElementById('categoryFilter').addEventListener('change', function() {
+    document.getElementById('searchFilterForm').submit();
+});
+
+// Auto-submit on sort change
+function updateSort() {
+    const sortValue = document.getElementById('sortSelect').value;
+    const form = document.getElementById('searchFilterForm');
+    
+    // Add sort parameter to form
+    let sortInput = form.querySelector('input[name="sort"]');
+    if (!sortInput) {
+        sortInput = document.createElement('input');
+        sortInput.type = 'hidden';
+        sortInput.name = 'sort';
+        form.appendChild(sortInput);
+    }
+    sortInput.value = sortValue;
+    
+    form.submit();
+}
+
+// Search input enhancements
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('searchFilterForm').submit();
+    }
+});
+
+// Real-time price validation
+document.querySelectorAll('input[name="min_price"], input[name="max_price"]').forEach(input => {
+    input.addEventListener('blur', function() {
+        const minPrice = document.querySelector('input[name="min_price"]').value;
+        const maxPrice = document.querySelector('input[name="max_price"]').value;
+        
+        if (minPrice && maxPrice && parseFloat(minPrice) > parseFloat(maxPrice)) {
+            alert('Minimum price cannot be greater than maximum price');
+            this.focus();
+        }
+    });
+});
+</script>

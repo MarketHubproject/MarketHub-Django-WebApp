@@ -1,0 +1,264 @@
+{% extends 'homepage/base.html' %}
+{% load currency_filters %}
+
+{% block title %}Checkout - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Checkout Header -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="text-center">
+            <div class="d-inline-flex align-items-center bg-primary bg-opacity-10 rounded-pill px-4 py-2 mb-3">
+                <i class="bi bi-credit-card-2-front text-primary me-2"></i>
+                <span class="fw-semibold text-primary">Secure Checkout</span>
+            </div>
+            <h1 class="display-4 text-gradient mb-3">Complete Your Order</h1>
+            <p class="lead text-muted">Review your items and enter shipping information</p>
+        </div>
+    </div>
+</div>
+
+<form method="post" class="checkout-form">
+    {% csrf_token %}
+    <div class="row g-4">
+        <!-- Shipping Information -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header border-0 rounded-top-4 p-4" 
+                     style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);">
+                    <h4 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-truck text-primary me-2"></i>Shipping Information
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>{{ form.first_name.label }}
+                            </label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.first_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-person me-1"></i>{{ form.last_name.label }}
+                            </label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger small mt-1">{{ form.last_name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-envelope me-1"></i>{{ form.email.label }}
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="{{ form.phone.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-telephone me-1"></i>{{ form.phone.label }}
+                            </label>
+                            {{ form.phone }}
+                            {% if form.phone.errors %}
+                                <div class="text-danger small mt-1">{{ form.phone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Address Information -->
+                        <div class="col-12">
+                            <hr class="my-4">
+                            <h5 class="fw-bold text-dark mb-3">
+                                <i class="bi bi-geo-alt text-primary me-2"></i>Delivery Address
+                            </h5>
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="{{ form.address_line_1.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.address_line_1.label }}
+                            </label>
+                            {{ form.address_line_1 }}
+                            {% if form.address_line_1.errors %}
+                                <div class="text-danger small mt-1">{{ form.address_line_1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="{{ form.address_line_2.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.address_line_2.label }}
+                            </label>
+                            {{ form.address_line_2 }}
+                            {% if form.address_line_2.errors %}
+                                <div class="text-danger small mt-1">{{ form.address_line_2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="{{ form.city.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.city.label }}
+                            </label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                                <div class="text-danger small mt-1">{{ form.city.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="{{ form.province.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.province.label }}
+                            </label>
+                            {{ form.province }}
+                            {% if form.province.errors %}
+                                <div class="text-danger small mt-1">{{ form.province.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <label for="{{ form.postal_code.id_for_label }}" class="form-label fw-semibold">
+                                {{ form.postal_code.label }}
+                            </label>
+                            {{ form.postal_code }}
+                            {% if form.postal_code.errors %}
+                                <div class="text-danger small mt-1">{{ form.postal_code.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-12">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-chat-dots me-1"></i>{{ form.notes.label }}
+                            </label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                                <div class="text-danger small mt-1">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="col-lg-5">
+            <div class="sticky-top" style="top: 20px;">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header border-0 rounded-top-4 p-4"
+                         style="background: var(--success-gradient); color: white;">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-receipt me-2"></i>Order Summary
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <!-- Order Items -->
+                        <h6 class="fw-bold mb-3">Items in your order:</h6>
+                        <div class="order-items mb-4">
+                            {% for item in cart.items.all %}
+                                <div class="d-flex align-items-center mb-3 pb-3 {% if not forloop.last %}border-bottom{% endif %}">
+                                    <div class="flex-shrink-0 me-3">
+                                        {% if item.product.image %}
+                                            <img src="{{ item.product.image.url }}" 
+                                                 class="rounded-3" 
+                                                 alt="{{ item.product.name }}"
+                                                 style="width: 50px; height: 50px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" 
+                                                 style="width: 50px; height: 50px;">
+                                                <i class="bi bi-image text-muted"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold text-dark">{{ item.product.name }}</div>
+                                        <small class="text-muted">Qty: {{ item.quantity }} × {{ item.product.price|rand_format }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="fw-bold text-success">{{ item.get_total_price|rand_format }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Order Totals -->
+                        <div class="order-totals">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal:</span>
+                                <span class="fw-semibold">{{ cart.get_total_price|rand_format }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Shipping:</span>
+                                <span class="fw-semibold text-success">Free</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Tax:</span>
+                                <span class="fw-semibold">R0.00</span>
+                            </div>
+                            <hr class="my-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 fw-bold">Total:</h5>
+                                <h4 class="mb-0 fw-bold text-success">{{ cart.get_total_price|rand_format }}</h4>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-3 mt-4">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill" 
+                                    style="background: var(--success-gradient); border: none;">
+                                <i class="bi bi-check-circle me-2"></i>Place Order
+                            </button>
+                            <a href="{% url 'view_cart' %}" class="btn btn-outline-secondary btn-lg rounded-pill">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Cart
+                            </a>
+                        </div>
+                        
+                        <!-- Security Notice -->
+                        <div class="mt-4 p-3 bg-light rounded-3">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-shield-check text-success me-2 mt-1"></i>
+                                <div>
+                                    <small class="fw-semibold text-dark d-block">Secure Checkout</small>
+                                    <small class="text-muted">Your information is protected with industry-standard encryption.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-format phone number
+    const phoneInput = document.querySelector('input[name="phone"]');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function() {
+            let value = this.value.replace(/\D/g, '');
+            if (value.startsWith('27')) {
+                value = '+' + value;
+            } else if (value.startsWith('0')) {
+                value = '+27' + value.substring(1);
+            } else if (!value.startsWith('+')) {
+                value = '+27' + value;
+            }
+            this.value = value;
+        });
+    }
+    
+    // Auto-format postal code
+    const postalInput = document.querySelector('input[name="postal_code"]');
+    if (postalInput) {
+        postalInput.addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').substring(0, 4);
+        });
+    }
+});
+</script>
+{% endblock %}

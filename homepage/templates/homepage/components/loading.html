@@ -1,0 +1,412 @@
+<!-- Loading State Components -->
+
+<!-- Page Loader Overlay -->
+<div id="pageLoader" class="page-loader position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" 
+     style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); z-index: 2000; display: none;">
+    <div class="text-center">
+        <div class="spinner-container mb-3">
+            <div class="custom-spinner"></div>
+        </div>
+        <h5 class="fw-semibold text-primary mb-2">Loading...</h5>
+        <p class="text-muted mb-0" id="loadingMessage">Please wait while we process your request</p>
+    </div>
+</div>
+
+<!-- Inline Loading Component -->
+<div class="inline-loader d-none" id="inlineLoader">
+    <div class="d-flex align-items-center justify-content-center p-4">
+        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="text-muted">Loading...</span>
+    </div>
+</div>
+
+<!-- Button Loading States -->
+<style>
+.page-loader {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.custom-spinner {
+    width: 60px;
+    height: 60px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid var(--bs-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button loading states */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.btn-loading .btn-text {
+    visibility: hidden;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Card loading placeholder */
+.card-loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Skeleton loading for cards */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading-shimmer 1.5s infinite;
+    border-radius: 0.375rem;
+}
+
+.skeleton-text {
+    height: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.skeleton-text.w-75 {
+    width: 75%;
+}
+
+.skeleton-text.w-50 {
+    width: 50%;
+}
+
+.skeleton-text.w-25 {
+    width: 25%;
+}
+
+.skeleton-image {
+    height: 200px;
+    width: 100%;
+}
+
+.skeleton-title {
+    height: 1.5rem;
+    width: 60%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-button {
+    height: 2.5rem;
+    width: 100px;
+}
+
+/* Progress indicators */
+.progress-ring {
+    width: 40px;
+    height: 40px;
+}
+
+.progress-ring-circle {
+    stroke: var(--bs-primary);
+    stroke-width: 3;
+    fill: transparent;
+    r: 18;
+    cx: 20;
+    cy: 20;
+    stroke-dasharray: 113;
+    stroke-dashoffset: 113;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    animation: progress-ring 2s linear infinite;
+}
+
+@keyframes progress-ring {
+    0% { stroke-dashoffset: 113; }
+    50% { stroke-dashoffset: 28.25; }
+    100% { stroke-dashoffset: 113; }
+}
+
+/* Form loading states */
+.form-loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.form-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    z-index: 10;
+}
+
+/* Pulse animation for loading elements */
+.pulse {
+    animation: pulse-animation 1.5s infinite;
+}
+
+@keyframes pulse-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Loading dots animation */
+.loading-dots::after {
+    content: '';
+    animation: loading-dots-animation 1.5s infinite;
+}
+
+@keyframes loading-dots-animation {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .custom-spinner {
+        width: 40px;
+        height: 40px;
+        border-width: 3px;
+    }
+    
+    #pageLoader h5 {
+        font-size: 1.1rem;
+    }
+    
+    #pageLoader p {
+        font-size: 0.9rem;
+    }
+}
+</style>
+
+<!-- Loading State JavaScript -->
+<script>
+// Global loading state management
+window.MarketHubLoading = {
+    // Show page loader
+    showPageLoader: function(message = 'Please wait while we process your request') {
+        const loader = document.getElementById('pageLoader');
+        const messageEl = document.getElementById('loadingMessage');
+        
+        if (messageEl) messageEl.textContent = message;
+        if (loader) {
+            loader.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+    },
+    
+    // Hide page loader
+    hidePageLoader: function() {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+    },
+    
+    // Show inline loader
+    showInlineLoader: function(container) {
+        const loader = document.getElementById('inlineLoader');
+        if (loader && container) {
+            loader.classList.remove('d-none');
+            container.appendChild(loader.cloneNode(true));
+        }
+    },
+    
+    // Hide inline loader
+    hideInlineLoader: function(container) {
+        if (container) {
+            const loaders = container.querySelectorAll('.inline-loader');
+            loaders.forEach(loader => loader.remove());
+        }
+    },
+    
+    // Add loading state to button
+    setButtonLoading: function(button, loading = true, originalText = null) {
+        if (!button) return;
+        
+        if (loading) {
+            button.dataset.originalText = originalText || button.innerHTML;
+            button.classList.add('btn-loading');
+            button.disabled = true;
+        } else {
+            button.classList.remove('btn-loading');
+            button.disabled = false;
+            if (button.dataset.originalText) {
+                button.innerHTML = button.dataset.originalText;
+                delete button.dataset.originalText;
+            }
+        }
+    },
+    
+    // Add loading state to form
+    setFormLoading: function(form, loading = true) {
+        if (!form) return;
+        
+        if (loading) {
+            form.classList.add('form-loading');
+            const inputs = form.querySelectorAll('input, select, textarea, button');
+            inputs.forEach(input => input.disabled = true);
+        } else {
+            form.classList.remove('form-loading');
+            const inputs = form.querySelectorAll('input, select, textarea, button');
+            inputs.forEach(input => input.disabled = false);
+        }
+    },
+    
+    // Create skeleton loader for cards
+    createSkeletonCard: function() {
+        return `
+            <div class="card h-100 skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="card-body">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text w-75"></div>
+                    <div class="skeleton skeleton-text w-50"></div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="skeleton skeleton-text w-25" style="height: 1.2rem;"></div>
+                        <div class="skeleton skeleton-button"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+    
+    // Show skeleton loading
+    showSkeletonLoading: function(container, count = 3) {
+        if (!container) return;
+        
+        container.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const col = document.createElement('div');
+            col.className = 'col-lg-4 col-md-6 mb-4';
+            col.innerHTML = this.createSkeletonCard();
+            container.appendChild(col);
+        }
+    },
+    
+    // Auto-attach loading to forms
+    attachFormLoaders: function() {
+        document.querySelectorAll('form[data-loading="true"]').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                this.setFormLoading(form, true);
+                this.showPageLoader('Submitting form...');
+            });
+        });
+        
+        document.querySelectorAll('button[data-loading="true"]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                this.setButtonLoading(button, true);
+            });
+        });
+        
+        document.querySelectorAll('a[data-loading="true"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                this.showPageLoader('Loading page...');
+            });
+        });
+    },
+    
+    // Progress indicator
+    updateProgress: function(progressEl, percent) {
+        if (progressEl && progressEl.classList.contains('progress')) {
+            const bar = progressEl.querySelector('.progress-bar');
+            if (bar) {
+                bar.style.width = percent + '%';
+                bar.setAttribute('aria-valuenow', percent);
+            }
+        }
+    }
+};
+
+// Initialize loading system - SIMPLIFIED
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded - hiding page loader immediately');
+    
+    // Force hide page loader immediately
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        loader.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+    
+    // Attach form loaders
+    MarketHubLoading.attachFormLoaders();
+});
+
+// Backup - ensure loader is hidden on window load
+window.addEventListener('load', function() {
+    console.log('Window loaded - hiding page loader as backup');
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        loader.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+});
+
+// Force hide after short delay as final backup
+setTimeout(function() {
+    console.log('Timeout - forcing page loader to hide');
+    const loader = document.getElementById('pageLoader');
+    if (loader) {
+        loader.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+}, 100);
+
+// Utility functions for common loading scenarios
+window.MarketHubLoading.searchLoading = function(show = true) {
+    if (show) {
+        this.showPageLoader('Searching products...');
+    } else {
+        this.hidePageLoader();
+    }
+};
+
+window.MarketHubLoading.cartLoading = function(show = true) {
+    if (show) {
+        this.showPageLoader('Updating cart...');
+    } else {
+        this.hidePageLoader();
+    }
+};
+
+window.MarketHubLoading.productLoading = function(show = true) {
+    if (show) {
+        this.showPageLoader('Loading product details...');
+    } else {
+        this.hidePageLoader();
+    }
+};
+</script>

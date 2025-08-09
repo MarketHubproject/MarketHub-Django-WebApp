@@ -1,0 +1,254 @@
+{% extends 'homepage/base.html' %}
+{% load currency_filters %}
+
+{% block title %}Order Confirmation - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Order Confirmation Header -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="text-center">
+            <div class="mb-4">
+                <div class="icon-circle bg-success mx-auto mb-3" style="width: 100px; height: 100px;">
+                    <i class="bi bi-check-circle-fill text-white" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+            <h1 class="display-4 text-success mb-3">Order Confirmed!</h1>
+            <p class="lead text-muted mb-2">Thank you for your purchase, {{ order.get_full_name }}!</p>
+            <p class="text-muted">Your order <strong>{{ order.order_number }}</strong> has been successfully placed.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Order Details -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header border-0 rounded-top-4 p-4" 
+                 style="background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);">
+                <h4 class="mb-0 fw-bold text-dark">
+                    <i class="bi bi-receipt text-success me-2"></i>Order Details
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Order Information -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="fw-semibold text-muted small">ORDER NUMBER</label>
+                            <div class="fw-bold text-dark">{{ order.order_number }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="fw-semibold text-muted small">ORDER DATE</label>
+                            <div class="fw-bold text-dark">{{ order.created_at|date:"F d, Y" }}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="fw-semibold text-muted small">STATUS</label>
+                            <div>
+                                <span class="badge bg-warning rounded-pill px-3 py-2">
+                                    <i class="bi bi-clock me-1"></i>{{ order.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-item">
+                            <label class="fw-semibold text-muted small">PAYMENT STATUS</label>
+                            <div>
+                                <span class="badge bg-info rounded-pill px-3 py-2">
+                                    <i class="bi bi-credit-card me-1"></i>{{ order.get_payment_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <hr class="my-4">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-box text-primary me-2"></i>Items Ordered
+                </h5>
+                
+                <div class="order-items">
+                    {% for item in order.items.all %}
+                        <div class="d-flex align-items-center py-3 {% if not forloop.last %}border-bottom{% endif %}">
+                            <div class="flex-shrink-0 me-3">
+                                {% if item.product.image %}
+                                    <img src="{{ item.product.image.url }}" 
+                                         class="rounded-3 shadow-sm" 
+                                         alt="{{ item.product.name }}"
+                                         style="width: 60px; height: 60px; object-fit: cover;">
+                                {% else %}
+                                    <div class="bg-light rounded-3 d-flex align-items-center justify-content-center shadow-sm" 
+                                         style="width: 60px; height: 60px;">
+                                        <i class="bi bi-image text-muted"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-semibold text-dark">{{ item.product.name }}</div>
+                                <div class="text-muted small">
+                                    <span class="badge bg-light text-dark rounded-pill me-2">
+                                        {{ item.product.get_category_display }}
+                                    </span>
+                                    Qty: {{ item.quantity }}
+                                </div>
+                                <div class="text-muted small">{{ item.price|rand_format }} per item</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-bold text-success">{{ item.get_total_price|rand_format }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Order Totals -->
+                <div class="order-totals mt-4 p-4 bg-light rounded-3">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal:</span>
+                        <span class="fw-semibold">{{ order.subtotal|rand_format }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Shipping:</span>
+                        <span class="fw-semibold text-success">
+                            {% if order.shipping_cost %}
+                                {{ order.shipping_cost|rand_format }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Tax:</span>
+                        <span class="fw-semibold">{{ order.tax_amount|rand_format }}</span>
+                    </div>
+                    <hr class="my-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold">Total Paid:</h5>
+                        <h4 class="mb-0 fw-bold text-success">{{ order.total_amount|rand_format }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shipping Information -->
+    <div class="col-lg-4">
+        <div class="sticky-top" style="top: 20px;">
+            <!-- Shipping Address -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header border-0 rounded-top-4 p-4"
+                     style="background: linear-gradient(135deg, rgba(13, 110, 253, 0.1) 0%, rgba(13, 110, 253, 0.05) 100%);">
+                    <h5 class="mb-0 fw-bold text-dark">
+                        <i class="bi bi-truck text-primary me-2"></i>Shipping Address
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="shipping-address">
+                        <div class="fw-bold text-dark mb-2">{{ order.get_full_name }}</div>
+                        <div class="text-muted">
+                            {{ order.address_line_1 }}<br>
+                            {% if order.address_line_2 %}
+                                {{ order.address_line_2 }}<br>
+                            {% endif %}
+                            {{ order.city }}, {{ order.get_province_display }}<br>
+                            {{ order.postal_code }}
+                        </div>
+                        <hr class="my-3">
+                        <div class="contact-info">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-envelope text-muted me-2"></i>
+                                <span class="text-muted">{{ order.email }}</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-telephone text-muted me-2"></i>
+                                <span class="text-muted">{{ order.phone }}</span>
+                            </div>
+                        </div>
+                        {% if order.notes %}
+                            <hr class="my-3">
+                            <div class="delivery-notes">
+                                <label class="fw-semibold text-muted small d-block mb-1">DELIVERY NOTES</label>
+                                <div class="text-muted small">{{ order.notes }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header border-0 rounded-top-4 p-4"
+                     style="background: var(--info-gradient); color: white;">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="bi bi-info-circle me-2"></i>What's Next?
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="next-steps">
+                        <div class="step-item d-flex mb-3">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="step-number bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 24px; height: 24px; font-size: 0.8rem;">1</div>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark">Order Processing</div>
+                                <small class="text-muted">We'll prepare your items for shipment within 1-2 business days.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item d-flex mb-3">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="step-number bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 24px; height: 24px; font-size: 0.8rem;">2</div>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark">Shipment</div>
+                                <small class="text-muted">You'll receive a tracking number once your order ships.</small>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item d-flex">
+                            <div class="flex-shrink-0 me-3">
+                                <div class="step-number bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 24px; height: 24px; font-size: 0.8rem;">3</div>
+                            </div>
+                            <div>
+                                <div class="fw-semibold text-dark">Delivery</div>
+                                <small class="text-muted">Expect delivery within 3-5 business days in the Cape Town area.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 mt-4">
+                <a href="{% url 'order_history' %}" class="btn btn-primary btn-lg rounded-pill">
+                    <i class="bi bi-clock-history me-2"></i>View Order History
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg rounded-pill">
+                    <i class="bi bi-arrow-left me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Confirmation Notice -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="alert alert-info rounded-4 d-flex align-items-start" role="alert">
+            <i class="bi bi-envelope-check flex-shrink-0 me-3" style="font-size: 1.5rem;"></i>
+            <div>
+                <h6 class="alert-heading fw-bold mb-1">Order Confirmation Email Sent</h6>
+                <p class="mb-0">We've sent a confirmation email to <strong>{{ order.email }}</strong> with your order details and tracking information. Please check your inbox and spam folder.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

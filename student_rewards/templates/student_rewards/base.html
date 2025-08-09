@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Rewards{% endblock %}</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>Student Rewards System</h1>
+        <nav>
+            <!-- Add navigation links here -->
+        </nav>
+    </header>
+    
+    <main>
+        {% block content %}
+        <!-- Page content will go here -->
+        {% endblock %}
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 MarketHub Student Rewards</p>
+    </footer>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-shop"></i> MarketHub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/products">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/add-product">Add Product</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/cart">
+                            <i class="bi bi-cart"></i> Cart
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> Username
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mt-4">
+        
+        <!-- Professional Hero Section -->
+        <section class="professional-hero-section">
+            <div class="container-fluid">
+                <div class="hero-overlay"></div>
+                <div class="row align-items-center min-vh-85 py-5">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <div class="hero-badge mb-4">
+                                <i class="fas fa-star"></i>
+                                <span>PREMIUM MARKETPLACE</span>
+                            </div>
+                            <h1 class="hero-title mb-4">
+                                DISCOVER THE FUTURE OF
+                                <span class="text-accent">E-COMMERCE</span>
+                            </h1>
+                            <p class="hero-subtitle mb-5">
+                                Experience premium shopping with MarketHub - where quality meets convenience. 
+                                Shop from verified sellers, enjoy secure transactions, and discover unique products.
+                            </p>
+                            
+                            <div class="welcome-alert mb-4">
+                                <div class="alert-content">
+                                    <i class="fas fa-user-check"></i>
+                                    <div>
+                                        <strong>WELCOME BACK, USERNAME!</strong>
+                                        <p class="mb-0">Ready to explore our latest collection?</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="hero-actions">
+                                <a class="btn btn-primary btn-xl" href="/products">
+                                    <i class="fas fa-shopping-bag"></i>
+                                    SHOP NOW
+                                </a>
+                                <a class="btn btn-outline-primary btn-xl" href="/add-product">
+                                    <i class="fas fa-plus"></i>
+                                    SELL NOW
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <div class="hero-visual">
+                            <div class="stats-grid">
+                                <div class="stat-card stat-1">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-number">50K+</div>
+                                    <div class="stat-label">ACTIVE USERS</div>
+                                </div>
+                                <div class="stat-card stat-2">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-box-open"></i>
+                                    </div>
+                                    <div class="stat-number">100K+</div>
+                                    <div class="stat-label">PRODUCTS</div>
+                                </div>
+                                <div class="stat-card stat-3">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-handshake"></i>
+                                    </div>
+                                    <div class="stat-number">99.9%</div>
+                                    <div class="stat-label">SATISFACTION</div>
+                                </div>
+                                <div class="stat-card stat-4">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-shipping-fast"></i>
+                                    </div>
+                                    <div class="stat-number">24/7</div>
+                                    <div class="stat-label">SUPPORT</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Highlights Section -->
+        <section class="product-highlights-section py-5 my-5">
+            <div class="container-fluid">
+                <div class="text-center mb-5">
+                    <h2 class="display-5 fw-bold text-primary mb-3">Featured Categories</h2>
+                    <p class="lead text-muted">Discover our premium collection across top categories</p>
+                </div>
+                
+                <div class="row g-4 justify-content-center">
+                    <!-- Watches Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="product-highlight-card h-100 shadow-hover">
+                            <div class="card border-0 h-100">
+                                <div class="position-relative overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?ixlib=rb-4.0.3" 
+                                         class="card-img-top product-highlight-image" alt="Luxury Watches">
+                                    <div class="product-badge">
+                                        <span class="badge bg-warning text-dark fw-bold">Premium</span>
+                                    </div>
+                                    <div class="image-overlay">
+                                        <div class="overlay-content">
+                                            <i class="fas fa-clock text-white" style="font-size: 3rem; opacity: 0.9;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h4 class="card-title fw-bold text-primary mb-3">Luxury Watches</h4>
+                                    <p class="card-text text-muted mb-4">Discover timepieces that blend craftsmanship with modern elegance.</p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-muted small">Starting from</span>
+                                            <span class="h5 text-primary fw-bold mb-0">$299</span>
+                                        </div>
+                                        <a href="/products?category=watches" class="btn btn-primary btn-lg w-100 rounded-pill">
+                                            <i class="fas fa-percent me-2"></i>Get Holiday Deals
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Clothing Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="product-highlight-card h-100 shadow-hover">
+                            <div class="card border-0 h-100">
+                                <div class="position-relative overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3" 
+                                         class="card-img-top product-highlight-image" alt="Fashion Clothing">
+                                    <div class="product-badge">
+                                        <span class="badge bg-success fw-bold">Trending</span>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h4 class="card-title fw-bold text-primary mb-3">Fashion & Clothing</h4>
+                                    <p class="card-text text-muted mb-4">Express your style with our curated collection of contemporary fashion.</p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-muted small">Save up to</span>
+                                            <span class="h5 text-success fw-bold mb-0">30%</span>
+                                        </div>
+                                        <a href="/products?category=clothing" class="btn btn-success btn-lg w-100 rounded-pill">
+                                            <i class="fas fa-tags me-2"></i>Shop Fashion
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Electronics Card -->
+                    <div class="col-lg-4 col-md-6">
+                        <div class="product-highlight-card h-100 shadow-hover">
+                            <div class="card border-0 h-100">
+                                <div class="position-relative overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?ixlib=rb-4.0.3" 
+                                         class="card-img-top product-highlight-image" alt="Electronics">
+                                    <div class="product-badge">
+                                        <span class="badge bg-info fw-bold">20% Off</span>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column p-4">
+                                    <h4 class="card-title fw-bold text-primary mb-3">Electronics & Gadgets</h4>
+                                    <p class="card-text text-muted mb-4">Stay ahead with the latest technology.</p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-muted small">Limited time</span>
+                                            <span class="h5 text-info fw-bold mb-0">20% OFF</span>
+                                        </div>
+                                        <a href="/products?category=electronics" class="btn btn-info btn-lg w-100 rounded-pill text-white">
+                                            <i class="fas fa-bolt me-2"></i>Tech Deals
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <div class="row g-4 mb-5">
+            <div class="col-md-4">
+                <div class="feature-card h-100">
+                    <div class="card border-0 h-100 shadow-hover">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-primary-subtle mb-4">
+                                <i class="bi bi-search text-primary"></i>
+                            </div>
+                            <h5 class="fw-bold mb-3">Smart Search</h5>
+                            <p class="text-muted mb-0">Find exactly what you're looking for with our advanced search and filtering system.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100">
+                    <div class="card border-0 h-100 shadow-hover">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-success-subtle mb-4">
+                                <i class="bi bi-people text-success"></i>
+                            </div>
+                            <h5 class="fw-bold mb-3">Trusted Community</h5>
+                            <p class="text-muted mb-0">Join thousands of verified buyers and sellers in our secure marketplace community.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="feature-card h-100">
+                    <div class="card border-0 h-100 shadow-hover">
+                        <div class="card-body text-center p-4">
+                            <div class="feature-icon bg-info-subtle mb-4">
+                                <i class="bi bi-headset text-info"></i>
+                            </div>
+                            <h5 class="fw-bold mb-3">24/7 Support</h5>
+                            <p class="text-muted mb-0">Our dedicated support team is here to help you every step of the way.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="stats-section position-relative rounded-4 p-5 mb-5 overflow-hidden">
+            <div class="stats-bg-pattern"></div>
+            <div class="row text-center g-4 position-relative">
+                <div class="col-md-3">
+                    <div class="stat-item animate-stat" data-target="1000">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-box text-primary"></i>
+                        </div>
+                        <h3 class="display-6 fw-bold text-primary mb-2 counter">0</h3>
+                        <p class="text-muted mb-0 fw-semibold">Products Listed</p>
+                        <div class="stat-progress">
+                            <div class="stat-bar stat-bar-1"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item animate-stat" data-target="500">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-users text-success"></i>
+                        </div>
+                        <h3 class="display-6 fw-bold text-success mb-2 counter">0</h3>
+                        <p class="text-muted mb-0 fw-semibold">Happy Customers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item animate-stat" data-target="50">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-tags text-warning"></i>
+                        </div>
+                        <h3 class="display-6 fw-bold text-warning mb-2 counter">0</h3>
+                        <p class="text-muted mb-0 fw-semibold">Categories</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item animate-stat">
+                        <div class="stat-icon mb-3">
+                            <i class="fas fa-headset text-info"></i>
+                        </div>
+                        <h3 class="display-6 fw-bold text-info mb-2">24/7</h3>
+                        <p class="text-muted mb-0 fw-semibold">Support Available</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div class="testimonials-section mb-5">
+            <div class="text-center mb-5">
+                <h2 class="display-4 fw-bold mb-3 text-gradient">What Our Clients Say</h2>
+                <p class="lead text-muted">Discover why thousands of customers trust MarketHub</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="testimonial-card h-100">
+                        <div class="card border-0 h-100 shadow-lg">
+                            <div class="card-body p-4 position-relative">
+                                <div class="testimonial-quote mb-3">
+                                    <i class="fas fa-quote-left text-primary"></i>
+                                </div>
+                                <p class="testimonial-text mb-4">
+                                    "MarketHub has revolutionized my shopping experience. The quality of products and exceptional service is unmatched."
+                                </p>
+                                <div class="testimonial-author d-flex align-items-center">
+                                    <div class="author-avatar me-3">
+                                        <div class="avatar-circle">
+                                            <span class="fw-bold">SJ</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Sarah Johnson</h6>
+                                        <small class="text-muted">Fashion Enthusiast</small>
+                                        <div class="rating mt-1">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="testimonial-card h-100">
+                        <div class="card border-0 h-100 shadow-lg">
+                            <div class="card-body p-4 position-relative">
+                                <div class="testimonial-quote mb-3">
+                                    <i class="fas fa-quote-left text-success"></i>
+                                </div>
+                                <p class="testimonial-text mb-4">
+                                    "As a seller, MarketHub provides the perfect platform to reach premium customers. My sales have tripled!"
+                                </p>
+                                <div class="testimonial-author d-flex align-items-center">
+                                    <div class="author-avatar me-3">
+                                        <div class="avatar-circle bg-success">
+                                            <span class="fw-bold">MC</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Mike Chen</h6>
+                                        <small class="text-muted">Tech Entrepreneur</small>
+                                        <div class="rating mt-1">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="testimonial-card h-100">
+                        <div class="card border-0 h-100 shadow-lg">
+                            <div class="card-body p-4 position-relative">
+                                <div class="testimonial-quote mb-3">
+                                    <i class="fas fa-quote-left text-info"></i>
+                                </div>
+                                <p class="testimonial-text mb-4">
+                                    "The customer service is outstanding! They helped me find exactly what I was looking for quickly."
+                                </p>
+                                <div class="testimonial-author d-flex align-items-center">
+                                    <div class="author-avatar me-3">
+                                        <div class="avatar-circle bg-info">
+                                            <span class="fw-bold">ER</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-bold">Emily Rodriguez</h6>
+                                        <small class="text-muted">Interior Designer</small>
+                                        <div class="rating mt-1">
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Luxury Footer -->
+    <footer class="luxury-footer mt-5">
+        <div class="container">
+            <div class="row align-items-center py-4">
+                <div class="col-md-6">
+                    <div class="footer-brand">
+                        <i class="fas fa-crown"></i>
+                        <span class="ms-2">MarketHub</span>
+                    </div>
+                    <p class="footer-tagline mb-0">Where Luxury Meets Commerce</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="footer-copyright mb-0">
+                        © 2025 MarketHub. Crafted with Excellence.
+                    </p>
+                    <p class="footer-tech mb-0">
+                        <small>Built with Django & Bootstrap</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript for animations and interactions -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animated Counter Function
+            function animateCounter(element, target, duration = 2000) {
+                let start = 0;
+                const increment = target / (duration / 16);
+                const timer = setInterval(() => {
+                    start += increment;
+                    if (start >= target) {
+                        element.textContent = target + (target >= 100 ? '+' : '');
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(start) + (target >= 100 ? '+' : '');
+                    }
+                }, 16);
+            }
+            
+            // Intersection Observer for Stats Animation
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const statsObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statItem = entry.target;
+                        const counter = statItem.querySelector('.counter');
+                        const target = parseInt(statItem.getAttribute('data-target'));
+                        
+                        if (target && counter) {
+                            animateCounter(counter, target, 2000);
+                        }
+                        
+                        statsObserver.unobserve(statItem);
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all stat items
+            const statItems = document.querySelectorAll('.animate-stat');
+            statItems.forEach(item => {
+                statsObserver.observe(item);
+            });
+        });
+    </script>
+</body>
+</html>

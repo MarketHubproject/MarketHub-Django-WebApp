@@ -1,0 +1,353 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Add Product - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light rounded-pill px-4 py-2">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'product_list' %}" class="text-decoration-none">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Add Product</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <!-- Modern Product Form Card -->
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <!-- Header with Gradient -->
+            <div class="card-header border-0 text-center py-4" 
+                 style="background: var(--success-gradient); color: white;">
+                <div class="mb-3">
+                    <div class="icon-circle mx-auto bg-white bg-opacity-20" style="width: 80px; height: 80px;">
+                        <i class="bi bi-plus-square-fill" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                </div>
+                <h3 class="mb-1 fw-bold">Add New Product</h3>
+                <p class="mb-0 opacity-90">Create a listing for your product in the marketplace</p>
+            </div>
+            
+            <!-- Form Body -->
+            <div class="card-body p-5">
+                <form method="POST" enctype="multipart/form-data" class="needs-validation product-form" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Product Name -->
+                    <div class="mb-4">
+                        <label for="id_name" class="form-label fw-semibold">
+                            <i class="bi bi-tag text-success me-2"></i>Product Name *
+                        </label>
+                        <input type="text" name="name" id="id_name" 
+                               class="form-control form-control-lg rounded-pill" 
+                               placeholder="Enter a descriptive product name"
+                               value="{{ form.name.value|default:'' }}"
+                               maxlength="200" required>
+                        {% if form.name.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text text-muted">
+                            <small><i class="bi bi-info-circle me-1"></i>Choose a clear, descriptive name that buyers will easily find</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Description -->
+                    <div class="mb-4">
+                        <label for="id_description" class="form-label fw-semibold">
+                            <i class="bi bi-file-text text-success me-2"></i>Product Description *
+                        </label>
+                        <textarea name="description" id="id_description" 
+                                  class="form-control rounded-4" 
+                                  rows="6"
+                                  placeholder="Provide a detailed description of your product, including features, benefits, and specifications..."
+                                  required>{{ form.description.value|default:'' }}</textarea>
+                        {% if form.description.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.description.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text text-muted">
+                            <small><i class="bi bi-info-circle me-1"></i>Include key features, dimensions, materials, and any other relevant details</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Price and Category Row -->
+                    <div class="row g-4 mb-4">
+                        <!-- Price -->
+                        <div class="col-md-6">
+                            <label for="id_price" class="form-label fw-semibold">
+                                <i class="bi bi-currency-dollar text-success me-2"></i>Price *
+                            </label>
+                            <div class="input-group rounded-pill overflow-hidden shadow-sm">
+                                <span class="input-group-text bg-light"><i class="bi bi-currency-dollar"></i></span>
+                                <input type="number" name="price" id="id_price" 
+                                       class="form-control form-control-lg" 
+                                       placeholder="0.00"
+                                       value="{{ form.price.value|default:'' }}"
+                                       min="0" step="0.01" required>
+                            </div>
+                            {% if form.price.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.price.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text text-muted">
+                                <small><i class="bi bi-info-circle me-1"></i>Set a competitive price for your product</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="col-md-6">
+                            <label for="id_category" class="form-label fw-semibold">
+                                <i class="bi bi-grid-3x3 text-success me-2"></i>Category *
+                            </label>
+                            <select name="category" id="id_category" 
+                                    class="form-select form-select-lg rounded-pill" required>
+                                <option value="">Choose a category...</option>
+                                <option value="electronics" {% if form.category.value == 'electronics' %}selected{% endif %}>📱 Electronics</option>
+                                <option value="clothing" {% if form.category.value == 'clothing' %}selected{% endif %}>👕 Clothing</option>
+                                <option value="home" {% if form.category.value == 'home' %}selected{% endif %}>🏠 Home & Garden</option>
+                                <option value="books" {% if form.category.value == 'books' %}selected{% endif %}>📚 Books</option>
+                                <option value="sports" {% if form.category.value == 'sports' %}selected{% endif %}>⚽ Sports & Outdoors</option>
+                                <option value="other" {% if form.category.value == 'other' %}selected{% endif %}>🔍 Other</option>
+                            </select>
+                            {% if form.category.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.category.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Product Image -->
+                    <div class="mb-5">
+                        <label for="id_image" class="form-label fw-semibold">
+                            <i class="bi bi-image text-success me-2"></i>Product Image
+                        </label>
+                        <div class="image-upload-container">
+                            <div class="card border-2 border-dashed rounded-4 p-4" style="border-color: #dee2e6;">
+                                <div class="text-center">
+                                    <div id="imagePreview" class="mb-3" style="display: none;">
+                                        <img id="previewImg" class="img-fluid rounded-3 shadow" 
+                                             style="max-height: 200px; max-width: 100%;" alt="Preview">
+                                    </div>
+                                    <div id="uploadPrompt" class="upload-prompt">
+                                        <i class="bi bi-cloud-upload text-muted mb-3" style="font-size: 3rem;"></i>
+                                        <h5 class="text-muted mb-2">Upload Product Image</h5>
+                                        <p class="text-muted small mb-3">Drag and drop an image here, or click to browse</p>
+                                    </div>
+                                    <input type="file" name="image" id="id_image" 
+                                           class="form-control" 
+                                           accept="image/*" 
+                                           style="display: none;">
+                                    <button type="button" class="btn btn-outline-primary rounded-pill" 
+                                            onclick="document.getElementById('id_image').click()">
+                                        <i class="bi bi-folder2-open me-2"></i>Choose Image
+                                    </button>
+                                </div>
+                            </div>
+                            {% if form.image.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.image.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text text-muted mt-2">
+                                <small><i class="bi bi-info-circle me-1"></i>Accepted formats: JPG, PNG, GIF. Max size: 5MB</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Errors Display -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-4" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Please fix the following errors:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Submit Buttons -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="button" class="btn btn-info btn-lg rounded-pill px-4" onclick="previewProduct()">
+                            <i class="bi bi-eye me-2"></i>Preview
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg rounded-pill px-4" 
+                                style="background: var(--success-gradient); border: none;">
+                            <i class="bi bi-plus-square me-2"></i>Create Product
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Footer -->
+            <div class="card-footer border-0 bg-light text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    Your product will be reviewed before going live
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0">
+                <h5 class="modal-title">
+                    <i class="bi bi-eye text-primary me-2"></i>Product Preview
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div id="previewImageContainer" class="text-center">
+                            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" 
+                                 style="height: 200px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 id="previewName" class="fw-bold text-dark">Product Name</h5>
+                        <p id="previewDescription" class="text-muted">Product description will appear here...</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <h4 id="previewPrice" class="text-success mb-0">$0.00</h4>
+                            <span id="previewCategory" class="badge bg-secondary">Category</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary rounded-pill" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-2"></i>Close Preview
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Image upload preview
+    const imageInput = document.getElementById('id_image');
+    const imagePreview = document.getElementById('imagePreview');
+    const previewImg = document.getElementById('previewImg');
+    const uploadPrompt = document.getElementById('uploadPrompt');
+    
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                imagePreview.style.display = 'block';
+                uploadPrompt.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.style.display = 'none';
+            uploadPrompt.style.display = 'block';
+        }
+    });
+    
+    // Drag and drop functionality
+    const uploadContainer = document.querySelector('.image-upload-container .card');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadContainer.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight(e) {
+        uploadContainer.classList.add('border-primary', 'bg-primary', 'bg-opacity-10');
+    }
+    
+    function unhighlight(e) {
+        uploadContainer.classList.remove('border-primary', 'bg-primary', 'bg-opacity-10');
+    }
+    
+    uploadContainer.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0) {
+            imageInput.files = files;
+            imageInput.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Form validation
+    const form = document.querySelector('.product-form');
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+
+// Preview functionality
+function previewProduct() {
+    const name = document.getElementById('id_name').value || 'Product Name';
+    const description = document.getElementById('id_description').value || 'Product description will appear here...';
+    const price = document.getElementById('id_price').value || '0.00';
+    const category = document.getElementById('id_category').selectedOptions[0]?.text || 'Category';
+    const imageFile = document.getElementById('id_image').files[0];
+    
+    document.getElementById('previewName').textContent = name;
+    document.getElementById('previewDescription').textContent = description;
+    document.getElementById('previewPrice').textContent = '$' + price;
+    document.getElementById('previewCategory').textContent = category;
+    
+    const previewImageContainer = document.getElementById('previewImageContainer');
+    if (imageFile) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImageContainer.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded-3" style="max-height: 200px;" alt="Preview">`;
+        };
+        reader.readAsDataURL(imageFile);
+    } else {
+        previewImageContainer.innerHTML = `
+            <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 200px;">
+                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            </div>`;
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+    modal.show();
+}
+</script>
+{% endblock %}

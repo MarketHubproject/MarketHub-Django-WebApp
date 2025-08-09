@@ -1,0 +1,54 @@
+<!-- Emergency Loading Overlay Fix -->
+<script>
+// Immediate fix for loading overlay
+(function() {
+    'use strict';
+    
+    console.log('Loading fix script running...');
+    
+    // Function to forcefully hide loading overlay
+    function forceHideLoader() {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.style.display = 'none !important';
+            loader.style.visibility = 'hidden';
+            loader.style.opacity = '0';
+            loader.classList.add('d-none');
+            document.body.style.overflow = '';
+            console.log('✅ Loading overlay forcefully hidden');
+        }
+    }
+    
+    // Hide immediately if DOM is already loaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', forceHideLoader);
+    } else {
+        forceHideLoader();
+    }
+    
+    // Backup timers
+    setTimeout(forceHideLoader, 50);   // 50ms backup
+    setTimeout(forceHideLoader, 200);  // 200ms backup
+    setTimeout(forceHideLoader, 500);  // 500ms backup
+    
+    // Window load backup
+    if (document.readyState !== 'complete') {
+        window.addEventListener('load', forceHideLoader);
+    } else {
+        forceHideLoader();
+    }
+    
+    // Final safety check every 100ms for first 2 seconds
+    let safetyCheckCount = 0;
+    const safetyInterval = setInterval(function() {
+        safetyCheckCount++;
+        forceHideLoader();
+        
+        if (safetyCheckCount >= 20) { // Stop after 2 seconds
+            clearInterval(safetyInterval);
+            console.log('✅ Loading overlay safety checks completed');
+        }
+    }, 100);
+    
+})();
+</script>

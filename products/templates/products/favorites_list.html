@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Favorites - MarketHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .product-card {
+      transition: transform 0.2s, box-shadow 0.2s;
+      height: 100%;
+      position: relative;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .product-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
+    }
+    .favorite-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #e74c3c;
+    }
+    .favorite-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+    .location-badge {
+      background: linear-gradient(45deg, #87CEEB, #4682B4);
+      color: white;
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 15px;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+    }
+    .price-tag {
+      color: #27ae60;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .hero-section {
+      background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+      padding: 40px 0;
+      margin-bottom: 30px;
+      color: white;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="container">
+      <h1><i class="fas fa-heart me-3"></i>My Favorite Products</h1>
+      <p class="mb-0">Keep track of products you love</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Your Favorites ({{ favorites.count }})</h2>
+      <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left me-2"></i>Back to Products
+      </a>
+    </div>
+
+    {% if favorites %}
+      <div class="row g-4">
+        {% for favorite in favorites %}
+          <div class="col-lg-3 col-md-4 col-sm-6">
+            <div class="card product-card h-100">
+              <div class="position-relative">
+                {% if favorite.product.image %}
+                  <img src="{{ favorite.product.image.url }}" class="product-image" alt="{{ favorite.product.name }}">
+                {% else %}
+                  <img src="https://via.placeholder.com/300x200?text=No+Image" class="product-image" alt="No Image">
+                {% endif %}
+                
+                <button class="favorite-btn" onclick="toggleFavorite({{ favorite.product.id }}, this)">
+                  <i class="fas fa-heart"></i>
+                </button>
+                
+                <div class="location-badge">
+                  <i class="fas fa-map-marker-alt me-1"></i>{{ favorite.product.get_location_display }}
+                </div>
+              </div>
+              
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ favorite.product.name }}</h5>
+                <p class="card-text flex-grow-1">{{ favorite.product.description|truncatewords:10 }}</p>
+                <div class="mt-auto">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="price-tag">R{{ favorite.product.price }}</span>
+                    <small class="text-muted">{{ favorite.product.get_category_display }}</small>
+                  </div>
+                  <a href="{% url 'product_detail' favorite.product.pk %}" class="btn btn-primary w-100">
+                    <i class="fas fa-eye me-2"></i>View Details
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <i class="fas fa-heart-broken" style="font-size: 4rem; color: #bdc3c7;"></i>
+        <h3 class="mt-3 text-muted">No favorites yet</h3>
+        <p class="text-muted mb-4">Start exploring products and add them to your favorites!</p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg">
+          <i class="fas fa-shopping-bag me-2"></i>Browse Products
+        </a>
+      </div>
+    {% endif %}
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    function toggleFavorite(productId, button) {
+      fetch(`/products/${productId}/toggle-favorite/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value || getCookie('csrftoken'),
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (!data.is_favorited) {
+          // Remove the card from favorites view
+          button.closest('.col-lg-3').remove();
+          
+          // Update favorites count
+          const countElement = document.querySelector('h2');
+          const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
+          countElement.textContent = `Your Favorites (${currentCount - 1})`;
+          
+          // Show empty state if no favorites left
+          if (currentCount - 1 === 0) {
+            location.reload();
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+  </script>
+  
+  <!-- Add CSRF token for AJAX requests -->
+  {% csrf_token %}
+</body>
+</html>

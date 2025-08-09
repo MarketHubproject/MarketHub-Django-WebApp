@@ -1,0 +1,236 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Sign Up - MarketHub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <!-- Modern Signup Card -->
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <!-- Header with Gradient -->
+            <div class="card-header border-0 text-center py-4" 
+                 style="background: var(--success-gradient); color: white;">
+                <div class="mb-3">
+                    <div class="icon-circle mx-auto bg-white bg-opacity-20" style="width: 80px; height: 80px;">
+                        <i class="bi bi-person-plus-fill" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                </div>
+                <h3 class="mb-1 fw-bold">Join MarketHub!</h3>
+                <p class="mb-0 opacity-90">Create your account and start exploring</p>
+            </div>
+            
+            <!-- Form Body -->
+            <div class="card-body p-4">
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Username Field -->
+                    <div class="mb-4">
+                        <label for="id_username" class="form-label fw-semibold">
+                            <i class="bi bi-person text-success me-2"></i>Username
+                        </label>
+                        <input type="text" name="username" id="id_username" 
+                               class="form-control form-control-lg rounded-pill" 
+                               placeholder="Choose a unique username"
+                               value="{{ form.username.value|default:'' }}"
+                               required>
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if not form.username.errors %}
+                            <div class="form-text text-muted">
+                                <small><i class="bi bi-info-circle me-1"></i>Letters, digits and @/./+/-/_ only.</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Email Field -->
+                    <div class="mb-4">
+                        <label for="id_email" class="form-label fw-semibold">
+                            <i class="bi bi-envelope text-success me-2"></i>Email Address
+                        </label>
+                        <input type="email" name="email" id="id_email" 
+                               class="form-control form-control-lg rounded-pill" 
+                               placeholder="your.email@example.com"
+                               value="{{ form.email.value|default:'' }}">
+                        {% if form.email.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <label for="id_password1" class="form-label fw-semibold">
+                            <i class="bi bi-lock text-success me-2"></i>Password
+                        </label>
+                        <div class="position-relative">
+                            <input type="password" name="password1" id="id_password1" 
+                                   class="form-control form-control-lg rounded-pill pe-5" 
+                                   placeholder="Create a strong password"
+                                   required>
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y me-3 p-0 password-toggle" 
+                                    style="border: none; background: none; color: #6c757d;" data-target="id_password1">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        {% if not form.password1.errors %}
+                            <div class="form-text text-muted">
+                                <small>
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Must contain at least 8 characters. Can't be too common or entirely numeric.
+                                </small>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Confirm Password Field -->
+                    <div class="mb-4">
+                        <label for="id_password2" class="form-label fw-semibold">
+                            <i class="bi bi-shield-check text-success me-2"></i>Confirm Password
+                        </label>
+                        <div class="position-relative">
+                            <input type="password" name="password2" id="id_password2" 
+                                   class="form-control form-control-lg rounded-pill pe-5" 
+                                   placeholder="Confirm your password"
+                                   required>
+                            <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y me-3 p-0 password-toggle" 
+                                    style="border: none; background: none; color: #6c757d;" data-target="id_password2">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="invalid-feedback d-block">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Terms & Conditions -->
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                <small>
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                </small>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger rounded-pill" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Sign Up Button -->
+                    <div class="d-grid mb-4">
+                        <button type="submit" class="btn btn-success btn-lg rounded-pill" 
+                                style="background: var(--success-gradient); border: none;">
+                            <i class="bi bi-person-plus me-2"></i>Create My Account
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Divider -->
+                <div class="text-center mb-4">
+                    <div class="position-relative">
+                        <hr class="my-4">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
+                            <small>Already a member?</small>
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Login Link -->
+                <div class="text-center">
+                    <p class="mb-3 text-muted">Welcome back! Sign in to your account</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg rounded-pill">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In Instead
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="card-footer border-0 bg-light text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    Your information is protected and secure
+                </small>
+            </div>
+        </div>
+        
+        <!-- Back to Home -->
+        <div class="text-center mt-4">
+            <a href="{% url 'home' %}" class="btn btn-link text-decoration-none">
+                <i class="bi bi-arrow-left me-2"></i>Back to MarketHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Form Validation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Password toggle functionality
+    document.querySelectorAll('.password-toggle').forEach(toggleBtn => {
+        toggleBtn.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const passwordField = document.getElementById(targetId);
+            
+            if (passwordField) {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                
+                const icon = this.querySelector('i');
+                icon.classList.toggle('bi-eye');
+                icon.classList.toggle('bi-eye-slash');
+            }
+        });
+    });
+    
+    // Real-time password confirmation validation
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+    
+    if (password1 && password2) {
+        password2.addEventListener('input', function() {
+            if (this.value && password1.value !== this.value) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            } else if (this.value && password1.value === this.value) {
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+            } else {
+                this.classList.remove('is-valid', 'is-invalid');
+            }
+        });
+    }
+    
+    // Username availability check (placeholder for future enhancement)
+    const usernameField = document.getElementById('id_username');
+    if (usernameField) {
+        usernameField.addEventListener('blur', function() {
+            // Future: Add AJAX call to check username availability
+            console.log('Username validation:', this.value);
+        });
+    }
+});
+</script>
+{% endblock %}
