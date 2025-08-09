@@ -9,14 +9,14 @@ import random
 
 class Command(BaseCommand):
     help = 'Create sample data for student rewards system'
-    
+
     def add_arguments(self, parser):
         parser.add_argument(
-            '--clear', 
+            '--clear',
             action='store_true',
             help='Clear existing student rewards data before creating new sample data'
         )
-    
+
     def handle(self, *args, **options):
         if options['clear']:
             self.stdout.write(self.style.WARNING('Clearing existing student rewards data...'))
@@ -25,7 +25,7 @@ class Command(BaseCommand):
             StudentProfile.objects.all().delete()
             DiscountTier.objects.all().delete()
             self.stdout.write(self.style.SUCCESS('Cleared existing data.'))
-        
+
         # Create discount tiers
         self.stdout.write('Creating discount tiers...')
         tiers = [
@@ -58,7 +58,7 @@ class Command(BaseCommand):
                 'max_uses_per_student': 1
             }
         ]
-        
+
         for tier_data in tiers:
             tier, created = DiscountTier.objects.get_or_create(
                 name=tier_data['name'],
@@ -75,10 +75,10 @@ class Command(BaseCommand):
                 self.stdout.write(f'Created discount tier: {tier.name}')
             else:
                 self.stdout.write(f'Discount tier already exists: {tier.name}')
-        
+
         # Create sample users and student profiles if they don't exist
         self.stdout.write('Creating sample users and student profiles...')
-        
+
         universities = [
             'University of Cape Town',
             'University of the Witwatersrand',
@@ -89,7 +89,7 @@ class Command(BaseCommand):
             'North-West University',
             'University of the Free State'
         ]
-        
+
         # Sample South African ID numbers (fake but valid format)
         sample_ids = [
             '9001015800083',  # Valid SA ID format
@@ -98,7 +98,7 @@ class Command(BaseCommand):
             '8712109800085',
             '9203258900087'
         ]
-        
+
         sample_students = [
             {
                 'username': 'student1',
@@ -146,7 +146,7 @@ class Command(BaseCommand):
                 'points': 150
             }
         ]
-        
+
         for student_data in sample_students:
             # Create user if doesn't exist
             user, user_created = User.objects.get_or_create(
@@ -157,13 +157,13 @@ class Command(BaseCommand):
                     'last_name': student_data['last_name']
                 }
             )
-            
+
             # UserProfile should be created automatically via signal
             if not hasattr(user, 'profile'):
                 user_profile = UserProfile.objects.create(user=user)
             else:
                 user_profile = user.profile
-            
+
             # Create StudentProfile
             student_profile, created = StudentProfile.objects.get_or_create(
                 user_profile=user_profile,
@@ -175,10 +175,10 @@ class Command(BaseCommand):
                     'total_points': student_data['points']
                 }
             )
-            
+
             if created:
                 self.stdout.write(f'Created student profile: {student_profile}')
-                
+
                 # Create sample points transactions
                 transaction_types = [
                     ('Purchase reward', 50),
@@ -187,7 +187,7 @@ class Command(BaseCommand):
                     ('First purchase bonus', 200),
                     ('Loyalty bonus', 75)
                 ]
-                
+
                 for reason, points in random.sample(transaction_types, random.randint(2, 4)):
                     PointsTransaction.objects.create(
                         student=student_profile,
@@ -197,38 +197,38 @@ class Command(BaseCommand):
                     )
             else:
                 self.stdout.write(f'Student profile already exists: {student_profile}')
-        
+
         # Create some sample redeemed discounts
         self.stdout.write('Creating sample redeemed discounts...')
-        
+
         student_profiles = StudentProfile.objects.all()
         discount_tiers = DiscountTier.objects.all()
-        
+
         for student in student_profiles[:3]:  # Only for first 3 students
             # Find available tiers for this student
             available_tiers = DiscountTier.get_available_tiers_for_student(student)
             if available_tiers:
                 # Redeem a random available tier
                 tier = random.choice(available_tiers)
-                
+
                 # Deduct points
                 student.deduct_points(
                     tier.min_points,
                     f"Redeemed {tier.name} discount tier"
                 )
-                
+
                 # Create redeemed discount
                 redeemed_discount = RedeemedDiscount.objects.create(
                     student=student,
                     discount_tier=tier,
                     expires_at=timezone.now() + timedelta(days=30)
                 )
-                
+
                 self.stdout.write(
                     f'Created redeemed discount: {student.user_profile.user.username} '
                     f'redeemed {tier.name} (Code: {redeemed_discount.discount_code})'
                 )
-        
+
         self.stdout.write(
             self.style.SUCCESS(
                 f'Successfully created sample data:\n'
@@ -238,12 +238,12 @@ class Command(BaseCommand):
                 f'- {RedeemedDiscount.objects.count()} redeemed discounts'
             )
         )
-        
+
         # Display summary statistics
-        self.stdout.write('\n' + '='*50)
+        self.stdout.write('\n' + '=' * 50)
         self.stdout.write('STUDENT REWARDS SYSTEM SUMMARY')
-        self.stdout.write('='*50)
-        
+        self.stdout.write('=' * 50)
+
         for student in StudentProfile.objects.all():
             available_tiers = DiscountTier.get_available_tiers_for_student(student)
             self.stdout.write(
@@ -251,7 +251,7 @@ class Command(BaseCommand):
                 f'({student.university}): {student.current_points} points '
                 f'| Available tiers: {len(available_tiers)}'
             )
-        
+
         self.stdout.write('\nDiscount Tiers:')
         for tier in DiscountTier.objects.all():
             redemptions = tier.redemptions.count()

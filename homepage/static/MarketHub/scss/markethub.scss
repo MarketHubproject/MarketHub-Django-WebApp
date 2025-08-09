@@ -1,6 +1,6 @@
 // MarketHub Main Stylesheet
-// Import variables first
-@import 'markethub_variables';
+// Import variables first using modern @use syntax
+@use 'markethub_variables' as *;
 
 // =============================================================================
 // BASE STYLES

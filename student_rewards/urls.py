@@ -12,7 +12,7 @@ app_name = 'student_rewards'
 urlpatterns = [
     # API URLs
     path('api/', include(router.urls)),
-    
+
     # Regular views
     # Add your URL patterns here
     # Example: path('', views.index, name='index'),

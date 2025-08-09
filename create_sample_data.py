@@ -2,6 +2,8 @@
 """
 Script to create sample data for MarketHub Django application
 """
+from homepage.models import Category, HeroSlide, Promotion, Product, Cart, CartItem
+from django.contrib.auth.models import User
 import os
 import django
 from datetime import datetime, timedelta
@@ -11,12 +13,10 @@ from decimal import Decimal
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'markethub.settings')
 django.setup()
 
-from django.contrib.auth.models import User
-from homepage.models import Category, HeroSlide, Promotion, Product, Cart, CartItem
 
 def create_sample_data():
     print("Creating sample data...")
-    
+
     # Create sample categories
     categories_data = [
         {
@@ -60,7 +60,7 @@ def create_sample_data():
             'order': 5
         }
     ]
-    
+
     for cat_data in categories_data:
         category, created = Category.objects.get_or_create(
             slug=cat_data['slug'],
@@ -68,7 +68,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created category: {category.name}")
-    
+
     # Create sample hero slides
     hero_slides_data = [
         {
@@ -96,7 +96,7 @@ def create_sample_data():
             'order': 3
         }
     ]
-    
+
     for slide_data in hero_slides_data:
         slide, created = HeroSlide.objects.get_or_create(
             title=slide_data['title'],
@@ -104,7 +104,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created hero slide: {slide.title}")
-    
+
     # Create sample promotions
     now = datetime.now()
     promotions_data = [
@@ -127,7 +127,7 @@ def create_sample_data():
             'order': 2
         }
     ]
-    
+
     for promo_data in promotions_data:
         promotion, created = Promotion.objects.get_or_create(
             title=promo_data['title'],
@@ -135,7 +135,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created promotion: {promotion.title}")
-    
+
     # Create sample products
     products_data = [
         {
@@ -199,7 +199,7 @@ def create_sample_data():
             'category': 'other'
         }
     ]
-    
+
     for prod_data in products_data:
         product, created = Product.objects.get_or_create(
             name=prod_data['name'],
@@ -207,7 +207,7 @@ def create_sample_data():
         )
         if created:
             print(f"Created product: {product.name}")
-    
+
     # Create sample users
     users_data = [
         {
@@ -234,11 +234,11 @@ def create_sample_data():
             'is_superuser': True
         }
     ]
-    
+
     for user_data in users_data:
         is_staff = user_data.pop('is_staff', False)
         is_superuser = user_data.pop('is_superuser', False)
-        
+
         if is_superuser:
             user, created = User.objects.get_or_create(
                 username=user_data['username'],
@@ -259,16 +259,16 @@ def create_sample_data():
                 user.set_password(user_data['password'])
                 user.save()
                 print(f"Created user: {user.username}")
-    
+
     # Create sample cart for a user
     john_user = User.objects.get(username='john_doe')
     cart, created = Cart.objects.get_or_create(user=john_user)
-    
+
     if created:
         # Add some items to the cart
         iphone = Product.objects.get(name='iPhone 15 Pro')
         sneakers = Product.objects.get(name='Nike Air Max Sneakers')
-        
+
         CartItem.objects.get_or_create(
             cart=cart,
             product=iphone,
@@ -280,8 +280,9 @@ def create_sample_data():
             defaults={'quantity': 2}
         )
         print(f"Created cart with items for user: {john_user.username}")
-    
+
     print("Sample data creation completed!")
+
 
 if __name__ == '__main__':
     create_sample_data()

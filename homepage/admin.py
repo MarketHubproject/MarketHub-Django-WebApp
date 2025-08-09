@@ -10,7 +10,7 @@ class HeroSlideAdmin(admin.ModelAdmin):
     search_fields = ['title', 'subtitle']
     ordering = ['order', 'created_at']
     readonly_fields = ['created_at', 'updated_at']
-    
+
     fieldsets = (
         ('Content', {
             'fields': ('title', 'subtitle', 'image')
@@ -37,7 +37,7 @@ class PromotionAdmin(admin.ModelAdmin):
     search_fields = ['title', 'text']
     ordering = ['order', '-created_at']
     readonly_fields = ['created_at', 'updated_at']
-    
+
     fieldsets = (
         ('Content', {
             'fields': ('title', 'text', 'image')
@@ -53,7 +53,7 @@ class PromotionAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def is_valid_display(self, obj):
         """Display whether the promotion is currently valid"""
         return obj.is_valid
@@ -102,7 +102,7 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
     prepopulated_fields = {'slug': ('name',)}
     readonly_fields = ('created_at', 'updated_at')
-    
+
     fieldsets = (
         (None, {
             'fields': ('name', 'slug', 'description')
@@ -124,7 +124,7 @@ class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
     readonly_fields = ['get_total_price']
-    
+
     def get_total_price(self, obj):
         if obj.pk:
             return f"R{obj.get_total_price():.2f}"
@@ -141,7 +141,7 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ['order_number', 'created_at', 'updated_at', 'get_full_name', 'get_full_address']
     ordering = ['-created_at']
     inlines = [OrderItemInline]
-    
+
     fieldsets = (
         ('Order Information', {
             'fields': ('order_number', 'user', 'status', 'payment_status')
@@ -168,11 +168,11 @@ class OrderAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
+
     def get_full_name(self, obj):
         return obj.get_full_name()
     get_full_name.short_description = 'Full Name'
-    
+
     def get_full_address(self, obj):
         return obj.get_full_address()
     get_full_address.short_description = 'Full Address'
@@ -184,7 +184,7 @@ class OrderItemAdmin(admin.ModelAdmin):
     list_filter = ['order__created_at']
     search_fields = ['order__order_number', 'product__name']
     readonly_fields = ['get_total_price']
-    
+
     def get_total_price(self, obj):
         return f"R{obj.get_total_price():.2f}"
     get_total_price.short_description = 'Total Price'

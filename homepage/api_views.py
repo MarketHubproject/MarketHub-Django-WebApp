@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from .models import Product, Cart, CartItem
 from .serializers import (
-    ProductSerializer, CartSerializer, CartItemSerializer, 
+    ProductSerializer, CartSerializer, CartItemSerializer,
     UserSerializer, ProductCreateUpdateSerializer
 )
 
@@ -19,25 +19,25 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
     """
     queryset = Product.objects.all().order_by('-created_at')
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     def get_serializer_class(self):
         if self.request.method == 'POST':
             return ProductCreateUpdateSerializer
         return ProductSerializer
-    
+
     def get_queryset(self):
         queryset = Product.objects.all().order_by('-created_at')
-        
+
         # Filter by category
         category = self.request.query_params.get('category', None)
         if category:
             queryset = queryset.filter(category=category)
-        
+
         # Search by name
         search = self.request.query_params.get('search', None)
         if search:
             queryset = queryset.filter(name__icontains=search)
-        
+
         return queryset
 
 
@@ -49,7 +49,7 @@ class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Product.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
             return ProductCreateUpdateSerializer
@@ -62,7 +62,7 @@ class CartAPIView(generics.RetrieveAPIView):
     """
     serializer_class = CartSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_object(self):
         cart, created = Cart.objects.get_or_create(user=self.request.user)
         return cart
@@ -77,22 +77,22 @@ def add_to_cart_api(request, product_id):
     try:
         product = get_object_or_404(Product, id=product_id)
         cart, created = Cart.objects.get_or_create(user=request.user)
-        
+
         cart_item, created = CartItem.objects.get_or_create(
             cart=cart,
             product=product,
             defaults={'quantity': 1}
         )
-        
+
         if not created:
             cart_item.quantity += 1
             cart_item.save()
-        
+
         return Response({
             'message': f'{product.name} added to cart successfully!',
             'item': CartItemSerializer(cart_item).data
         }, status=status.HTTP_201_CREATED)
-        
+
     except Product.DoesNotExist:
         return Response({
             'error': 'Product not found'
@@ -108,11 +108,11 @@ def update_cart_item_api(request, item_id):
     """
     try:
         cart_item = get_object_or_404(
-            CartItem, 
-            id=item_id, 
+            CartItem,
+            id=item_id,
             cart__user=request.user
         )
-        
+
         if request.method == 'PUT':
             quantity = request.data.get('quantity', 1)
             if quantity <= 0:
@@ -120,22 +120,22 @@ def update_cart_item_api(request, item_id):
                 return Response({
                     'message': 'Item removed from cart'
                 }, status=status.HTTP_200_OK)
-            
+
             cart_item.quantity = quantity
             cart_item.save()
-            
+
             return Response({
                 'message': 'Cart item updated successfully',
                 'item': CartItemSerializer(cart_item).data
             }, status=status.HTTP_200_OK)
-        
+
         elif request.method == 'DELETE':
             product_name = cart_item.product.name
             cart_item.delete()
             return Response({
                 'message': f'{product_name} removed from cart'
             }, status=status.HTTP_200_OK)
-            
+
     except CartItem.DoesNotExist:
         return Response({
             'error': 'Cart item not found'
@@ -172,7 +172,7 @@ def api_login(request):
     """
     username = request.data.get('username')
     password = request.data.get('password')
-    
+
     if username and password:
         user = authenticate(username=username, password=password)
         if user:
@@ -240,5 +240,5 @@ def api_overview(request):
             'Permissions': 'Most endpoints allow read access, write requires authentication'
         }
     }
-    
+
     return Response(api_urls)

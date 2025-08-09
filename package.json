@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "MarketHub theme build tools for MarketHub Django WebApp",
   "scripts": {
-    "build": "sass homepage/static/MarketHub/scss/MarketHub.scss homepage/static/MarketHub/css/MarketHub.css --style=compressed --source-map",
-    "build-dev": "sass homepage/static/MarketHub/scss/MarketHub.scss homepage/static/MarketHub/css/MarketHub.css --style=expanded --source-map",
-    "watch": "sass homepage/static/MarketHub/scss/MarketHub.scss homepage/static/MarketHub/css/MarketHub.css --watch --style=expanded --source-map",
+    "build": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --style=compressed --source-map",
+    "build-dev": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --style=expanded --source-map",
+    "watch": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --watch --style=expanded --source-map",
     "clean": "rimraf homepage/static/MarketHub/css/*.css*"
   },
   "devDependencies": {

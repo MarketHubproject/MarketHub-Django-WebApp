@@ -23,21 +23,21 @@ class Category(models.Model):
     order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers first)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['order', 'name']
         verbose_name = 'Category'
         verbose_name_plural = 'Categories'
-    
+
     def __str__(self):
         return self.name
-    
+
     def get_product_count(self):
         """Get the number of products in this category"""
         # For now, filter products by category slug since we haven't migrated Product model yet
         from .models import Product
         return Product.objects.filter(category=self.slug).count()
-    
+
     @classmethod
     def get_featured_categories(cls):
         """Get featured categories ordered by display order"""
@@ -54,15 +54,15 @@ class HeroSlide(models.Model):
     order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers first)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['order', 'created_at']
         verbose_name = 'Hero Slide'
         verbose_name_plural = 'Hero Slides'
-    
+
     def __str__(self):
         return f"{self.title} ({'Active' if self.is_active else 'Inactive'})"
-    
+
     @classmethod
     def get_active_slides(cls):
         """Get all active slides ordered by their display order"""
@@ -72,7 +72,8 @@ class HeroSlide(models.Model):
 class Promotion(models.Model):
     title = models.CharField(max_length=200, help_text="Promotion title/headline")
     text = models.TextField(max_length=500, help_text="Promotion description or offer details")
-    image = models.ImageField(upload_to='promotion_images/', help_text="Promotion banner image (recommended size: 600x400px)")
+    image = models.ImageField(upload_to='promotion_images/',
+                              help_text="Promotion banner image (recommended size: 600x400px)")
     link = models.URLField(help_text="Link to promotion page or product")
     valid_from = models.DateTimeField(help_text="Promotion start date and time")
     valid_to = models.DateTimeField(help_text="Promotion end date and time")
@@ -80,21 +81,21 @@ class Promotion(models.Model):
     order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers first)")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['order', '-created_at']
         verbose_name = 'Promotion'
         verbose_name_plural = 'Promotions'
-    
+
     def __str__(self):
         return f"{self.title} ({'Active' if self.is_active and self.is_valid else 'Inactive'})"
-    
+
     @property
     def is_valid(self):
         """Check if promotion is currently valid based on dates"""
         now = timezone.now()
         return self.valid_from <= now <= self.valid_to
-    
+
     @classmethod
     def get_active_promotions(cls):
         """Get all active and valid promotions ordered by display order"""
@@ -108,7 +109,7 @@ class Promotion(models.Model):
 
 class Product(models.Model):
     CATEGORY_CHOICES = CATEGORY_CHOICES  # Make it accessible as Product.CATEGORY_CHOICES
-    
+
     LOCATION_CHOICES = [
         ('cape_town_central', 'Cape Town Central'),
         ('cape_town_northern_suburbs', 'Cape Town Northern Suburbs'),
@@ -119,7 +120,7 @@ class Product(models.Model):
         ('cape_town_west_coast', 'Cape Town West Coast'),
         ('cape_town_helderberg', 'Cape Town Helderberg'),
     ]
-    
+
     CONDITION_CHOICES = [
         ('excellent', 'Excellent - Like New'),
         ('very_good', 'Very Good - Minor Wear'),
@@ -127,23 +128,36 @@ class Product(models.Model):
         ('fair', 'Fair - Well Used'),
         ('poor', 'Poor - Needs Repair'),
     ]
-    
+
     STATUS_CHOICES = [
         ('available', 'Available'),
         ('reserved', 'Reserved'),
         ('sold', 'Sold'),
         ('inactive', 'Inactive'),
     ]
-    
+
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price in South African Rands (R)")
-    original_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Original retail price")
+    original_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Original retail price")
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='other')
     condition = models.CharField(max_length=20, choices=CONDITION_CHOICES, default='good')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='available', help_text="Product availability status")
-    location = models.CharField(max_length=50, choices=LOCATION_CHOICES, default='cape_town_central', help_text="Location within Cape Town area")
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='available',
+        help_text="Product availability status")
+    location = models.CharField(
+        max_length=50,
+        choices=LOCATION_CHOICES,
+        default='cape_town_central',
+        help_text="Location within Cape Town area")
     seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products_for_sale', null=True, blank=True)
     is_sold = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
@@ -162,34 +176,34 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def get_absolute_url(self):
         return reverse('product_detail', kwargs={'pk': self.pk})
-    
+
     def get_discount_percentage(self):
         """Calculate discount percentage if original price is provided"""
         if self.original_price and self.original_price > 0:
             discount = ((self.original_price - self.price) / self.original_price) * 100
             return round(discount)
         return 0
-    
+
     def get_average_rating(self):
         """Get average rating from reviews"""
         reviews = self.reviews.filter(is_approved=True)
         if reviews.exists():
             return round(reviews.aggregate(models.Avg('rating'))['rating__avg'], 1)
         return 0
-    
+
     def get_reviews_count(self):
         """Get total approved reviews count"""
         return self.reviews.filter(is_approved=True).count()
-    
+
     def is_favorited_by(self, user):
         """Check if product is favorited by specific user"""
         if user.is_authenticated:
             return Favorite.objects.filter(user=user, product=self).exists()
         return False
-    
+
     def increment_views(self):
         """Increment product views count"""
         self.views_count += 1
@@ -203,10 +217,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return f"Cart for {self.user.username}"
-    
+
     def get_total_price(self):
         return sum(item.get_total_price() for item in self.items.all())
-    
+
     def get_total_items(self):
         return sum(item.quantity for item in self.items.all())
 
@@ -219,7 +233,7 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
-    
+
     def get_total_price(self):
         return self.quantity * self.product.price
 
@@ -232,11 +246,11 @@ class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='homepage_favorites')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='homepage_favorited_by')
     added_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         unique_together = ('user', 'product')
         ordering = ['-added_at']
-    
+
     def __str__(self):
         return f"{self.user.username} - {self.product.name}"
 
@@ -244,11 +258,21 @@ class Favorite(models.Model):
 class Review(models.Model):
     """Product reviews and ratings"""
     RATING_CHOICES = [(i, i) for i in range(1, 6)]
-    
+
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_written')  # Reviews written by user
-    buyer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_given', null=True, blank=True)  # Compatibility field
-    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews_received', null=True, blank=True)  # Reviews on seller's products
+    buyer = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews_given',
+        null=True,
+        blank=True)  # Compatibility field
+    seller = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='reviews_received',
+        null=True,
+        blank=True)  # Reviews on seller's products
     rating = models.PositiveIntegerField(choices=RATING_CHOICES)
     title = models.CharField(max_length=200, blank=True)
     comment = models.TextField(blank=True)
@@ -256,11 +280,11 @@ class Review(models.Model):
     helpful_votes = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         unique_together = ('product', 'user')
         ordering = ['-created_at']
-    
+
     def save(self, *args, **kwargs):
         # Automatically set buyer and seller fields for compatibility
         if not self.buyer:
@@ -268,7 +292,7 @@ class Review(models.Model):
         if not self.seller and self.product and self.product.seller:
             self.seller = self.product.seller
         super().save(*args, **kwargs)
-    
+
     def __str__(self):
         return f"{self.product.name} - {self.rating}★ by {self.user.username}"
 
@@ -280,10 +304,10 @@ class ProductImage(models.Model):
     alt_text = models.CharField(max_length=200, blank=True)
     order = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['order', 'created_at']
-    
+
     def __str__(self):
         return f"{self.product.name} - Image {self.order}"
 
@@ -295,12 +319,12 @@ class SearchHistory(models.Model):
     results_count = models.PositiveIntegerField(default=0)
     ip_address = models.GenericIPAddressField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = 'Search History'
         verbose_name_plural = 'Search Histories'
-    
+
     def __str__(self):
         return f"'{self.query}' by {self.user.username if self.user else 'Anonymous'}"
 
@@ -315,7 +339,7 @@ class Notification(models.Model):
         ('message', 'New Message'),
         ('system', 'System Notification'),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
     notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES)
     title = models.CharField(max_length=200)
@@ -323,10 +347,10 @@ class Notification(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     is_read = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return f"{self.title} for {self.user.username}"
 
@@ -338,10 +362,10 @@ class ProductView(models.Model):
     ip_address = models.GenericIPAddressField()
     user_agent = models.CharField(max_length=300, blank=True)
     viewed_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-viewed_at']
-    
+
     def __str__(self):
         return f"{self.product.name} viewed by {self.user.username if self.user else 'Anonymous'}"
 
@@ -358,10 +382,10 @@ class SavedSearch(models.Model):
     is_active = models.BooleanField(default=True)
     email_alerts = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return f"{self.name} by {self.user.username}"
 
@@ -375,19 +399,19 @@ class Order(models.Model):
         ('delivered', 'Delivered'),
         ('cancelled', 'Cancelled'),
     ]
-    
+
     PAYMENT_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('paid', 'Paid'),
         ('failed', 'Failed'),
         ('refunded', 'Refunded'),
     ]
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     order_number = models.CharField(max_length=100, unique=True, editable=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
-    
+
     # Shipping Information
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -398,30 +422,30 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     province = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
-    
+
     # Order Totals
     subtotal = models.DecimalField(max_digits=10, decimal_places=2)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    
+
     # Payment Information
     payment_method = models.CharField(max_length=50, blank=True)
     payment_reference = models.CharField(max_length=255, blank=True)
-    
+
     # Notes and Tracking
     notes = models.TextField(blank=True)
     tracking_number = models.CharField(max_length=100, blank=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         ordering = ['-created_at']
-    
+
     def __str__(self):
         return f"Order {self.order_number} - {self.user.username}"
-    
+
     def save(self, *args, **kwargs):
         if not self.order_number:
             # Generate unique order number
@@ -431,10 +455,10 @@ class Order(models.Model):
             unique_id = str(uuid.uuid4())[:8].upper()
             self.order_number = f"MH{date_str}{unique_id}"
         super().save(*args, **kwargs)
-    
+
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
-    
+
     def get_full_address(self):
         address_parts = [self.address_line_1]
         if self.address_line_2:
@@ -449,9 +473,9 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price at time of order
-    
+
     def __str__(self):
         return f"{self.quantity} x {self.product.name} (Order: {self.order.order_number})"
-    
+
     def get_total_price(self):
         return self.quantity * self.price

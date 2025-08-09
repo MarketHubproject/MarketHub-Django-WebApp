@@ -17,7 +17,7 @@ def product_list(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     sort_by = request.GET.get('sort_by', 'newest')
-    
+
     # Filter only available products by default
     products = Product.objects.filter(status='available')
 
@@ -28,7 +28,7 @@ def product_list(request):
         products = products.filter(category=category)
     if location and location != 'all':
         products = products.filter(location=location)
-    
+
     # Price range filtering
     if min_price:
         try:
@@ -40,7 +40,7 @@ def product_list(request):
             products = products.filter(price__lte=float(max_price))
         except ValueError:
             pass
-    
+
     # Sorting
     if sort_by == 'price_low':
         products = products.order_by('price')
@@ -50,7 +50,7 @@ def product_list(request):
         products = products.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
     else:  # newest
         products = products.order_by('-created_at')
-    
+
     # Pagination
     paginator = Paginator(products, 12)
     page_number = request.GET.get('page')
@@ -58,14 +58,14 @@ def product_list(request):
 
     categories = Product.CATEGORY_CHOICES
     location_choices = Product.LOCATION_CHOICES
-    
+
     # Get user's favorites if authenticated
     user_favorites = []
     if request.user.is_authenticated:
         user_favorites = Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
-    
+
     return render(request, 'products/product_list.html', {
-        'products': products, 
+        'products': products,
         'categories': categories,
         'location_choices': location_choices,
         'user_favorites': user_favorites,
@@ -77,24 +77,26 @@ def product_list(request):
         'current_sort': sort_by,
     })
 
+
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     is_favorited = False
     user_review = None
-    
+
     if request.user.is_authenticated:
         is_favorited = Favorite.objects.filter(user=request.user, product=product).exists()
         user_review = Review.objects.filter(user=request.user, product=product).first()
-    
+
     # Get reviews for this product
     reviews = Review.objects.filter(product=product).select_related('user').order_by('-created_at')
-    
+
     return render(request, 'products/product_detail.html', {
         'product': product,
         'is_favorited': is_favorited,
         'reviews': reviews,
         'user_review': user_review,
     })
+
 
 @login_required
 def create_product(request):
@@ -118,13 +120,13 @@ def toggle_favorite(request, product_id):
         user=request.user,
         product=product
     )
-    
+
     if not created:
         favorite.delete()
         is_favorite = False
     else:
         is_favorite = True
-    
+
     return JsonResponse({
         'success': True,
         'is_favorited': is_favorite,
@@ -142,22 +144,22 @@ def favorites_list(request):
 @login_required
 def add_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
+
     # Check if user is trying to review their own product
     if product.seller == request.user:
         messages.error(request, "You cannot review your own product.")
         return redirect('product_detail', pk=product_id)
-    
+
     # Check if user already reviewed this product
     existing_review = Review.objects.filter(user=request.user, product=product).first()
     if existing_review:
         messages.info(request, "You have already reviewed this product. You can update your review.")
         return redirect('update_review', product_id=product_id)
-    
+
     if request.method == 'POST':
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
-        
+
         if rating:
             Review.objects.create(
                 product=product,
@@ -168,7 +170,7 @@ def add_review(request, product_id):
             messages.success(request, "Review added successfully!")
         else:
             messages.error(request, "Please provide a rating.")
-    
+
     return redirect('product_detail', pk=product_id)
 
 
@@ -176,11 +178,11 @@ def add_review(request, product_id):
 def update_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     review = get_object_or_404(Review, user=request.user, product=product)
-    
+
     if request.method == 'POST':
         rating = request.POST.get('rating')
         comment = request.POST.get('comment')
-        
+
         if rating:
             review.rating = int(rating)
             review.comment = comment
@@ -188,7 +190,7 @@ def update_review(request, product_id):
             messages.success(request, "Review updated successfully!")
         else:
             messages.error(request, "Please provide a rating.")
-    
+
     return redirect('product_detail', pk=product_id)
 
 
@@ -198,7 +200,7 @@ def seller_dashboard(request):
         avg_rating=Avg('reviews__rating'),
         review_count=Count('reviews')
     ).order_by('-created_at')
-    
+
     # Statistics
     total_products = user_products.count()
     available_products = user_products.filter(status='available').count()
@@ -207,7 +209,7 @@ def seller_dashboard(request):
     avg_seller_rating = Review.objects.filter(seller=request.user).aggregate(
         avg_rating=Avg('rating')
     )['avg_rating'] or 0
-    
+
     context = {
         'products': user_products,
         'total_products': total_products,
@@ -216,14 +218,14 @@ def seller_dashboard(request):
         'total_reviews': total_reviews,
         'avg_seller_rating': round(avg_seller_rating, 1) if avg_seller_rating else 0,
     }
-    
+
     return render(request, 'products/seller_dashboard.html', context)
 
 
 @login_required
 def update_product_status(request, product_id):
     product = get_object_or_404(Product, id=product_id, seller=request.user)
-    
+
     if request.method == 'POST':
         status = request.POST.get('status')
         if status in [choice[0] for choice in Product.STATUS_CHOICES]:
@@ -232,5 +234,5 @@ def update_product_status(request, product_id):
             messages.success(request, f"Product status updated to {dict(Product.STATUS_CHOICES)[status]}.")
         else:
             messages.error(request, "Invalid status.")
-    
+
     return redirect('seller_dashboard')

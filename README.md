@@ -2,7 +2,7 @@
 
 **MarketHub** is a luxury e-commerce web application built with Django 5.2.5, featuring a sophisticated design, comprehensive REST API, and modern web development best practices.
 
-![MarketHub Screenshot](https://via.placeholder.com/800x400/1a1a2e/d4af37?text=MarketHub+Premium+E-commerce)
+![MarketHub Premium E-commerce Platform - Luxury dark themed web application screenshot showing the homepage with professional design, product grid, and golden accents](https://via.placeholder.com/800x400/1a1a2e/d4af37?text=MarketHub+Premium+E-commerce)
 
 ## 🌟 **Features**
 

@@ -12,5 +12,3 @@ urlpatterns = [
     path('dashboard/', views.seller_dashboard, name='seller_dashboard'),
     path('<int:product_id>/update-status/', views.update_product_status, name='update_product_status'),
 ]
-
-

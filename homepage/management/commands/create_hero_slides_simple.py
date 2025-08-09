@@ -20,29 +20,22 @@ class Command(BaseCommand):
             )
 
         # Sample hero slides data (without images for now)
-        slides_data = [
-            {
-              'title': 'Welcome to MarketHub',
-                'subtitle': 'Discover amazing products from trusted sellers in our modern marketplace. Shop with confidence and enjoy premium service.',
-                'cta_text': 'Shop Now',
-                'cta_url': '/products/',
-                'order': 1
-            },
-            {
-                'title': 'Start Selling Today',
-                'subtitle': 'Join thousands of successful sellers and turn your products into profit. Easy setup, secure payments, global reach.',
-                'cta_text': 'Start Selling',
-                'cta_url': '/create-product/',
-                'order': 2
-            },
-            {
-                'title': 'Premium Shopping Experience',
-                'subtitle': 'Experience luxury shopping with secure payments, fast delivery, and exceptional customer service at MarketHub.',
-                'cta_text': 'Explore Premium',
-                'cta_url': '/products/',
-                'order': 3
-            },
-        ]
+        slides_data = [{'title': 'Welcome to MarketHub',
+                        'subtitle': 'Discover amazing products from trusted sellers in our modern marketplace. Shop with confidence and enjoy premium service.',
+                        'cta_text': 'Shop Now',
+                        'cta_url': '/products/',
+                        'order': 1},
+                       {'title': 'Start Selling Today',
+                        'subtitle': 'Join thousands of successful sellers and turn your products into profit. Easy setup, secure payments, global reach.',
+                        'cta_text': 'Start Selling',
+                        'cta_url': '/create-product/',
+                        'order': 2},
+                       {'title': 'Premium Shopping Experience',
+                        'subtitle': 'Experience luxury shopping with secure payments, fast delivery, and exceptional customer service at MarketHub.',
+                        'cta_text': 'Explore Premium',
+                        'cta_url': '/products/',
+                        'order': 3},
+                       ]
 
         created_count = 0
         for slide_data in slides_data:
@@ -67,7 +60,7 @@ class Command(BaseCommand):
                 )
 
                 created_count += 1
-                
+
                 self.stdout.write(
                     self.style.SUCCESS(
                         f'Created hero slide: "{slide.title}"'
@@ -86,7 +79,7 @@ class Command(BaseCommand):
                 f'\nSuccessfully created {created_count} hero slide(s)!'
             )
         )
-        
+
         if created_count > 0:
             self.stdout.write(
                 self.style.WARNING(

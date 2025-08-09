@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def rand_format(value):
     """
@@ -15,6 +16,7 @@ def rand_format(value):
     except (ValueError, TypeError):
         return f"R{value}"
 
+
 @register.filter
 def rand_short(value):
     """
@@ -24,9 +26,9 @@ def rand_short(value):
     try:
         value = float(value)
         if value >= 1000000:
-            return f"R{value/1000000:.1f}M"
+            return f"R{value / 1000000:.1f}M"
         elif value >= 1000:
-            return f"R{value/1000:.1f}k"
+            return f"R{value / 1000:.1f}k"
         else:
             return f"R{value:.2f}"
     except (ValueError, TypeError):

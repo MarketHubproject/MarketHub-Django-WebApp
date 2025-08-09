@@ -22,16 +22,16 @@ class CategoryModelTest(TestCase):
             is_featured=True,
             order=1
         )
-    
+
     def test_category_creation(self):
         self.assertEqual(self.category.name, 'Electronics')
         self.assertEqual(self.category.slug, 'electronics')
         self.assertTrue(self.category.is_featured)
         self.assertEqual(self.category.order, 1)
-    
+
     def test_category_str_method(self):
         self.assertEqual(str(self.category), 'Electronics')
-    
+
     def test_get_featured_categories(self):
         # Create another featured category
         Category.objects.create(
@@ -46,7 +46,7 @@ class CategoryModelTest(TestCase):
             slug='other',
             is_featured=False
         )
-        
+
         featured = Category.get_featured_categories()
         self.assertEqual(featured.count(), 2)
         self.assertEqual(featured.first().name, 'Electronics')
@@ -62,28 +62,28 @@ class HeroSlideModelTest(TestCase):
             is_active=True,
             order=1
         )
-    
+
     def test_hero_slide_creation(self):
         self.assertEqual(self.slide.title, 'Summer Sale')
         self.assertEqual(self.slide.subtitle, 'Up to 50% off on all items')
         self.assertTrue(self.slide.is_active)
-    
+
     def test_hero_slide_str_method(self):
         self.assertEqual(str(self.slide), 'Summer Sale (Active)')
-        
+
         inactive_slide = HeroSlide.objects.create(
             title='Winter Sale',
             is_active=False
         )
         self.assertEqual(str(inactive_slide), 'Winter Sale (Inactive)')
-    
+
     def test_get_active_slides(self):
         # Create inactive slide
         HeroSlide.objects.create(
             title='Inactive Slide',
             is_active=False
         )
-        
+
         active_slides = HeroSlide.get_active_slides()
         self.assertEqual(active_slides.count(), 1)
         self.assertEqual(active_slides.first().title, 'Summer Sale')
@@ -101,15 +101,15 @@ class PromotionModelTest(TestCase):
             is_active=True,
             order=1
         )
-    
+
     def test_promotion_creation(self):
         self.assertEqual(self.promotion.title, 'Black Friday')
         self.assertEqual(self.promotion.text, 'Huge discounts on everything!')
         self.assertTrue(self.promotion.is_active)
-    
+
     def test_promotion_is_valid_property(self):
         self.assertTrue(self.promotion.is_valid)
-        
+
         # Create expired promotion
         expired_promotion = Promotion.objects.create(
             title='Expired Sale',
@@ -120,10 +120,10 @@ class PromotionModelTest(TestCase):
             is_active=True
         )
         self.assertFalse(expired_promotion.is_valid)
-    
+
     def test_promotion_str_method(self):
         self.assertEqual(str(self.promotion), 'Black Friday (Active)')
-    
+
     def test_get_active_promotions(self):
         # Create inactive promotion
         Promotion.objects.create(
@@ -134,7 +134,7 @@ class PromotionModelTest(TestCase):
             valid_to=self.now + timedelta(days=1),
             is_active=False
         )
-        
+
         # Create expired promotion
         Promotion.objects.create(
             title='Expired Promo',
@@ -144,7 +144,7 @@ class PromotionModelTest(TestCase):
             valid_to=self.now - timedelta(days=5),
             is_active=True
         )
-        
+
         active_promotions = Promotion.get_active_promotions()
         self.assertEqual(active_promotions.count(), 1)
         self.assertEqual(active_promotions.first().title, 'Black Friday')
@@ -158,13 +158,13 @@ class ProductModelTest(TestCase):
             price=Decimal('999.99'),
             category='electronics'
         )
-    
+
     def test_product_creation(self):
         self.assertEqual(self.product.name, 'Laptop')
         self.assertEqual(self.product.description, 'High-performance laptop')
         self.assertEqual(self.product.price, Decimal('999.99'))
         self.assertEqual(self.product.category, 'electronics')
-    
+
     def test_product_str_method(self):
         self.assertEqual(str(self.product), 'Laptop')
 
@@ -189,15 +189,15 @@ class CartModelTest(TestCase):
             price=Decimal('20.00'),
             category='books'
         )
-    
+
     def test_cart_creation(self):
         self.assertEqual(self.cart.user, self.user)
         self.assertEqual(str(self.cart), f'Cart for {self.user.username}')
-    
+
     def test_cart_empty_totals(self):
         self.assertEqual(self.cart.get_total_price(), 0)
         self.assertEqual(self.cart.get_total_items(), 0)
-    
+
     def test_cart_with_items(self):
         item1 = CartItem.objects.create(
             cart=self.cart,
@@ -209,7 +209,7 @@ class CartModelTest(TestCase):
             product=self.product2,
             quantity=1
         )
-        
+
         self.assertEqual(self.cart.get_total_price(), Decimal('40.00'))  # 2*10 + 1*20
         self.assertEqual(self.cart.get_total_items(), 3)  # 2 + 1
 
@@ -233,18 +233,18 @@ class CartItemModelTest(TestCase):
             product=self.product,
             quantity=3
         )
-    
+
     def test_cart_item_creation(self):
         self.assertEqual(self.cart_item.cart, self.cart)
         self.assertEqual(self.cart_item.product, self.product)
         self.assertEqual(self.cart_item.quantity, 3)
-    
+
     def test_cart_item_str_method(self):
         self.assertEqual(str(self.cart_item), '3 x Test Product')
-    
+
     def test_get_total_price(self):
         self.assertEqual(self.cart_item.get_total_price(), Decimal('45.00'))  # 3 * 15.00
-    
+
     def test_unique_together_constraint(self):
         # Try to create duplicate cart item
         with self.assertRaises(Exception):
@@ -263,11 +263,11 @@ class HomepageIntegrationTest(TestCase):
             email='test@example.com',
             password='testpass123'
         )
-    
+
     def test_homepage_loads(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
-    
+
     def test_category_context(self):
         # Create featured categories
         cat1 = Category.objects.create(
@@ -282,7 +282,7 @@ class HomepageIntegrationTest(TestCase):
             is_featured=True,
             order=2
         )
-        
+
         response = self.client.get('/')
         self.assertContains(response, 'Electronics')
         self.assertContains(response, 'Books')
@@ -305,7 +305,7 @@ class APIIntegrationTest(APITestCase):
             name='Test Category',
             slug='test-category'
         )
-    
+
     def test_products_api_list(self):
         try:
             url = reverse('product-list')  # Assuming you have this URL pattern
@@ -317,7 +317,7 @@ class APIIntegrationTest(APITestCase):
             url = '/api/products/'
             response = self.client.get(url)
             self.assertIn(response.status_code, [200, 404])  # 404 if URL doesn't exist yet
-    
+
     def test_categories_api_list(self):
         url = '/api/categories/'  # Direct URL since reverse might not work
         response = self.client.get(url)

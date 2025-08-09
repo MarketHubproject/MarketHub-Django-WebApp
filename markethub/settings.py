@@ -1,4 +1,5 @@
 
+import logging
 import os
 from decouple import config, Csv
 """
@@ -189,7 +190,6 @@ CACHES = {
 }
 
 # Logging Configuration
-import logging
 
 LOGGING = {
     'version': 1,

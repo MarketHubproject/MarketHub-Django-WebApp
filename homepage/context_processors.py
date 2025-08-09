@@ -34,7 +34,7 @@ def cart_context(request):
     """
     cart_count = 0
     cart_total = 0
-    
+
     if request.user.is_authenticated:
         try:
             cart = Cart.objects.get(user=request.user)
@@ -43,7 +43,7 @@ def cart_context(request):
         except Cart.DoesNotExist:
             # Cart doesn't exist yet, will be created when user adds first item
             pass
-    
+
     return {
         'cart_count': cart_count,
         'cart_total': cart_total,
@@ -57,7 +57,7 @@ def favorites_context(request):
     """
     user_favorites = []
     favorites_count = 0
-    
+
     if request.user.is_authenticated:
         try:
             from products.models import Favorite
@@ -66,7 +66,7 @@ def favorites_context(request):
         except ImportError:
             # If products app is not available
             pass
-    
+
     return {
         'user_favorites': user_favorites,
         'favorites_count': favorites_count,

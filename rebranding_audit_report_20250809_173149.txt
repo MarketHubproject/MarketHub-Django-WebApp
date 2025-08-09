@@ -73,28 +73,28 @@ MODIFIED FILES:
     Checksum Before: a06a6d5a84b57ad3fd8b82fd43c12c66
     Checksum After: 10e79d8f6b75becf3ba63d316dd1a42d
 
-  File: .\Store_Lite_Color_Palette.md
+  File: .\MarketHub_Color_Palette.md
     MIME Type: text/plain
     Size: 4173 bytes
     Changes: 1
     Checksum Before: 18acf659bb47528f0a83828831a1b613
     Checksum After: 3f39447e8270b6f69746907df1001a04
 
-  File: .\Store_Lite_Design_Reference.md
+  File: .\MarketHub_Design_Reference.md
     MIME Type: text/plain
     Size: 12415 bytes
     Changes: 2
     Checksum Before: 87a556f999b00f90c070fc3324823c84
     Checksum After: 427f7a671dd70e05dfa726ae4de05d82
 
-  File: .\STORE_LITE_THEME.md
+  File: .\MARKETHUB_THEME.md
     MIME Type: text/plain
     Size: 5678 bytes
     Changes: 19
     Checksum Before: da09b0474dbefe1378ad4f4189c7ca95
     Checksum After: f5b522681b7730d59e5af3ca926241de
 
-  File: .\homepage\static\MarketHub\store-lite.js
+  File: .\homepage\static\MarketHub\markethub.js
     MIME Type: text/plain
     Size: 9286 bytes
     Changes: 3
@@ -122,21 +122,21 @@ MODIFIED FILES:
     Checksum Before: 59b2d8b541270ee0cd44e4823fae3f46
     Checksum After: c04d5c6fbd815b8d9cd66c7beb9f38d2
 
-  File: .\homepage\static\MarketHub\css\store-lite.css
+  File: .\homepage\static\MarketHub\css\markethub.css
     MIME Type: text/plain
     Size: 14589 bytes
     Changes: 78
     Checksum Before: 764020cb1211a22fbd915cb47fb4e518
     Checksum After: c155d5f2a64ee476ce47222d383714b8
 
-  File: .\homepage\static\MarketHub\scss\store-lite.scss
+  File: .\homepage\static\MarketHub\scss\markethub.scss
     MIME Type: text/plain
     Size: 18086 bytes
     Changes: 246
     Checksum Before: 035233fee27b8f914f30bd05fdf68ef1
     Checksum After: 75f4899ae9c626d90205a94f661045c4
 
-  File: .\homepage\static\MarketHub\scss\_storelite_variables.scss
+  File: .\homepage\static\MarketHub\scss\_markethub_variables.scss
     MIME Type: text/plain
     Size: 11999 bytes
     Changes: 197
@@ -164,7 +164,7 @@ MODIFIED FILES:
     Checksum Before: e59517744b5a0adb95b948b4792a4c1c
     Checksum After: 9c4927f0fbb02c91cbad014d3ef4c4ca
 
-  File: .\staticfiles\MarketHub\store-lite.js
+  File: .\staticfiles\MarketHub\markethub.js
     MIME Type: text/plain
     Size: 9286 bytes
     Changes: 3
@@ -192,21 +192,21 @@ MODIFIED FILES:
     Checksum Before: 59b2d8b541270ee0cd44e4823fae3f46
     Checksum After: c04d5c6fbd815b8d9cd66c7beb9f38d2
 
-  File: .\staticfiles\MarketHub\css\store-lite.css
+  File: .\staticfiles\MarketHub\css\markethub.css
     MIME Type: text/plain
     Size: 14589 bytes
     Changes: 78
     Checksum Before: 764020cb1211a22fbd915cb47fb4e518
     Checksum After: c155d5f2a64ee476ce47222d383714b8
 
-  File: .\staticfiles\MarketHub\scss\store-lite.scss
+  File: .\staticfiles\MarketHub\scss\markethub.scss
     MIME Type: text/plain
     Size: 18086 bytes
     Changes: 246
     Checksum Before: 035233fee27b8f914f30bd05fdf68ef1
     Checksum After: 75f4899ae9c626d90205a94f661045c4
 
-  File: .\staticfiles\MarketHub\scss\_storelite_variables.scss
+  File: .\staticfiles\MarketHub\scss\_markethub_variables.scss
     MIME Type: text/plain
     Size: 11999 bytes
     Changes: 197

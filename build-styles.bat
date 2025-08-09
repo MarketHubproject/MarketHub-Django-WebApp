@@ -14,12 +14,12 @@ call npm run build
 
 REM Copy compiled CSS to main style location
 echo Updating main style.css...
-copy homepage\static\MarketHub\css\MarketHub.css homepage\static\MarketHub\style.css
+copy homepage\static\MarketHub\css\markethub.css homepage\static\MarketHub\style.css
 
 echo Build complete! MarketHub styles have been compiled and deployed.
 echo.
 echo Files generated:
-echo - homepage/static/MarketHub/css/MarketHub.css (compressed)
+echo - homepage/static/MarketHub/css/markethub.css (compressed)
 echo - homepage/static/MarketHub/style.css (main file)
 echo.
 pause

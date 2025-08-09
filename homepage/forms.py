@@ -2,19 +2,41 @@ from django import forms
 from django.contrib.auth.models import User
 from .models import Product, Order
 
+
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'description', 'price', 'image', 'category', 'condition', 'status', 'location']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter product name'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Describe your product...'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price in South African Rands (R)', 'step': '0.01'}),
-            'category': forms.Select(attrs={'class': 'form-select'}),
-            'condition': forms.Select(attrs={'class': 'form-select'}),
-            'status': forms.Select(attrs={'class': 'form-select'}),
-            'location': forms.Select(attrs={'class': 'form-select'}),
-            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter product name'}),
+            'description': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 4,
+                    'placeholder': 'Describe your product...'}),
+            'price': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Price in South African Rands (R)',
+                    'step': '0.01'}),
+            'category': forms.Select(
+                attrs={
+                    'class': 'form-select'}),
+            'condition': forms.Select(
+                attrs={
+                    'class': 'form-select'}),
+            'status': forms.Select(
+                attrs={
+                    'class': 'form-select'}),
+            'location': forms.Select(
+                attrs={
+                    'class': 'form-select'}),
+            'image': forms.FileInput(
+                attrs={
+                    'class': 'form-control'}),
         }
         labels = {
             'name': 'Product Name',
@@ -30,7 +52,7 @@ class ProductForm(forms.ModelForm):
 
 class CheckoutForm(forms.ModelForm):
     """Form for checkout process with shipping information"""
-    
+
     class Meta:
         model = Order
         fields = [
@@ -38,7 +60,7 @@ class CheckoutForm(forms.ModelForm):
             'address_line_1', 'address_line_2', 'city', 'province', 'postal_code',
             'notes'
         ]
-        
+
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -100,7 +122,7 @@ class CheckoutForm(forms.ModelForm):
                 'placeholder': 'Special delivery instructions (optional)'
             })
         }
-        
+
         labels = {
             'first_name': 'First Name',
             'last_name': 'Last Name',
@@ -113,17 +135,17 @@ class CheckoutForm(forms.ModelForm):
             'postal_code': 'Postal Code',
             'notes': 'Delivery Notes'
         }
-    
+
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        
+
         # Pre-fill with user information if available
         if user and user.is_authenticated:
             self.fields['first_name'].initial = user.first_name
             self.fields['last_name'].initial = user.last_name
             self.fields['email'].initial = user.email
-    
+
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
         if phone:
@@ -137,7 +159,7 @@ class CheckoutForm(forms.ModelForm):
                 else:
                     phone = '+27' + phone
         return phone
-    
+
     def clean_postal_code(self):
         postal_code = self.cleaned_data.get('postal_code')
         if postal_code:

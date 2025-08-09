@@ -24,32 +24,25 @@ class Command(BaseCommand):
             )
 
         # Sample hero slides data
-        slides_data = [
-            {
-                'title': 'Discover Amazing Products',
-                'subtitle': 'Shop from thousands of verified sellers and find exactly what you\'re looking for in our premium marketplace.',
-                'image_url': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                'cta_text': 'Shop Now',
-                'cta_url': '/products/',
-                'order': 1
-            },
-            {
-                'title': 'Sell Your Products Easily',
-                'subtitle': 'Join our community of successful sellers and start earning money by selling your products to customers worldwide.',
-                'image_url': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                'cta_text': 'Start Selling',
-                'cta_url': '/create-product/',
-                'order': 2
-            },
-            {
-                'title': 'Premium Shopping Experience',
-                'subtitle': 'Experience luxury shopping with secure payments, fast delivery, and exceptional customer service.',
-                'image_url': 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-                'cta_text': 'Explore Premium',
-                'cta_url': '/products/',
-                'order': 3
-            },
-        ]
+        slides_data = [{'title': 'Discover Amazing Products',
+                        'subtitle': 'Shop from thousands of verified sellers and find exactly what you\'re looking for in our premium marketplace.',
+                        'image_url': 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                        'cta_text': 'Shop Now',
+                        'cta_url': '/products/',
+                        'order': 1},
+                       {'title': 'Sell Your Products Easily',
+                        'subtitle': 'Join our community of successful sellers and start earning money by selling your products to customers worldwide.',
+                        'image_url': 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                        'cta_text': 'Start Selling',
+                        'cta_url': '/create-product/',
+                        'order': 2},
+                       {'title': 'Premium Shopping Experience',
+                        'subtitle': 'Experience luxury shopping with secure payments, fast delivery, and exceptional customer service.',
+                        'image_url': 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+                        'cta_text': 'Explore Premium',
+                        'cta_url': '/products/',
+                        'order': 3},
+                       ]
 
         created_count = 0
         for slide_data in slides_data:
@@ -109,7 +102,7 @@ class Command(BaseCommand):
 
                 slide.save()
                 created_count += 1
-                
+
                 self.stdout.write(
                     self.style.SUCCESS(
                         f'Created hero slide: "{slide.title}"'
@@ -128,7 +121,7 @@ class Command(BaseCommand):
                 f'\nSuccessfully created {created_count} hero slide(s)!'
             )
         )
-        
+
         if created_count > 0:
             self.stdout.write(
                 self.style.SUCCESS(

@@ -9,6 +9,7 @@ import sys
 # Base API URL
 BASE_URL = "http://127.0.0.1:8000/api"
 
+
 def test_api_overview():
     """Test API overview endpoint"""
     print("🔍 Testing API Overview...")
@@ -28,6 +29,7 @@ def test_api_overview():
     except Exception as e:
         print(f"❌ API Overview error: {e}")
     print("-" * 60)
+
 
 def test_products_list():
     """Test products list endpoint"""
@@ -51,6 +53,7 @@ def test_products_list():
         print(f"❌ Products List error: {e}")
     print("-" * 60)
 
+
 def test_categories():
     """Test categories endpoint"""
     print("📂 Testing Categories...")
@@ -69,6 +72,7 @@ def test_categories():
         print(f"❌ Categories error: {e}")
     print("-" * 60)
 
+
 def test_authentication():
     """Test authentication endpoint"""
     print("🔐 Testing Authentication...")
@@ -78,16 +82,16 @@ def test_authentication():
             "username": "testuser",
             "password": "wrongpassword"
         })
-        
+
         if response.status_code == 401:
             print("✅ Authentication rejection working (expected for invalid credentials)")
-        
+
         # Test with admin credentials (if they exist)
         response = requests.post(f"{BASE_URL}/login/", json={
             "username": "admin",
             "password": "admin123"
         })
-        
+
         if response.status_code == 200:
             data = response.json()
             print("✅ Authentication successful with admin credentials")
@@ -97,23 +101,24 @@ def test_authentication():
         else:
             print(f"ℹ️  Admin authentication failed: {response.status_code}")
             print("   (This is expected if admin user doesn't exist)")
-            
+
     except Exception as e:
         print(f"❌ Authentication error: {e}")
     print("-" * 60)
     return None
 
+
 def test_cart_endpoints(token=None):
     """Test cart endpoints (requires authentication)"""
     print("🛒 Testing Cart Endpoints...")
-    
+
     if not token:
         print("⚠️  Skipping cart tests - no authentication token available")
         print("-" * 60)
         return
-    
+
     headers = {"Authorization": f"Token {token}"}
-    
+
     try:
         # Test cart view
         response = requests.get(f"{BASE_URL}/cart/", headers=headers)
@@ -128,22 +133,24 @@ def test_cart_endpoints(token=None):
         print(f"❌ Cart test error: {e}")
     print("-" * 60)
 
+
 def main():
     """Run all API tests"""
     print("🚀 MarketHub API Testing Suite")
     print("=" * 60)
-    
+
     # Test endpoints
     test_api_overview()
     test_categories()
     test_products_list()
-    
+
     # Test authentication and cart (if possible)
     token = test_authentication()
     test_cart_endpoints(token)
-    
+
     print("🏁 API testing complete!")
     print("=" * 60)
+
 
 if __name__ == "__main__":
     try:
