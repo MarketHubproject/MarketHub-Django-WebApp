@@ -1,4 +1,4 @@
-// Store Lite Product Grid JavaScript
+// MarketHub Product Grid JavaScript
 document.addEventListener('DOMContentLoaded', function() {
     
     // Quick View Functionality
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Product Card Hover Effects
-    const productCards = document.querySelectorAll('.store-lite-product-card');
+    const productCards = document.querySelectorAll('.MarketHub-product-card');
     productCards.forEach(card => {
         card.addEventListener('mouseenter', function() {
             this.style.zIndex = '10';
@@ -212,7 +212,7 @@ function trapFocus(element) {
 
 // Product Grid Animation on Scroll
 function animateProductsOnScroll() {
-    const products = document.querySelectorAll('.store-lite-product-card');
+    const products = document.querySelectorAll('.MarketHub-product-card');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, index) => {
             if (entry.isIntersecting) {

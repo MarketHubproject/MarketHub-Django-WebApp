@@ -1,4 +1,4 @@
-# Store Lite Color Palette - MarketHub
+# MarketHub Color Palette - MarketHub
 
 ## 🎨 Primary Color Palette
 

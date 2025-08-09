@@ -11,13 +11,13 @@ The MarketHub theme has been implemented with a proper SCSS architecture replaci
 ```
 homepage/static/MarketHub/
 ├── scss/
-│   ├── _storelite_variables.scss    # Theme variables and mixins
-│   └── store-lite.scss              # Main SCSS file
+│   ├── _markethub_variables.scss    # Theme variables and mixins
+│   └── MarketHub.scss              # Main SCSS file
 ├── css/
-│   ├── store-lite.css              # Compiled CSS (generated)
-│   └── store-lite.css.map          # Source map (generated)
+│   ├── MarketHub.css              # Compiled CSS (generated)
+│   └── MarketHub.css.map          # Source map (generated)
 ├── style.css                       # Legacy file (now points to compiled CSS)
-└── store-lite.js                   # Theme JavaScript
+└── MarketHub.js                   # Theme JavaScript
 ```
 
 ## Key Features
@@ -79,7 +79,7 @@ npm run watch
 
 ## SCSS Architecture
 
-### Variables (`_storelite_variables.scss`)
+### Variables (`_markethub_variables.scss`)
 - **Colors**: Complete color palette with semantic naming
 - **Typography**: Font families, sizes, weights, line heights
 - **Spacing**: Consistent spacing scale (0.25rem to 6rem)
@@ -89,13 +89,13 @@ npm run watch
 - **Bootstrap Overrides**: Clean overrides for Bootstrap components
 
 ### Mixins
-- `store-lite-backdrop-blur()`: Backdrop filter utility
-- `store-lite-gradient-text()`: Gradient text effect
-- `store-lite-hover-transform()`: Consistent hover effects
-- `store-lite-card()`: Standard card styling
-- `store-lite-btn-primary()`: Primary button styling
+- `MarketHub-backdrop-blur()`: Backdrop filter utility
+- `MarketHub-gradient-text()`: Gradient text effect
+- `MarketHub-hover-transform()`: Consistent hover effects
+- `MarketHub-card()`: Standard card styling
+- `MarketHub-btn-primary()`: Primary button styling
 
-### Main Styles (`store-lite.scss`)
+### Main Styles (`MarketHub.scss`)
 - **Base Styles**: CSS reset and typography
 - **Header Styles**: Clean navigation with backdrop blur
 - **Card Styles**: Professional card components
@@ -122,28 +122,28 @@ npm run watch
 ## Customization
 
 ### Updating Colors
-Edit variables in `_storelite_variables.scss`:
+Edit variables in `_markethub_variables.scss`:
 ```scss
-$store-lite-primary: #007BFF;        // Main brand color
-$store-lite-text-primary: #2C3E50;   // Primary text color
-$store-lite-bg-primary: #F8F9FA;     // Background color
+$MarketHub-primary: #007BFF;        // Main brand color
+$MarketHub-text-primary: #2C3E50;   // Primary text color
+$MarketHub-bg-primary: #F8F9FA;     // Background color
 ```
 
 ### Typography Changes
 ```scss
-$store-lite-font-primary: 'Inter', sans-serif;
-$store-lite-font-secondary: 'Playfair Display', serif;
+$MarketHub-font-primary: 'Inter', sans-serif;
+$MarketHub-font-secondary: 'Playfair Display', serif;
 ```
 
 ### Component Styling
 Use provided mixins for consistent styling:
 ```scss
 .my-card {
-  @include store-lite-card;
+  @include MarketHub-card;
 }
 
 .my-button {
-  @include store-lite-btn-primary;
+  @include MarketHub-btn-primary;
 }
 ```
 
@@ -161,13 +161,13 @@ Use provided mixins for consistent styling:
 ## Maintenance
 
 ### Adding New Components
-1. Add styles to `store-lite.scss` under appropriate section
-2. Use existing variables from `_storelite_variables.scss`
+1. Add styles to `MarketHub.scss` under appropriate section
+2. Use existing variables from `_markethub_variables.scss`
 3. Follow BEM methodology for class naming
 4. Run build process to compile changes
 
 ### Updating Variables
-1. Edit `_storelite_variables.scss`
+1. Edit `_markethub_variables.scss`
 2. Run build process
 3. Test across all components
 

@@ -1,6 +1,6 @@
 @echo off
-REM Store Lite Styles Build Script
-echo Building Store Lite styles...
+REM MarketHub Styles Build Script
+echo Building MarketHub styles...
 
 REM Clean previous builds
 if exist homepage\static\MarketHub\css\*.css (
@@ -14,12 +14,12 @@ call npm run build
 
 REM Copy compiled CSS to main style location
 echo Updating main style.css...
-copy homepage\static\MarketHub\css\store-lite.css homepage\static\MarketHub\style.css
+copy homepage\static\MarketHub\css\MarketHub.css homepage\static\MarketHub\style.css
 
-echo Build complete! Store Lite styles have been compiled and deployed.
+echo Build complete! MarketHub styles have been compiled and deployed.
 echo.
 echo Files generated:
-echo - homepage/static/MarketHub/css/store-lite.css (compressed)
+echo - homepage/static/MarketHub/css/MarketHub.css (compressed)
 echo - homepage/static/MarketHub/style.css (main file)
 echo.
 pause

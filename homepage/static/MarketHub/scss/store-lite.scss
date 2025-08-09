@@ -1,6 +1,6 @@
-// Store Lite Main Stylesheet
+// MarketHub Main Stylesheet
 // Import variables first
-@import 'storelite_variables';
+@import 'markethub_variables';
 
 // =============================================================================
 // BASE STYLES
@@ -20,12 +20,12 @@ html {
 }
 
 body {
-  font-family: $store-lite-font-primary;
-  font-size: $store-lite-font-base;
-  font-weight: $store-lite-weight-normal;
-  line-height: $store-lite-leading-normal;
-  color: $store-lite-text-primary;
-  background: linear-gradient(135deg, #{$store-lite-bg-primary} 0%, #{$store-lite-bg-secondary} 25%, #{$store-lite-bg-primary} 50%, #{$store-lite-border} 75%, #{$store-lite-bg-primary} 100%);
+  font-family: $MarketHub-font-primary;
+  font-size: $MarketHub-font-base;
+  font-weight: $MarketHub-weight-normal;
+  line-height: $MarketHub-leading-normal;
+  color: $MarketHub-text-primary;
+  background: linear-gradient(135deg, #{$MarketHub-bg-primary} 0%, #{$MarketHub-bg-secondary} 25%, #{$MarketHub-bg-primary} 50%, #{$MarketHub-border} 75%, #{$MarketHub-bg-primary} 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -33,35 +33,35 @@ body {
 
 // Headings
 h1, h2, h3, h4, h5, h6 {
-  font-family: $store-lite-font-secondary;
-  font-weight: $store-lite-weight-semibold;
-  line-height: $store-lite-leading-tight;
-  color: $store-lite-text-primary;
-  margin-bottom: $store-lite-space-4;
+  font-family: $MarketHub-font-secondary;
+  font-weight: $MarketHub-weight-semibold;
+  line-height: $MarketHub-leading-tight;
+  color: $MarketHub-text-primary;
+  margin-bottom: $MarketHub-space-4;
 }
 
-h1 { font-size: $store-lite-font-5xl; }
-h2 { font-size: $store-lite-font-4xl; }
-h3 { font-size: $store-lite-font-3xl; }
-h4 { font-size: $store-lite-font-2xl; }
-h5 { font-size: $store-lite-font-xl; }
-h6 { font-size: $store-lite-font-lg; }
+h1 { font-size: $MarketHub-font-5xl; }
+h2 { font-size: $MarketHub-font-4xl; }
+h3 { font-size: $MarketHub-font-3xl; }
+h4 { font-size: $MarketHub-font-2xl; }
+h5 { font-size: $MarketHub-font-xl; }
+h6 { font-size: $MarketHub-font-lg; }
 
 // Paragraphs and text
 p {
-  font-size: $store-lite-font-base;
-  line-height: $store-lite-leading-relaxed;
-  color: $store-lite-text-secondary;
-  margin-bottom: $store-lite-space-4;
+  font-size: $MarketHub-font-base;
+  line-height: $MarketHub-leading-relaxed;
+  color: $MarketHub-text-secondary;
+  margin-bottom: $MarketHub-space-4;
 }
 
 a {
-  color: $store-lite-primary;
+  color: $MarketHub-primary;
   text-decoration: none;
-  transition: $store-lite-transition-colors;
+  transition: $MarketHub-transition-colors;
 
   &:hover {
-    color: $store-lite-primary-dark;
+    color: $MarketHub-primary-dark;
     text-decoration: underline;
   }
 }
@@ -70,43 +70,43 @@ a {
 // HEADER STYLES
 // =============================================================================
 
-.store-lite-header {
+.MarketHub-header {
   position: sticky;
   top: 0;
-  z-index: $store-lite-z-fixed;
-  background: $store-lite-header-bg;
-  @include store-lite-backdrop-blur();
-  border-bottom: 1px solid $store-lite-header-border;
-  box-shadow: $store-lite-shadow-md;
+  z-index: $MarketHub-z-fixed;
+  background: $MarketHub-header-bg;
+  @include MarketHub-backdrop-blur();
+  border-bottom: 1px solid $MarketHub-header-border;
+  box-shadow: $MarketHub-shadow-md;
 
   .navbar {
     background: transparent !important;
     border: none;
-    padding: $store-lite-space-3 0;
+    padding: $MarketHub-space-3 0;
 
     .navbar-brand {
-      font-family: $store-lite-font-primary !important;
-      font-weight: $store-lite-weight-bold !important;
-      font-size: $store-lite-font-xl !important;
-      color: $store-lite-text-primary !important;
-      transition: $store-lite-transition-colors;
+      font-family: $MarketHub-font-primary !important;
+      font-weight: $MarketHub-weight-bold !important;
+      font-size: $MarketHub-font-xl !important;
+      color: $MarketHub-text-primary !important;
+      transition: $MarketHub-transition-colors;
 
       &:hover {
-        color: $store-lite-primary !important;
+        color: $MarketHub-primary !important;
       }
 
       i {
-        margin-right: $store-lite-space-2;
-        color: $store-lite-primary;
+        margin-right: $MarketHub-space-2;
+        color: $MarketHub-primary;
       }
     }
 
     .nav-link {
-      color: $store-lite-text-primary !important;
-      font-weight: $store-lite-weight-medium;
-      font-size: $store-lite-font-sm;
-      padding: $store-lite-space-2 $store-lite-space-4;
-      transition: $store-lite-transition-colors;
+      color: $MarketHub-text-primary !important;
+      font-weight: $MarketHub-weight-medium;
+      font-size: $MarketHub-font-sm;
+      padding: $MarketHub-space-2 $MarketHub-space-4;
+      transition: $MarketHub-transition-colors;
       position: relative;
 
       &::after {
@@ -116,14 +116,14 @@ a {
         left: 50%;
         width: 0;
         height: 2px;
-        background: $store-lite-primary;
-        transition: $store-lite-transition-default;
+        background: $MarketHub-primary;
+        transition: $MarketHub-transition-default;
         transform: translateX(-50%);
       }
 
       &:hover,
       &.active {
-        color: $store-lite-primary !important;
+        color: $MarketHub-primary !important;
 
         &::after {
           width: 60%;
@@ -134,26 +134,26 @@ a {
 
   .search-toggle,
   .user-toggle {
-    color: $store-lite-text-secondary !important;
-    font-size: $store-lite-font-lg;
+    color: $MarketHub-text-secondary !important;
+    font-size: $MarketHub-font-lg;
     border: none !important;
     background: none !important;
-    transition: $store-lite-transition-colors, $store-lite-transition-transform;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
 
     &:hover {
-      color: $store-lite-primary !important;
+      color: $MarketHub-primary !important;
       transform: scale(1.1);
     }
   }
 
   .cart-icon-link {
     position: relative;
-    color: $store-lite-text-secondary !important;
-    font-size: $store-lite-font-lg;
-    transition: $store-lite-transition-colors, $store-lite-transition-transform;
+    color: $MarketHub-text-secondary !important;
+    font-size: $MarketHub-font-lg;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
 
     &:hover {
-      color: $store-lite-primary !important;
+      color: $MarketHub-primary !important;
       transform: scale(1.1);
       text-decoration: none;
     }
@@ -162,12 +162,12 @@ a {
       position: absolute;
       top: -8px;
       right: -8px;
-      background: $store-lite-primary;
+      background: $MarketHub-primary;
       color: white;
-      font-size: $store-lite-font-xs;
-      font-weight: $store-lite-weight-bold;
+      font-size: $MarketHub-font-xs;
+      font-weight: $MarketHub-weight-bold;
       padding: 2px 6px;
-      border-radius: $store-lite-radius-full;
+      border-radius: $MarketHub-radius-full;
       min-width: 18px;
       height: 18px;
       display: flex;
@@ -183,21 +183,21 @@ a {
     right: 0;
     min-width: 320px;
     background: white;
-    border: 1px solid $store-lite-border;
-    border-radius: $store-lite-radius-lg;
-    box-shadow: $store-lite-shadow-lg;
-    padding: $store-lite-space-4;
-    margin-top: $store-lite-space-2;
+    border: 1px solid $MarketHub-border;
+    border-radius: $MarketHub-radius-lg;
+    box-shadow: $MarketHub-shadow-lg;
+    padding: $MarketHub-space-4;
+    margin-top: $MarketHub-space-2;
 
     .search-input {
-      border: 1px solid $store-lite-border;
-      border-radius: $store-lite-radius-default 0 0 $store-lite-radius-default;
-      padding: $store-lite-space-2 $store-lite-space-3;
-      font-size: $store-lite-font-sm;
+      border: 1px solid $MarketHub-border;
+      border-radius: $MarketHub-radius-default 0 0 $MarketHub-radius-default;
+      padding: $MarketHub-space-2 $MarketHub-space-3;
+      font-size: $MarketHub-font-sm;
 
       &:focus {
-        border-color: $store-lite-primary;
-        box-shadow: $store-lite-shadow-focus;
+        border-color: $MarketHub-primary;
+        box-shadow: $MarketHub-shadow-focus;
         outline: none;
       }
     }
@@ -209,8 +209,8 @@ a {
 // =============================================================================
 
 .card {
-  @include store-lite-card;
-  border: 1px solid rgba($store-lite-border, 0.2);
+  @include MarketHub-card;
+  border: 1px solid rgba($MarketHub-border, 0.2);
   position: relative;
   overflow: hidden;
 
@@ -221,8 +221,8 @@ a {
     left: -100%;
     width: 100%;
     height: 2px;
-    background: $store-lite-gradient-primary;
-    transition: $store-lite-transition-slow;
+    background: $MarketHub-gradient-primary;
+    transition: $MarketHub-transition-slow;
   }
 
   &:hover::before {
@@ -235,13 +235,13 @@ a {
 // =============================================================================
 
 .btn {
-  font-family: $store-lite-font-primary;
-  font-weight: $store-lite-weight-semibold;
-  font-size: $store-lite-font-sm;
+  font-family: $MarketHub-font-primary;
+  font-weight: $MarketHub-weight-semibold;
+  font-size: $MarketHub-font-sm;
   letter-spacing: 0.025em;
-  border-radius: $store-lite-radius-lg;
-  padding: $store-lite-space-3 $store-lite-space-6;
-  transition: $store-lite-transition-transform, $store-lite-transition-shadow, $store-lite-transition-colors;
+  border-radius: $MarketHub-radius-lg;
+  padding: $MarketHub-space-3 $MarketHub-space-6;
+  transition: $MarketHub-transition-transform, $MarketHub-transition-shadow, $MarketHub-transition-colors;
   position: relative;
   overflow: hidden;
   text-transform: none;
@@ -255,7 +255,7 @@ a {
     width: 100%;
     height: 100%;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: $store-lite-transition-slow;
+    transition: $MarketHub-transition-slow;
   }
 
   &:hover {
@@ -267,35 +267,35 @@ a {
   }
 
   &-primary {
-    @include store-lite-btn-primary;
+    @include MarketHub-btn-primary;
   }
 
   &-outline-primary {
     background: transparent;
-    border: 2px solid $store-lite-primary;
-    color: $store-lite-primary;
+    border: 2px solid $MarketHub-primary;
+    color: $MarketHub-primary;
 
     &:hover {
-      background: $store-lite-primary;
+      background: $MarketHub-primary;
       color: white;
       transform: translateY(-2px);
-      box-shadow: $store-lite-shadow-hover;
+      box-shadow: $MarketHub-shadow-hover;
     }
   }
 
   &.rounded-pill {
-    border-radius: $store-lite-radius-full !important;
-    padding: $store-lite-space-4 $store-lite-space-8;
+    border-radius: $MarketHub-radius-full !important;
+    padding: $MarketHub-space-4 $MarketHub-space-8;
   }
 
   &-sm {
-    font-size: $store-lite-font-xs;
-    padding: $store-lite-space-2 $store-lite-space-4;
+    font-size: $MarketHub-font-xs;
+    padding: $MarketHub-space-2 $MarketHub-space-4;
   }
 
   &-lg {
-    font-size: $store-lite-font-base;
-    padding: $store-lite-space-4 $store-lite-space-10;
+    font-size: $MarketHub-font-base;
+    padding: $MarketHub-space-4 $MarketHub-space-10;
   }
 }
 
@@ -303,8 +303,8 @@ a {
 // PRODUCT CARD STYLES
 // =============================================================================
 
-.store-lite-product-card {
-  @include store-lite-card;
+.MarketHub-product-card {
+  @include MarketHub-card;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -312,15 +312,15 @@ a {
   .product-image-container {
     position: relative;
     overflow: hidden;
-    height: $store-lite-product-image-height;
-    background: $store-lite-bg-primary;
-    border-radius: $store-lite-radius-lg $store-lite-radius-lg 0 0;
+    height: $MarketHub-product-image-height;
+    background: $MarketHub-bg-primary;
+    border-radius: $MarketHub-radius-lg $MarketHub-radius-lg 0 0;
 
     .product-image {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: $store-lite-transition-transform, $store-lite-transition-slow;
+      transition: $MarketHub-transition-transform, $MarketHub-transition-slow;
     }
 
     .product-placeholder {
@@ -329,9 +329,9 @@ a {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: $store-lite-gradient-light;
-      font-size: $store-lite-font-5xl;
-      color: $store-lite-text-muted;
+      background: $MarketHub-gradient-light;
+      font-size: $MarketHub-font-5xl;
+      color: $MarketHub-text-muted;
     }
   }
 
@@ -350,23 +350,23 @@ a {
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: $store-lite-transition-default;
+    transition: $MarketHub-transition-default;
 
     .quick-view-btn {
       background: white;
       border: none;
-      border-radius: $store-lite-radius-full;
-      padding: $store-lite-space-3 $store-lite-space-6;
-      font-weight: $store-lite-weight-semibold;
+      border-radius: $MarketHub-radius-full;
+      padding: $MarketHub-space-3 $MarketHub-space-6;
+      font-weight: $MarketHub-weight-semibold;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      font-size: $store-lite-font-sm;
-      transition: $store-lite-transition-transform, $store-lite-transition-shadow;
-      box-shadow: $store-lite-shadow-lg;
+      font-size: $MarketHub-font-sm;
+      transition: $MarketHub-transition-transform, $MarketHub-transition-shadow;
+      box-shadow: $MarketHub-shadow-lg;
 
       &:hover {
         transform: translateY(-2px);
-        box-shadow: $store-lite-shadow-xl;
+        box-shadow: $MarketHub-shadow-xl;
       }
     }
   }
@@ -377,35 +377,35 @@ a {
 
   .category-badge {
     position: absolute;
-    top: $store-lite-space-4;
-    right: $store-lite-space-4;
+    top: $MarketHub-space-4;
+    right: $MarketHub-space-4;
     z-index: 2;
 
     .badge {
       background: rgba(255, 255, 255, 0.95) !important;
-      color: $store-lite-text-primary !important;
-      font-weight: $store-lite-weight-semibold;
-      padding: $store-lite-space-2 $store-lite-space-4;
-      border-radius: $store-lite-radius-full;
-      font-size: $store-lite-font-xs;
+      color: $MarketHub-text-primary !important;
+      font-weight: $MarketHub-weight-semibold;
+      padding: $MarketHub-space-2 $MarketHub-space-4;
+      border-radius: $MarketHub-radius-full;
+      font-size: $MarketHub-font-xs;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      @include store-lite-backdrop-blur();
+      @include MarketHub-backdrop-blur();
     }
   }
 
   .product-info {
-    padding: $store-lite-space-6;
+    padding: $MarketHub-space-6;
     display: flex;
     flex-direction: column;
     flex: 1;
 
     .product-title {
-      font-size: $store-lite-font-xl;
-      font-weight: $store-lite-weight-bold;
-      color: $store-lite-text-primary;
-      margin-bottom: $store-lite-space-3;
-      line-height: $store-lite-leading-tight;
+      font-size: $MarketHub-font-xl;
+      font-weight: $MarketHub-weight-bold;
+      color: $MarketHub-text-primary;
+      margin-bottom: $MarketHub-space-3;
+      line-height: $MarketHub-leading-tight;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -415,29 +415,29 @@ a {
     .product-rating {
       display: flex;
       align-items: center;
-      gap: $store-lite-space-2;
-      margin-bottom: $store-lite-space-3;
+      gap: $MarketHub-space-2;
+      margin-bottom: $MarketHub-space-3;
 
       .rating-stars {
         display: flex;
         gap: 2px;
 
         i {
-          font-size: $store-lite-font-sm;
+          font-size: $MarketHub-font-sm;
         }
       }
 
       .rating-text {
-        font-size: $store-lite-font-sm;
-        font-weight: $store-lite-weight-medium;
+        font-size: $MarketHub-font-sm;
+        font-weight: $MarketHub-weight-medium;
       }
     }
 
     .product-description {
-      font-size: $store-lite-font-sm;
-      line-height: $store-lite-leading-relaxed;
-      color: $store-lite-text-secondary;
-      margin-bottom: $store-lite-space-4;
+      font-size: $MarketHub-font-sm;
+      line-height: $MarketHub-leading-relaxed;
+      color: $MarketHub-text-secondary;
+      margin-bottom: $MarketHub-space-4;
       flex: 1;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -446,23 +446,23 @@ a {
     }
 
     .product-price-section {
-      margin-bottom: $store-lite-space-6;
+      margin-bottom: $MarketHub-space-6;
 
       .price-container {
         display: flex;
         align-items: center;
-        gap: $store-lite-space-3;
+        gap: $MarketHub-space-3;
 
         .current-price {
-          font-size: $store-lite-font-2xl;
-          font-weight: $store-lite-weight-bold;
-          color: $store-lite-danger;
+          font-size: $MarketHub-font-2xl;
+          font-weight: $MarketHub-weight-bold;
+          color: $MarketHub-danger;
         }
 
         .original-price {
-          font-size: $store-lite-font-lg;
-          font-weight: $store-lite-weight-medium;
-          color: $store-lite-text-muted;
+          font-size: $MarketHub-font-lg;
+          font-weight: $MarketHub-weight-medium;
+          color: $MarketHub-text-muted;
           text-decoration: line-through;
         }
       }
@@ -470,35 +470,35 @@ a {
 
     .product-actions {
       display: flex;
-      gap: $store-lite-space-3;
+      gap: $MarketHub-space-3;
 
       .add-to-cart-btn {
         flex: 2;
-        @include store-lite-btn-primary;
-        padding: $store-lite-space-3 $store-lite-space-4;
-        font-weight: $store-lite-weight-semibold;
+        @include MarketHub-btn-primary;
+        padding: $MarketHub-space-3 $MarketHub-space-4;
+        font-weight: $MarketHub-weight-semibold;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        font-size: $store-lite-font-sm;
+        font-size: $MarketHub-font-sm;
       }
 
       .view-details-btn {
         flex: 1;
-        border: 1px solid $store-lite-border;
+        border: 1px solid $MarketHub-border;
         background: white;
-        color: $store-lite-text-primary;
-        border-radius: $store-lite-radius-lg;
-        font-weight: $store-lite-weight-semibold;
+        color: $MarketHub-text-primary;
+        border-radius: $MarketHub-radius-lg;
+        font-weight: $MarketHub-weight-semibold;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        font-size: $store-lite-font-sm;
-        transition: $store-lite-transition-colors, $store-lite-transition-transform, $store-lite-transition-shadow;
-        padding: $store-lite-space-3 $store-lite-space-4;
+        font-size: $MarketHub-font-sm;
+        transition: $MarketHub-transition-colors, $MarketHub-transition-transform, $MarketHub-transition-shadow;
+        padding: $MarketHub-space-3 $MarketHub-space-4;
 
         &:hover {
-          background: $store-lite-bg-primary;
+          background: $MarketHub-bg-primary;
           transform: translateY(-2px);
-          box-shadow: $store-lite-shadow-md;
+          box-shadow: $MarketHub-shadow-md;
         }
       }
     }
@@ -509,35 +509,35 @@ a {
 // PRODUCT GRID
 // =============================================================================
 
-.store-lite-grid {
+.MarketHub-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: $store-lite-space-8;
-  margin-bottom: $store-lite-space-8;
+  gap: $MarketHub-space-8;
+  margin-bottom: $MarketHub-space-8;
 }
 
 // =============================================================================
 // FOOTER STYLES
 // =============================================================================
 
-.store-lite-footer {
-  background: $store-lite-footer-bg;
-  border-top: 1px solid $store-lite-footer-border;
-  color: $store-lite-text-primary;
-  margin-top: $store-lite-space-16;
+.MarketHub-footer {
+  background: $MarketHub-footer-bg;
+  border-top: 1px solid $MarketHub-footer-border;
+  color: $MarketHub-text-primary;
+  margin-top: $MarketHub-space-16;
 
   .footer-section-title {
-    font-family: $store-lite-font-secondary;
-    font-weight: $store-lite-weight-semibold;
-    font-size: $store-lite-font-lg;
-    color: $store-lite-text-primary;
-    margin-bottom: $store-lite-space-4;
+    font-family: $MarketHub-font-secondary;
+    font-weight: $MarketHub-weight-semibold;
+    font-size: $MarketHub-font-lg;
+    color: $MarketHub-text-primary;
+    margin-bottom: $MarketHub-space-4;
   }
 
   .footer-text {
-    color: $store-lite-footer-text;
-    font-size: $store-lite-font-sm;
-    line-height: $store-lite-leading-relaxed;
+    color: $MarketHub-footer-text;
+    font-size: $MarketHub-font-sm;
+    line-height: $MarketHub-leading-relaxed;
   }
 
   .footer-links {
@@ -545,20 +545,20 @@ a {
     padding: 0;
 
     li {
-      margin-bottom: $store-lite-space-2;
+      margin-bottom: $MarketHub-space-2;
     }
   }
 
   .footer-link {
-    color: $store-lite-footer-text;
+    color: $MarketHub-footer-text;
     text-decoration: none;
-    font-size: $store-lite-font-sm;
-    transition: $store-lite-transition-colors, $store-lite-transition-transform;
+    font-size: $MarketHub-font-sm;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
     display: flex;
     align-items: center;
 
     &:hover {
-      color: $store-lite-primary;
+      color: $MarketHub-primary;
       transform: translateX(3px);
       text-decoration: none;
     }
@@ -571,28 +571,28 @@ a {
     width: 36px;
     height: 36px;
     background: white;
-    color: $store-lite-text-secondary;
-    border-radius: $store-lite-radius-full;
+    color: $MarketHub-text-secondary;
+    border-radius: $MarketHub-radius-full;
     text-decoration: none;
-    transition: $store-lite-transition-colors, $store-lite-transition-transform, $store-lite-transition-shadow;
-    box-shadow: $store-lite-shadow-sm;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform, $MarketHub-transition-shadow;
+    box-shadow: $MarketHub-shadow-sm;
 
     &:hover {
-      background: $store-lite-primary;
+      background: $MarketHub-primary;
       color: white;
       transform: translateY(-2px);
-      box-shadow: $store-lite-shadow-hover;
+      box-shadow: $MarketHub-shadow-hover;
       text-decoration: none;
     }
   }
 
   .footer-bottom {
-    border-top: 1px solid $store-lite-footer-border;
+    border-top: 1px solid $MarketHub-footer-border;
     background: rgba(255, 255, 255, 0.7);
 
     .footer-bottom-text {
-      color: $store-lite-text-muted;
-      font-size: $store-lite-font-sm;
+      color: $MarketHub-text-muted;
+      font-size: $MarketHub-font-sm;
     }
   }
 }
@@ -602,14 +602,14 @@ a {
 // =============================================================================
 
 .text-gradient {
-  @include store-lite-gradient-text();
+  @include MarketHub-gradient-text();
 }
 
 .shadow-hover {
-  transition: $store-lite-transition-shadow;
+  transition: $MarketHub-transition-shadow;
 
   &:hover {
-    box-shadow: $store-lite-shadow-xl !important;
+    box-shadow: $MarketHub-shadow-xl !important;
   }
 }
 
@@ -631,13 +631,13 @@ a {
 
 @keyframes pulse {
   0% { 
-    box-shadow: 0 0 0 0 rgba($store-lite-primary, 0.7); 
+    box-shadow: 0 0 0 0 rgba($MarketHub-primary, 0.7); 
   }
   70% { 
-    box-shadow: 0 0 0 10px rgba($store-lite-primary, 0); 
+    box-shadow: 0 0 0 10px rgba($MarketHub-primary, 0); 
   }
   100% { 
-    box-shadow: 0 0 0 0 rgba($store-lite-primary, 0); 
+    box-shadow: 0 0 0 0 rgba($MarketHub-primary, 0); 
   }
 }
 
@@ -645,90 +645,90 @@ a {
 // RESPONSIVE DESIGN
 // =============================================================================
 
-@media (max-width: #{$store-lite-screen-xl}) {
-  .store-lite-grid {
+@media (max-width: #{$MarketHub-screen-xl}) {
+  .MarketHub-grid {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: $store-lite-space-6;
+    gap: $MarketHub-space-6;
   }
 }
 
-@media (max-width: #{$store-lite-screen-md}) {
+@media (max-width: #{$MarketHub-screen-md}) {
   body {
     background-attachment: scroll;
   }
 
-  .store-lite-header {
+  .MarketHub-header {
     .search-form-container {
       position: relative;
       min-width: auto;
       width: 100%;
-      margin-top: $store-lite-space-4;
+      margin-top: $MarketHub-space-4;
     }
 
     .navbar-actions {
-      margin-top: $store-lite-space-4;
+      margin-top: $MarketHub-space-4;
     }
 
     .condensed-menu {
-      margin-bottom: $store-lite-space-4;
+      margin-bottom: $MarketHub-space-4;
     }
   }
 
-  .store-lite-grid {
+  .MarketHub-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: $store-lite-space-4;
+    gap: $MarketHub-space-4;
   }
 
-  .store-lite-product-card {
-    border-radius: $store-lite-radius-lg;
+  .MarketHub-product-card {
+    border-radius: $MarketHub-radius-lg;
 
     .product-image-container {
       height: 200px;
     }
 
     .product-info {
-      padding: $store-lite-space-4;
+      padding: $MarketHub-space-4;
 
       .product-title {
-        font-size: $store-lite-font-lg;
+        font-size: $MarketHub-font-lg;
       }
 
       .current-price {
-        font-size: $store-lite-font-xl;
+        font-size: $MarketHub-font-xl;
       }
 
       .product-actions {
         flex-direction: column;
-        gap: $store-lite-space-2;
+        gap: $MarketHub-space-2;
 
         .add-to-cart-btn,
         .view-details-btn {
           flex: 1;
-          padding: $store-lite-space-2 $store-lite-space-3;
-          font-size: $store-lite-font-xs;
+          padding: $MarketHub-space-2 $MarketHub-space-3;
+          font-size: $MarketHub-font-xs;
         }
       }
     }
   }
 }
 
-@media (max-width: #{$store-lite-screen-sm}) {
-  .store-lite-grid {
+@media (max-width: #{$MarketHub-screen-sm}) {
+  .MarketHub-grid {
     grid-template-columns: 1fr;
-    gap: $store-lite-space-4;
+    gap: $MarketHub-space-4;
   }
 
-  .store-lite-product-card {
+  .MarketHub-product-card {
     .product-image-container {
       height: 250px;
     }
 
     .product-actions {
-      gap: $store-lite-space-3;
+      gap: $MarketHub-space-3;
     }
   }
 
-  h1 { font-size: $store-lite-font-4xl; }
-  h2 { font-size: $store-lite-font-3xl; }
-  h3 { font-size: $store-lite-font-2xl; }
+  h1 { font-size: $MarketHub-font-4xl; }
+  h2 { font-size: $MarketHub-font-3xl; }
+  h3 { font-size: $MarketHub-font-2xl; }
 }

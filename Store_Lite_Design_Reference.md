@@ -1,4 +1,4 @@
-# Store Lite Design Reference - MarketHub
+# MarketHub Design Reference - MarketHub
 
 ## Project Overview
 **MarketHub** is a modern Django-based e-commerce platform featuring a sophisticated design system with premium aesthetics and professional component structure.
@@ -506,4 +506,4 @@ MarketHub-Django-WebApp/
 
 ---
 
-This design reference provides a comprehensive overview of the MarketHub Store Lite design system, covering all visual and interactive elements for easy replication and modification.
+This design reference provides a comprehensive overview of the MarketHub MarketHub design system, covering all visual and interactive elements for easy replication and modification.

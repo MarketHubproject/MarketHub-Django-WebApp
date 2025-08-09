@@ -17,7 +17,7 @@ This implementation adds a dynamic product categories grid section to replace th
 - **Layout**: Responsive 3-4 column CSS Grid
 - **Features**:
   - Hover zoom effects
-  - Shadow animations (Store Lite style)
+  - Shadow animations (MarketHub style)
   - Dynamic product counts
   - Fallback to default categories if no featured categories exist
 

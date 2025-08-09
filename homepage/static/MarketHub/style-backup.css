@@ -1,4 +1,4 @@
-/* Store Lite Theme Styles */
+/* MarketHub Theme Styles */
 body {
     background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -196,15 +196,15 @@ p { font-size: 16px; color: #6c757d; }
     animation: fadeInUp 0.6s ease-out;
 }
 
-/* Store Lite Product Grid */
-.store-lite-grid {
+/* MarketHub Product Grid */
+.MarketHub-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     margin-bottom: 2rem;
 }
 
-.store-lite-product-card {
+.MarketHub-product-card {
     background: white;
     border-radius: 16px;
     overflow: hidden;
@@ -216,7 +216,7 @@ p { font-size: 16px; color: #6c757d; }
     position: relative;
 }
 
-.store-lite-product-card:hover {
+.MarketHub-product-card:hover {
     transform: translateY(-8px) scale(1.02);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
@@ -236,7 +236,7 @@ p { font-size: 16px; color: #6c757d; }
     transition: transform 0.4s ease;
 }
 
-.store-lite-product-card:hover .product-image {
+.MarketHub-product-card:hover .product-image {
     transform: scale(1.1);
 }
 
@@ -266,7 +266,7 @@ p { font-size: 16px; color: #6c757d; }
     transition: opacity 0.3s ease;
 }
 
-.store-lite-product-card:hover .product-overlay {
+.MarketHub-product-card:hover .product-overlay {
     opacity: 1;
 }
 
@@ -426,19 +426,19 @@ p { font-size: 16px; color: #6c757d; }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .store-lite-grid {
+    .MarketHub-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1.5rem;
     }
 }
 
 @media (max-width: 768px) {
-    .store-lite-grid {
+    .MarketHub-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
     
-    .store-lite-product-card {
+    .MarketHub-product-card {
         border-radius: 12px;
     }
     
@@ -483,13 +483,13 @@ p { font-size: 16px; color: #6c757d; }
         transform: translateY(-5px);
     }
     
-    .store-lite-product-card:hover {
+    .MarketHub-product-card:hover {
         transform: translateY(-4px) scale(1.01);
     }
 }
 
 @media (max-width: 480px) {
-    .store-lite-grid {
+    .MarketHub-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }

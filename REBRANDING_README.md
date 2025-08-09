@@ -1,0 +1,193 @@
+# MarketHub to MarketHub Rebranding Tools
+
+This directory contains comprehensive tools and mappings for rebranding the MarketHub project to MarketHub.
+
+## Files Included
+
+### 1. Search-and-Replace Mapping Files
+- **`search_replace_mapping.json`** - Complete JSON mapping of all text variations
+- **`search_replace_mapping.yml`** - Same mappings in YAML format for easier reading
+- **`apply_rebranding.py`** - Python script to automatically apply the mappings
+
+### 2. Mapping Categories
+
+The mapping files include comprehensive coverage of:
+
+#### Basic Text Variations
+- `MarketHub` → `markethub`
+- `MarketHub` → `MarketHub` 
+- `MarketHub` → `MARKETHUB`
+- Mixed case variations
+
+#### Formatting Variations
+- **Hyphenated**: `MarketHub` → `markethub`
+- **Underscored**: `MarketHub` → `markethub`  
+- **Concatenated**: `MarketHub` → `markethub`
+- **Wrapped**: `_markethub_` → `_markethub_`
+
+#### Context-Specific Mappings
+- CSS classes and IDs
+- SCSS variables and mixins
+- File extensions and paths
+- HTML attributes
+- JavaScript variables
+- Package.json fields
+- Team references
+- Theme names
+
+#### Regex Patterns
+- Word boundary patterns: `\b[Ss]tore[ _-]?[Ll]ite\b`
+- CamelCase patterns: `MarketHub` → `marketHub`
+- File path patterns with proper escaping
+- CSS/SCSS variable patterns
+- HTML attribute patterns
+
+## Usage
+
+### Python Script (Recommended)
+
+The Python script provides the safest and most comprehensive approach:
+
+```bash
+# Dry run to see what would change
+python apply_rebranding.py --dry-run
+
+# Apply to single file
+python apply_rebranding.py --file package.json
+
+# Apply to specific directory  
+python apply_rebranding.py --dir homepage/static/MarketHub/
+
+# Apply to entire project
+python apply_rebranding.py
+```
+
+**Features:**
+- ✅ Automatic file backups (`.bak` extension)
+- ✅ Dry-run mode for safety
+- ✅ Comprehensive reporting
+- ✅ Error handling
+- ✅ Binary file detection and skipping
+- ✅ Suggested file renames
+
+### Manual Usage
+
+For manual find-and-replace operations, use the mapping files as reference:
+
+1. **Start with special cases** (exact matches from `special_cases` section)
+2. **Apply context-specific mappings** (titles, comments, meta tags)
+3. **Use regex patterns** for complex cases
+4. **Apply text mappings** for remaining simple cases
+5. **Manual review** of all changes
+
+### File Renaming
+
+The following files should be manually renamed:
+
+```
+MarketHub_Design_Reference.md     → MarketHub_Design_Reference.md
+MarketHub_Color_Palette.md        → MarketHub_Color_Palette.md
+MARKETHUB_THEME.md                → MARKETHUB_THEME.md
+_markethub_variables.scss          → _markethub_variables.scss
+MarketHub.scss                    → markethub.scss
+MarketHub.css                     → markethub.css
+MarketHub.js                      → markethub.js
+```
+
+## Safety Recommendations
+
+### Before Starting
+1. **Create a full backup** of your project
+2. **Commit all current changes** to version control
+3. **Test the mappings** on a small subset of files first
+4. **Run with `--dry-run`** flag to preview changes
+
+### During Process  
+1. **Apply changes incrementally** (directory by directory)
+2. **Test functionality** after each major batch
+3. **Review git diff** before committing
+4. **Update import statements** and references manually
+
+### After Completion
+1. **Update build scripts** and configuration files
+2. **Test all functionality** thoroughly
+3. **Update documentation** and README files
+4. **Verify CSS/SCSS compilation** works correctly
+5. **Check for broken links** or references
+
+## Regex Patterns Explained
+
+### Word Boundaries
+```regex
+\b[Ss]tore[ _-]?[Ll]ite\b
+```
+- Matches "MarketHub" with optional separators
+- Respects word boundaries to avoid partial matches
+- Case insensitive for first letters
+
+### SCSS Variables
+```regex
+\$store[_-]?lite[_-]
+```
+- Matches SCSS variables like `$MarketHub-primary`
+- Handles both underscore and hyphen separators
+
+### File Paths
+```regex
+([/\\]|^)store[_-]?lite([/\\]|\.)
+```
+- Matches file paths containing "MarketHub" 
+- Handles both forward and back slashes
+- Captures path separators for replacement
+
+## Common Issues and Solutions
+
+### Import Statements
+After renaming files, manually update:
+```scss
+@import 'markethub_variables';  // → markethub_variables
+```
+
+### CSS Class References
+Check for missed references in JavaScript:
+```javascript
+document.querySelector('.MarketHub-card')  // → .markethub-card
+```
+
+### URLs and Routes
+Update Django URLs and route names:
+```python
+path('MarketHub/', ...)  // → path('markethub/', ...)
+```
+
+### Database Fields
+If you have database fields with "MarketHub" prefixes, those may need migration scripts.
+
+## Testing Checklist
+
+After applying the rebranding:
+
+- [ ] Project builds successfully
+- [ ] All CSS/SCSS compiles without errors
+- [ ] JavaScript runs without console errors  
+- [ ] All pages load correctly
+- [ ] Navigation links work
+- [ ] Form submissions work
+- [ ] Images and static files load
+- [ ] Mobile responsive design intact
+- [ ] Database operations function
+- [ ] Search functionality works
+- [ ] User authentication flows work
+
+## Version History
+
+- **v1.0** (2025-01-09) - Initial comprehensive mapping
+  - 200+ text variations covered
+  - 25+ regex patterns
+  - Context-aware replacements
+  - Python automation script
+  - Safety features and validation
+
+---
+
+**Important**: Always test thoroughly after applying changes. This is a comprehensive rebranding that touches many files and may require additional manual adjustments.

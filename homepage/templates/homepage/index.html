@@ -411,9 +411,9 @@
     <!-- Preview Grid -->
     {% if products %}
     <div class="products-grid mb-5">
-        <div class="store-lite-grid">
+        <div class="MarketHub-grid">
             {% for product in products %}
-            <div class="store-lite-product-card" data-product-id="{{ product.id }}">
+            <div class="MarketHub-product-card" data-product-id="{{ product.id }}">
                 <div class="product-image-container">
                     {% if product.image %}
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
