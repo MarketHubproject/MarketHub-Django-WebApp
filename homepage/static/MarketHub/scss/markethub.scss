@@ -1,6 +1,8 @@
 // MarketHub Main Stylesheet
 // Import variables first using modern @use syntax
 @use 'markethub_variables' as *;
+// Import icon utilities
+@import 'icons';
 
 // =============================================================================
 // BASE STYLES
@@ -639,6 +641,11 @@ a {
   100% { 
     box-shadow: 0 0 0 0 rgba($MarketHub-primary, 0); 
   }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 // =============================================================================

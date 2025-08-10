@@ -23,7 +23,7 @@
                     <!-- Hero Badge -->
                     <div class="hero-badge mb-4">
                         <span class="premium-badge">
-                            ✨ South Africa's Premium Marketplace
+                            <i class="bi bi-stars me-2"></i>South Africa's Premium Marketplace
                         </span>
                     </div>
                     
@@ -96,11 +96,11 @@
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <span class="badge bg-success rounded-pill px-3 py-2">New Arrival</span>
                                             <div class="rating">
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                                <i class="bi bi-star-fill text-warning"></i>
-                                                <i class="bi bi-star text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                             </div>
                                         </div>
                                         <h5 class="card-title fw-bold mb-2">Premium Laptop Collection</h5>
@@ -654,7 +654,7 @@
                         <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
                     {% else %}
                         <div class="product-placeholder">
-                            <i class="fas fa-image"></i>
+                            <i class="bi bi-image"></i>
                         </div>
                     {% endif %}
                     
@@ -664,7 +664,7 @@
                         <button class="btn btn-sm favorite-btn {% if product.id in user_favorites %}favorited{% endif %}" 
                                 onclick="toggleFavorite({{ product.id }}, this)"
                                 style="background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; transition: all 0.2s;">
-                            <i class="fas fa-heart" style="color: {% if product.id in user_favorites %}#e74c3c{% else %}#bdc3c7{% endif %};"></i>
+                            <i class="bi bi-heart{% if product.id in user_favorites %}-fill{% endif %}" style="color: {% if product.id in user_favorites %}#e74c3c{% else %}#bdc3c7{% endif %};"></i>
                         </button>
                     </div>
                     {% endif %}
@@ -672,7 +672,7 @@
                     <!-- Quick View Overlay -->
                     <div class="product-overlay">
                         <button class="btn btn-light btn-sm quick-view-btn" data-product-id="{{ product.id }}">
-                            <i class="fas fa-search-plus me-1"></i>Quick View
+                            <i class="bi bi-zoom-in me-1"></i>Quick View
                         </button>
                     </div>
                     
@@ -689,11 +689,11 @@
                     <div class="product-rating mb-2">
                         <div class="rating-stars">
                             <!-- Static 5-star rating for demo - can be made dynamic later -->
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="fas fa-star text-warning"></i>
-                            <i class="far fa-star text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star-fill text-warning"></i>
+                            <i class="bi bi-star text-warning"></i>
                         </div>
                         <span class="rating-text text-muted">(4.0)</span>
                     </div>
@@ -713,20 +713,20 @@
                         {% if user.is_authenticated %}
                             <a href="{% url 'add_to_cart' product.id %}" class="btn btn-sm rounded-pill flex-fill add-to-cart-btn fw-bold"
                                style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
-                                <i class="fas fa-shopping-bag me-1"></i>Add to Cart
+                                <i class="bi bi-bag-plus me-1"></i>Add to Cart
                             </a>
                             <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-sky-blue btn-sm rounded-pill view-details-btn"
                                style="border-color: #4682B4; color: #4682B4;">
-                                <i class="fas fa-eye me-1"></i>View
+                                <i class="bi bi-eye me-1"></i>View
                             </a>
                         {% else %}
                             <a href="{% url 'login' %}" class="btn btn-sm rounded-pill flex-fill fw-bold"
                                style="background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%); border: none; color: #4682B4;">
-                                <i class="fas fa-sign-in-alt me-1"></i>Login to Buy
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login to Buy
                             </a>
                             <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-sky-blue btn-sm rounded-pill view-details-btn"
                                style="border-color: #4682B4; color: #4682B4;">
-                                <i class="fas fa-eye me-1"></i>View
+                                <i class="bi bi-eye me-1"></i>View
                             </a>
                         {% endif %}
                     </div>
@@ -742,7 +742,7 @@
                 {% if products.has_previous %}
                     <li class="page-item">
                         <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.previous_page_number }}">
-                            <i class="fas fa-chevron-left"></i> Previous
+                            <i class="bi bi-chevron-left"></i> Previous
                         </a>
                     </li>
                 {% endif %}
@@ -760,7 +760,7 @@
                 {% if products.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.next_page_number }}">
-                            Next <i class="fas fa-chevron-right"></i>
+                            Next <i class="bi bi-chevron-right"></i>
                         </a>
                     </li>
                 {% endif %}
@@ -772,7 +772,7 @@
     <!-- No Products Found -->
     <div class="no-products text-center py-5">
         <div class="mb-4">
-            <i class="fas fa-search text-muted" style="font-size: 4rem;"></i>
+            <i class="bi bi-search text-muted" style="font-size: 4rem;"></i>
         </div>
         <h3 class="text-muted mb-3">No products found</h3>
         <p class="text-muted mb-4">
@@ -785,7 +785,7 @@
         {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
             <a href="{% url 'home' %}" class="btn btn-lg rounded-pill px-4 py-3 fw-bold shadow-lg"
                style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
-                <i class="fas fa-times me-2"></i>Clear All Filters
+                <i class="bi bi-x me-2"></i>Clear All Filters
             </a>
         {% endif %}
     </div>
@@ -819,7 +819,7 @@
                                 <img src="{{ product.image.url }}" class="img-fluid rounded-4 shadow-lg" alt="{{ product.name }}">
                             {% else %}
                                 <div class="placeholder-image d-flex align-items-center justify-content-center rounded-4 shadow-lg">
-                                    <i class="fas fa-image text-muted" style="font-size: 5rem;"></i>
+                                    <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
                                 </div>
                             {% endif %}
                             <div class="product-badge">
@@ -841,12 +841,12 @@
                             <div class="featured-product-actions d-flex flex-column flex-md-row gap-3">
                                 <a href="{% url 'product_detail' product.id %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
                                    style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
-                                    <i class="fas fa-eye me-2"></i>View Details
+                                    <i class="bi bi-eye me-2"></i>View Details
                                 </a>
                                 {% if user.is_authenticated %}
                                 <a href="{% url 'add_to_cart' product.id %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
                                    style="background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%); border: none; color: #4682B4;">
-                                    <i class="fas fa-shopping-bag me-2"></i>Add to Cart
+                                    <i class="bi bi-bag-plus me-2"></i>Add to Cart
                                 </a>
                                 {% else %}
                                 <a href="{% url 'login' %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
@@ -926,7 +926,7 @@
         <div class="col-md-3">
             <div class="stat-item animate-stat" data-target="1000">
                 <div class="stat-icon mb-3">
-                    <i class="fas fa-box text-primary"></i>
+                    <i class="bi bi-box text-primary"></i>
                 </div>
                 <h3 class="display-6 fw-bold text-primary-blue mb-2 counter" style="color: #2563eb !important; font-size: 4rem; text-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);">0</h3>
                 <p class="text-dark mb-0 fw-bold" style="color: #1d4ed8 !important; font-size: 1rem; font-weight: 800 !important;">Products Listed</p>
@@ -938,7 +938,7 @@
         <div class="col-md-3">
             <div class="stat-item animate-stat" data-target="500">
                 <div class="stat-icon mb-3">
-                    <i class="fas fa-users text-success"></i>
+                    <i class="bi bi-people text-success"></i>
                 </div>
                 <h3 class="display-6 fw-bold text-primary-blue mb-2 counter" style="color: #2563eb !important; font-size: 4rem; text-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);">0</h3>
                 <p class="text-dark mb-0 fw-bold" style="color: #1d4ed8 !important; font-size: 1rem; font-weight: 800 !important;">Happy Customers</p>
@@ -950,7 +950,7 @@
         <div class="col-md-3">
             <div class="stat-item animate-stat" data-target="50">
                 <div class="stat-icon mb-3">
-                    <i class="fas fa-tags text-warning"></i>
+                    <i class="bi bi-tags text-warning"></i>
                 </div>
                 <h3 class="display-6 fw-bold text-primary-blue mb-2 counter" style="color: #2563eb !important; font-size: 4rem; text-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);">0</h3>
                 <p class="text-dark mb-0 fw-bold" style="color: #1d4ed8 !important; font-size: 1rem; font-weight: 800 !important;">Categories</p>
@@ -962,7 +962,7 @@
         <div class="col-md-3">
             <div class="stat-item animate-stat">
                 <div class="stat-icon mb-3">
-                    <i class="fas fa-headset text-info"></i>
+                    <i class="bi bi-headset text-info"></i>
                 </div>
                 <h3 class="display-6 fw-bold text-primary-blue mb-2" style="color: #2563eb !important; font-size: 4rem; text-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);">24/7</h3>
                 <p class="text-dark mb-0 fw-bold" style="color: #1d4ed8 !important; font-size: 1rem; font-weight: 800 !important;">Support Available</p>
@@ -987,7 +987,7 @@
                 <div class="card border-0 h-100 shadow-lg">
                     <div class="card-body p-4 position-relative">
                         <div class="testimonial-quote mb-3">
-                            <i class="fas fa-quote-left text-primary"></i>
+                            <i class="bi bi-quote text-primary"></i>
                         </div>
                         <p class="testimonial-text mb-4">
                             "MarketHub has revolutionized my shopping experience. The quality of products and exceptional service is unmatched. I've found unique items that I couldn't find anywhere else."
@@ -1002,11 +1002,11 @@
                                 <h6 class="mb-0 fw-bold">Sarah Johnson</h6>
                                 <small class="text-muted">Fashion Enthusiast</small>
                                 <div class="rating mt-1">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
                         </div>
@@ -1020,7 +1020,7 @@
                 <div class="card border-0 h-100 shadow-lg">
                     <div class="card-body p-4 position-relative">
                         <div class="testimonial-quote mb-3">
-                            <i class="fas fa-quote-left text-success"></i>
+                            <i class="bi bi-quote text-success"></i>
                         </div>
                         <p class="testimonial-text mb-4">
                             "As a seller, MarketHub provides the perfect platform to reach premium customers. The interface is intuitive and the support team is incredibly responsive. My sales have tripled!"
@@ -1035,11 +1035,11 @@
                                 <h6 class="mb-0 fw-bold">Michael Chen</h6>
                                 <small class="text-muted">Premium Seller</small>
                                 <div class="rating mt-1">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
                         </div>
@@ -1053,7 +1053,7 @@
                 <div class="card border-0 h-100 shadow-lg">
                     <div class="card-body p-4 position-relative">
                         <div class="testimonial-quote mb-3">
-                            <i class="fas fa-quote-left text-info"></i>
+                            <i class="bi bi-quote text-info"></i>
                         </div>
                         <p class="testimonial-text mb-4">
                             "The security and trust I feel when shopping on MarketHub is incredible. Every transaction is smooth, and the delivery is always on time. This is luxury e-commerce at its finest."
@@ -1068,11 +1068,11 @@
                                 <h6 class="mb-0 fw-bold">Emily Parker</h6>
                                 <small class="text-muted">Luxury Collector</small>
                                 <div class="rating mt-1">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
                             </div>
                         </div>

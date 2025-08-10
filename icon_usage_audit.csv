@@ -1,0 +1,146 @@
+File Path,Icon Library,Icon Class,Line Number,Context,Renders Correctly,Bootstrap Icons Equivalent,Notes
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-search me-2,125,Search button,Yes,bi-search,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-search me-2,212,Search button,Yes,bi-search,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-save me-2,222,Save search button,Yes,bi-save,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-star me-2,231,Saved searches header,Yes,bi-star,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-trash,242,Delete saved search,Yes,bi-trash,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-heart,266,Heart/favorite icon,Yes,bi-heart,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-image text-muted fa-3x,276,Image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-map-marker-alt me-1,284,Location marker,Yes,bi-geo-alt,Similar equivalent available
+homepage/templates/homepage/advanced_search.html,Font Awesome,fas fa-search-minus fa-3x text-muted mb-3,331,No results icon,Yes,bi-search (with dash),Combination needed
+homepage/templates/homepage/base.html,Bootstrap Icons,bi,151,Icon base class,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-shop-window::before,164,Shop window icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-search::before,165,Search icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-cart3::before,166,Shopping cart icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-house-door::before,167,Home icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-grid::before,168,Grid icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-lightning-charge::before,169,Lightning icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-percent::before,170,Percent icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-person-circle::before,171,Person circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-person::before,172,Person icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-box-seam::before,173,Box icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-box-arrow-right::before,174,Logout icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-laptop::before,175,Laptop icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-gem::before,176,Gem icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-brush::before,177,Brush icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-eye::before,178,Eye icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-heart::before,179,Heart icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-star::before,180,Star icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-plus-circle::before,181,Plus circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-dash-circle::before,182,Dash circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-check-circle::before,183,Check circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-x-circle::before,184,X circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-info-circle::before,185,Info circle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-exclamation-triangle::before,186,Warning triangle icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-filter::before,187,Filter icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-sort-down::before,188,Sort down icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/base.html,Bootstrap Icons,bi-three-dots::before,189,Three dots icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/cart.html,Bootstrap Icons,bi bi-cart-check-fill text-success me-2,12,Cart header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/cart.html,Bootstrap Icons,bi bi-cart-dash-fill text-success me-2,32,Cart items header,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/cart.html,Bootstrap Icons,bi bi-info-circle me-1,35,Info icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/cart.html,Bootstrap Icons,bi bi-image text-muted,55,Image placeholder,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/category_detail.html,Font Awesome,fas fa-cube me-2,24,Product count icon,Yes,bi-box,Similar equivalent available
+homepage/templates/homepage/category_detail.html,Font Awesome,fas fa-search me-1,71,Filter search icon,Yes,bi-search,Direct equivalent available
+homepage/templates/homepage/category_detail.html,Font Awesome,fas fa-times,74,Clear filter icon,Yes,bi-x,Direct equivalent available
+homepage/templates/homepage/category_detail.html,Font Awesome,fas fa-image text-muted,97,Image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/category_detail.html,Font Awesome,fas fa-eye me-1,103,View icon,Yes,bi-eye,Direct equivalent available
+homepage/templates/homepage/checkout.html,Bootstrap Icons,bi bi-credit-card-2-front text-primary me-2,12,Checkout header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/checkout.html,Bootstrap Icons,bi bi-truck text-primary me-2,30,Shipping icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/checkout.html,Bootstrap Icons,bi bi-person me-1,38,Person icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/create_product.html,Bootstrap Icons,bi bi-plus-square-fill,24,Add product icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/create_product.html,Bootstrap Icons,bi bi-tag text-success me-2,39,Product name icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/create_product.html,Bootstrap Icons,bi bi-currency-dollar text-success me-2,83,Price icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/favorites_list.html,Font Awesome,fas fa-heart me-2,248,Favorites header icon,Yes,bi-heart,Direct equivalent available
+homepage/templates/homepage/favorites_list.html,Font Awesome,fas fa-image text-muted fa-3x,307,Image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/favorites_list.html,Font Awesome,fas fa-heart text-danger,316,Heart icon,Yes,bi-heart,Direct equivalent available
+homepage/templates/homepage/index.html,Bootstrap Icons,bi bi-rocket-takeoff-fill me-2,46,Get started icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/index.html,Bootstrap Icons,bi bi-eye me-2,49,Browse products icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/index.html,Bootstrap Icons,bi bi-grid me-2,53,Shop now icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/index.html,Bootstrap Icons,bi bi-plus-circle me-2,59,Sell items icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/index.html,Font Awesome,fas fa-image,657,Product image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/index.html,Font Awesome,fas fa-heart,667,Favorite heart icon,Yes,bi-heart,Direct equivalent available
+homepage/templates/homepage/index.html,Font Awesome,fas fa-search-plus me-1,675,Quick view icon,Yes,bi-search (with plus),Combination needed
+homepage/templates/homepage/index.html,Font Awesome,fas fa-star text-warning,692-696,Rating stars,Yes,bi-star,Direct equivalent available
+homepage/templates/homepage/login.html,Bootstrap Icons,bi bi-person-circle,15,Login header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/login.html,Bootstrap Icons,bi bi-person text-primary me-2,40,Username icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/login.html,Bootstrap Icons,bi bi-lock text-primary me-2,58,Password icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/login.html,Bootstrap Icons,bi bi-eye,67,Show password icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/notifications.html,Font Awesome,fas fa-bell me-2,195,Notifications header,Yes,bi-bell,Direct equivalent available
+homepage/templates/homepage/notifications.html,Font Awesome,fas fa-info-circle text-info me-2,227,Info icon,Yes,bi-info-circle,Direct equivalent available
+homepage/templates/homepage/notifications.html,Font Awesome,fas fa-check-double me-2,233,Mark all read icon,Yes,bi-check2-all,Similar equivalent available
+homepage/templates/homepage/order_confirmation.html,Bootstrap Icons,bi bi-check-circle-fill text-white,13,Order confirmation icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/order_confirmation.html,Bootstrap Icons,bi bi-receipt text-success me-2,30,Order details icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/order_history.html,Bootstrap Icons,bi bi-clock-history text-primary me-2,12,Order history header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/order_history.html,Bootstrap Icons,bi bi-receipt text-primary me-2,33,Order receipt icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/payment_methods.html,Font Awesome,fas fa-credit-card me-2,7,Payment methods header,Yes,bi-credit-card,Direct equivalent available
+homepage/templates/homepage/payment_methods.html,Font Awesome,fas fa-credit-card fa-3x text-muted mb-3,39,Credit card placeholder,Yes,bi-credit-card,Direct equivalent available
+homepage/templates/homepage/product_analytics.html,Font Awesome,fas fa-chart-line me-2 text-primary,152,Analytics header,Yes,bi-graph-up,Similar equivalent available
+homepage/templates/homepage/product_analytics.html,Font Awesome,fas fa-eye me-2,156,View product icon,Yes,bi-eye,Direct equivalent available
+homepage/templates/homepage/product_detail.html,Bootstrap Icons,bi bi-house-fill me-1,10,Breadcrumb home icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_detail.html,Bootstrap Icons,bi bi-image,33,Image placeholder,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_detail.html,Bootstrap Icons,bi bi-tag-fill me-1,42,Category icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_drafts.html,Bootstrap Icons,bi bi-house-fill me-1,9,Breadcrumb home icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_drafts.html,Bootstrap Icons,bi bi-bookmark-star-fill,21,Drafts header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_list.html,Bootstrap Icons,bi bi-grid text-primary me-2,11,Product list header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/product_list.html,Bootstrap Icons,bi bi-search text-primary me-1,28,Search icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/recommendations.html,Font Awesome,fas fa-magic me-2,274,Recommendations header,Yes,bi-magic,No direct equivalent - could use bi-stars
+homepage/templates/homepage/recommendations.html,Font Awesome,fas fa-sync-alt me-2,278,Refresh icon,Yes,bi-arrow-repeat,Direct equivalent available
+homepage/templates/homepage/seller_analytics.html,Font Awesome,fas fa-tachometer-alt me-2 text-primary,219,Analytics dashboard header,Yes,bi-speedometer2,Direct equivalent available
+homepage/templates/homepage/seller_analytics.html,Font Awesome,fas fa-plus me-2,224,Add product icon,Yes,bi-plus,Direct equivalent available
+homepage/templates/homepage/seller_dashboard.html,Font Awesome,fas fa-store me-2,8,Store dashboard header,Yes,bi-shop,Direct equivalent available
+homepage/templates/homepage/seller_dashboard.html,Font Awesome,fas fa-plus me-2,11,Add product icon,Yes,bi-plus,Direct equivalent available
+homepage/templates/homepage/send_message.html,Font Awesome,fas fa-arrow-left me-2,96,Back button icon,Yes,bi-arrow-left,Direct equivalent available
+homepage/templates/homepage/send_message.html,Font Awesome,fas fa-image text-muted fa-2x,107,Product image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/signup.html,Bootstrap Icons,bi bi-person-plus-fill,15,Signup header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/signup.html,Bootstrap Icons,bi bi-person text-success me-2,30,Username icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/signup.html,Bootstrap Icons,bi bi-envelope text-success me-2,53,Email icon,Yes,N/A,Already Bootstrap Icons
+products/templates/products/favorites_list.html,Font Awesome,fas fa-heart me-3,71,Favorites header icon,Yes,bi-heart,Direct equivalent available
+products/templates/products/favorites_list.html,Font Awesome,fas fa-arrow-left me-2,80,Back button icon,Yes,bi-arrow-left,Direct equivalent available
+products/templates/products/product_detail.html,Font Awesome,fas fa-map-marker-alt me-2,105,Location icon,Yes,bi-geo-alt,Similar equivalent available
+products/templates/products/product_detail.html,Font Awesome,fas fa-tag me-2,111,Category tag icon,Yes,bi-tag,Direct equivalent available
+products/templates/products/product_list.html,Font Awesome,fas fa-search,120,Search button icon,Yes,bi-search,Direct equivalent available
+products/templates/products/product_list.html,Font Awesome,fas fa-heart me-2,134,My favorites button,Yes,bi-heart,Direct equivalent available
+homepage/templates/homepage/components/category_grid.html,Font Awesome,fas fa-th-large text-white,26,Category grid icon,Yes,bi-grid-3x3,Direct equivalent available
+homepage/templates/homepage/components/category_grid.html,Font Awesome,fas fa-arrow-right me-2,63,Shop category arrow,Yes,bi-arrow-right,Direct equivalent available
+homepage/templates/homepage/components/category_grid.html,Font Awesome,fas fa-laptop text-white,87,Electronics icon,Yes,bi-laptop,Direct equivalent available
+homepage/templates/homepage/components/category_grid.html,Font Awesome,fas fa-bolt me-2,100,Tech deals icon,Yes,bi-lightning,Direct equivalent available
+homepage/templates/homepage/components/hero_slider.html,Bootstrap Icons,bi bi-star-fill me-2,30,Featured badge icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/hero_slider.html,Bootstrap Icons,bi bi-arrow-right-circle me-2,50,CTA button icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/hero_slider.html,Bootstrap Icons,bi bi-collection me-2,53,Browse all icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/newsletter_signup.html,Bootstrap Icons,bi bi-envelope-heart,8,Newsletter icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/newsletter_signup.html,Bootstrap Icons,bi bi-send me-2,30,Send button icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/notifications.html,Bootstrap Icons,bi bi-check-circle-fill text-success,14,Success notification icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/notifications.html,Bootstrap Icons,bi bi-exclamation-triangle-fill text-danger,18,Error notification icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/promotion_banners.html,Font Awesome,fas fa-image text-white opacity-50,19,Promotion image placeholder,Yes,bi-image,Direct equivalent available
+homepage/templates/homepage/components/promotion_banners.html,Font Awesome,fas fa-gift me-2,43,Gift icon,Yes,bi-gift,Direct equivalent available
+homepage/templates/homepage/components/search.html,Bootstrap Icons,bi bi-search text-muted,6,Search input icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/search.html,Bootstrap Icons,bi bi-search me-2,19,Search button icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/components/search.html,Bootstrap Icons,bi bi-phone me-1,34,Electronics category icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_about.html,Bootstrap Icons,bi bi-shop me-2,4,About section header,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_about.html,Bootstrap Icons,bi bi-facebook,11,Facebook social icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_about.html,Bootstrap Icons,bi bi-twitter,14,Twitter social icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_categories.html,Bootstrap Icons,bi bi-grid me-2,4,Categories header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_categories.html,Bootstrap Icons,bi bi-laptop me-2,9,Electronics category icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_customer_service.html,Bootstrap Icons,bi bi-headset me-2,4,Customer service header,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_customer_service.html,Bootstrap Icons,bi bi-telephone me-2,9,Contact support icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_newsletter.html,Bootstrap Icons,bi bi-envelope me-2,4,Newsletter header icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/footer_newsletter.html,Bootstrap Icons,bi bi-send,13,Newsletter submit icon,Yes,N/A,Already Bootstrap Icons
+homepage/templates/homepage/includes/product_search.html,Font Awesome,fas fa-search text-primary,8,Search icon,Yes,bi-search,Direct equivalent available
+homepage/templates/homepage/includes/product_search.html,Font Awesome,fas fa-search me-1,17,Search button icon,Yes,bi-search,Direct equivalent available
+homepage/templates/homepage/includes/product_search.html,Font Awesome,fas fa-filter me-1,61,Active filters icon,Yes,bi-funnel,Direct equivalent available
+homepage/static/MarketHub/cart-enhancements.js,Bootstrap Icons,bi bi-arrow-clockwise spin,79,Updating cart icon,Yes,N/A,Already Bootstrap Icons
+homepage/static/MarketHub/cart-enhancements.js,Bootstrap Icons,bi bi-check-circle,153,Added to cart icon,Yes,N/A,Already Bootstrap Icons
+homepage/static/MarketHub/markethub.js,Font Awesome,fas fa-spinner fa-spin me-1,20,Loading spinner icon,Yes,bi-arrow-repeat (with spin class),Similar equivalent available
+homepage/static/MarketHub/markethub.js,Font Awesome,fas fa-check me-1,25,Success checkmark icon,Yes,bi-check,Direct equivalent available
+homepage/static/MarketHub/markethub.js,Font Awesome,fas fa-star text-warning,133-137,Product rating stars,Yes,bi-star,Direct equivalent available
+templates/homepage/notifications.html,Font Awesome,fas fa-check-double,110,Mark all read icon,Yes,bi-check2-all,Similar equivalent available
+templates/homepage/notifications.html,Font Awesome,fas fa-envelope,157,Message notification icon,Yes,bi-envelope,Direct equivalent available
+templates/homepage/notifications.html,Font Awesome,fas fa-shopping-cart,159,Order notification icon,Yes,bi-cart,Direct equivalent available
+templates/homepage/product_analytics.html,Font Awesome,fas fa-image text-muted,65,Product image placeholder,Yes,bi-image,Direct equivalent available
+templates/homepage/product_analytics.html,Font Awesome,fas fa-arrow-left,192,Back button icon,Yes,bi-arrow-left,Direct equivalent available
+templates/homepage/recommendations.html,Font Awesome,fas fa-magic,151,Recommendations magic icon,Yes,bi-magic,No direct equivalent - could use bi-stars
+templates/homepage/recommendations.html,Font Awesome,fas fa-star,181,Recommendation star icon,Yes,bi-star,Direct equivalent available
+templates/homepage/seller_analytics.html,Font Awesome,fas fa-chart-bar,170,Analytics chart icon,Yes,bi-bar-chart,Direct equivalent available
+templates/homepage/seller_analytics.html,Font Awesome,fas fa-plus,209,Add product icon,Yes,bi-plus,Direct equivalent available
+templates/homepage/send_message.html,Font Awesome,fas fa-image text-muted fa-2x,78,Product image placeholder,Yes,bi-image,Direct equivalent available
+templates/homepage/send_message.html,Font Awesome,fas fa-eye,89,View product icon,Yes,bi-eye,Direct equivalent available

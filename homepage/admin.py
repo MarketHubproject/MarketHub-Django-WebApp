@@ -1,9 +1,13 @@
 from django.contrib import admin
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.http import HttpResponseRedirect
 from .models import (
-    Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem,
-    Review, Favorite, ProductImage, SearchHistory, Notification, ProductView, SavedSearch
+    Product, Category, HeroSlide, Promotion, Cart, CartItem,
+    Favorite, Review, ProductImage, Order, OrderItem, Payment, PaymentMethod,
+    ProductDraft, SearchHistory, Notification, ProductView, SavedSearch
 )
-
+from .stripe_service import StripeService
 
 @admin.register(HeroSlide)
 class HeroSlideAdmin(admin.ModelAdmin):
@@ -296,6 +300,150 @@ class NotificationAdmin(admin.ModelAdmin):
         }),
         ('Timestamps', {
             'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+# Stripe refund admin action
+def process_stripe_refund(modeladmin, request, queryset):
+    """Admin action to process Stripe refunds"""
+    refunded_count = 0
+    failed_count = 0
+    
+    for payment in queryset:
+        if payment.status != 'completed':
+            messages.warning(request, f'Payment {payment.id} is not in completed status and was skipped.')
+            failed_count += 1
+            continue
+            
+        if payment.is_refunded:
+            messages.warning(request, f'Payment {payment.id} has already been refunded and was skipped.')
+            failed_count += 1
+            continue
+            
+        if not payment.stripe_payment_intent_id:
+            messages.warning(request, f'Payment {payment.id} is not a Stripe payment and was skipped.')
+            failed_count += 1
+            continue
+        
+        try:
+            # Process refund with Stripe
+            refund = StripeService.create_refund(
+                payment_intent_id=payment.stripe_payment_intent_id,
+                reason='requested_by_customer'
+            )
+            
+            if refund:
+                # Update payment record
+                payment.status = 'refunded'
+                payment.is_refunded = True
+                payment.save()
+                
+                # Update order status
+                order = payment.order
+                order.payment_status = 'refunded'
+                order.save()
+                
+                refunded_count += 1
+            else:
+                failed_count += 1
+                
+        except Exception as e:
+            messages.error(request, f'Failed to refund payment {payment.id}: {str(e)}')
+            failed_count += 1
+    
+    if refunded_count > 0:
+        messages.success(request, f'Successfully processed {refunded_count} refund(s).')
+    if failed_count > 0:
+        messages.error(request, f'{failed_count} refund(s) failed to process.')
+
+process_stripe_refund.short_description = 'Process Stripe refunds for selected payments'
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['order', 'payment_method', 'amount', 'currency', 'status', 'is_refunded', 'created_at']
+    list_filter = ['payment_method', 'status', 'currency', 'is_refunded', 'created_at']
+    search_fields = ['order__order_number', 'transaction_id', 'stripe_payment_intent_id']
+    readonly_fields = ['order', 'created_at', 'updated_at', 'processed_at', 'net_amount']
+    ordering = ['-created_at']
+    actions = [process_stripe_refund]
+    
+    fieldsets = (
+        ('Payment Information', {
+            'fields': ('order', 'payment_method', 'amount', 'currency', 'status')
+        }),
+        ('Stripe Details', {
+            'fields': ('stripe_payment_intent_id', 'stripe_customer_id', 'is_refunded'),
+            'classes': ('collapse',)
+        }),
+        ('Transaction Details', {
+            'fields': ('transaction_id', 'gateway_reference', 'gateway_response'),
+            'classes': ('collapse',)
+        }),
+        ('Card Information', {
+            'fields': ('card_last_four', 'card_brand'),
+            'classes': ('collapse',)
+        }),
+        ('Financial Details', {
+            'fields': ('gateway_fee', 'net_amount'),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'processed_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(PaymentMethod)
+class PaymentMethodAdmin(admin.ModelAdmin):
+    list_display = ['user', 'card_type', 'last_four', 'cardholder_name', 'is_default', 'is_active', 'created_at']
+    list_filter = ['card_type', 'is_default', 'is_active', 'created_at']
+    search_fields = ['user__username', 'cardholder_name', 'last_four']
+    readonly_fields = ['token', 'created_at', 'updated_at']
+    ordering = ['-created_at']
+    
+    fieldsets = (
+        ('User Information', {
+            'fields': ('user', 'is_default', 'is_active')
+        }),
+        ('Card Details', {
+            'fields': ('card_type', 'last_four', 'expiry_month', 'expiry_year', 'cardholder_name')
+        }),
+        ('Security', {
+            'fields': ('token',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(ProductDraft)
+class ProductDraftAdmin(admin.ModelAdmin):
+    list_display = ['name', 'user', 'price', 'category', 'created_at', 'updated_at']
+    list_filter = ['category', 'created_at', 'updated_at']
+    search_fields = ['name', 'user__username', 'description']
+    readonly_fields = ['created_at', 'updated_at']
+    ordering = ['-updated_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('user', 'name', 'description', 'temp_image')
+        }),
+        ('Product Details', {
+            'fields': ('price', 'category', 'condition', 'location')
+        }),
+        ('Additional Data', {
+            'fields': ('draft_data',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
             'classes': ('collapse',)
         }),
     )

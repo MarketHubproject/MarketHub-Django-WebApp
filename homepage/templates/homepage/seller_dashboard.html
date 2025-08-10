@@ -5,13 +5,13 @@
 {% block content %}
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-store me-2"></i>My Store Dashboard</h2>
+        <h2><i class="bi bi-shop me-2"></i>My Store Dashboard</h2>
         <div>
             <a href="{% url 'create_product' %}" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Add Product
+                <i class="bi bi-plus me-2"></i>Add Product
             </a>
             <a href="{% url 'seller_analytics_dashboard' %}" class="btn btn-outline-primary">
-                <i class="fas fa-chart-line me-2"></i>Analytics
+                <i class="bi bi-graph-up me-2"></i>Analytics
             </a>
         </div>
     </div>
@@ -79,7 +79,7 @@
                                                     <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 50px; height: 50px; object-fit: cover;" class="rounded me-2">
                                                 {% else %}
                                                     <div style="width: 50px; height: 50px;" class="bg-light rounded me-2 d-flex align-items-center justify-content-center">
-                                                        <i class="fas fa-image text-muted"></i>
+                                                        <i class="bi bi-image text-muted"></i>
                                                     </div>
                                                 {% endif %}
                                                 <div>
@@ -98,13 +98,13 @@
                                         <td>
                                             <div class="btn-group btn-group-sm">
                                                 <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary" title="View">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="bi bi-eye"></i>
                                                 </a>
                                                 <a href="{% url 'edit_product' product.id %}" class="btn btn-outline-secondary" title="Edit">
-                                                    <i class="fas fa-edit"></i>
+                                                    <i class="bi bi-pencil"></i>
                                                 </a>
                                                 <a href="{% url 'product_analytics' product.id %}" class="btn btn-outline-info" title="Analytics">
-                                                    <i class="fas fa-chart-bar"></i>
+                                                    <i class="bi bi-bar-chart"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -135,11 +135,11 @@
                         {% endif %}
                     {% else %}
                         <div class="text-center py-4">
-                            <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                            <i class="bi bi-box fa-3x text-muted mb-3"></i>
                             <h4>No products yet</h4>
                             <p class="text-muted">Start selling by adding your first product!</p>
                             <a href="{% url 'create_product' %}" class="btn btn-primary">
-                                <i class="fas fa-plus me-2"></i>Add Your First Product
+                                <i class="bi bi-plus me-2"></i>Add Your First Product
                             </a>
                         </div>
                     {% endif %}

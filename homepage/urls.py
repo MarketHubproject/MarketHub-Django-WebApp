@@ -62,6 +62,11 @@ urlpatterns = [
     path('payment-methods/delete/<int:method_id>/', views.delete_payment_method, name='delete_payment_method'),
     path('payment-methods/set-default/<int:method_id>/', views.set_default_payment_method, name='set_default_payment_method'),
     
+    # Stripe Payment URLs
+    path('api/stripe/create-payment-intent/<int:order_id>/', views.create_stripe_payment_intent, name='create_stripe_payment_intent'),
+    path('api/stripe/confirm-payment/', views.confirm_stripe_payment, name='confirm_stripe_payment'),
+    path('api/stripe/webhook/', views.stripe_webhook, name='stripe_webhook'),
+    
     # Product Draft URLs
     path('drafts/', views.product_drafts_list, name='product_drafts_list'),
     path('drafts/save/', views.save_product_draft, name='save_product_draft'),
@@ -69,6 +74,9 @@ urlpatterns = [
     path('drafts/<int:draft_id>/convert/', views.convert_draft_to_product, name='convert_draft_to_product'),
     path('drafts/<int:draft_id>/delete/', views.delete_product_draft, name='delete_product_draft'),
     path('drafts/auto-save/', views.auto_save_draft, name='auto_save_draft'),
+    
+    # Testing URLs
+    path('test_icons/', views.test_icons, name='test_icons'),
 ]
 
 

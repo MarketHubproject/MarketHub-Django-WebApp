@@ -1,14 +1,43 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
 from django.contrib import messages
-from django.db.models import Q, Avg, Count
+from django.db.models import Q, Count, Avg
+from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
-from django.views.decorators.csrf import csrf_exempt
-from decimal import Decimal
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.utils import timezone
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
+
+
+def process_card_payment(form, payment, user):
+    """
+    Process card payment - placeholder function for payment processing
+    In production, this would integrate with a real payment processor
+    """
+    try:
+        # Mock payment processing
+        # In real implementation, integrate with Stripe, PayPal, etc.
+        logger.info(f"Processing payment {payment.id} for user {user.username}")
+        
+        # Simulate payment success/failure
+        import random
+        success = random.choice([True, True, True, False])  # 75% success rate for demo
+        
+        if success:
+            logger.info(f"Payment {payment.id} processed successfully")
+        else:
+            logger.warning(f"Payment {payment.id} failed")
+            
+        return success
+    except Exception as e:
+        logger.error(f"Error processing payment {payment.id}: {e}")
+        return False
 
 from .models import Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem, Favorite, Review, ProductImage, Payment, PaymentMethod, ProductDraft
 from .forms import ProductForm, CheckoutForm, PaymentForm, SavedPaymentMethodForm, ProductDraftForm, ProductSearchForm
@@ -102,10 +131,18 @@ def signup(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
+        # Debug CSRF token
+        print(f"[LOGIN DEBUG] POST data: {request.POST}")
+        print(f"[LOGIN DEBUG] CSRF token from POST: {request.POST.get('csrfmiddlewaretoken')}")
+        print(f"[LOGIN DEBUG] CSRF token from COOKIES: {request.COOKIES.get('csrftoken')}")
+        print(f"[LOGIN DEBUG] Session key: {request.session.session_key}")
+        
+        form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
             return redirect('home')
+        else:
+            print(f"[LOGIN DEBUG] Form errors: {form.errors}")
     else:
         form = AuthenticationForm()
     return render(request, 'homepage/login.html', {'form': form})
@@ -1205,61 +1242,163 @@ def checkout_payment(request, order_id):
     return render(request, 'homepage/checkout_payment.html', context)
 
 
-def process_card_payment(form, payment, user):
-    """Process card payment - stub for payment gateway integration"""
-    # This is a simplified version. In production, you would:
-    # 1. Use a payment gateway like Stripe, PayFast, or PayPal
-    # 2. Tokenize card details securely
-    # 3. Process the payment through the gateway
-    # 4. Handle webhooks for payment confirmation
+def create_stripe_payment_intent(request, order_id):
+    """Create Stripe PaymentIntent for an order"""
+    from .stripe_service import StripeService
+    from django.http import JsonResponse
+    
+    order = get_object_or_404(Order, id=order_id, user=request.user)
     
     try:
-        card_number = form.cleaned_data.get('card_number', '').replace(' ', '')
-        card_cvv = form.cleaned_data.get('card_cvv')
-        cardholder_name = form.cleaned_data.get('cardholder_name')
+        # Get or create Stripe customer
+        customer = StripeService.get_or_create_customer(request.user)
+        customer_id = customer.id if customer else None
         
-        # Store last four digits and card brand for display
-        payment.card_last_four = card_number[-4:] if card_number else ''
+        # Create PaymentIntent
+        intent = StripeService.create_payment_intent(order, customer_id)
         
-        # Determine card brand (simplified)
-        if card_number.startswith('4'):
-            payment.card_brand = 'visa'
-        elif card_number.startswith(('5', '2')):
-            payment.card_brand = 'mastercard'
-        elif card_number.startswith('3'):
-            payment.card_brand = 'amex'
-        else:
-            payment.card_brand = 'other'
-        
-        # Generate mock transaction ID
-        import uuid
-        payment.transaction_id = f"TXN_{uuid.uuid4().hex[:12].upper()}"
-        
-        # Calculate fees (simplified)
-        gateway_fee_rate = Decimal('0.029')  # 2.9%
-        payment.gateway_fee = payment.amount * gateway_fee_rate
-        payment.net_amount = payment.amount - payment.gateway_fee
-        
-        # Save payment method if requested
-        if form.cleaned_data.get('save_payment_method') and user:
-            PaymentMethod.objects.create(
-                user=user,
-                card_type=payment.card_brand,
-                last_four=payment.card_last_four,
-                expiry_month=form.cleaned_data.get('card_expiry_month'),
-                expiry_year=form.cleaned_data.get('card_expiry_year'),
-                cardholder_name=cardholder_name,
-                token=f"tok_{uuid.uuid4().hex[:16]}",
-                is_default=False
+        if intent:
+            # Create or update payment record
+            payment, created = Payment.objects.get_or_create(
+                order=order,
+                defaults={
+                    'payment_method': 'card',
+                    'amount': order.total_amount,
+                    'currency': 'ZAR',
+                    'status': 'pending'
+                }
             )
-        
-        payment.save()
-        return True
-        
+            
+            payment.stripe_payment_intent_id = intent.id
+            if customer_id:
+                payment.stripe_customer_id = customer_id
+            payment.save()
+            
+            return JsonResponse({
+                'success': True,
+                'client_secret': intent.client_secret,
+                'payment_intent_id': intent.id
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': 'Failed to create payment intent'
+            })
+            
     except Exception as e:
-        # Log the error in production
-        print(f"Payment processing error: {e}")
-        return False
+        logger.error(f"Error creating PaymentIntent: {e}")
+        return JsonResponse({
+            'success': False,
+            'error': 'An error occurred while processing your request'
+        })
+
+
+def confirm_stripe_payment(request):
+    """Confirm Stripe payment and update order status"""
+    from .stripe_service import StripeService
+    from django.http import JsonResponse
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            payment_intent_id = data.get('payment_intent_id')
+            
+            if not payment_intent_id:
+                return JsonResponse({'success': False, 'error': 'Missing payment intent ID'})
+            
+            # Retrieve payment intent from Stripe
+            intent = StripeService.retrieve_payment_intent(payment_intent_id)
+            
+            if not intent:
+                return JsonResponse({'success': False, 'error': 'Invalid payment intent'})
+            
+            # Find associated payment
+            try:
+                payment = Payment.objects.get(stripe_payment_intent_id=payment_intent_id)
+                
+                if intent.status == 'succeeded':
+                    payment.status = 'completed'
+                    payment.processed_at = timezone.now()
+                    payment.transaction_id = payment_intent_id
+                    payment.gateway_response = dict(intent)
+                    
+                    # Extract card details if available
+                    if intent.charges and intent.charges.data:
+                        charge = intent.charges.data[0]
+                        if charge.payment_method_details and charge.payment_method_details.card:
+                            card = charge.payment_method_details.card
+                            payment.card_last_four = card.last4
+                            payment.card_brand = card.brand
+                    
+                    payment.save()
+                    
+                    # Update order
+                    order = payment.order
+                    order.payment_status = 'paid'
+                    order.status = 'processing'
+                    order.save()
+                    
+                    return JsonResponse({
+                        'success': True,
+                        'redirect_url': f'/order-confirmation/{order.id}/'
+                    })
+                else:
+                    payment.status = 'failed'
+                    payment.gateway_response = dict(intent)
+                    payment.save()
+                    
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Payment was not successful'
+                    })
+                    
+            except Payment.DoesNotExist:
+                return JsonResponse({'success': False, 'error': 'Payment record not found'})
+                
+        except Exception as e:
+            logger.error(f"Error confirming payment: {e}")
+            return JsonResponse({'success': False, 'error': 'An error occurred'})
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    """Handle Stripe webhook events"""
+    from .stripe_service import StripeWebhookHandler
+    from django.http import HttpResponse
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    
+    if request.method != 'POST':
+        return HttpResponse(status=405)
+    
+    payload = request.body
+    sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
+    
+    if not sig_header:
+        logger.error('Missing Stripe signature header')
+        return HttpResponse(status=400)
+    
+    # Construct and verify the webhook event
+    event = StripeWebhookHandler.construct_event(payload, sig_header)
+    
+    if not event:
+        return HttpResponse(status=400)
+    
+    # Handle the event
+    try:
+        handled = StripeWebhookHandler.handle_event(event)
+        if handled:
+            logger.info(f"Successfully handled webhook event: {event['type']}")
+            return HttpResponse(status=200)
+        else:
+            logger.warning(f"Unhandled webhook event: {event['type']}")
+            return HttpResponse(status=200)  # Return 200 even for unhandled events
+    except Exception as e:
+        logger.error(f"Error handling webhook: {e}")
+        return HttpResponse(status=500)
 
 
 @login_required
@@ -1466,50 +1605,7 @@ def auto_save_draft(request):
         })
 
 
-@login_required
-def favorites_list(request):
-    """Display user's favorite products"""
-    favorites = Favorite.objects.filter(user=request.user).select_related('product')
-    
-    # Calculate some stats for the template
-    available_count = favorites.filter(product__status='available').count()
-    sold_count = favorites.filter(product__status='sold').count()
-    
-    if favorites.exists():
-        avg_price = favorites.aggregate(avg_price=Avg('product__price'))['avg_price']
-    else:
-        avg_price = 0
-    
-    context = {
-        'favorites': favorites,
-        'available_count': available_count,
-        'sold_count': sold_count,
-        'avg_price': avg_price,
-    }
-    return render(request, 'homepage/favorites_list.html', context)
+def test_icons(request):
+    """Test page for Bootstrap Icons integration"""
+    return render(request, 'homepage/test_icons.html')
 
-
-@login_required
-def seller_dashboard(request):
-    """Basic seller dashboard with overview of seller's products"""
-    user_products = Product.objects.filter(seller=request.user)
-    
-    # Basic statistics
-    total_products = user_products.count()
-    available_products = user_products.filter(status='available').count()
-    sold_products = user_products.filter(status='sold').count()
-    total_views = user_products.aggregate(total_views=Count('views_count'))['total_views'] or 0
-    
-    # Get products for display with pagination
-    paginator = Paginator(user_products.order_by('-created_at'), 10)
-    page_number = request.GET.get('page')
-    products = paginator.get_page(page_number)
-    
-    context = {
-        'total_products': total_products,
-        'available_products': available_products,
-        'sold_products': sold_products,
-        'total_views': total_views,
-        'products': products,
-    }
-    return render(request, 'homepage/seller_dashboard.html', context)

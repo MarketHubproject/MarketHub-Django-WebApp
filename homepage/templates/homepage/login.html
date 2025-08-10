@@ -23,6 +23,16 @@
             <div class="card-body p-4">
                 <form method="POST" class="needs-validation" novalidate>
                     {% csrf_token %}
+                    <!-- Debug: CSRF Token Value -->
+                    {% if debug %}
+                        <div class="alert alert-info small">
+                            <strong>Debug Info:</strong><br>
+                            CSRF Token: {{ csrf_token }}<br>
+                            {% if request.COOKIES.csrftoken %}
+                            CSRF Cookie: {{ request.COOKIES.csrftoken }}<br>
+                            {% endif %}
+                        </div>
+                    {% endif %}
                     
                     <!-- Username Field -->
                     <div class="mb-4">

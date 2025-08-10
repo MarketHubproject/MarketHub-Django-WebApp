@@ -1,0 +1,48 @@
+# Code ownership for MarketHub
+# Users and teams mentioned here will be automatically requested for review when PRs modify matching files
+
+# Templates - UI/UX and Frontend Team
+# All template changes require review to prevent icon regressions and maintain design consistency
+templates/** @frontend-team @ui-ux-team
+
+# HTML templates specifically
+*.html @frontend-team @ui-ux-team
+
+# CSS and SCSS files - Style changes need design team approval
+*.css @frontend-team @ui-ux-team
+*.scss @frontend-team @ui-ux-team
+
+# JavaScript files affecting UI
+*/static/**/*.js @frontend-team
+
+# Documentation - Technical writers and maintainers
+docs/** @tech-writers @maintainers
+*.md @tech-writers @maintainers
+
+# Style guide - Design team must approve changes
+docs/style-guide/** @ui-ux-team @frontend-team @maintainers
+
+# Configuration files that affect styling and linting
+.stylelintrc.json @frontend-team @maintainers
+package.json @frontend-team @maintainers
+
+# Critical Django template directories
+homepage/templates/** @frontend-team @ui-ux-team @backend-team
+
+# Global ownership patterns
+# Ensure sensitive areas get proper review
+/markethub/ @backend-team @maintainers
+/accounts/ @backend-team @security-team
+/tests/ @backend-team @qa-team
+
+# Example team assignments - Update with actual GitHub usernames/teams:
+# @frontend-team could include: @johndoe @janedoe
+# @ui-ux-team could include: @designer1 @designer2  
+# @backend-team could include: @backend-dev1 @backend-dev2
+# @maintainers could include: @project-lead @senior-dev
+# @security-team could include: @security-specialist
+# @qa-team could include: @qa-engineer1 @qa-engineer2
+# @tech-writers could include: @technical-writer
+
+# Note: Replace the example team names above with actual GitHub usernames or team names
+# when you have your GitHub repository set up with proper teams and collaborators.

@@ -42,6 +42,7 @@ class UserProfile(models.Model):
 
     @property
     def average_rating(self):
+        from homepage.models import Review  # Import here to avoid circular import
         reviews = Review.objects.filter(seller=self.user)
         if reviews.exists():
             return reviews.aggregate(models.Avg('rating'))['rating__avg']

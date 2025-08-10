@@ -1,0 +1,531 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Bootstrap Icons Diagnostic Test - MarketHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-5">Bootstrap Icons Diagnostic Test</h1>
+    
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 1: Core Bootstrap Icons (should display icons)</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-house-door" style="font-size: 2rem;"></i>
+                            <br><small>bi-house-door</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <br><small>bi-search</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-cart3" style="font-size: 2rem;"></i>
+                            <br><small>bi-cart3</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-person" style="font-size: 2rem;"></i>
+                            <br><small>bi-person</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 2: E-commerce Specific Icons</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-bag" style="font-size: 2rem;"></i>
+                            <br><small>bi-bag</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-heart" style="font-size: 2rem;"></i>
+                            <br><small>bi-heart</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-star" style="font-size: 2rem;"></i>
+                            <br><small>bi-star</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-credit-card" style="font-size: 2rem;"></i>
+                            <br><small>bi-credit-card</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 3: Navigation & UI Icons</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-list" style="font-size: 2rem;"></i>
+                            <br><small>bi-list</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-x" style="font-size: 2rem;"></i>
+                            <br><small>bi-x</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-filter" style="font-size: 2rem;"></i>
+                            <br><small>bi-filter</small>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <i class="bi bi-grid" style="font-size: 2rem;"></i>
+                            <br><small>bi-grid</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 4: Font Loading Status</h5>
+                </div>
+                <div class="card-body">
+                    <div id="fontTest" class="alert alert-info">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Testing font loading...
+                    </div>
+                    <div id="cssTest" class="alert alert-info">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Testing CSS rules...
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 5: Interactive Icons (should be clickable)</h5>
+                </div>
+                <div class="card-body text-center">
+                    <button class="btn btn-outline-primary m-2" onclick="testClick(this)">
+                        <i class="bi bi-heart"></i> Like
+                    </button>
+                    <button class="btn btn-outline-primary m-2" onclick="testClick(this)">
+                        <i class="bi bi-share"></i> Share
+                    </button>
+                    <button class="btn btn-outline-primary m-2" onclick="testClick(this)">
+                        <i class="bi bi-bookmark"></i> Save
+                    </button>
+                    <button class="btn btn-outline-primary m-2" onclick="testClick(this)">
+                        <i class="bi bi-plus-circle"></i> Add
+                    </button>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 6: Network Waterfall Timings</h5>
+                </div>
+                <div class="card-body">
+                    <div id="networkTimings" class="mb-3">
+                        <div class="alert alert-info">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            Loading network timings...
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>CDN Performance</h6>
+                            <div id="cdnStats" class="small">
+                                <div>DNS Lookup: <span id="cdnDns">-</span></div>
+                                <div>Connect: <span id="cdnConnect">-</span></div>
+                                <div>Download: <span id="cdnDownload">-</span></div>
+                                <div>Total: <span id="cdnTotal">-</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Local File Performance</h6>
+                            <div id="localStats" class="small">
+                                <div>DNS Lookup: <span id="localDns">-</span></div>
+                                <div>Connect: <span id="localConnect">-</span></div>
+                                <div>Download: <span id="localDownload">-</span></div>
+                                <div>Total: <span id="localTotal">-</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Test 7: CDN Failure Simulation</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <button id="removeCdnBtn" class="btn btn-warning">
+                            <i class="bi bi-wifi-off"></i> Simulate CDN Failure
+                        </button>
+                        <button id="restoreCdnBtn" class="btn btn-success" style="display: none;">
+                            <i class="bi bi-wifi"></i> Restore CDN
+                        </button>
+                    </div>
+                    <div id="cdnStatus" class="alert alert-info">
+                        CDN is currently active. Click the button above to simulate an offline CDN scenario.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Test Results Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div id="testResults">
+                        <div class="alert alert-info">
+                            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                            Running tests...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Network timing variables
+let networkTimings = {
+    cdn: { dns: 0, connect: 0, download: 0, total: 0 },
+    local: { dns: 0, connect: 0, download: 0, total: 0 }
+};
+
+// Store original CDN link for restoration
+let originalCdnLink = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Store original CDN link reference
+    originalCdnLink = document.getElementById('bi-cdn');
+    
+    // Test font loading
+    document.fonts.ready.then(() => {
+        const fontTest = document.getElementById('fontTest');
+        const hasBootstrapIcons = document.fonts.check('16px "Bootstrap Icons"');
+        
+        if (hasBootstrapIcons) {
+            fontTest.className = 'alert alert-success';
+            fontTest.innerHTML = '<i class="bi bi-check-circle me-2"></i>Bootstrap Icons font loaded: <strong>TRUE</strong>';
+        } else {
+            fontTest.className = 'alert alert-warning';
+            fontTest.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>Bootstrap Icons font loaded: <strong>FALSE</strong>';
+        }
+
+        // Test CSS rules
+        testCSSRules();
+        
+        // Run comprehensive test
+        runComprehensiveTest();
+        
+        // Test network timings
+        testNetworkTimings();
+    });
+    
+    // Setup CDN simulation buttons
+    setupCdnSimulation();
+});
+
+function testCSSRules() {
+    const cssTest = document.getElementById('cssTest');
+    const testElement = document.createElement('div');
+    testElement.className = 'bi bi-house-door';
+    testElement.style.position = 'absolute';
+    testElement.style.left = '-9999px';
+    document.body.appendChild(testElement);
+    
+    setTimeout(() => {
+        const computedStyle = window.getComputedStyle(testElement, '::before');
+        const content = computedStyle.getPropertyValue('content');
+        const fontFamily = computedStyle.getPropertyValue('font-family');
+        
+        const hasContent = content && content !== 'none' && content !== '""';
+        const hasBootstrapFont = fontFamily.includes('Bootstrap Icons');
+        
+        if (hasContent && hasBootstrapFont) {
+            cssTest.className = 'alert alert-success';
+            cssTest.innerHTML = '<i class="bi bi-check-circle me-2"></i>CSS Rules working: <strong>TRUE</strong><br><small>Font: ' + fontFamily + '</small>';
+        } else {
+            cssTest.className = 'alert alert-warning';
+            cssTest.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>CSS Rules working: <strong>PARTIAL</strong><br><small>Content: ' + content + '<br>Font: ' + fontFamily + '</small>';
+        }
+        
+        document.body.removeChild(testElement);
+    }, 500);
+}
+
+function runComprehensiveTest() {
+    setTimeout(() => {
+        const results = document.getElementById('testResults');
+        const allIcons = document.querySelectorAll('.bi');
+        const visibleIcons = Array.from(allIcons).filter(icon => {
+            const rect = icon.getBoundingClientRect();
+            return rect.width > 0 && rect.height > 0;
+        });
+        
+        const hasBootstrapIcons = document.fonts.check('16px "Bootstrap Icons"');
+        const testsPassed = [];
+        const testsWarnings = [];
+        
+        if (hasBootstrapIcons) {
+            testsPassed.push('Font loading successful');
+        } else {
+            testsWarnings.push('Font not detected (may still work with CDN)');
+        }
+        
+        if (visibleIcons.length > 0) {
+            testsPassed.push(`${visibleIcons.length} icons are visible`);
+        } else {
+            testsWarnings.push('No icons detected as visible');
+        }
+        
+        if (allIcons.length > 0) {
+            testsPassed.push(`${allIcons.length} total icon elements found`);
+        }
+        
+        let resultHTML = '';
+        
+        if (testsPassed.length > 0) {
+            resultHTML += '<div class="alert alert-success mb-2"><h6><i class="bi bi-check-circle me-2"></i>Passed Tests:</h6><ul class="mb-0">';
+            testsPassed.forEach(test => {
+                resultHTML += `<li>${test}</li>`;
+            });
+            resultHTML += '</ul></div>';
+        }
+        
+        if (testsWarnings.length > 0) {
+            resultHTML += '<div class="alert alert-warning mb-2"><h6><i class="bi bi-exclamation-triangle me-2"></i>Warnings:</h6><ul class="mb-0">';
+            testsWarnings.forEach(test => {
+                resultHTML += `<li>${test}</li>`;
+            });
+            resultHTML += '</ul></div>';
+        }
+        
+        if (hasBootstrapIcons && visibleIcons.length > 10) {
+            resultHTML += '<div class="alert alert-success"><h6><i class="bi bi-award me-2"></i>Overall Result: EXCELLENT</h6>Bootstrap Icons are working perfectly!</div>';
+        } else if (visibleIcons.length > 5) {
+            resultHTML += '<div class="alert alert-info"><h6><i class="bi bi-info-circle me-2"></i>Overall Result: GOOD</h6>Bootstrap Icons are working with minor issues.</div>';
+        } else {
+            resultHTML += '<div class="alert alert-danger"><h6><i class="bi bi-x-circle me-2"></i>Overall Result: NEEDS ATTENTION</h6>Bootstrap Icons may not be loading correctly.</div>';
+        }
+        
+        results.innerHTML = resultHTML;
+    }, 1000);
+}
+
+function testClick(button) {
+    const icon = button.querySelector('i');
+    if (icon.classList.contains('bi-heart')) {
+        icon.classList.toggle('bi-heart');
+        icon.classList.toggle('bi-heart-fill');
+    } else if (icon.classList.contains('bi-bookmark')) {
+        icon.classList.toggle('bi-bookmark');
+        icon.classList.toggle('bi-bookmark-fill');
+    }
+    
+    // Add a temporary animation
+    button.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        button.style.transform = 'scale(1)';
+    }, 150);
+}
+
+// Network timing test function
+function testNetworkTimings() {
+    const networkTimingsDiv = document.getElementById('networkTimings');
+    
+    // Test CDN performance
+    testResourceTiming('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css', 'cdn')
+        .then(() => {
+            // Test local file performance (if available)
+            const localLink = document.getElementById('bi-local');
+            if (localLink && localLink.href) {
+                return testResourceTiming(localLink.href, 'local');
+            } else {
+                console.log('Local bootstrap-icons file not available for testing');
+                updateNetworkDisplay();
+            }
+        })
+        .then(() => {
+            updateNetworkDisplay();
+        })
+        .catch(error => {
+            console.error('Network timing test failed:', error);
+            networkTimingsDiv.innerHTML = '<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>Network timing test failed: ' + error.message + '</div>';
+        });
+}
+
+// Test resource timing for a specific URL
+function testResourceTiming(url, type) {
+    return new Promise((resolve) => {
+        const startTime = performance.now();
+        
+        // Create a test element to load the resource
+        const testLink = document.createElement('link');
+        testLink.rel = 'stylesheet';
+        testLink.href = url + '?test=' + Date.now(); // Cache busting
+        testLink.style.position = 'absolute';
+        testLink.style.left = '-9999px';
+        
+        testLink.onload = function() {
+            const endTime = performance.now();
+            const totalTime = endTime - startTime;
+            
+            // Try to get detailed timing from Performance API
+            setTimeout(() => {
+                const entries = performance.getEntriesByName(testLink.href);
+                if (entries.length > 0) {
+                    const entry = entries[entries.length - 1]; // Get latest entry
+                    networkTimings[type] = {
+                        dns: Math.round(entry.domainLookupEnd - entry.domainLookupStart),
+                        connect: Math.round(entry.connectEnd - entry.connectStart),
+                        download: Math.round(entry.responseEnd - entry.responseStart),
+                        total: Math.round(entry.responseEnd - entry.requestStart)
+                    };
+                } else {
+                    networkTimings[type] = {
+                        dns: 0,
+                        connect: 0,
+                        download: 0,
+                        total: Math.round(totalTime)
+                    };
+                }
+                
+                document.head.removeChild(testLink);
+                resolve();
+            }, 100);
+        };
+        
+        testLink.onerror = function() {
+            networkTimings[type] = {
+                dns: 0,
+                connect: 0,
+                download: 0,
+                total: -1 // Error indicator
+            };
+            
+            if (document.head.contains(testLink)) {
+                document.head.removeChild(testLink);
+            }
+            resolve();
+        };
+        
+        document.head.appendChild(testLink);
+        
+        // Fallback timeout
+        setTimeout(() => {
+            if (document.head.contains(testLink)) {
+                networkTimings[type] = {
+                    dns: 0,
+                    connect: 0,
+                    download: 0,
+                    total: -2 // Timeout indicator
+                };
+                document.head.removeChild(testLink);
+                resolve();
+            }
+        }, 10000);
+    });
+}
+
+// Update network timing display
+function updateNetworkDisplay() {
+    const networkTimingsDiv = document.getElementById('networkTimings');
+    
+    // Update CDN stats
+    document.getElementById('cdnDns').textContent = formatTiming(networkTimings.cdn.dns);
+    document.getElementById('cdnConnect').textContent = formatTiming(networkTimings.cdn.connect);
+    document.getElementById('cdnDownload').textContent = formatTiming(networkTimings.cdn.download);
+    document.getElementById('cdnTotal').textContent = formatTiming(networkTimings.cdn.total);
+    
+    // Update local stats
+    document.getElementById('localDns').textContent = formatTiming(networkTimings.local.dns);
+    document.getElementById('localConnect').textContent = formatTiming(networkTimings.local.connect);
+    document.getElementById('localDownload').textContent = formatTiming(networkTimings.local.download);
+    document.getElementById('localTotal').textContent = formatTiming(networkTimings.local.total);
+    
+    // Determine winner
+    let comparison = '';
+    if (networkTimings.cdn.total > 0 && networkTimings.local.total > 0) {
+        const cdnFaster = networkTimings.cdn.total < networkTimings.local.total;
+        comparison = `<div class="alert alert-${cdnFaster ? 'success' : 'info'} mt-3">`;
+        comparison += `<strong>${cdnFaster ? 'CDN' : 'Local'}</strong> is faster by ${Math.abs(networkTimings.cdn.total - networkTimings.local.total).toFixed(1)}ms`;
+        comparison += '</div>';
+    } else if (networkTimings.cdn.total > 0) {
+        comparison = '<div class="alert alert-info mt-3">Only CDN timing available</div>';
+    } else if (networkTimings.local.total > 0) {
+        comparison = '<div class="alert alert-warning mt-3">CDN failed, local file working</div>';
+    } else {
+        comparison = '<div class="alert alert-danger mt-3">Both CDN and local file failed to load</div>';
+    }
+    
+    networkTimingsDiv.innerHTML = '<div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>Network timing test completed</div>' + comparison;
+}
+
+// Format timing values for display
+function formatTiming(ms) {
+    if (ms === -1) return 'Error';
+    if (ms === -2) return 'Timeout';
+    if (ms === 0) return 'N/A';
+    return ms.toFixed(1) + 'ms';
+}
+
+// Setup CDN simulation functionality
+function setupCdnSimulation() {
+    const removeCdnBtn = document.getElementById('removeCdnBtn');
+    const restoreCdnBtn = document.getElementById('restoreCdnBtn');
+    const cdnStatus = document.getElementById('cdnStatus');
+    
+    removeCdnBtn.addEventListener('click', function() {
+        // Remove CDN link
+        const cdnLink = document.getElementById('bi-cdn');
+        if (cdnLink) {
+            cdnLink.remove();
+            cdnStatus.className = 'alert alert-warning';
+            cdnStatus.innerHTML = '<i class="bi bi-exclamation-triangle me-2"></i>CDN link removed! Icons should now fallback to local file. Refresh icons to test fallback mechanism.';
+            
+            removeCdnBtn.style.display = 'none';
+            restoreCdnBtn.style.display = 'inline-block';
+            
+            // Re-run tests to show the difference
+            setTimeout(() => {
+                runComprehensiveTest();
+                testNetworkTimings();
+            }, 500);
+        }
+    });
+    
+    restoreCdnBtn.addEventListener('click', function() {
+        // Restore CDN link
+        if (originalCdnLink) {
+            const newCdnLink = originalCdnLink.cloneNode(true);
+            document.head.insertBefore(newCdnLink, document.head.firstChild);
+            
+            cdnStatus.className = 'alert alert-success';
+            cdnStatus.innerHTML = '<i class="bi bi-check-circle me-2"></i>CDN link restored! Icons should now load from CDN.';
+            
+            removeCdnBtn.style.display = 'inline-block';
+            restoreCdnBtn.style.display = 'none';
+            
+            // Re-run tests
+            setTimeout(() => {
+                runComprehensiveTest();
+                testNetworkTimings();
+            }, 500);
+        }
+    });
+}
+
+// Console logging for developers
+console.log('Bootstrap Icons Test Page Loaded');
+console.log('Available fonts:', Array.from(document.fonts).map(f => f.family));
+console.log('Network Performance API supported:', 'performance' in window && 'getEntriesByName' in performance);
+</script>
+{% endblock %}

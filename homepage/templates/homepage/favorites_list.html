@@ -245,7 +245,7 @@
     <div class="favorites-header">
         <div class="d-flex justify-content-between align-items-center">
             <div>
-                <h2><i class="fas fa-heart me-2"></i>My Favorites</h2>
+                <h2><i class="bi bi-heart-fill me-2"></i>My Favorites</h2>
                 <p class="mb-0 opacity-75">Keep track of products you're interested in</p>
             </div>
             <div class="text-center">
@@ -304,7 +304,7 @@
                         <img src="{{ favorite.product.image.url }}" alt="{{ favorite.product.name }}" class="product-image">
                     {% else %}
                         <div class="product-image bg-light d-flex align-items-center justify-content-center">
-                            <i class="fas fa-image text-muted fa-3x"></i>
+                            <i class="bi bi-image text-muted fa-3x"></i>
                         </div>
                     {% endif %}
                     
@@ -313,7 +313,7 @@
                     </div>
                     
                     <button class="favorite-btn" onclick="removeFavorite({{ favorite.product.id }}, this)" title="Remove from favorites">
-                        <i class="fas fa-heart text-danger"></i>
+                        <i class="bi bi-heart-fill text-danger"></i>
                     </button>
                 </div>
                 
@@ -321,20 +321,20 @@
                     <div class="product-price">R{{ favorite.product.price }}</div>
                     <div class="product-name">{{ favorite.product.name|truncatechars:50 }}</div>
                     <div class="product-details">
-                        <i class="fas fa-map-marker-alt me-1"></i>{{ favorite.product.get_location_display }}<br>
-                        <i class="fas fa-tag me-1"></i>{{ favorite.product.get_condition_display }}
+                        <i class="bi bi-geo-alt me-1"></i>{{ favorite.product.get_location_display }}<br>
+                        <i class="bi bi-tag me-1"></i>{{ favorite.product.get_condition_display }}
                     </div>
                     <div class="product-meta">
-                        <span><i class="fas fa-eye me-1"></i>{{ favorite.product.views_count }} views</span>
+                        <span><i class="bi bi-eye me-1"></i>{{ favorite.product.views_count }} views</span>
                         <span>Added {{ favorite.created_at|timesince }} ago</span>
                     </div>
                     <div class="product-actions">
                         <a href="{% url 'product_detail' favorite.product.id %}" class="btn btn-view">
-                            <i class="fas fa-eye me-2"></i>View Details
+                            <i class="bi bi-eye me-2"></i>View Details
                         </a>
                         {% if favorite.product.status == 'available' and favorite.product.seller != request.user %}
                         <a href="{% url 'send_message' favorite.product.id %}" class="btn btn-message" title="Contact seller">
-                            <i class="fas fa-envelope"></i>
+                            <i class="bi bi-envelope"></i>
                         </a>
                         {% endif %}
                     </div>
@@ -346,21 +346,21 @@
         <!-- Load More (if needed) -->
         <div class="text-center mt-4">
             <button class="btn btn-outline-primary" onclick="loadMore()" id="loadMoreBtn" style="display: none;">
-                <i class="fas fa-plus me-2"></i>Load More Items
+                <i class="bi bi-plus me-2"></i>Load More Items
             </button>
         </div>
         
     {% else %}
         <div class="empty-state">
-            <i class="fas fa-heart-broken"></i>
+            <i class="bi bi-heartbreak"></i>
             <h4>No favorites yet</h4>
             <p>Start adding products to your favorites to keep track of items you're interested in.</p>
             <div class="mt-4">
                 <a href="{% url 'product_list' %}" class="btn btn-primary me-3">
-                    <i class="fas fa-search me-2"></i>Browse Products
+                    <i class="bi bi-search me-2"></i>Browse Products
                 </a>
                 <a href="{% url 'advanced_search' %}" class="btn btn-outline-primary">
-                    <i class="fas fa-filter me-2"></i>Advanced Search
+                    <i class="bi bi-funnel me-2"></i>Advanced Search
                 </a>
             </div>
         </div>
@@ -454,7 +454,7 @@ function removeFavorite(productId, button) {
                 message.className = 'alert alert-success alert-dismissible fade show position-fixed';
                 message.style.cssText = 'top: 20px; right: 20px; z-index: 9999;';
                 message.innerHTML = `
-                    <i class="fas fa-check-circle me-2"></i>
+                    <i class="bi bi-check-circle me-2"></i>
                     Removed from favorites
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 `;

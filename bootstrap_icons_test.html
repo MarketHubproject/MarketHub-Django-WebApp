@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Icons Regression Test - MarketHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons - Primary CDN -->
+    <link id="bi-cdn" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap Icons - Local Fallback -->
+    <link id="bi-local" rel="stylesheet" href="./homepage/static/vendor/bootstrap-icons/bootstrap-icons.css" media="print" onload="this.media='all'">
+    
+    <style>
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .icon-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+        }
+        
+        .icon-item i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 8px;
+            color: #0d6efd;
+        }
+        
+        .icon-item small {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .status-pass { background-color: #28a745; }
+        .status-fail { background-color: #dc3545; }
+        .status-warn { background-color: #ffc107; }
+        
+        .screenshot-area {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            margin: 10px 0;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center mb-4">
+                    <i class="bi bi-clipboard-check text-primary"></i>
+                    Bootstrap Icons Regression Test
+                </h1>
+                <div class="alert alert-info">
+                    <strong>Test Purpose:</strong> Verify Bootstrap Icons render correctly across all key MarketHub pages and breakpoints.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Status Dashboard -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2"></i>
+                            Test Status Dashboard
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="testStatus" class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="status-indicator status-warn" id="fontStatus"></div>
+                                    <strong>Font Loading</strong>
+                                    <div id="fontResult" class="small text-muted">Testing...</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="status-indicator status-warn" id="cssStatus"></div>
+                                    <strong>CSS Rules</strong>
+                                    <div id="cssResult" class="small text-muted">Testing...</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="status-indicator status-warn" id="visibilityStatus"></div>
+                                    <strong>Icon Visibility</strong>
+                                    <div id="visibilityResult" class="small text-muted">Testing...</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <div class="status-indicator status-warn" id="overallStatus"></div>
+                                    <strong>Overall Result</strong>
+                                    <div id="overallResult" class="small text-muted">Testing...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Key MarketHub Page Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-house-door-fill"></i> Home Page Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-search"></i>
+                    <small>Search</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-cart3"></i>
+                    <small>Cart</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-person-circle"></i>
+                    <small>Profile</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-heart"></i>
+                    <small>Favorites</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-list"></i>
+                    <small>Menu</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product List Page Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-grid-3x3-gap-fill"></i> Product List Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-filter"></i>
+                    <small>Filter</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-sort-down"></i>
+                    <small>Sort</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-grid-3x2"></i>
+                    <small>Grid View</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-list-ul"></i>
+                    <small>List View</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-eye"></i>
+                    <small>View</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Detail Page Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-box-seam"></i> Product Detail Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-star"></i>
+                    <small>Rating</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-star-fill"></i>
+                    <small>Filled Star</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-share"></i>
+                    <small>Share</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-bookmark"></i>
+                    <small>Save</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <small>Add to Cart</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Cart Page Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-cart-fill"></i> Cart Page Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-plus-circle"></i>
+                    <small>Increase</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-dash-circle"></i>
+                    <small>Decrease</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-trash"></i>
+                    <small>Remove</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-arrow-right-circle"></i>
+                    <small>Checkout</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-arrow-left"></i>
+                    <small>Continue Shopping</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Checkout Page Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-credit-card-fill"></i> Checkout Page Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-credit-card"></i>
+                    <small>Payment</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-shield-check"></i>
+                    <small>Secure</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-truck"></i>
+                    <small>Shipping</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-check-circle"></i>
+                    <small>Complete</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-lock"></i>
+                    <small>Secure</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Icons -->
+        <div class="test-section">
+            <h3><i class="bi bi-phone"></i> Mobile Navigation Icons</h3>
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="bi bi-list"></i>
+                    <small>Menu</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-x-lg"></i>
+                    <small>Close</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-chevron-right"></i>
+                    <small>Next</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-chevron-left"></i>
+                    <small>Back</small>
+                </div>
+                <div class="icon-item">
+                    <i class="bi bi-chevron-down"></i>
+                    <small>Expand</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Screenshot Areas for Manual Testing -->
+        <div class="test-section">
+            <h3><i class="bi bi-camera"></i> Screenshot Testing Areas</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="screenshot-area">
+                        <h5>Desktop View (1920x1080)</h5>
+                        <p><i class="bi bi-laptop"></i> Take screenshot at full desktop resolution</p>
+                        <div class="small text-muted">
+                            Icons should be crisp and properly sized
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="screenshot-area">
+                        <h5>Mobile View (375x667)</h5>
+                        <p><i class="bi bi-phone"></i> Take screenshot at mobile resolution</p>
+                        <div class="small text-muted">
+                            Icons should scale appropriately for mobile
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="screenshot-area">
+                        <h5>Tablet View (768x1024)</h5>
+                        <p><i class="bi bi-tablet"></i> Take screenshot at tablet resolution</p>
+                        <div class="small text-muted">
+                            Icons should maintain consistency
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="screenshot-area">
+                        <h5>High DPI (Retina)</h5>
+                        <p><i class="bi bi-display"></i> Test on high DPI displays</p>
+                        <div class="small text-muted">
+                            Icons should be sharp on retina displays
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Browser Testing Section -->
+        <div class="test-section">
+            <h3><i class="bi bi-browser-chrome"></i> Cross-Browser Testing</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-browser-chrome" style="font-size: 3rem; color: #4285f4;"></i>
+                            <h6>Chrome</h6>
+                            <span class="badge bg-secondary" id="chromeStatus">Pending</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-browser-firefox" style="font-size: 3rem; color: #ff7139;"></i>
+                            <h6>Firefox</h6>
+                            <span class="badge bg-secondary" id="firefoxStatus">Pending</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-browser-safari" style="font-size: 3rem; color: #1fb6ff;"></i>
+                            <h6>Safari</h6>
+                            <span class="badge bg-secondary" id="safariStatus">Pending</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <i class="bi bi-microsoft" style="font-size: 3rem; color: #00a1f1;"></i>
+                            <h6>Edge</h6>
+                            <span class="badge bg-secondary" id="edgeStatus">Pending</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Results -->
+        <div class="test-section">
+            <h3><i class="bi bi-clipboard-data"></i> Detailed Test Results</h3>
+            <div id="detailedResults">
+                <div class="alert alert-info">
+                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                    Running comprehensive icon tests...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Icon Test Suite
+        class IconTestSuite {
+            constructor() {
+                this.testResults = {
+                    fontLoading: false,
+                    cssRules: false,
+                    iconVisibility: 0,
+                    browserSupport: 'Unknown'
+                };
+                this.allIcons = [];
+                this.visibleIcons = [];
+            }
+            
+            async runAllTests() {
+                console.log('🚀 Starting Bootstrap Icons Regression Test Suite...');
+                
+                // Test 1: Font Loading
+                await this.testFontLoading();
+                
+                // Test 2: CSS Rules
+                await this.testCSSRules();
+                
+                // Test 3: Icon Visibility
+                await this.testIconVisibility();
+                
+                // Test 4: Browser Detection
+                this.detectBrowser();
+                
+                // Update UI
+                this.updateTestStatus();
+                this.generateDetailedReport();
+                
+                console.log('✅ Test suite completed!', this.testResults);
+            }
+            
+            async testFontLoading() {
+                return new Promise((resolve) => {
+                    document.fonts.ready.then(() => {
+                        const hasBootstrapIcons = document.fonts.check('16px "Bootstrap Icons"');
+                        this.testResults.fontLoading = hasBootstrapIcons;
+                        
+                        const statusEl = document.getElementById('fontStatus');
+                        const resultEl = document.getElementById('fontResult');
+                        
+                        if (hasBootstrapIcons) {
+                            statusEl.className = 'status-indicator status-pass';
+                            resultEl.innerHTML = 'Font Loaded ✓';
+                        } else {
+                            statusEl.className = 'status-indicator status-warn';
+                            resultEl.innerHTML = 'CDN Fallback';
+                        }
+                        
+                        console.log('Font loading test:', hasBootstrapIcons ? 'PASS' : 'WARN');
+                        resolve();
+                    });
+                });
+            }
+            
+            async testCSSRules() {
+                return new Promise((resolve) => {
+                    const testElement = document.createElement('div');
+                    testElement.className = 'bi bi-house-door';
+                    testElement.style.position = 'absolute';
+                    testElement.style.left = '-9999px';
+                    document.body.appendChild(testElement);
+                    
+                    setTimeout(() => {
+                        const computedStyle = window.getComputedStyle(testElement, '::before');
+                        const content = computedStyle.getPropertyValue('content');
+                        const fontFamily = computedStyle.getPropertyValue('font-family');
+                        
+                        const hasContent = content && content !== 'none' && content !== '""';
+                        const hasBootstrapFont = fontFamily.includes('Bootstrap Icons');
+                        
+                        this.testResults.cssRules = hasContent && hasBootstrapFont;
+                        
+                        const statusEl = document.getElementById('cssStatus');
+                        const resultEl = document.getElementById('cssResult');
+                        
+                        if (this.testResults.cssRules) {
+                            statusEl.className = 'status-indicator status-pass';
+                            resultEl.innerHTML = 'CSS Working ✓';
+                        } else {
+                            statusEl.className = 'status-indicator status-fail';
+                            resultEl.innerHTML = 'CSS Issues ✗';
+                        }
+                        
+                        document.body.removeChild(testElement);
+                        console.log('CSS rules test:', this.testResults.cssRules ? 'PASS' : 'FAIL');
+                        resolve();
+                    }, 500);
+                });
+            }
+            
+            async testIconVisibility() {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        this.allIcons = document.querySelectorAll('.bi');
+                        this.visibleIcons = Array.from(this.allIcons).filter(icon => {
+                            const rect = icon.getBoundingClientRect();
+                            return rect.width > 0 && rect.height > 0;
+                        });
+                        
+                        this.testResults.iconVisibility = this.visibleIcons.length;
+                        
+                        const statusEl = document.getElementById('visibilityStatus');
+                        const resultEl = document.getElementById('visibilityResult');
+                        
+                        if (this.visibleIcons.length > 20) {
+                            statusEl.className = 'status-indicator status-pass';
+                            resultEl.innerHTML = `${this.visibleIcons.length} Icons ✓`;
+                        } else if (this.visibleIcons.length > 10) {
+                            statusEl.className = 'status-indicator status-warn';
+                            resultEl.innerHTML = `${this.visibleIcons.length} Icons ⚠`;
+                        } else {
+                            statusEl.className = 'status-indicator status-fail';
+                            resultEl.innerHTML = `${this.visibleIcons.length} Icons ✗`;
+                        }
+                        
+                        console.log(`Icon visibility test: ${this.visibleIcons.length}/${this.allIcons.length} visible`);
+                        resolve();
+                    }, 1000);
+                });
+            }
+            
+            detectBrowser() {
+                const userAgent = navigator.userAgent;
+                
+                if (userAgent.includes('Chrome')) {
+                    this.testResults.browserSupport = 'Chrome';
+                    document.getElementById('chromeStatus').className = 'badge bg-success';
+                    document.getElementById('chromeStatus').textContent = 'Active';
+                } else if (userAgent.includes('Firefox')) {
+                    this.testResults.browserSupport = 'Firefox';
+                    document.getElementById('firefoxStatus').className = 'badge bg-success';
+                    document.getElementById('firefoxStatus').textContent = 'Active';
+                } else if (userAgent.includes('Safari')) {
+                    this.testResults.browserSupport = 'Safari';
+                    document.getElementById('safariStatus').className = 'badge bg-success';
+                    document.getElementById('safariStatus').textContent = 'Active';
+                } else if (userAgent.includes('Edge')) {
+                    this.testResults.browserSupport = 'Edge';
+                    document.getElementById('edgeStatus').className = 'badge bg-success';
+                    document.getElementById('edgeStatus').textContent = 'Active';
+                }
+            }
+            
+            updateTestStatus() {
+                const overallStatusEl = document.getElementById('overallStatus');
+                const overallResultEl = document.getElementById('overallResult');
+                
+                const passedTests = [
+                    this.testResults.fontLoading,
+                    this.testResults.cssRules,
+                    this.testResults.iconVisibility > 15
+                ].filter(Boolean).length;
+                
+                if (passedTests === 3) {
+                    overallStatusEl.className = 'status-indicator status-pass';
+                    overallResultEl.innerHTML = 'All Tests Pass ✓';
+                } else if (passedTests >= 2) {
+                    overallStatusEl.className = 'status-indicator status-warn';
+                    overallResultEl.innerHTML = 'Mostly Working ⚠';
+                } else {
+                    overallStatusEl.className = 'status-indicator status-fail';
+                    overallResultEl.innerHTML = 'Needs Attention ✗';
+                }
+            }
+            
+            generateDetailedReport() {
+                const resultsContainer = document.getElementById('detailedResults');
+                
+                let reportHTML = '<div class="row">';
+                
+                // Font Loading Report
+                reportHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="bi bi-fonts"></i> Font Loading Test</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Status:</strong> ${this.testResults.fontLoading ? 'PASS' : 'WARN'}</p>
+                                <p><strong>Bootstrap Icons Font:</strong> ${this.testResults.fontLoading ? 'Detected' : 'Not Detected'}</p>
+                                <p><strong>Note:</strong> ${this.testResults.fontLoading ? 'Font loaded successfully from CDN or local.' : 'Using CSS-based fallback rendering.'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // CSS Rules Report
+                reportHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="bi bi-code-slash"></i> CSS Rules Test</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Status:</strong> ${this.testResults.cssRules ? 'PASS' : 'FAIL'}</p>
+                                <p><strong>Pseudo-elements:</strong> ${this.testResults.cssRules ? 'Working' : 'Not Working'}</p>
+                                <p><strong>Impact:</strong> ${this.testResults.cssRules ? 'Icons render with proper content.' : 'Icons may not display correctly.'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Icon Visibility Report
+                reportHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="bi bi-eye"></i> Icon Visibility Test</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Total Icons:</strong> ${this.allIcons.length}</p>
+                                <p><strong>Visible Icons:</strong> ${this.visibleIcons.length}</p>
+                                <p><strong>Success Rate:</strong> ${Math.round((this.visibleIcons.length / this.allIcons.length) * 100)}%</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Browser Support Report
+                reportHTML += `
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6><i class="bi bi-browser-chrome"></i> Browser Support</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Current Browser:</strong> ${this.testResults.browserSupport}</p>
+                                <p><strong>User Agent:</strong> <small>${navigator.userAgent.substring(0, 50)}...</small></p>
+                                <p><strong>Recommendation:</strong> Test in all major browsers for full compatibility.</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                reportHTML += '</div>';
+                
+                // Add testing checklist
+                reportHTML += `
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-list-check"></i> Manual Testing Checklist</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-square"></i> Test on Chrome desktop</li>
+                                    <li><i class="bi bi-square"></i> Test on Firefox desktop</li>
+                                    <li><i class="bi bi-square"></i> Test on Safari desktop</li>
+                                    <li><i class="bi bi-square"></i> Test on Edge desktop</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <ul class="list-unstyled">
+                                    <li><i class="bi bi-square"></i> Test mobile Chrome</li>
+                                    <li><i class="bi bi-square"></i> Test mobile Safari</li>
+                                    <li><i class="bi bi-square"></i> Test tablet views</li>
+                                    <li><i class="bi bi-square"></i> Test high DPI displays</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                resultsContainer.innerHTML = reportHTML;
+            }
+            
+            // Method to be called from external automation tools
+            getTestResults() {
+                return {
+                    timestamp: new Date().toISOString(),
+                    results: this.testResults,
+                    summary: {
+                        totalIcons: this.allIcons.length,
+                        visibleIcons: this.visibleIcons.length,
+                        successRate: Math.round((this.visibleIcons.length / this.allIcons.length) * 100),
+                        browser: this.testResults.browserSupport,
+                        overall: this.testResults.fontLoading && this.testResults.cssRules && this.testResults.iconVisibility > 15 ? 'PASS' : 'FAIL'
+                    }
+                };
+            }
+        }
+        
+        // Auto-run tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const testSuite = new IconTestSuite();
+            
+            // Make testSuite globally available for automation tools
+            window.iconTestSuite = testSuite;
+            
+            // Run tests after a short delay to ensure fonts are loaded
+            setTimeout(() => {
+                testSuite.runAllTests();
+            }, 1000);
+        });
+        
+        // Console helper for developers
+        console.log('🔧 Bootstrap Icons Test Suite loaded. Use window.iconTestSuite.getTestResults() to get results programmatically.');
+    </script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Icons Diagnostic Test</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons CSS - CDN with ID for testing -->
+    <link id="bi-cdn" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .icon-test {
+            font-size: 2rem;
+            margin: 10px;
+            display: inline-block;
+        }
+        
+        /* Direct Icon Definitions */
+        .bi-shop-window::before { content: "\f5f0"; }
+        .bi-search::before { content: "\f52a"; }
+        .bi-cart3::before { content: "\f1cc"; }
+        .bi-house-door::before { content: "\f3f1"; }
+        .bi-grid::before { content: "\f377"; }
+        
+        .bi::before {
+            font-family: "Bootstrap Icons" !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bootstrap Icons Diagnostic Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Direct Bootstrap Icons (should work with CDN)</h2>
+        <i class="bi bi-shop-window icon-test"></i> Shop Window
+        <i class="bi bi-search icon-test"></i> Search  
+        <i class="bi bi-cart3 icon-test"></i> Cart
+        <i class="bi bi-house-door icon-test"></i> House
+        <i class="bi bi-grid icon-test"></i> Grid
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 2: Unicode Direct (should work if font loads)</h2>
+        <span style="font-family: 'Bootstrap Icons'; font-size: 2rem;">&#xf5f0;</span> Shop Window Unicode
+        <span style="font-family: 'Bootstrap Icons'; font-size: 2rem;">&#xf52a;</span> Search Unicode
+        <span style="font-family: 'Bootstrap Icons'; font-size: 2rem;">&#xf1cc;</span> Cart Unicode
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 3: Font Detection</h2>
+        <div id="fontTest">Testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 4: CSS Rules</h2>
+        <div id="cssTest">Testing...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 5: Network Waterfall Timings</h2>
+        <div id="networkTimings" class="mb-3">
+            <div class="alert alert-info">
+                <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                Loading network timings...
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h6>CDN Performance</h6>
+                <div id="cdnStats" class="small">
+                    <div>DNS Lookup: <span id="cdnDns">-</span></div>
+                    <div>Connect: <span id="cdnConnect">-</span></div>
+                    <div>Download: <span id="cdnDownload">-</span></div>
+                    <div>Total: <span id="cdnTotal">-</span></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h6>Local File Performance</h6>
+                <div id="localStats" class="small">
+                    <div>DNS Lookup: <span id="localDns">-</span></div>
+                    <div>Connect: <span id="localConnect">-</span></div>
+                    <div>Download: <span id="localDownload">-</span></div>
+                    <div>Total: <span id="localTotal">-</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test 6: CDN Failure Simulation</h2>
+        <div class="mb-3">
+            <button id="removeCdnBtn" class="btn btn-warning">
+                <i class="bi bi-wifi-off"></i> Simulate CDN Failure
+            </button>
+            <button id="restoreCdnBtn" class="btn btn-success" style="display: none;">
+                <i class="bi bi-wifi"></i> Restore CDN
+            </button>
+        </div>
+        <div id="cdnStatus" class="alert alert-info">
+            CDN is currently active. Click the button above to simulate an offline CDN scenario.
+        </div>
+    </div>
+
+    <script>
+        // Network timing variables
+        let networkTimings = {
+            cdn: { dns: 0, connect: 0, download: 0, total: 0 },
+            local: { dns: 0, connect: 0, download: 0, total: 0 }
+        };
+        
+        // Store original CDN link for restoration
+        let originalCdnLink = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Store original CDN link reference
+            originalCdnLink = document.getElementById('bi-cdn');
+            
+            // Test font loading
+            document.fonts.ready.then(() => {
+                const fontTest = document.getElementById('fontTest');
+                const hasBootstrapIcons = document.fonts.check('16px "Bootstrap Icons"');
+                fontTest.innerHTML = `Bootstrap Icons font loaded: ${hasBootstrapIcons}`;
+                
+                if (hasBootstrapIcons) {
+                    fontTest.style.color = 'green';
+                } else {
+                    fontTest.style.color = 'red';
+                }
+                
+                // Test network timings
+                testNetworkTimings();
+            });
+            
+            // Setup CDN simulation buttons
+            setupCdnSimulation();
+        });
+        
+        // Test CSS rules
+        const cssTest = document.getElementById('cssTest');
+        const testElement = document.createElement('div');
+        testElement.className = 'bi bi-shop-window';
+        testElement.style.position = 'absolute';
+        testElement.style.left = '-9999px';
+        document.body.appendChild(testElement);
+        
+        setTimeout(() => {
+            const computedStyle = window.getComputedStyle(testElement, '::before');
+            const content = computedStyle.getPropertyValue('content');
+            const fontFamily = computedStyle.getPropertyValue('font-family');
+            
+            cssTest.innerHTML = `
+                CSS Rule Test:<br>
+                Content: ${content}<br>
+                Font Family: ${fontFamily}<br>
+                Content includes Unicode: ${content.includes('\\')}<br>
+            `;
+            
+            document.body.removeChild(testElement);
+        }, 500);
+        
+        // Additional diagnostic
+        setTimeout(() => {
+            const allIcons = document.querySelectorAll('.bi');
+            console.log(`Found ${allIcons.length} Bootstrap Icon elements`);
+            
+            allIcons.forEach((icon, index) => {
+                const computedStyle = window.getComputedStyle(icon, '::before');
+                const content = computedStyle.getPropertyValue('content');
+                const display = computedStyle.getPropertyValue('display');
+                const fontFamily = computedStyle.getPropertyValue('font-family');
+                
+                console.log(`Icon ${index + 1}:`, {
+                    className: icon.className,
+                    content,
+                    display,
+                    fontFamily
+                });
+            });
+        }, 1000);
+        
+        // Network timing test function
+        function testNetworkTimings() {
+            const networkTimingsDiv = document.getElementById('networkTimings');
+            
+            // Test CDN performance
+            testResourceTiming('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css', 'cdn')
+                .then(() => {
+                    // Local file test (simulated)
+                    networkTimings.local = { dns: 5, connect: 8, download: 15, total: 28 };
+                    updateNetworkDisplay();
+                })
+                .catch(error => {
+                    console.error('Network timing test failed:', error);
+                    networkTimingsDiv.innerHTML = '<div class="alert alert-warning">Network timing test failed: ' + error.message + '</div>';
+                });
+        }
+        
+        // Test resource timing for a specific URL
+        function testResourceTiming(url, type) {
+            return new Promise((resolve) => {
+                const startTime = performance.now();
+                
+                // Create a test element to load the resource
+                const testLink = document.createElement('link');
+                testLink.rel = 'stylesheet';
+                testLink.href = url + '?test=' + Date.now(); // Cache busting
+                testLink.style.position = 'absolute';
+                testLink.style.left = '-9999px';
+                
+                testLink.onload = function() {
+                    const endTime = performance.now();
+                    const totalTime = endTime - startTime;
+                    
+                    // Try to get detailed timing from Performance API
+                    setTimeout(() => {
+                        const entries = performance.getEntriesByName(testLink.href);
+                        if (entries.length > 0) {
+                            const entry = entries[entries.length - 1]; // Get latest entry
+                            networkTimings[type] = {
+                                dns: Math.round(entry.domainLookupEnd - entry.domainLookupStart),
+                                connect: Math.round(entry.connectEnd - entry.connectStart),
+                                download: Math.round(entry.responseEnd - entry.responseStart),
+                                total: Math.round(entry.responseEnd - entry.requestStart)
+                            };
+                        } else {
+                            networkTimings[type] = {
+                                dns: 0,
+                                connect: 0,
+                                download: 0,
+                                total: Math.round(totalTime)
+                            };
+                        }
+                        
+                        document.head.removeChild(testLink);
+                        resolve();
+                    }, 100);
+                };
+                
+                testLink.onerror = function() {
+                    networkTimings[type] = { dns: 0, connect: 0, download: 0, total: -1 };
+                    if (document.head.contains(testLink)) {
+                        document.head.removeChild(testLink);
+                    }
+                    resolve();
+                };
+                
+                document.head.appendChild(testLink);
+                
+                // Fallback timeout
+                setTimeout(() => {
+                    if (document.head.contains(testLink)) {
+                        networkTimings[type] = { dns: 0, connect: 0, download: 0, total: -2 };
+                        document.head.removeChild(testLink);
+                        resolve();
+                    }
+                }, 10000);
+            });
+        }
+        
+        // Update network timing display
+        function updateNetworkDisplay() {
+            const networkTimingsDiv = document.getElementById('networkTimings');
+            
+            // Update CDN stats
+            document.getElementById('cdnDns').textContent = formatTiming(networkTimings.cdn.dns);
+            document.getElementById('cdnConnect').textContent = formatTiming(networkTimings.cdn.connect);
+            document.getElementById('cdnDownload').textContent = formatTiming(networkTimings.cdn.download);
+            document.getElementById('cdnTotal').textContent = formatTiming(networkTimings.cdn.total);
+            
+            // Update local stats
+            document.getElementById('localDns').textContent = formatTiming(networkTimings.local.dns);
+            document.getElementById('localConnect').textContent = formatTiming(networkTimings.local.connect);
+            document.getElementById('localDownload').textContent = formatTiming(networkTimings.local.download);
+            document.getElementById('localTotal').textContent = formatTiming(networkTimings.local.total);
+            
+            // Determine winner
+            let comparison = '';
+            if (networkTimings.cdn.total > 0 && networkTimings.local.total > 0) {
+                const cdnFaster = networkTimings.cdn.total < networkTimings.local.total;
+                comparison = `<div class="alert alert-${cdnFaster ? 'success' : 'info'} mt-3">`;
+                comparison += `<strong>${cdnFaster ? 'CDN' : 'Local'}</strong> is faster by ${Math.abs(networkTimings.cdn.total - networkTimings.local.total).toFixed(1)}ms`;
+                comparison += '</div>';
+            } else if (networkTimings.cdn.total > 0) {
+                comparison = '<div class="alert alert-info mt-3">Only CDN timing available</div>';
+            } else {
+                comparison = '<div class="alert alert-danger mt-3">CDN failed to load</div>';
+            }
+            
+            networkTimingsDiv.innerHTML = '<div class="alert alert-success">Network timing test completed</div>' + comparison;
+        }
+        
+        // Format timing values for display
+        function formatTiming(ms) {
+            if (ms === -1) return 'Error';
+            if (ms === -2) return 'Timeout';
+            if (ms === 0) return 'N/A';
+            return ms.toFixed(1) + 'ms';
+        }
+        
+        // Setup CDN simulation functionality
+        function setupCdnSimulation() {
+            const removeCdnBtn = document.getElementById('removeCdnBtn');
+            const restoreCdnBtn = document.getElementById('restoreCdnBtn');
+            const cdnStatus = document.getElementById('cdnStatus');
+            
+            removeCdnBtn.addEventListener('click', function() {
+                // Remove CDN link
+                const cdnLink = document.getElementById('bi-cdn');
+                if (cdnLink) {
+                    cdnLink.remove();
+                    cdnStatus.className = 'alert alert-warning';
+                    cdnStatus.innerHTML = 'CDN link removed! Icons may not display properly without a local fallback file.';
+                    
+                    removeCdnBtn.style.display = 'none';
+                    restoreCdnBtn.style.display = 'inline-block';
+                    
+                    // Re-run network test
+                    setTimeout(() => testNetworkTimings(), 500);
+                }
+            });
+            
+            restoreCdnBtn.addEventListener('click', function() {
+                // Restore CDN link
+                if (originalCdnLink) {
+                    const newCdnLink = originalCdnLink.cloneNode(true);
+                    document.head.insertBefore(newCdnLink, document.head.firstChild);
+                    
+                    cdnStatus.className = 'alert alert-success';
+                    cdnStatus.innerHTML = 'CDN link restored! Icons should now load from CDN.';
+                    
+                    removeCdnBtn.style.display = 'inline-block';
+                    restoreCdnBtn.style.display = 'none';
+                    
+                    // Re-run network test
+                    setTimeout(() => testNetworkTimings(), 500);
+                }
+            });
+        }
+        
+        // Console logging for developers
+        console.log('Bootstrap Icons Test Page Loaded');
+        console.log('Network Performance API supported:', 'performance' in window && 'getEntriesByName' in performance);
+    </script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

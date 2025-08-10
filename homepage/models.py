@@ -511,6 +511,11 @@ class Payment(models.Model):
     gateway_reference = models.CharField(max_length=255, blank=True, null=True)
     gateway_response = models.JSONField(blank=True, null=True)
     
+    # Stripe-specific fields
+    stripe_payment_intent_id = models.CharField(max_length=255, blank=True, null=True)
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    is_refunded = models.BooleanField(default=False)
+    
     # Card Payment Details (if applicable)
     card_last_four = models.CharField(max_length=4, blank=True, null=True)
     card_brand = models.CharField(max_length=20, blank=True, null=True)

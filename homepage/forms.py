@@ -3,6 +3,12 @@ from .models import Product, Order, Payment, PaymentMethod, ProductDraft
 from django.contrib.auth.models import User
 import json
 from decimal import Decimal
+from utils.sanitize import (
+    sanitize_product_description, 
+    sanitize_user_message,
+    sanitize_search_query,
+    sanitize_filename
+)
 
 
 class ProductForm(forms.ModelForm):
@@ -50,6 +56,23 @@ class ProductForm(forms.ModelForm):
             'location': 'Location in Cape Town',
             'image': 'Product Image',
         }
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if name:
+            # Basic sanitization for product name
+            name = name.strip()[:200]  # Limit length
+            # Remove potentially harmful characters
+            import re
+            name = re.sub(r'[<>"\']', '', name)
+        return name
+    
+    def clean_description(self):
+        description = self.cleaned_data.get('description')
+        if description:
+            # Sanitize product description HTML
+            return sanitize_product_description(description)
+        return description
 
 
 class CheckoutForm(forms.ModelForm):
@@ -430,3 +453,10 @@ class ProductSearchForm(forms.Form):
         }),
         label='Sort By'
     )
+    
+    def clean_query(self):
+        query = self.cleaned_data.get('query')
+        if query:
+            # Sanitize search query to prevent XSS
+            return sanitize_search_query(query)
+        return query

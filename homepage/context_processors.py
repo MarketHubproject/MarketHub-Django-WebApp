@@ -71,3 +71,13 @@ def favorites_context(request):
         'user_favorites': user_favorites,
         'favorites_count': favorites_count,
     }
+
+
+def stripe_context(request):
+    """
+    Add Stripe configuration to templates
+    """
+    return {
+        'STRIPE_PUBLISHABLE_KEY': getattr(settings, 'STRIPE_PUBLISHABLE_KEY', ''),
+        'PAYMENT_ENV': getattr(settings, 'PAYMENT_ENV', 'test'),
+    }

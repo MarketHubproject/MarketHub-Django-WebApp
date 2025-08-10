@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,13 +8,27 @@
     <meta name="description" content="{% block meta_description %}MarketHub - South Africa's trusted second-hand marketplace. Buy and sell pre-owned items, bid on auctions, find daily deals{% endblock %}">
     <meta name="keywords" content="{% block meta_keywords %}second hand, used items, marketplace, auction, daily deals, buy, sell, pre-owned, MarketHub{% endblock %}">
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons - Dual Source with Automatic Fallback -->
+    <link id="bi-cdn" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <link id="bi-local" rel="stylesheet" href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" media="print" onload="this.media='all'">
+    <script>
+      (function(){
+        const testEl=document.createElement('i');
+        testEl.className='bi bi-check';
+        testEl.style.position='absolute';testEl.style.opacity=0;document.body.appendChild(testEl);
+        requestAnimationFrame(()=>{       // give the font a tick to load
+          const content=getComputedStyle(testEl,'::before').content;
+          if(!content||content==='none'||content.replace(/['"']/g,'')==='') { 
+            // CDN failed, swap to local file immediately
+            document.getElementById('bi-cdn').remove();
+            document.getElementById('bi-local').media='all';
+          }
+          document.body.removeChild(testEl);
+        });
+      })();
+    </script>
     <!-- MarketHub Compiled CSS -->
-    {% load static %}
     <link rel="stylesheet" href="{% static 'MarketHub/css/markethub.css' %}">
     <link rel="stylesheet" href="{% static 'MarketHub/css/accessibility-improvements.css' %}">
     <!-- Enhanced Theme Fixes -->
@@ -143,6 +158,111 @@
             justify-content: center;
             margin: 0 auto;
             font-size: 1.5rem;
+        }
+        
+        /* SIMPLIFIED ICON SYSTEM - Always Working Icons */
+        
+        /* Bootstrap Icons base styles */
+        .bi {
+            display: inline-block;
+            font-family: "Bootstrap Icons" !important;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            vertical-align: -0.125em;
+            font-size: inherit;
+        }
+        
+        
+        
+        /* Ensure all ::before pseudo-elements use the Bootstrap Icons font */
+        .bi::before {
+            font-family: "Bootstrap Icons" !important;
+            display: inline-block;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            speak: never;
+        }
+        
+        /* Ensure icons are visible and properly styled */
+        .navbar-brand .bi,
+        .nav-link .bi,
+        .dropdown-item .bi,
+        .btn .bi {
+            margin-right: 0.5rem;
+            font-size: 1.2em;
+            vertical-align: -0.2em;
+            color: inherit;
+        }
+        
+        /* Special sizing for brand logo */
+        .navbar-brand .bi {
+            font-size: 2rem;
+            margin-right: 0.75rem;
+        }
+        
+        /* Hover effects - keep it simple */
+        .nav-link:hover .bi,
+        .btn:hover .bi,
+        .dropdown-item:hover .bi {
+            transform: scale(1.1);
+            transition: transform 0.2s ease;
+        }
+        
+        /* Enhanced icon hover effects */
+        .btn:hover .bi-search::before {
+            transform: scale(1.2) rotate(15deg);
+        }
+        
+        .btn:hover .bi-cart3::before {
+            transform: scale(1.1) rotate(-5deg);
+            animation: cart-wiggle 0.6s ease;
+        }
+        
+        @keyframes sparkle-glow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 2px rgba(255, 193, 7, 0.5));
+                transform: scale(1);
+            }
+            50% { 
+                filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.8));
+                transform: scale(1.1);
+            }
+        }
+        
+        @keyframes cart-wiggle {
+            0%, 100% { transform: scale(1.1) rotate(-5deg); }
+            25% { transform: scale(1.15) rotate(-8deg); }
+            50% { transform: scale(1.1) rotate(-2deg); }
+            75% { transform: scale(1.15) rotate(-8deg); }
+        }
+        
+        /* Icon size variations for different contexts */
+        .navbar-brand .bi {
+            font-size: 2.8rem;
+            filter: drop-shadow(0 4px 8px rgba(37, 99, 235, 0.3));
+        }
+        
+        .nav-link .bi {
+            font-size: 1.3rem;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item .bi {
+            font-size: 1rem;
+            margin-right: 0.5rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover .bi {
+            opacity: 1;
+            transform: translateX(2px);
         }
         
         /* Enhanced Card Hover Effects */
@@ -1786,29 +1906,11 @@
             position: relative;
         }
         
-        .enhanced-nav .nav-item:nth-child(3) .nav-link::after {
-            content: '🔥';
-            position: absolute;
-            top: -8px;
-            right: -5px;
-            font-size: 0.9rem;
-            animation: pulse 2s infinite;
-            z-index: 3;
-        }
         
         .enhanced-nav .nav-item:nth-child(4) .nav-link {
             position: relative;
         }
         
-        .enhanced-nav .nav-item:nth-child(4) .nav-link::after {
-            content: '💥';
-            position: absolute;
-            top: -8px;
-            right: -5px;
-            font-size: 0.9rem;
-            animation: bounce 2s infinite;
-            z-index: 3;
-        }
         
         /* Enhanced Navigation Cards Styling */
         .nav-card {
@@ -1909,23 +2011,6 @@
             overflow: hidden;
         }
         
-        .daily-deals-card::before {
-            content: '🔥';
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 1.2rem;
-            background: var(--royal-blue);
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-            z-index: 3;
-        }
         
         .nav-card:hover .daily-deals-card {
             background: var(--primary-gradient) !important;
@@ -1940,23 +2025,6 @@
             overflow: hidden;
         }
         
-        .promotions-card::before {
-            content: '💥';
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 1.2rem;
-            background: var(--accent-blue);
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: bounce 2s infinite;
-            z-index: 3;
-        }
         
         .nav-card:hover .promotions-card {
             background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark)) !important;
@@ -1971,23 +2039,6 @@
             overflow: hidden;
         }
         
-        .register-card::before {
-            content: '✨';
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            font-size: 1.2rem;
-            background: var(--navy-blue);
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: sparkle 3s infinite;
-            z-index: 3;
-        }
         
         .nav-card:hover .register-card {
             background: var(--secondary-gradient) !important;
@@ -2546,7 +2597,7 @@
     </footer>
 
     <!-- Bootstrap 5 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     
     <!-- MarketHub JavaScript -->
     {% load static %}
@@ -2651,8 +2702,24 @@
             });
         });
         
+        // Bootstrap Icons styling enforcement
+        function ensureBootstrapIconsDisplay() {
+            // Ensure proper Bootstrap Icons display
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .bi::before {
+                    display: inline-block !important;
+                    font-family: "Bootstrap Icons" !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
         // Add loading state management
         window.addEventListener('load', function() {
+            // Ensure Bootstrap Icons display correctly
+            ensureBootstrapIconsDisplay();
+            
             // Hide any loading overlays after page load
             const loadingOverlays = document.querySelectorAll('.loading-overlay');
             loadingOverlays.forEach(overlay => {
@@ -2667,6 +2734,13 @@
                     element.style.transform = 'translateY(0)';
                 }, index * 100);
             });
+        });
+        
+        // Ensure icons on font load
+        document.fonts.ready.then(() => {
+            setTimeout(() => {
+                ensureBootstrapIconsDisplay();
+            }, 500);
         });
     </script>
 </body>

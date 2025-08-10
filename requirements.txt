@@ -22,16 +22,53 @@ stripe==11.6.0
 django-csp==3.8
 django-secure==1.0.2
 django-axes==6.4.0
+bleach==6.1.0
 
 # Database
 psycopg2-binary==2.9.10
 
 # Testing and Coverage
+pytest==8.3.4
 pytest-django==4.8.0
+pytest-cov==6.0.0
+pytest-benchmark==4.0.0
+pytest-mock==3.14.0
+pytest-asyncio==0.25.0
+pytest-xdist==3.6.1
+factory-boy==3.3.3
+faker==33.1.0
 coverage==7.6.9
 
 # Production deployment dependencies
-# gunicorn==21.2.0        # WSGI HTTP Server
-# django-redis==5.3.0     # Redis caching backend
-# django-cors-headers==4.2.0  # CORS handling for API
-# whitenoise==6.5.0       # Static file serving
+gunicorn==21.2.0        # WSGI HTTP Server
+django-redis==5.3.0     # Redis caching backend
+django-cors-headers==4.2.0  # CORS handling for API
+whitenoise==6.5.0       # Static file serving
+
+# PostgreSQL connection pooling
+django-postgrespool2==2.0.5
+
+# JSON logging
+python-json-logger==2.0.7
+
+# Error tracking and monitoring
+sentry-sdk==1.32.0
+
+# Production metrics (optional)
+django-prometheus==2.3.1
+
+# API documentation
+drf-spectacular==0.27.2
+
+# Development and deployment tools
+flake8==7.0.0
+black==24.3.0
+isort==5.13.2
+safety==3.0.1
+bandit==1.7.5
+gevent==23.9.1  # For gunicorn async workers
+
+# Monitoring and system utilities
+psutil==5.9.6  # System monitoring
+aiohttp==3.9.1  # Async HTTP client for load testing
+requests==2.31.0  # HTTP client

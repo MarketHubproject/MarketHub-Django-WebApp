@@ -2,6 +2,12 @@
 
 {% block title %}Payment - MarketHub{% endblock %}
 
+{% load static %}
+
+{% block extra_head %}
+<script src="https://js.stripe.com/v3/"></script>
+{% endblock %}
+
 {% block content %}
 <!-- Breadcrumb Navigation -->
 <nav aria-label="breadcrumb" class="mb-4">
@@ -61,39 +67,23 @@
                         {{ form.payment_method }}
                     </div>
 
-                    <!-- Card Payment Fields (shown/hidden via JavaScript) -->
+                    <!-- Stripe Card Payment Fields -->
                     <div id="cardPaymentFields" style="display: none;">
                         <h5 class="fw-bold mb-3"><i class="bi bi-credit-card me-2"></i>Card Details</h5>
                         
+                        <!-- Stripe Card Element -->
                         <div class="mb-3">
-                            <label for="id_cardholder_name" class="form-label">Cardholder Name</label>
-                            {{ form.cardholder_name }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="id_card_number" class="form-label">Card Number</label>
-                            {{ form.card_number }}
-                        </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label for="id_card_expiry_month" class="form-label">Month</label>
-                                {{ form.card_expiry_month }}
+                            <label class="form-label">Card Information</label>
+                            <div id="card-element" class="form-control" style="padding: 10px; height: auto; min-height: 40px;">
+                                <!-- Stripe Elements will create form elements here -->
                             </div>
-                            <div class="col-md-4">
-                                <label for="id_card_expiry_year" class="form-label">Year</label>
-                                {{ form.card_expiry_year }}
-                            </div>
-                            <div class="col-md-4">
-                                <label for="id_card_cvv" class="form-label">CVV</label>
-                                {{ form.card_cvv }}
-                            </div>
+                            <div id="card-errors" role="alert" class="text-danger mt-2" style="display: none;"></div>
                         </div>
 
                         <div class="mb-3">
                             <div class="form-check">
-                                {{ form.save_payment_method }}
-                                <label class="form-check-label" for="id_save_payment_method">
+                                <input type="checkbox" id="save_payment_method" class="form-check-input">
+                                <label class="form-check-label" for="save_payment_method">
                                     Save this payment method for future purchases
                                 </label>
                             </div>
@@ -131,8 +121,46 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Stripe with CSRF-safe method
+    const stripe = Stripe('{{ settings.STRIPE_PUBLISHABLE_KEY }}');
+    const elements = stripe.elements();
+    
+    // Create an instance of the card Element
+    const cardElement = elements.create('card', {
+        style: {
+            base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                    color: '#aab7c4',
+                },
+            },
+            invalid: {
+                color: '#9e2146',
+            },
+        },
+    });
+    
+    // Add an instance of the card Element into the `card-element` <div>
+    cardElement.mount('#card-element');
+    
+    // Handle real-time validation errors from the card Element
+    cardElement.on('change', function(event) {
+        const displayError = document.getElementById('card-errors');
+        if (event.error) {
+            displayError.textContent = event.error.message;
+            displayError.style.display = 'block';
+        } else {
+            displayError.textContent = '';
+            displayError.style.display = 'none';
+        }
+    });
+    
     const paymentMethodSelect = document.getElementById('id_payment_method');
     const cardFields = document.getElementById('cardPaymentFields');
+    const form = document.querySelector('form');
+    const submitButton = form.querySelector('button[type="submit"]');
+    let isProcessingPayment = false;
     
     function toggleCardFields() {
         if (paymentMethodSelect.value === 'card') {
@@ -145,17 +173,102 @@ document.addEventListener('DOMContentLoaded', function() {
     paymentMethodSelect.addEventListener('change', toggleCardFields);
     toggleCardFields(); // Initial check
     
-    // Card number formatting
-    const cardNumberInput = document.getElementById('id_card_number');
-    if (cardNumberInput) {
-        cardNumberInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
-            if (formattedValue !== e.target.value) {
-                e.target.value = formattedValue;
+    // Handle form submission
+    form.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        if (isProcessingPayment) return; // Prevent double submission
+        
+        const paymentMethod = paymentMethodSelect.value;
+        
+        if (paymentMethod !== 'card') {
+            // For non-card payments, submit normally
+            form.submit();
+            return;
+        }
+        
+        // Handle Stripe card payment
+        isProcessingPayment = true;
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
+        
+        try {
+            // Create payment intent
+            const response = await fetch(`/api/stripe/create-payment-intent/{{ order.id }}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.error || 'Failed to create payment intent');
             }
-        });
-    }
+            
+            // Confirm payment with Stripe
+            const result = await stripe.confirmCardPayment(data.client_secret, {
+                payment_method: {
+                    card: cardElement,
+                    billing_details: {
+                        name: '{{ order.get_full_name }}',
+                        email: '{{ order.email }}',
+                    },
+                },
+                setup_future_usage: document.getElementById('save_payment_method').checked ? 'off_session' : undefined
+            });
+            
+            if (result.error) {
+                // Show error to customer
+                const errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                errorElement.style.display = 'block';
+                
+                // Re-enable the submit button
+                isProcessingPayment = false;
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Complete Payment';
+            } else {
+                // Payment succeeded
+                if (result.paymentIntent.status === 'succeeded') {
+                    // Confirm payment with our backend
+                    const confirmResponse = await fetch('/api/stripe/confirm-payment/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                        },
+                        body: JSON.stringify({
+                            payment_intent_id: result.paymentIntent.id
+                        })
+                    });
+                    
+                    const confirmData = await confirmResponse.json();
+                    
+                    if (confirmData.success) {
+                        // Redirect to success page
+                        window.location.href = confirmData.redirect_url;
+                    } else {
+                        throw new Error(confirmData.error || 'Payment confirmation failed');
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Payment error:', error);
+            
+            // Show error message
+            const errorElement = document.getElementById('card-errors');
+            errorElement.textContent = error.message || 'An unexpected error occurred. Please try again.';
+            errorElement.style.display = 'block';
+            
+            // Re-enable the submit button
+            isProcessingPayment = false;
+            submitButton.disabled = false;
+            submitButton.innerHTML = '<i class="bi bi-lock-fill me-2"></i>Complete Payment';
+        }
+    });
 });
 </script>
 

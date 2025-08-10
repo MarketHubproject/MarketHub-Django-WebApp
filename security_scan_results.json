@@ -1,0 +1,2621 @@
+{
+  "bandit": {
+    "errors": [],
+    "generated_at": "2025-08-10T17:05:07Z",
+    "metrics": {
+      ".\\accounts\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\accounts\\admin.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\accounts\\apps.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 4,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\accounts\\models.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\accounts\\tests.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 11,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 11,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 129,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\accounts\\views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\apply_rebranding.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 243,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\automated_rebranding.py": {
+        "CONFIDENCE.HIGH": 8,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 1,
+        "SEVERITY.LOW": 7,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 499,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\create_sample_data.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 259,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\deploy.py": {
+        "CONFIDENCE.HIGH": 3,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 2,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 233,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\admin.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 413,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\api_urls.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 16,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\api_views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 204,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\apps.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 4,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\context_processors.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 66,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\forms.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 406,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\check_product_images.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 102,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\create_hero_slides_simple.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 78,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\create_sample_categories.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 57,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\create_sample_hero_slides.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 105,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\create_sample_promotions.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 68,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\setup_sample_data.py": {
+        "CONFIDENCE.HIGH": 8,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 8,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 208,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\stripe_refund.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 103,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\management\\commands\\sync_product_image_paths.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 114,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\models.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 476,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\serializers.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 53,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\stripe_service.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 238,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\templatetags\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\templatetags\\currency_filters.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 29,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\tests.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 4,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 4,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 267,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\urls.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 58,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\homepage\\views.py": {
+        "CONFIDENCE.HIGH": 1,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1144,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\manage.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 17,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\asgi.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 10,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\settings.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 249,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\urls.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 26,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 3,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\markethub\\wsgi.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 10,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\admin.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\apps.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 4,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\forms.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 49,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\management\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\management\\commands\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\management\\commands\\check_all_product_images.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 174,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\management\\commands\\check_product_images.py": {
+        "CONFIDENCE.HIGH": 1,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 108,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\management\\commands\\populate_sample_data.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 100,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\models.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 8,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\tests.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 232,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\urls.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 13,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\products\\views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 184,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\admin.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\apps.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 4,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\models.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 48,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\tests.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\profiles\\views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\rename_branding_files.py": {
+        "CONFIDENCE.HIGH": 2,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 1,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 183,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\run_qa_workflow.py": {
+        "CONFIDENCE.HIGH": 2,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 1,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 186,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\run_security_scan.py": {
+        "CONFIDENCE.HIGH": 4,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 4,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 154,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\seed_data.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 118,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\staging_verification.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 128,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\store_lite_to_markethub_replacement.py": {
+        "CONFIDENCE.HIGH": 8,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 8,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 374,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\admin.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 109,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\apps.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 4,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\management\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\management\\commands\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\management\\commands\\create_sample_rewards_data.py": {
+        "CONFIDENCE.HIGH": 3,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 3,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 222,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\models.py": {
+        "CONFIDENCE.HIGH": 1,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 1,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 304,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\serializers.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\tests.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\urls.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 8,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\student_rewards\\views.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 1,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\test_api.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 6,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 6,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 131,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\tests\\test_security.py": {
+        "CONFIDENCE.HIGH": 3,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 5,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 8,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 326,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\utils\\__init__.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 0,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\utils\\sanitize.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 218,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      ".\\verify_media_files.py": {
+        "CONFIDENCE.HIGH": 0,
+        "CONFIDENCE.LOW": 0,
+        "CONFIDENCE.MEDIUM": 0,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 0,
+        "SEVERITY.LOW": 0,
+        "SEVERITY.MEDIUM": 0,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 86,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      "_totals": {
+        "CONFIDENCE.HIGH": 44,
+        "CONFIDENCE.LOW": 6,
+        "CONFIDENCE.MEDIUM": 20,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 5,
+        "SEVERITY.LOW": 59,
+        "SEVERITY.MEDIUM": 6,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 9376,
+        "nosec": 0,
+        "skipped_tests": 0
+      }
+    },
+    "results": [
+      {
+        "code": "27         # Test successful authentication\n28         user = authenticate(username='testuser', password='testpass123')\n29         self.assertIsNotNone(user)\n",
+        "col_offset": 15,
+        "end_col_offset": 72,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 28,
+        "line_range": [
+          28
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "32         # Test failed authentication\n33         user = authenticate(username='testuser', password='wrongpassword')\n34         self.assertIsNone(user)\n",
+        "col_offset": 15,
+        "end_col_offset": 74,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'wrongpassword'",
+        "line_number": 33,
+        "line_range": [
+          33
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "50     def test_create_user(self):\n51         user = User.objects.create_user(\n52             username='newuser',\n53             email='newuser@example.com',\n54             password='newpass123'\n55         )\n56 \n",
+        "col_offset": 15,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'newpass123'",
+        "line_number": 51,
+        "line_range": [
+          51,
+          52,
+          53,
+          54,
+          55
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "64     def test_create_superuser(self):\n65         superuser = User.objects.create_superuser(\n66             username='admin',\n67             email='admin@example.com',\n68             password='adminpass123'\n69         )\n70 \n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'adminpass123'",
+        "line_number": 65,
+        "line_range": [
+          65,
+          66,
+          67,
+          68,
+          69
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "83         self.logout_url = '/accounts/logout/'\n84         self.user = User.objects.create_user(\n85             username='testuser',\n86             email='test@example.com',\n87             password='testpass123'\n88         )\n89 \n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 84,
+        "line_range": [
+          84,
+          85,
+          86,
+          87,
+          88
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "95         # Test successful login\n96         login_successful = self.client.login(username='testuser', password='testpass123')\n97         self.assertTrue(login_successful)\n",
+        "col_offset": 27,
+        "end_col_offset": 89,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 96,
+        "line_range": [
+          96
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "104         # Login first\n105         self.client.login(username='testuser', password='testpass123')\n106 \n",
+        "col_offset": 8,
+        "end_col_offset": 70,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 105,
+        "line_range": [
+          105
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "120         # Test accessing profile with authentication\n121         self.client.login(username='testuser', password='testpass123')\n122         response = self.client.get(profile_url)\n",
+        "col_offset": 8,
+        "end_col_offset": 70,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 121,
+        "line_range": [
+          121
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "127     def setUp(self):\n128         self.regular_user = User.objects.create_user(\n129             username='regular',\n130             email='regular@example.com',\n131             password='pass123'\n132         )\n133 \n",
+        "col_offset": 28,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'pass123'",
+        "line_number": 128,
+        "line_range": [
+          128,
+          129,
+          130,
+          131,
+          132
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "133 \n134         self.staff_user = User.objects.create_user(\n135             username='staff',\n136             email='staff@example.com',\n137             password='pass123',\n138             is_staff=True\n139         )\n140 \n",
+        "col_offset": 26,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'pass123'",
+        "line_number": 134,
+        "line_range": [
+          134,
+          135,
+          136,
+          137,
+          138,
+          139
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "140 \n141         self.superuser = User.objects.create_superuser(\n142             username='super',\n143             email='super@example.com',\n144             password='pass123'\n145         )\n146 \n",
+        "col_offset": 25,
+        "end_col_offset": 9,
+        "filename": ".\\accounts\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'pass123'",
+        "line_number": 141,
+        "line_range": [
+          141,
+          142,
+          143,
+          144,
+          145
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "27 import shutil\n28 import subprocess\n29 import mimetypes\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 28,
+        "line_range": [
+          28
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "197         \"\"\"Generate MD5 checksum of file content.\"\"\"\n198         return hashlib.md5(content.encode('utf-8')).hexdigest()\n199 \n",
+        "col_offset": 15,
+        "end_col_offset": 51,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 327,
+          "link": "https://cwe.mitre.org/data/definitions/327.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+        "line_number": 198,
+        "line_range": [
+          198
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b324_hashlib.html",
+        "test_id": "B324",
+        "test_name": "hashlib"
+      },
+      {
+        "code": "508         \"\"\"Check if current directory is a git repository.\"\"\"\n509         return os.path.exists('.git') or subprocess.run(['git', 'rev-parse', '--git-dir'],\n510                                                         capture_output=True, check=False).returncode == 0\n511 \n",
+        "col_offset": 41,
+        "end_col_offset": 89,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 509,
+        "line_range": [
+          509,
+          510
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "508         \"\"\"Check if current directory is a git repository.\"\"\"\n509         return os.path.exists('.git') or subprocess.run(['git', 'rev-parse', '--git-dir'],\n510                                                         capture_output=True, check=False).returncode == 0\n511 \n",
+        "col_offset": 41,
+        "end_col_offset": 89,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 509,
+        "line_range": [
+          509,
+          510
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "524             # Add all modified files\n525             subprocess.run(['git', 'add', '-A'], check=True)\n526 \n",
+        "col_offset": 12,
+        "end_col_offset": 60,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 525,
+        "line_range": [
+          525
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "524             # Add all modified files\n525             subprocess.run(['git', 'add', '-A'], check=True)\n526 \n",
+        "col_offset": 12,
+        "end_col_offset": 60,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 525,
+        "line_range": [
+          525
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "527             # Commit changes\n528             subprocess.run(['git', 'commit', '-m', message], check=True)\n529 \n",
+        "col_offset": 12,
+        "end_col_offset": 72,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 528,
+        "line_range": [
+          528
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "527             # Commit changes\n528             subprocess.run(['git', 'commit', '-m', message], check=True)\n529 \n",
+        "col_offset": 12,
+        "end_col_offset": 72,
+        "filename": ".\\automated_rebranding.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 528,
+        "line_range": [
+          528
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "7 import sys\n8 import subprocess\n9 import json\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\deploy.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 8,
+        "line_range": [
+          8
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "55                     command,\n56                     shell=True,\n57                     check=check,\n58                     capture_output=True,\n59                     text=True\n60                 )\n61                 return result\n62             else:\n63                 subprocess.run(command, shell=True, check=check)\n",
+        "col_offset": 25,
+        "end_col_offset": 17,
+        "filename": ".\\deploy.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 56,
+        "line_range": [
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "62             else:\n63                 subprocess.run(command, shell=True, check=check)\n64         except subprocess.CalledProcessError as e:\n",
+        "col_offset": 16,
+        "end_col_offset": 64,
+        "filename": ".\\deploy.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 63,
+        "line_range": [
+          63
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "200             # Assign random seller\n201             seller = random.choice(users)\n202             \n",
+        "col_offset": 21,
+        "end_col_offset": 41,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 201,
+        "line_range": [
+          201
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "208                 category=product_data['category'],\n209                 condition=random.choice(conditions),\n210                 location=random.choice(locations),\n",
+        "col_offset": 26,
+        "end_col_offset": 51,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 209,
+        "line_range": [
+          209
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "209                 condition=random.choice(conditions),\n210                 location=random.choice(locations),\n211                 seller=seller,\n",
+        "col_offset": 25,
+        "end_col_offset": 49,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 210,
+        "line_range": [
+          210
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "212                 is_featured=i < 6,  # First 6 products are featured\n213                 views_count=random.randint(10, 500)\n214             )\n",
+        "col_offset": 28,
+        "end_col_offset": 51,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 213,
+        "line_range": [
+          213
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "237             # Add 1-3 reviews per product\n238             num_reviews = random.randint(1, 3)\n239             reviewers = random.sample(users, min(num_reviews, len(users)))\n",
+        "col_offset": 26,
+        "end_col_offset": 46,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 238,
+        "line_range": [
+          238
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "245                         user=reviewer,\n246                         rating=random.randint(3, 5),  # Good ratings mostly\n247                         title=f\"Great {product.category.title()}!\",\n",
+        "col_offset": 31,
+        "end_col_offset": 51,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 246,
+        "line_range": [
+          246
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "247                         title=f\"Great {product.category.title()}!\",\n248                         comment=random.choice(review_comments),\n249                         is_approved=True\n",
+        "col_offset": 32,
+        "end_col_offset": 62,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 248,
+        "line_range": [
+          248
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "254             # Each user favorites 2-5 products\n255             num_favorites = random.randint(2, 5)\n256             favorite_products = random.sample(products, min(num_favorites, len(products)))\n",
+        "col_offset": 28,
+        "end_col_offset": 48,
+        "filename": ".\\homepage\\management\\commands\\setup_sample_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 255,
+        "line_range": [
+          255
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "173     def setUp(self):\n174         self.user = User.objects.create_user(\n175             username='testuser',\n176             email='test@example.com',\n177             password='testpass123'\n178         )\n179         self.cart = Cart.objects.create(user=self.user)\n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\homepage\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 174,
+        "line_range": [
+          174,
+          175,
+          176,
+          177,
+          178
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "218     def setUp(self):\n219         self.user = User.objects.create_user(\n220             username='testuser',\n221             email='test@example.com',\n222             password='testpass123'\n223         )\n224         self.cart = Cart.objects.create(user=self.user)\n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\homepage\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 219,
+        "line_range": [
+          219,
+          220,
+          221,
+          222,
+          223
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "260         self.client = Client()\n261         self.user = User.objects.create_user(\n262             username='testuser',\n263             email='test@example.com',\n264             password='testpass123'\n265         )\n266 \n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\homepage\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 261,
+        "line_range": [
+          261,
+          262,
+          263,
+          264,
+          265
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "292     def setUp(self):\n293         self.user = User.objects.create_user(\n294             username='testuser',\n295             email='test@example.com',\n296             password='testpass123'\n297         )\n298         self.product = Product.objects.create(\n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\homepage\\tests.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'testpass123'",
+        "line_number": 293,
+        "line_range": [
+          293,
+          294,
+          295,
+          296,
+          297
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "29         import random\n30         success = random.choice([True, True, True, False])  # 75% success rate for demo\n31         \n",
+        "col_offset": 18,
+        "end_col_offset": 58,
+        "filename": ".\\homepage\\views.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 30,
+        "line_range": [
+          30
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "52                 # Assert that the file exists\n53                 assert image_path.exists(), f'Image file missing: {image_path}'\n54                 existing_files += 1\n",
+        "col_offset": 16,
+        "end_col_offset": 79,
+        "filename": ".\\products\\management\\commands\\check_product_images.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 703,
+          "link": "https://cwe.mitre.org/data/definitions/703.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Use of assert detected. The enclosed code will be removed when compiling to optimised byte code.",
+        "line_number": 53,
+        "line_range": [
+          53
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b101_assert_used.html",
+        "test_id": "B101",
+        "test_name": "assert_used"
+      },
+      {
+        "code": "8 import re\n9 import subprocess\n10 import shutil\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\rename_branding_files.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 9,
+        "line_range": [
+          9
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "53         try:\n54             result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=self.root_dir)\n55             if result.returncode != 0:\n",
+        "col_offset": 21,
+        "end_col_offset": 107,
+        "filename": ".\\rename_branding_files.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 54,
+        "line_range": [
+          54
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "7 import django\n8 import subprocess\n9 from datetime import datetime\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\run_qa_workflow.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 8,
+        "line_range": [
+          8
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "29             command,\n30             shell=True,\n31             check=True,\n32             capture_output=True,\n33             text=True\n34         )\n35         return result\n36     except subprocess.CalledProcessError as e:\n37         log(f\"Command failed: {command}\", 'ERROR')\n",
+        "col_offset": 17,
+        "end_col_offset": 9,
+        "filename": ".\\run_qa_workflow.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 30,
+        "line_range": [
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "7 \n8 import subprocess\n9 import sys\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\run_security_scan.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 8,
+        "line_range": [
+          8
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "24         print(\"Running bandit security scanner...\")\n25         bandit_result = subprocess.run([\n26             sys.executable, '-m', 'bandit', '-r', '.', \n27             '--exclude', 'venv,env,tests,migrations',\n28             '--format', 'json'\n29         ], capture_output=True, text=True, timeout=120)\n30         \n",
+        "col_offset": 24,
+        "end_col_offset": 55,
+        "filename": ".\\run_security_scan.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 25,
+        "line_range": [
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "63         print(\"Running safety vulnerability scanner...\")\n64         safety_result = subprocess.run([\n65             sys.executable, '-m', 'safety', 'check', '--json'\n66         ], capture_output=True, text=True, timeout=120)\n67         \n",
+        "col_offset": 24,
+        "end_col_offset": 55,
+        "filename": ".\\run_security_scan.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 64,
+        "line_range": [
+          64,
+          65,
+          66
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "157     try:\n158         result = subprocess.run([\n159             sys.executable, '-m', 'flake8', '.', \n160             '--exclude=venv,env,migrations',\n161             '--max-line-length=100',\n162             '--select=F821,E999,F811',\n163             '--statistics'\n164         ], capture_output=True, text=True, timeout=60)\n165         \n",
+        "col_offset": 17,
+        "end_col_offset": 54,
+        "filename": ".\\run_security_scan.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 158,
+        "line_range": [
+          158,
+          159,
+          160,
+          161,
+          162,
+          163,
+          164
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "32 import re\n33 import subprocess\n34 import argparse\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 33,
+        "line_range": [
+          33
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "299             # Run the migration\n300             result = subprocess.run(\n301                 [\"python\", \"manage.py\", \"migrate\", \"homepage\"],\n302                 cwd=self.project_root,\n303                 capture_output=True,\n304                 text=True\n305             )\n306             \n",
+        "col_offset": 21,
+        "end_col_offset": 13,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 300,
+        "line_range": [
+          300,
+          301,
+          302,
+          303,
+          304,
+          305
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "299             # Run the migration\n300             result = subprocess.run(\n301                 [\"python\", \"manage.py\", \"migrate\", \"homepage\"],\n302                 cwd=self.project_root,\n303                 capture_output=True,\n304                 text=True\n305             )\n306             \n",
+        "col_offset": 21,
+        "end_col_offset": 13,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 300,
+        "line_range": [
+          300,
+          301,
+          302,
+          303,
+          304,
+          305
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "334                 # Try npm build\n335                 result = subprocess.run(\n336                     [\"npm\", \"run\", \"build\"],\n337                     cwd=self.project_root,\n338                     capture_output=True,\n339                     text=True\n340                 )\n341                 \n",
+        "col_offset": 25,
+        "end_col_offset": 17,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 335,
+        "line_range": [
+          335,
+          336,
+          337,
+          338,
+          339,
+          340
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "334                 # Try npm build\n335                 result = subprocess.run(\n336                     [\"npm\", \"run\", \"build\"],\n337                     cwd=self.project_root,\n338                     capture_output=True,\n339                     text=True\n340                 )\n341                 \n",
+        "col_offset": 25,
+        "end_col_offset": 17,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 335,
+        "line_range": [
+          335,
+          336,
+          337,
+          338,
+          339,
+          340
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "352                 # Try using sass command\n353                 result = subprocess.run(\n354                     [\"sass\", str(scss_file), str(css_file)],\n355                     capture_output=True,\n356                     text=True\n357                 )\n358                 \n",
+        "col_offset": 25,
+        "end_col_offset": 17,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Starting a process with a partial executable path",
+        "line_number": 353,
+        "line_range": [
+          353,
+          354,
+          355,
+          356,
+          357
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b607_start_process_with_partial_path.html",
+        "test_id": "B607",
+        "test_name": "start_process_with_partial_path"
+      },
+      {
+        "code": "352                 # Try using sass command\n353                 result = subprocess.run(\n354                     [\"sass\", str(scss_file), str(css_file)],\n355                     capture_output=True,\n356                     text=True\n357                 )\n358                 \n",
+        "col_offset": 25,
+        "end_col_offset": 17,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 353,
+        "line_range": [
+          353,
+          354,
+          355,
+          356,
+          357
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "406                             issues.append(f\"Still contains 'Store Lite' references: {file_path}\")\n407                 except Exception:\n408                     pass\n409         \n",
+        "col_offset": 16,
+        "end_col_offset": 24,
+        "filename": ".\\store_lite_to_markethub_replacement.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 703,
+          "link": "https://cwe.mitre.org/data/definitions/703.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Try, Except, Pass detected.",
+        "line_number": 407,
+        "line_range": [
+          407,
+          408
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b110_try_except_pass.html",
+        "test_id": "B110",
+        "test_name": "try_except_pass"
+      },
+      {
+        "code": "190 \n191                 for reason, points in random.sample(transaction_types, random.randint(2, 4)):\n192                     PointsTransaction.objects.create(\n",
+        "col_offset": 71,
+        "end_col_offset": 91,
+        "filename": ".\\student_rewards\\management\\commands\\create_sample_rewards_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 191,
+        "line_range": [
+          191
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "195                         reason=reason,\n196                         order_reference=f'ORD-{random.randint(10000, 99999)}'\n197                     )\n",
+        "col_offset": 47,
+        "end_col_offset": 75,
+        "filename": ".\\student_rewards\\management\\commands\\create_sample_rewards_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 196,
+        "line_range": [
+          196
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "211                 # Redeem a random available tier\n212                 tier = random.choice(available_tiers)\n213 \n",
+        "col_offset": 23,
+        "end_col_offset": 53,
+        "filename": ".\\student_rewards\\management\\commands\\create_sample_rewards_data.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 212,
+        "line_range": [
+          212
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "340             prefix = self.discount_tier.name[:3].upper()\n341             suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))\n342             self.discount_code = f\"{prefix}-{suffix}\"\n",
+        "col_offset": 29,
+        "end_col_offset": 88,
+        "filename": ".\\student_rewards\\models.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 341,
+        "line_range": [
+          341
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "16     try:\n17         response = requests.get(f\"{BASE_URL}/\")\n18         if response.status_code == 200:\n",
+        "col_offset": 19,
+        "end_col_offset": 47,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 17,
+        "line_range": [
+          17
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "37     try:\n38         response = requests.get(f\"{BASE_URL}/products/\")\n39         if response.status_code == 200:\n",
+        "col_offset": 19,
+        "end_col_offset": 56,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 38,
+        "line_range": [
+          38
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "60     try:\n61         response = requests.get(f\"{BASE_URL}/categories/\")\n62         if response.status_code == 200:\n",
+        "col_offset": 19,
+        "end_col_offset": 58,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 61,
+        "line_range": [
+          61
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "80         # Test login with invalid credentials\n81         response = requests.post(f\"{BASE_URL}/login/\", json={\n82             \"username\": \"testuser\",\n83             \"password\": \"wrongpassword\"\n84         })\n85 \n",
+        "col_offset": 19,
+        "end_col_offset": 10,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 81,
+        "line_range": [
+          81,
+          82,
+          83,
+          84
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "89         # Test with admin credentials (if they exist)\n90         response = requests.post(f\"{BASE_URL}/login/\", json={\n91             \"username\": \"admin\",\n92             \"password\": \"admin123\"\n93         })\n94 \n",
+        "col_offset": 19,
+        "end_col_offset": 10,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 90,
+        "line_range": [
+          90,
+          91,
+          92,
+          93
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "123         # Test cart view\n124         response = requests.get(f\"{BASE_URL}/cart/\", headers=headers)\n125         if response.status_code == 200:\n",
+        "col_offset": 19,
+        "end_col_offset": 69,
+        "filename": ".\\test_api.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Requests call without timeout",
+        "line_number": 124,
+        "line_range": [
+          124
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "141         self.client = Client()\n142         self.user = User.objects.create_user(\n143             username='testuser',\n144             email='test@example.com',\n145             password='securepassword123'\n146         )\n147         \n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'securepassword123'",
+        "line_number": 142,
+        "line_range": [
+          142,
+          143,
+          144,
+          145,
+          146
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "183         \"\"\"Test session security settings\"\"\"\n184         self.client.login(username='testuser', password='securepassword123')\n185         \n",
+        "col_offset": 8,
+        "end_col_offset": 76,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'securepassword123'",
+        "line_number": 184,
+        "line_range": [
+          184
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "195         \"\"\"Test CSRF protection on forms\"\"\"\n196         self.client.login(username='testuser', password='securepassword123')\n197         \n",
+        "col_offset": 8,
+        "end_col_offset": 76,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'securepassword123'",
+        "line_number": 196,
+        "line_range": [
+          196
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "323         self.client = Client()\n324         self.user = User.objects.create_user(\n325             username='testuser',\n326             email='test@example.com',\n327             password='securepassword123'\n328         )\n329         \n",
+        "col_offset": 20,
+        "end_col_offset": 9,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'securepassword123'",
+        "line_number": 324,
+        "line_range": [
+          324,
+          325,
+          326,
+          327,
+          328
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "331         \"\"\"Test XSS protection end-to-end\"\"\"\n332         self.client.login(username='testuser', password='securepassword123')\n333         \n",
+        "col_offset": 8,
+        "end_col_offset": 76,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'securepassword123'",
+        "line_number": 332,
+        "line_range": [
+          332
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b106_hardcoded_password_funcarg.html",
+        "test_id": "B106",
+        "test_name": "hardcoded_password_funcarg"
+      },
+      {
+        "code": "373     \"\"\"Run automated security scans\"\"\"\n374     import subprocess\n375     import sys\n",
+        "col_offset": 4,
+        "end_col_offset": 21,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 374,
+        "line_range": [
+          374
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "385         print(\"Running bandit security scanner...\")\n386         bandit_result = subprocess.run([\n387             sys.executable, '-m', 'bandit', '-r', '.', \n388             '--exclude', 'venv,env,tests,migrations',\n389             '--format', 'json'\n390         ], capture_output=True, text=True, timeout=60)\n391         \n",
+        "col_offset": 24,
+        "end_col_offset": 54,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 386,
+        "line_range": [
+          386,
+          387,
+          388,
+          389,
+          390
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      },
+      {
+        "code": "402         print(\"Running safety vulnerability scanner...\")\n403         safety_result = subprocess.run([\n404             sys.executable, '-m', 'safety', 'check', '--json'\n405         ], capture_output=True, text=True, timeout=60)\n406         \n",
+        "col_offset": 24,
+        "end_col_offset": 54,
+        "filename": ".\\tests\\test_security.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "subprocess call - check for execution of untrusted input.",
+        "line_number": 403,
+        "line_range": [
+          403,
+          404,
+          405
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.7.5/plugins/b603_subprocess_without_shell_equals_true.html",
+        "test_id": "B603",
+        "test_name": "subprocess_without_shell_equals_true"
+      }
+    ]
+  },
+  "safety": [],
+  "status": "failed",
+  "high_severity_count": 5
+}

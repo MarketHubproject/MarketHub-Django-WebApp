@@ -17,12 +17,12 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.addEventListener("click", function (e) {
       // Add loading state
       const originalText = this.innerHTML;
-      this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Adding...';
+      this.innerHTML = '<i class="bi bi-arrow-repeat me-1" style="animation: spin 1s linear infinite;"></i>Adding...';
       this.disabled = true;
 
       // Simulate API call delay (remove this in production)
       setTimeout(() => {
-        this.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+        this.innerHTML = '<i class="bi bi-check me-1"></i>Added!';
         setTimeout(() => {
           this.innerHTML = originalText;
           this.disabled = false;
@@ -130,11 +130,11 @@ function openQuickView(productId) {
                 <div class="col-md-6">
                     <h4>Sample Product Name</h4>
                     <div class="rating mb-2" role="img" aria-label="4 out of 5 stars rating">
-                        <i class="fas fa-star text-warning" aria-hidden="true"></i>
-                        <i class="fas fa-star text-warning" aria-hidden="true"></i>
-                        <i class="fas fa-star text-warning" aria-hidden="true"></i>
-                        <i class="fas fa-star text-warning" aria-hidden="true"></i>
-                        <i class="far fa-star text-warning" aria-hidden="true"></i>
+                        <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+                        <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+                        <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+                        <i class="bi bi-star-fill text-warning" aria-hidden="true"></i>
+                        <i class="bi bi-star text-warning" aria-hidden="true"></i>
                         <span class="ms-2 text-muted">(4.0)</span>
                     </div>
                     <p class="text-muted">This is a sample product description that would normally be loaded from your database.</p>
@@ -143,11 +143,11 @@ function openQuickView(productId) {
                     </div>
                     <div class="d-grid gap-2">
                         <button class="btn btn-primary btn-lg" aria-describedby="add-to-cart-desc">
-                            <i class="fas fa-cart-plus me-2" aria-hidden="true"></i>Add to Cart
+                            <i class="bi bi-cart-plus me-2" aria-hidden="true"></i>Add to Cart
                         </button>
                         <div id="add-to-cart-desc" class="visually-hidden">Add this product to your shopping cart</div>
                         <a href="/product/${productId}/" class="btn btn-outline-secondary" role="button">
-                            <i class="fas fa-info-circle me-2" aria-hidden="true"></i>View Full Details
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>View Full Details
                         </a>
                     </div>
                 </div>

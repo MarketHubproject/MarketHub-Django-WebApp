@@ -1,0 +1,109 @@
+# MarketHub - GitHub Code Owners
+# This file defines code ownership for automatic review assignment in GitHub PRs
+# 
+# IMPORTANT: Update team names and usernames to match your actual GitHub organization
+
+# =============================================================================
+# TEMPLATES & UI - Critical for Icon Consistency
+# =============================================================================
+
+# All template files require UI/UX review to prevent icon regressions
+templates/** @frontend-team @ui-ux-team
+homepage/templates/** @frontend-team @ui-ux-team @backend-team
+*.html @frontend-team @ui-ux-team
+
+# Static files that could contain icon usage
+*/static/**/*.css @frontend-team @ui-ux-team
+*/static/**/*.scss @frontend-team @ui-ux-team
+*/static/**/*.js @frontend-team
+
+# =============================================================================
+# STYLE GUIDE & DOCUMENTATION
+# =============================================================================
+
+# Icon style guide requires design team approval
+docs/style-guide/icons.md @ui-ux-team @frontend-team @maintainers
+
+# All style guide changes need review
+docs/style-guide/** @ui-ux-team @frontend-team @maintainers
+
+# Documentation changes
+docs/** @tech-writers @maintainers
+README.md @tech-writers @maintainers
+*.md @tech-writers
+
+# =============================================================================
+# LINTING & CONFIGURATION
+# =============================================================================
+
+# Stylelint configuration affects icon usage rules
+.stylelintrc.json @frontend-team @maintainers
+.stylelintrc.js @frontend-team @maintainers
+
+# Package configuration for frontend dependencies
+package.json @frontend-team @maintainers
+package-lock.json @frontend-team
+
+# =============================================================================
+# DJANGO APPS & TEMPLATES
+# =============================================================================
+
+# Homepage app templates and static files
+homepage/ @frontend-team @backend-team
+accounts/ @backend-team @security-team
+products/ @backend-team @frontend-team
+
+# =============================================================================
+# SECURITY & CORE SETTINGS
+# =============================================================================
+
+# Core Django settings
+markethub/settings/ @backend-team @security-team @maintainers
+requirements.txt @backend-team @maintainers
+
+# Security-related files
+*/migrations/ @backend-team
+*/models.py @backend-team
+
+# =============================================================================
+# TESTING & CI/CD
+# =============================================================================
+
+# Test files
+tests/ @backend-team @qa-team
+test_*.py @backend-team @qa-team
+**/tests.py @backend-team @qa-team
+
+# CI/CD configuration
+.github/workflows/ @maintainers @devops-team
+.github/ @maintainers
+
+# =============================================================================
+# FALLBACK OWNERSHIP
+# =============================================================================
+
+# Fallback - any unspecified files require maintainer review
+* @maintainers
+
+# =============================================================================
+# TEAM DEFINITIONS (UPDATE THESE!)
+# =============================================================================
+# 
+# Replace the following example team names with your actual GitHub teams/users:
+#
+# @frontend-team - Frontend developers responsible for HTML, CSS, JS
+# @ui-ux-team - UI/UX designers responsible for visual consistency
+# @backend-team - Backend developers working on Django
+# @security-team - Security specialists
+# @qa-team - Quality assurance engineers  
+# @tech-writers - Technical documentation team
+# @maintainers - Project maintainers and leads
+# @devops-team - DevOps/Infrastructure team
+#
+# Example individual assignments:
+# @john-doe - Lead developer
+# @jane-smith - UI/UX lead
+# @security-expert - Security specialist
+#
+# GitHub Teams format: @orgname/teamname
+# Individual users format: @username

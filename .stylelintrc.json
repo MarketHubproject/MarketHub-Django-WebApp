@@ -1,0 +1,25 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "selector-class-pattern": [
+      "^(?!.*fa-).*$",
+      {
+        "message": "Avoid using Font Awesome classes (fa-*). Use Bootstrap Icons (bi bi-*) instead. See docs/style-guide/icons.md for migration guide."
+      }
+    ],
+    "declaration-property-value-no-unknown": [
+      true,
+      {
+        "ignoreProperties": {
+          "content": "/^\\\\[ef][0-9a-f]{3}$/i"
+        },
+        "message": "Avoid manually writing 'content' CSS rules for icons. Use Bootstrap Icons directly: <i class=\"bi bi-icon-name\"></i>"
+      }
+    ]
+  },
+  "ignoreFiles": [
+    "node_modules/**/*",
+    "staticfiles/**/*",
+    "venv/**/*"
+  ]
+}

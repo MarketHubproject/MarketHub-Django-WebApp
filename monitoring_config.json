@@ -1,0 +1,59 @@
+{
+  "health_checks": {
+    "enabled": true,
+    "check_interval": 60,
+    "endpoints": [
+      {
+        "url": "http://localhost:8000/api/health/",
+        "name": "API Health"
+      },
+      {
+        "url": "http://localhost:8000/",
+        "name": "Homepage"
+      },
+      {
+        "url": "http://localhost:8000/api/products/",
+        "name": "Products API"
+      }
+    ]
+  },
+  "performance_monitoring": {
+    "enabled": true,
+    "cpu_threshold": 80,
+    "memory_threshold": 85,
+    "disk_threshold": 90,
+    "response_time_threshold": 2.0,
+    "error_rate_threshold": 5.0
+  },
+  "database_monitoring": {
+    "enabled": true,
+    "connection_pool_threshold": 80,
+    "slow_query_threshold": 1.0,
+    "deadlock_monitoring": true
+  },
+  "security_monitoring": {
+    "enabled": true,
+    "failed_login_threshold": 10,
+    "suspicious_ip_monitoring": true,
+    "csrf_failure_monitoring": true
+  },
+  "business_metrics": {
+    "enabled": true,
+    "order_monitoring": true,
+    "payment_failure_monitoring": true,
+    "inventory_alerts": true
+  },
+  "alerting": {
+    "email_enabled": false,
+    "slack_enabled": false,
+    "webhook_enabled": true,
+    "webhook_url": "http://localhost:8000/monitoring/webhook/",
+    "alert_cooldown": 300
+  },
+  "logging": {
+    "log_level": "INFO",
+    "log_rotation": true,
+    "max_log_size": "100MB",
+    "backup_count": 10
+  }
+}

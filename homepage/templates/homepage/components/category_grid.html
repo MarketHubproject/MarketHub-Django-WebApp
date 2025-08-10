@@ -23,7 +23,7 @@
                                     {% if category.icon_class %}
                                         <i class="{{ category.icon_class }} text-white" style="font-size: 4rem; opacity: 0.9;"></i>
                                     {% else %}
-                                        <i class="fas fa-th-large text-white" style="font-size: 4rem; opacity: 0.9;"></i>
+                                        <i class="bi bi-grid-3x3-gap text-white" style="font-size: 4rem; opacity: 0.9;"></i>
                                     {% endif %}
                                 </div>
                             {% endif %}
@@ -37,7 +37,7 @@
                                     {% if category.icon_class %}
                                         <i class="{{ category.icon_class }} text-white" style="font-size: 3rem; opacity: 0.9;"></i>
                                     {% else %}
-                                        <i class="fas fa-th-large text-white" style="font-size: 3rem; opacity: 0.9;"></i>
+                                        <i class="bi bi-grid-3x3-gap text-white" style="font-size: 3rem; opacity: 0.9;"></i>
                                     {% endif %}
                                 </div>
                             </div>
@@ -60,7 +60,7 @@
                                 </div>
                                 <a href="{% url 'category_detail' category.slug %}" 
                                    class="btn btn-primary btn-lg w-100 rounded-pill category-cta-btn">
-                                    <i class="fas fa-arrow-right me-2"></i>Shop {{ category.name }}
+                                    <i class="bi bi-arrow-right me-2"></i>Shop {{ category.name }}
                                 </a>
                             </div>
                         </div>
@@ -84,7 +84,7 @@
                             </div>
                             <div class="image-overlay">
                                 <div class="overlay-content">
-                                    <i class="fas fa-laptop text-white" style="font-size: 3rem; opacity: 0.9;"></i>
+                                    <i class="bi bi-laptop text-white" style="font-size: 3rem; opacity: 0.9;"></i>
                                 </div>
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                                     <span class="h5 text-info fw-bold mb-0">20% OFF</span>
                                 </div>
                                 <a href="{% url 'product_list' %}?category=electronics" class="btn btn-info btn-lg w-100 rounded-pill text-white">
-                                    <i class="fas fa-bolt me-2"></i>Tech Deals
+                                    <i class="bi bi-lightning me-2"></i>Tech Deals
                                 </a>
                             </div>
                         </div>
@@ -117,7 +117,7 @@
                             </div>
                             <div class="image-overlay">
                                 <div class="overlay-content">
-                                    <i class="fas fa-tshirt text-white" style="font-size: 3rem; opacity: 0.9;"></i>
+                                    <i class="bi bi-person-standing text-white" style="font-size: 3rem; opacity: 0.9;"></i>
                                 </div>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                     <span class="h5 text-success fw-bold mb-0">30%</span>
                                 </div>
                                 <a href="{% url 'product_list' %}?category=clothing" class="btn btn-success btn-lg w-100 rounded-pill">
-                                    <i class="fas fa-tags me-2"></i>Shop Fashion
+                                    <i class="bi bi-tags me-2"></i>Shop Fashion
                                 </a>
                             </div>
                         </div>
@@ -150,7 +150,7 @@
                             </div>
                             <div class="image-overlay">
                                 <div class="overlay-content">
-                                    <i class="fas fa-book text-white" style="font-size: 3rem; opacity: 0.9;"></i>
+                                    <i class="bi bi-book text-white" style="font-size: 3rem; opacity: 0.9;"></i>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                                     <span class="h5 text-warning fw-bold mb-0">$9.99</span>
                                 </div>
                                 <a href="{% url 'product_list' %}?category=books" class="btn btn-warning btn-lg w-100 rounded-pill text-dark">
-                                    <i class="fas fa-book-open me-2"></i>Browse Books
+                                    <i class="bi bi-book me-2"></i>Browse Books
                                 </a>
                             </div>
                         </div>

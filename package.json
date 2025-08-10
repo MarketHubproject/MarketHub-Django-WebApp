@@ -6,11 +6,17 @@
     "build": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --style=compressed --source-map",
     "build-dev": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --style=expanded --source-map",
     "watch": "sass homepage/static/MarketHub/scss/markethub.scss homepage/static/MarketHub/css/markethub.css --watch --style=expanded --source-map",
-    "clean": "rimraf homepage/static/MarketHub/css/*.css*"
+    "clean": "rimraf homepage/static/MarketHub/css/*.css*",
+    "lint-css": "stylelint **/*.css **/*.scss",
+    "lint-css:fix": "stylelint **/*.css **/*.scss --fix",
+    "lint-icons": "stylelint **/*.css **/*.scss --config .stylelintrc.json"
   },
   "devDependencies": {
+    "bootstrap-icons": "^1.13.1",
+    "rimraf": "^5.0.5",
     "sass": "^1.77.8",
-    "rimraf": "^5.0.5"
+    "stylelint": "^16.0.0",
+    "stylelint-config-standard": "^36.0.0"
   },
   "keywords": [
     "scss",

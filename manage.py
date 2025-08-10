@@ -7,6 +7,12 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'markethub.settings')
+    
+    # Force development environment
+    os.environ.setdefault('DJANGO_ENVIRONMENT', 'development')
+    print(f"[MANAGE.PY] DJANGO_SETTINGS_MODULE: {os.environ.get('DJANGO_SETTINGS_MODULE')}")
+    print(f"[MANAGE.PY] DJANGO_ENVIRONMENT: {os.environ.get('DJANGO_ENVIRONMENT')}")
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
