@@ -1,0 +1,41 @@
+# MarketHub PostgreSQL Docker Compose Configuration
+# Run with: docker-compose up -d
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: markethub_postgres
+    environment:
+      POSTGRES_DB: markethub_db
+      POSTGRES_USER: markethub_user
+      POSTGRES_PASSWORD: markethub_password_secure_2024
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - markethub_network
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: markethub_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@markethub.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - markethub_network
+
+volumes:
+  postgres_data:
+
+networks:
+  markethub_network:
+    driver: bridge

@@ -15,8 +15,22 @@ Pillow==11.3.0
 # Environment configuration management
 python-decouple==3.8
 
-# Production deployment dependencies (uncomment for production)
-# psycopg2-binary==2.9.7  # PostgreSQL database adapter
+# Payment Processing
+stripe==11.6.0
+
+# Security and CSP
+django-csp==3.8
+django-secure==1.0.2
+django-axes==6.4.0
+
+# Database
+psycopg2-binary==2.9.10
+
+# Testing and Coverage
+pytest-django==4.8.0
+coverage==7.6.9
+
+# Production deployment dependencies
 # gunicorn==21.2.0        # WSGI HTTP Server
 # django-redis==5.3.0     # Redis caching backend
 # django-cors-headers==4.2.0  # CORS handling for API
