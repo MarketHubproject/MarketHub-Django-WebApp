@@ -7,9 +7,11 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q, Avg, Count
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
+from decimal import Decimal
 
-from .models import Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem, Favorite, Review, ProductImage
-from .forms import ProductForm, CheckoutForm
+from .models import Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem, Favorite, Review, ProductImage, Payment, PaymentMethod, ProductDraft
+from .forms import ProductForm, CheckoutForm, PaymentForm, SavedPaymentMethodForm, ProductDraftForm, ProductSearchForm
 import requests
 import json
 
@@ -147,8 +149,13 @@ def create_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            product = form.save(commit=False)
+            product.seller = request.user
+            product.save()
+            messages.success(request, f'Product "{product.name}" has been created successfully!')
             return redirect('product_list')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
         form = ProductForm()
     return render(request, 'homepage/create_product.html', {'form': form})
@@ -695,3 +702,814 @@ def update_product_status(request, product_id):
             messages.error(request, "Invalid status.")
 
     return redirect('seller_dashboard')
+
+
+# Advanced Search & Analytics Functions
+@login_required
+def advanced_search(request):
+    """Advanced search with multiple filters and saved searches"""
+    from django.db.models import Min, Max
+    from .models import SavedSearch
+    
+    # Get price range for filters
+    price_range = Product.objects.aggregate(
+        min_price=Min('price'),
+        max_price=Max('price')
+    )
+    
+    # Get all available filters
+    categories = Product.CATEGORY_CHOICES
+    locations = Product.LOCATION_CHOICES
+    conditions = Product.CONDITION_CHOICES
+    
+    # Get user's saved searches
+    saved_searches = SavedSearch.objects.filter(user=request.user, is_active=True) if request.user.is_authenticated else []
+    
+    # Process search
+    products = Product.objects.filter(status='available')
+    
+    # Apply filters from request
+    query = request.GET.get('q', '').strip()
+    category = request.GET.get('category', '')
+    location = request.GET.get('location', '')
+    condition = request.GET.get('condition', '')
+    min_price = request.GET.get('min_price', '')
+    max_price = request.GET.get('max_price', '')
+    sort_by = request.GET.get('sort', 'newest')
+    
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(seller__username__icontains=query)
+        )
+    
+    if category and category != 'all':
+        products = products.filter(category=category)
+    
+    if location and location != 'all':
+        products = products.filter(location=location)
+        
+    if condition and condition != 'all':
+        products = products.filter(condition=condition)
+    
+    if min_price:
+        try:
+            products = products.filter(price__gte=float(min_price))
+        except ValueError:
+            pass
+    
+    if max_price:
+        try:
+            products = products.filter(price__lte=float(max_price))
+        except ValueError:
+            pass
+    
+    # Advanced sorting options
+    if sort_by == 'price_low':
+        products = products.order_by('price')
+    elif sort_by == 'price_high':
+        products = products.order_by('-price')
+    elif sort_by == 'rating':
+        products = products.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+    elif sort_by == 'views':
+        products = products.order_by('-views_count')
+    elif sort_by == 'alphabetical':
+        products = products.order_by('name')
+    else:  # newest
+        products = products.order_by('-created_at')
+    
+    # Track search history
+    if request.user.is_authenticated and query:
+        from .models import SearchHistory
+        SearchHistory.objects.create(
+            user=request.user,
+            query=query,
+            results_count=products.count(),
+            ip_address=request.META.get('REMOTE_ADDR', '')
+        )
+    
+    # Pagination
+    paginator = Paginator(products, 15)
+    page_number = request.GET.get('page')
+    products_page = paginator.get_page(page_number)
+    
+    # Get user favorites
+    user_favorites = []
+    if request.user.is_authenticated:
+        user_favorites = Favorite.objects.filter(user=request.user).values_list('product_id', flat=True)
+    
+    context = {
+        'products': products_page,
+        'categories': categories,
+        'locations': locations,
+        'conditions': conditions,
+        'price_range': price_range,
+        'saved_searches': saved_searches,
+        'user_favorites': user_favorites,
+        'current_query': query,
+        'current_category': category,
+        'current_location': location,
+        'current_condition': condition,
+        'current_min_price': min_price,
+        'current_max_price': max_price,
+        'current_sort': sort_by,
+        'total_results': products.count() if not page_number or page_number == '1' else None,
+    }
+    
+    return render(request, 'homepage/advanced_search.html', context)
+
+
+@login_required
+def save_search(request):
+    """Save current search parameters for future alerts"""
+    if request.method == 'POST':
+        from .models import SavedSearch
+        
+        name = request.POST.get('name', '').strip()
+        query = request.POST.get('query', '').strip()
+        category = request.POST.get('category', '')
+        min_price = request.POST.get('min_price', '')
+        max_price = request.POST.get('max_price', '')
+        location = request.POST.get('location', '')
+        email_alerts = request.POST.get('email_alerts') == 'on'
+        
+        if not name:
+            messages.error(request, 'Please provide a name for your saved search.')
+            return redirect('advanced_search')
+        
+        try:
+            saved_search = SavedSearch.objects.create(
+                user=request.user,
+                name=name,
+                query=query,
+                category=category or '',
+                min_price=float(min_price) if min_price else None,
+                max_price=float(max_price) if max_price else None,
+                location=location or '',
+                email_alerts=email_alerts
+            )
+            messages.success(request, f'Search "{name}" saved successfully!')
+        except Exception as e:
+            messages.error(request, 'Failed to save search. Please try again.')
+    
+    return redirect('advanced_search')
+
+
+@login_required
+def delete_saved_search(request, search_id):
+    """Delete a saved search"""
+    from .models import SavedSearch
+    
+    saved_search = get_object_or_404(SavedSearch, id=search_id, user=request.user)
+    search_name = saved_search.name
+    saved_search.delete()
+    
+    messages.success(request, f'Saved search "{search_name}" deleted successfully.')
+    return redirect('advanced_search')
+
+
+# Product Analytics & Insights
+@login_required
+def product_analytics(request, product_id):
+    """Analytics dashboard for individual products"""
+    from django.db.models import Count
+    from datetime import datetime, timedelta
+    from .models import ProductView, Notification
+    
+    product = get_object_or_404(Product, id=product_id, seller=request.user)
+    
+    # Get date range (last 30 days by default)
+    days = int(request.GET.get('days', 30))
+    start_date = datetime.now() - timedelta(days=days)
+    
+    # Views analytics
+    views_data = ProductView.objects.filter(
+        product=product,
+        viewed_at__gte=start_date
+    )
+    
+    total_views = views_data.count()
+    unique_views = views_data.values('ip_address').distinct().count()
+    
+    # Daily views breakdown
+    daily_views = {}
+    for i in range(days):
+        date = (datetime.now() - timedelta(days=i)).date()
+        count = views_data.filter(viewed_at__date=date).count()
+        daily_views[date.strftime('%Y-%m-%d')] = count
+    
+    # Geographic data (based on IP - simplified)
+    location_views = views_data.values('ip_address').annotate(
+        count=Count('ip_address')
+    ).order_by('-count')[:10]
+    
+    # User engagement
+    favorites_count = product.homepage_favorited_by.count()
+    reviews_count = product.reviews.count()
+    avg_rating = product.get_average_rating()
+    
+    # Competition analysis
+    similar_products = Product.objects.filter(
+        category=product.category,
+        status='available'
+    ).exclude(id=product.id).annotate(
+        avg_rating=Avg('reviews__rating')
+    ).order_by('-views_count')[:5]
+    
+    context = {
+        'product': product,
+        'total_views': total_views,
+        'unique_views': unique_views,
+        'daily_views': daily_views,
+        'location_views': location_views,
+        'favorites_count': favorites_count,
+        'reviews_count': reviews_count,
+        'avg_rating': avg_rating,
+        'similar_products': similar_products,
+        'days_range': days,
+    }
+    
+    return render(request, 'homepage/product_analytics.html', context)
+
+
+@login_required
+def seller_analytics_dashboard(request):
+    """Comprehensive analytics dashboard for sellers"""
+    from django.db.models import Sum, Count
+    from datetime import datetime, timedelta
+    from .models import ProductView, Notification
+    
+    # Get seller's products
+    user_products = Product.objects.filter(seller=request.user)
+    
+    # Overall statistics
+    total_products = user_products.count()
+    available_products = user_products.filter(status='available').count()
+    sold_products = user_products.filter(status='sold').count()
+    total_views = user_products.aggregate(total=Sum('views_count'))['total'] or 0
+    
+    # Revenue analytics (from orders)
+    from decimal import Decimal
+    total_revenue = Decimal('0')
+    orders = OrderItem.objects.filter(
+        product__seller=request.user,
+        order__status='delivered'
+    )
+    total_revenue = orders.aggregate(
+        total=Sum('price')
+    )['total'] or Decimal('0')
+    
+    # Monthly performance
+    monthly_data = {}
+    for i in range(12):
+        month_start = datetime.now().replace(day=1) - timedelta(days=30*i)
+        month_orders = orders.filter(
+            order__created_at__year=month_start.year,
+            order__created_at__month=month_start.month
+        )
+        monthly_revenue = month_orders.aggregate(
+            total=Sum('price')
+        )['total'] or Decimal('0')
+        
+        monthly_data[month_start.strftime('%Y-%m')] = {
+            'revenue': float(monthly_revenue),
+            'orders': month_orders.count()
+        }
+    
+    # Top performing products
+    top_products = user_products.annotate(
+        total_orders=Count('orderitem'),
+        total_revenue=Sum('orderitem__price')
+    ).order_by('-total_revenue')[:5]
+    
+    # Recent notifications
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:10]
+    
+    context = {
+        'total_products': total_products,
+        'available_products': available_products,
+        'sold_products': sold_products,
+        'total_views': total_views,
+        'total_revenue': total_revenue,
+        'monthly_data': monthly_data,
+        'top_products': top_products,
+        'notifications': notifications,
+    }
+    
+    return render(request, 'homepage/seller_analytics.html', context)
+
+
+# Messaging System
+@login_required
+def send_message(request, product_id):
+    """Send message to product seller"""
+    from .models import Notification
+    
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.user == product.seller:
+        messages.error(request, "You cannot message yourself about your own product.")
+        return redirect('product_detail', pk=product_id)
+    
+    if request.method == 'POST':
+        message_content = request.POST.get('message', '').strip()
+        
+        if not message_content:
+            messages.error(request, "Please enter a message.")
+            return redirect('product_detail', pk=product_id)
+        
+        # Create notification for seller
+        Notification.objects.create(
+            user=product.seller,
+            notification_type='message',
+            title=f'New message about {product.name}',
+            message=f'From {request.user.username}: {message_content}',
+            product=product
+        )
+        
+        messages.success(request, "Your message has been sent to the seller!")
+        return redirect('product_detail', pk=product_id)
+    
+    return render(request, 'homepage/send_message.html', {'product': product})
+
+
+@login_required
+def notifications_list(request):
+    """Display user's notifications"""
+    from .models import Notification
+    
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+    
+    # Mark as read if requested
+    if request.GET.get('mark_read'):
+        notification_id = request.GET.get('mark_read')
+        try:
+            notification = notifications.get(id=notification_id)
+            notification.is_read = True
+            notification.save()
+            messages.success(request, 'Notification marked as read.')
+        except Notification.DoesNotExist:
+            pass
+        return redirect('notifications_list')
+    
+    # Pagination
+    paginator = Paginator(notifications, 20)
+    page_number = request.GET.get('page')
+    notifications_page = paginator.get_page(page_number)
+    
+    # Count unread
+    unread_count = notifications.filter(is_read=False).count()
+    
+    context = {
+        'notifications': notifications_page,
+        'unread_count': unread_count,
+    }
+    
+    return render(request, 'homepage/notifications.html', context)
+
+
+@login_required
+def mark_all_notifications_read(request):
+    """Mark all notifications as read"""
+    from .models import Notification
+    
+    if request.method == 'POST':
+        count = Notification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).update(is_read=True)
+        
+        messages.success(request, f'Marked {count} notifications as read.')
+    
+    return redirect('notifications_list')
+
+
+# Wishlist and Recommendations
+@login_required
+def get_recommendations(request):
+    """Get personalized product recommendations"""
+    from django.db.models import Count
+    from .models import SearchHistory
+    
+    # Get user's favorite categories
+    user_favorites = Favorite.objects.filter(user=request.user)
+    favorite_categories = user_favorites.values('product__category').annotate(
+        count=Count('product__category')
+    ).order_by('-count')[:3]
+    
+    # Get user's search history
+    search_terms = SearchHistory.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:10]
+    
+    # Recommend products based on favorites and searches
+    recommended_products = Product.objects.filter(
+        status='available'
+    ).exclude(
+        id__in=user_favorites.values_list('product_id', flat=True)
+    )
+    
+    # Filter by favorite categories
+    if favorite_categories:
+        category_list = [cat['product__category'] for cat in favorite_categories]
+        recommended_products = recommended_products.filter(
+            category__in=category_list
+        )
+    
+    # Add products with high ratings
+    recommended_products = recommended_products.annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).filter(
+        avg_rating__gte=4.0,
+        review_count__gte=2
+    ).order_by('-avg_rating', '-views_count')[:12]
+    
+    context = {
+        'recommended_products': recommended_products,
+        'favorite_categories': [cat['product__category'] for cat in favorite_categories],
+    }
+    
+    return render(request, 'homepage/recommendations.html', context)
+
+
+# Payment Processing Views
+@login_required
+def checkout_payment(request, order_id):
+    """Process payment for an order"""
+    from decimal import Decimal
+    from django.utils import timezone
+    
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # Check if order is already paid
+    if order.payment_status == 'paid':
+        messages.info(request, 'This order has already been paid.')
+        return redirect('order_confirmation', order_id=order.id)
+    
+    if request.method == 'POST':
+        form = PaymentForm(request.POST, user=request.user)
+        if form.is_valid():
+            payment_method = form.cleaned_data['payment_method']
+            
+            # Create payment record
+            payment = Payment.objects.create(
+                order=order,
+                payment_method=payment_method,
+                amount=order.total_amount,
+                currency='ZAR'
+            )
+            
+            # Process different payment methods
+            if payment_method == 'card':
+                # Process card payment
+                success = process_card_payment(form, payment, request.user)
+                if success:
+                    payment.status = 'completed'
+                    payment.processed_at = timezone.now()
+                    payment.save()
+                    
+                    # Update order payment status
+                    order.payment_status = 'paid'
+                    order.save()
+                    
+                    messages.success(request, 'Payment processed successfully!')
+                    return redirect('order_confirmation', order_id=order.id)
+                else:
+                    payment.status = 'failed'
+                    payment.save()
+                    messages.error(request, 'Payment failed. Please try again.')
+            
+            elif payment_method in ['eft', 'cash', 'paypal']:
+                # For demo purposes, mark as pending
+                payment.status = 'pending'
+                payment.save()
+                
+                order.payment_status = 'pending'
+                order.save()
+                
+                messages.info(request, f'{dict(Payment.PAYMENT_METHOD_CHOICES)[payment_method]} payment is being processed.')
+                return redirect('order_confirmation', order_id=order.id)
+    else:
+        form = PaymentForm(user=request.user)
+    
+    context = {
+        'order': order,
+        'form': form,
+    }
+    return render(request, 'homepage/checkout_payment.html', context)
+
+
+def process_card_payment(form, payment, user):
+    """Process card payment - stub for payment gateway integration"""
+    # This is a simplified version. In production, you would:
+    # 1. Use a payment gateway like Stripe, PayFast, or PayPal
+    # 2. Tokenize card details securely
+    # 3. Process the payment through the gateway
+    # 4. Handle webhooks for payment confirmation
+    
+    try:
+        card_number = form.cleaned_data.get('card_number', '').replace(' ', '')
+        card_cvv = form.cleaned_data.get('card_cvv')
+        cardholder_name = form.cleaned_data.get('cardholder_name')
+        
+        # Store last four digits and card brand for display
+        payment.card_last_four = card_number[-4:] if card_number else ''
+        
+        # Determine card brand (simplified)
+        if card_number.startswith('4'):
+            payment.card_brand = 'visa'
+        elif card_number.startswith(('5', '2')):
+            payment.card_brand = 'mastercard'
+        elif card_number.startswith('3'):
+            payment.card_brand = 'amex'
+        else:
+            payment.card_brand = 'other'
+        
+        # Generate mock transaction ID
+        import uuid
+        payment.transaction_id = f"TXN_{uuid.uuid4().hex[:12].upper()}"
+        
+        # Calculate fees (simplified)
+        gateway_fee_rate = Decimal('0.029')  # 2.9%
+        payment.gateway_fee = payment.amount * gateway_fee_rate
+        payment.net_amount = payment.amount - payment.gateway_fee
+        
+        # Save payment method if requested
+        if form.cleaned_data.get('save_payment_method') and user:
+            PaymentMethod.objects.create(
+                user=user,
+                card_type=payment.card_brand,
+                last_four=payment.card_last_four,
+                expiry_month=form.cleaned_data.get('card_expiry_month'),
+                expiry_year=form.cleaned_data.get('card_expiry_year'),
+                cardholder_name=cardholder_name,
+                token=f"tok_{uuid.uuid4().hex[:16]}",
+                is_default=False
+            )
+        
+        payment.save()
+        return True
+        
+    except Exception as e:
+        # Log the error in production
+        print(f"Payment processing error: {e}")
+        return False
+
+
+@login_required
+def payment_methods(request):
+    """Manage saved payment methods"""
+    user_payment_methods = PaymentMethod.objects.filter(user=request.user, is_active=True)
+    
+    context = {
+        'payment_methods': user_payment_methods,
+    }
+    return render(request, 'homepage/payment_methods.html', context)
+
+
+@login_required
+@require_POST
+def delete_payment_method(request, method_id):
+    """Delete a saved payment method"""
+    payment_method = get_object_or_404(
+        PaymentMethod, 
+        id=method_id, 
+        user=request.user
+    )
+    
+    payment_method.is_active = False
+    payment_method.save()
+    
+    messages.success(request, 'Payment method removed successfully.')
+    return redirect('payment_methods')
+
+
+@login_required
+@require_POST
+def set_default_payment_method(request, method_id):
+    """Set a payment method as default"""
+    payment_method = get_object_or_404(
+        PaymentMethod, 
+        id=method_id, 
+        user=request.user
+    )
+    
+    # Remove default from other methods
+    PaymentMethod.objects.filter(user=request.user, is_default=True).update(is_default=False)
+    
+    # Set this as default
+    payment_method.is_default = True
+    payment_method.save()
+    
+    messages.success(request, 'Default payment method updated.')
+    return redirect('payment_methods')
+
+
+# Product Draft Views
+@login_required
+def save_product_draft(request):
+    """Save product creation as draft"""
+    if request.method == 'POST':
+        form = ProductDraftForm(request.POST, request.FILES)
+        if form.is_valid():
+            draft = form.save(commit=False)
+            draft.user = request.user
+            draft.save()
+            
+            # Save additional form data if needed
+            form.save_draft_data(request.POST.dict())
+            
+            messages.success(request, 'Product draft saved successfully!')
+            return JsonResponse({
+                'success': True,
+                'draft_id': draft.id,
+                'message': 'Draft saved successfully!'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            })
+    
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
+@login_required
+def product_drafts_list(request):
+    """List user's product drafts"""
+    drafts = ProductDraft.objects.filter(user=request.user).order_by('-updated_at')
+    
+    # Pagination
+    paginator = Paginator(drafts, 10)
+    page_number = request.GET.get('page')
+    drafts_page = paginator.get_page(page_number)
+    
+    context = {
+        'drafts': drafts_page,
+    }
+    return render(request, 'homepage/product_drafts.html', context)
+
+
+@login_required
+def edit_product_draft(request, draft_id):
+    """Edit a product draft"""
+    draft = get_object_or_404(ProductDraft, id=draft_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = ProductDraftForm(request.POST, request.FILES, instance=draft)
+        if form.is_valid():
+            form.save()
+            form.save_draft_data(request.POST.dict())
+            messages.success(request, 'Draft updated successfully!')
+            return redirect('product_drafts_list')
+    else:
+        form = ProductDraftForm(instance=draft)
+        # Load additional draft data
+        draft_data = form.load_draft_data()
+        for field_name, value in draft_data.items():
+            if field_name in form.fields:
+                form.fields[field_name].initial = value
+    
+    context = {
+        'form': form,
+        'draft': draft,
+    }
+    return render(request, 'homepage/edit_product_draft.html', context)
+
+
+@login_required
+def convert_draft_to_product(request, draft_id):
+    """Convert a draft to a published product"""
+    draft = get_object_or_404(ProductDraft, id=draft_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Create product from draft
+        product = Product.objects.create(
+            name=draft.name or 'Untitled Product',
+            description=draft.description or '',
+            price=draft.price or 0,
+            category=draft.category or 'other',
+            condition=draft.condition or 'good',
+            location=draft.location or 'cape_town_central',
+            seller=request.user,
+            image=draft.temp_image,
+            status='available'
+        )
+        
+        # Delete the draft
+        draft.delete()
+        
+        messages.success(request, f'Product "{product.name}" created successfully!')
+        return redirect('product_detail', pk=product.id)
+    
+    context = {
+        'draft': draft,
+    }
+    return render(request, 'homepage/convert_draft.html', context)
+
+
+@login_required
+@require_POST
+def delete_product_draft(request, draft_id):
+    """Delete a product draft"""
+    draft = get_object_or_404(ProductDraft, id=draft_id, user=request.user)
+    draft_name = draft.name or 'Untitled'
+    draft.delete()
+    
+    messages.success(request, f'Draft "{draft_name}" deleted successfully.')
+    return redirect('product_drafts_list')
+
+
+# Auto-save draft functionality (AJAX)
+@login_required
+@require_POST
+def auto_save_draft(request):
+    """Auto-save product draft via AJAX"""
+    try:
+        draft_id = request.POST.get('draft_id')
+        
+        if draft_id:
+            # Update existing draft
+            draft = get_object_or_404(ProductDraft, id=draft_id, user=request.user)
+            form = ProductDraftForm(request.POST, request.FILES, instance=draft)
+        else:
+            # Create new draft
+            form = ProductDraftForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            draft = form.save(commit=False)
+            if not hasattr(draft, 'user') or not draft.user:
+                draft.user = request.user
+            draft.save()
+            
+            return JsonResponse({
+                'success': True,
+                'draft_id': draft.id,
+                'message': 'Draft auto-saved'
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors
+            })
+            
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Error saving draft: {str(e)}'
+        })
+
+
+@login_required
+def favorites_list(request):
+    """Display user's favorite products"""
+    favorites = Favorite.objects.filter(user=request.user).select_related('product')
+    
+    # Calculate some stats for the template
+    available_count = favorites.filter(product__status='available').count()
+    sold_count = favorites.filter(product__status='sold').count()
+    
+    if favorites.exists():
+        avg_price = favorites.aggregate(avg_price=Avg('product__price'))['avg_price']
+    else:
+        avg_price = 0
+    
+    context = {
+        'favorites': favorites,
+        'available_count': available_count,
+        'sold_count': sold_count,
+        'avg_price': avg_price,
+    }
+    return render(request, 'homepage/favorites_list.html', context)
+
+
+@login_required
+def seller_dashboard(request):
+    """Basic seller dashboard with overview of seller's products"""
+    user_products = Product.objects.filter(seller=request.user)
+    
+    # Basic statistics
+    total_products = user_products.count()
+    available_products = user_products.filter(status='available').count()
+    sold_products = user_products.filter(status='sold').count()
+    total_views = user_products.aggregate(total_views=Count('views_count'))['total_views'] or 0
+    
+    # Get products for display with pagination
+    paginator = Paginator(user_products.order_by('-created_at'), 10)
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
+    context = {
+        'total_products': total_products,
+        'available_products': available_products,
+        'sold_products': sold_products,
+        'total_views': total_views,
+        'products': products,
+    }
+    return render(request, 'homepage/seller_dashboard.html', context)

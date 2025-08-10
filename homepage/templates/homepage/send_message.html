@@ -1,0 +1,225 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Send Message - {{ product.name }} - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .message-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        margin: 20px 0;
+    }
+    
+    .product-info {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        color: white;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .product-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 10px;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+    
+    .product-details {
+        flex-grow: 1;
+    }
+    
+    .product-name {
+        font-size: 1.2em;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+    
+    .product-price {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #f1c40f;
+    }
+    
+    .seller-info {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    .form-floating textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .message-tips {
+        background: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 20px 0;
+    }
+    
+    .tip-icon {
+        color: #2196f3;
+        margin-right: 10px;
+    }
+    
+    .btn-send {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 12px 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .btn-send:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Back Navigation -->
+            <div class="mb-3">
+                <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Product
+                </a>
+            </div>
+            
+            <!-- Product Information -->
+            <div class="product-info">
+                <div class="d-flex align-items-center">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                    {% else %}
+                        <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                            <i class="fas fa-image text-muted fa-2x"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="product-details">
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-price">R{{ product.price }}</div>
+                        <div class="d-flex gap-3 mt-2">
+                            <small><i class="fas fa-map-marker-alt me-1"></i>{{ product.get_location_display }}</small>
+                            <small><i class="fas fa-tag me-1"></i>{{ product.get_condition_display }}</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="seller-info">
+                    <h6><i class="fas fa-user me-2"></i>Seller Information</h6>
+                    <p class="mb-1"><strong>{{ product.seller.first_name|default:product.seller.username }}</strong></p>
+                    <small>Member since {{ product.seller.date_joined|date:"F Y" }}</small>
+                </div>
+            </div>
+            
+            <!-- Message Form -->
+            <div class="message-card">
+                <h4 class="mb-4">
+                    <i class="fas fa-envelope me-2 text-primary"></i>
+                    Send Message to Seller
+                </h4>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-floating mb-4">
+                        <textarea 
+                            class="form-control" 
+                            id="message" 
+                            name="message" 
+                            placeholder="Type your message here..."
+                            required
+                            maxlength="1000"
+                        ></textarea>
+                        <label for="message">Your Message</label>
+                        <div class="form-text">Maximum 1000 characters</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="text-muted">
+                            <small>Your message will be sent directly to the seller</small>
+                        </div>
+                        <div>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-secondary me-2">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-send">
+                                <i class="fas fa-paper-plane me-2"></i>
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Messaging Tips -->
+            <div class="message-tips">
+                <h6><i class="fas fa-lightbulb tip-icon"></i>Messaging Tips</h6>
+                <ul class="mb-0 ps-4">
+                    <li>Be polite and respectful in your communication</li>
+                    <li>Ask specific questions about the product condition, availability, or pickup details</li>
+                    <li>Include your contact information if you're ready to meet</li>
+                    <li>Negotiate prices professionally and reasonably</li>
+                    <li>Arrange safe meeting locations for transactions</li>
+                </ul>
+            </div>
+            
+            <!-- Safety Notice -->
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-shield-alt me-2"></i>
+                <strong>Stay Safe!</strong> Always meet in public places for transactions. Never send money or personal information through messages.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Character counter for message
+document.getElementById('message').addEventListener('input', function() {
+    const textarea = this;
+    const maxLength = textarea.maxLength;
+    const currentLength = textarea.value.length;
+    
+    // Find or create character counter
+    let counter = textarea.parentNode.querySelector('.char-counter');
+    if (!counter) {
+        counter = document.createElement('div');
+        counter.className = 'char-counter text-muted small mt-1';
+        textarea.parentNode.appendChild(counter);
+    }
+    
+    counter.textContent = `${currentLength}/${maxLength} characters`;
+    
+    // Change color based on remaining characters
+    if (currentLength > maxLength * 0.8) {
+        counter.classList.remove('text-muted');
+        counter.classList.add('text-warning');
+    } else if (currentLength > maxLength * 0.9) {
+        counter.classList.remove('text-warning');
+        counter.classList.add('text-danger');
+    } else {
+        counter.classList.remove('text-warning', 'text-danger');
+        counter.classList.add('text-muted');
+    }
+});
+
+// Auto-focus on message textarea
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('message').focus();
+});
+</script>
+
+{% endblock %}

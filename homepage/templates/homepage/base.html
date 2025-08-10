@@ -16,39 +16,73 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'MarketHub/css/markethub.css' %}">
     <link rel="stylesheet" href="{% static 'MarketHub/css/accessibility-improvements.css' %}">
+    <!-- Enhanced Theme Fixes -->
+    <link rel="stylesheet" href="{% static 'MarketHub/fixes.css' %}">
     <style>
         /* Google Fonts - Bold Typography */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap');
         
-        /* MarketHub CSS Variables - Essential ones for base template */
+        /* MarketHub CSS Variables - Blue Theme */
         :root {
-            --primary-color: #4682B4;
-            --primary-gradient: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%);
-            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
-            --accent-gold: #FFD700;
-            --luxury-dark: #2c3e50;
-            --glass-gradient: rgba(255, 255, 255, 0.1);
+            --primary-color: #2563eb;
+            --primary-gradient: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%);
+            --secondary-gradient: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 50%, #3b82f6 100%);
+            --accent-blue: #0ea5e9;
+            --accent-blue-light: #38bdf8;
+            --accent-blue-dark: #0284c7;
+            --navy-blue: #1e3a8a;
+            --royal-blue: #3b82f6;
+            --sky-blue: #0ea5e9;
+            --light-blue: #38bdf8;
+            --powder-blue: #bfdbfe;
+            --ice-blue: #dbeafe;
+            --luxury-dark: #1e293b;
+            --glass-gradient: rgba(59, 130, 246, 0.1);
             --radius-sm: 0.375rem;
             --radius-md: 0.75rem;
             --radius-lg: 1rem;
             --radius-xl: 1.5rem;
-            --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
-            --shadow-medium: 0 4px 6px rgba(0,0,0,0.1);
-            --shadow-heavy: 0 20px 40px rgba(0,0,0,0.15);
-            --shadow-gold: 0 8px 25px rgba(255,215,0,0.15);
-            --text-sky-blue: #4682B4;
+            --shadow-light: 0 2px 4px rgba(37, 99, 235, 0.1);
+            --shadow-medium: 0 4px 6px rgba(37, 99, 235, 0.15);
+            --shadow-heavy: 0 20px 40px rgba(37, 99, 235, 0.2);
+            --shadow-blue: 0 8px 25px rgba(59, 130, 246, 0.25);
+            --text-primary-blue: #1d4ed8;
+            --text-secondary-blue: #64748b;
         }
         
-        /* Utility classes for sky blue color */
-        .text-sky-blue { color: #4682B4 !important; }
+        /* Utility classes for blue color palette */
+        .text-sky-blue { color: var(--royal-blue) !important; }
+        .text-primary-blue { color: var(--primary-color) !important; }
+        .text-accent-blue { color: var(--accent-blue) !important; }
+        .text-navy-blue { color: var(--navy-blue) !important; }
+        .text-light-blue { color: var(--light-blue) !important; }
+        
+        .bg-primary-blue { background: var(--primary-gradient) !important; }
+        .bg-accent-blue { background-color: var(--accent-blue) !important; }
+        .bg-navy-blue { background-color: var(--navy-blue) !important; }
+        .bg-ice-blue { background-color: var(--ice-blue) !important; }
+        
         .btn-outline-sky-blue {
-            border-color: #4682B4 !important;
-            color: #4682B4 !important;
+            border-color: var(--royal-blue) !important;
+            color: var(--royal-blue) !important;
         }
         .btn-outline-sky-blue:hover {
-            background-color: #4682B4 !important;
-            border-color: #4682B4 !important;
+            background-color: var(--royal-blue) !important;
+            border-color: var(--royal-blue) !important;
             color: white !important;
+        }
+        
+        .btn-blue {
+            background: var(--primary-gradient) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important;
+        }
+        
+        .btn-blue:hover {
+            background: var(--secondary-gradient) !important;
+            border-color: var(--navy-blue) !important;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-blue) !important;
         }
         
         /* Global Typography Improvements */
@@ -179,11 +213,11 @@
             color: #e74c3c !important;
         }
         
-        /* Luxury Cards */
+        /* Modern Blue Cards */
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.15);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-light);
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -198,14 +232,14 @@
             left: -100%;
             width: 100%;
             height: 2px;
-            background: var(--gold-gradient);
+            background: var(--primary-gradient);
             transition: all 0.6s ease;
         }
         
         .card:hover {
             transform: translateY(-10px) scale(1.02);
             box-shadow: var(--shadow-heavy);
-            border-color: rgba(212, 175, 55, 0.3);
+            border-color: rgba(59, 130, 246, 0.3);
         }
         
         .card:hover::before {
@@ -249,11 +283,11 @@
         }
         
         .btn-primary:hover {
-            background: var(--gold-gradient);
-            border-color: var(--accent-gold);
-            color: var(--luxury-dark);
+            background: var(--secondary-gradient);
+            border-color: var(--navy-blue);
+            color: white;
             transform: translateY(-3px);
-            box-shadow: var(--shadow-gold);
+            box-shadow: var(--shadow-blue);
         }
         
         .btn-outline-primary {
@@ -281,11 +315,12 @@
             border-radius: var(--radius-lg);
         }
         
-        /* Enhanced Animated Stats Section */
+        /* Enhanced Animated Stats Section - Brightened */
         .stats-section {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #f1f3f4 100%);
-            border: 1px solid rgba(212, 175, 55, 0.15);
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f3ff 100%);
+            border: 2px solid rgba(59, 130, 246, 0.3);
             position: relative;
+            box-shadow: 0 20px 40px rgba(37, 99, 235, 0.1);
         }
         
         .stats-bg-pattern {
@@ -295,36 +330,46 @@
             right: 0;
             bottom: 0;
             background-image: 
-                radial-gradient(circle at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(26, 26, 46, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(212, 175, 55, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(147, 197, 253, 0.10) 0%, transparent 50%);
             pointer-events: none;
         }
         
         .stat-item {
-            padding: 2rem 1rem;
+            padding: 2.5rem 1.5rem;
             transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             cursor: pointer;
             position: relative;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
         }
         
         .stat-item:hover {
-            transform: translateY(-10px) scale(1.05);
+            transform: translateY(-15px) scale(1.08);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 50px rgba(37, 99, 235, 0.25);
         }
         
         .stat-icon {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 
+                0 15px 40px rgba(0, 0, 0, 0.15),
+                inset 0 2px 6px rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            border: 3px solid rgba(59, 130, 246, 0.3);
         }
         
         .stat-icon::before {
@@ -354,15 +399,19 @@
         }
         
         .counter {
-            font-weight: 800;
-            font-size: 3.5rem;
-            font-family: 'Playfair Display', serif;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            font-weight: 900;
+            font-size: 4rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--primary-color) !important;
+            text-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
             transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.1));
         }
         
         .stat-item:hover .counter {
-            transform: scale(1.1);
+            transform: scale(1.15);
+            color: var(--navy-blue) !important;
+            text-shadow: 0 6px 12px rgba(30, 58, 138, 0.4);
         }
         
         .stat-progress {
@@ -1611,45 +1660,154 @@
             font-size: 0.85rem;
         }
 
-        /* Modern Glassmorphism Theme */
+        /* Modern Blue Glassmorphism Theme */
         :root {
-            --sky-blue: #87CEEB;
-            --sky-blue-dark: #4682B4;
-            --sky-blue-light: #B0E0E6;
-            --sky-blue-gradient: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
-            --glassmorphism-bg: rgba(255, 255, 255, 0.15);
-            --glassmorphism-border: rgba(255, 255, 255, 0.2);
-            --modern-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            --modern-hover-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+            --glassmorphism-bg: rgba(59, 130, 246, 0.15);
+            --glassmorphism-border: rgba(59, 130, 246, 0.2);
+            --modern-shadow: 0 8px 32px rgba(37, 99, 235, 0.15);
+            --modern-hover-shadow: 0 16px 48px rgba(37, 99, 235, 0.25);
         }
         
         .text-sky-blue {
-            color: var(--sky-blue-dark) !important;
+            color: var(--royal-blue) !important;
         }
         
         .bg-sky-blue {
-            background-color: var(--sky-blue) !important;
+            background-color: var(--accent-blue) !important;
         }
         
         .btn-outline-sky-blue {
-            color: var(--sky-blue-dark);
-            border-color: var(--sky-blue);
+            color: var(--royal-blue);
+            border-color: var(--accent-blue);
         }
         
         .btn-outline-sky-blue:hover {
             color: white;
-            background-color: var(--sky-blue);
-            border-color: var(--sky-blue);
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
         }
         
-        /* Replace primary colors with sky blue */
+        /* Replace primary colors with blue theme */
         .btn-primary, .bg-primary {
-            background: var(--sky-blue-gradient) !important;
-            border-color: var(--sky-blue) !important;
+            background: var(--primary-gradient) !important;
+            border-color: var(--primary-color) !important;
         }
         
         .text-primary {
-            color: var(--sky-blue-dark) !important;
+            color: var(--primary-color) !important;
+        }
+        
+        /* Additional blue theme utilities */
+        .border-blue {
+            border-color: var(--royal-blue) !important;
+        }
+        
+        .shadow-blue {
+            box-shadow: var(--shadow-blue) !important;
+        }
+        
+        /* Enhanced Navigation Pills Styling - Blue Theme */
+        .enhanced-nav .nav-link {
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-radius: 30px !important;
+            position: relative;
+            overflow: hidden;
+            font-weight: 900 !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 197, 253, 0.05));
+            backdrop-filter: blur(12px);
+            border: 2px solid transparent;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.1);
+            min-width: 140px;
+            text-align: center;
+            color: var(--text-primary-blue) !important;
+        }
+        
+        .enhanced-nav .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.25), transparent);
+            transition: all 0.6s ease;
+            z-index: 1;
+        }
+        
+        .enhanced-nav .nav-link:hover::before {
+            left: 100%;
+        }
+        
+        .enhanced-nav .nav-link:hover {
+            transform: translateY(-4px) scale(1.08);
+            background: var(--primary-gradient) !important;
+            color: white !important;
+            border-color: var(--royal-blue);
+            box-shadow: 0 12px 35px rgba(59, 130, 246, 0.4);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .enhanced-nav .nav-link.active {
+            background: var(--secondary-gradient) !important;
+            color: white !important;
+            border-color: var(--navy-blue);
+            box-shadow: 0 8px 25px rgba(30, 58, 138, 0.5);
+            transform: translateY(-2px) scale(1.03);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+        
+        .enhanced-nav .nav-link.active:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 40px rgba(30, 58, 138, 0.6);
+        }
+        
+        .enhanced-nav .nav-link i {
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+        
+        .enhanced-nav .nav-link:hover i,
+        .enhanced-nav .nav-link.active i {
+            transform: scale(1.25) rotate(8deg);
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        
+        .enhanced-nav .nav-link span,
+        .enhanced-nav .nav-link {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Special effects for Daily Deals and Promotions */
+        .enhanced-nav .nav-item:nth-child(3) .nav-link {
+            position: relative;
+        }
+        
+        .enhanced-nav .nav-item:nth-child(3) .nav-link::after {
+            content: '🔥';
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            font-size: 0.9rem;
+            animation: pulse 2s infinite;
+            z-index: 3;
+        }
+        
+        .enhanced-nav .nav-item:nth-child(4) .nav-link {
+            position: relative;
+        }
+        
+        .enhanced-nav .nav-item:nth-child(4) .nav-link::after {
+            content: '💥';
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            font-size: 0.9rem;
+            animation: bounce 2s infinite;
+            z-index: 3;
         }
         
         /* Enhanced Navigation Cards Styling */
@@ -1743,10 +1901,10 @@
             transform: translateY(-1px);
         }
         
-        /* Special Styling for Featured Cards */
+        /* Special Styling for Featured Cards - Blue Theme */
         .daily-deals-card {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7) !important;
-            border: 2px solid #f39c12 !important;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe) !important;
+            border: 2px solid var(--accent-blue) !important;
             position: relative;
             overflow: hidden;
         }
@@ -1757,7 +1915,7 @@
             top: -5px;
             right: -5px;
             font-size: 1.2rem;
-            background: #e74c3c;
+            background: var(--royal-blue);
             color: white;
             border-radius: 50%;
             width: 30px;
@@ -1770,14 +1928,14 @@
         }
         
         .nav-card:hover .daily-deals-card {
-            background: linear-gradient(135deg, #f39c12, #e67e22) !important;
-            box-shadow: 0 20px 40px rgba(243, 156, 18, 0.4) !important;
+            background: var(--primary-gradient) !important;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4) !important;
             transform: translateY(-15px) scale(1.1) rotate(2deg);
         }
         
         .promotions-card {
-            background: linear-gradient(135deg, #fde2e7, #fab1a0) !important;
-            border: 2px solid #e17055 !important;
+            background: linear-gradient(135deg, #e0f2fe, #b3e5fc) !important;
+            border: 2px solid var(--light-blue) !important;
             position: relative;
             overflow: hidden;
         }
@@ -1788,7 +1946,7 @@
             top: -5px;
             right: -5px;
             font-size: 1.2rem;
-            background: #e74c3c;
+            background: var(--accent-blue);
             color: white;
             border-radius: 50%;
             width: 30px;
@@ -1801,14 +1959,14 @@
         }
         
         .nav-card:hover .promotions-card {
-            background: linear-gradient(135deg, #e17055, #d63031) !important;
-            box-shadow: 0 20px 40px rgba(225, 112, 85, 0.4) !important;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-dark)) !important;
+            box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4) !important;
             transform: translateY(-15px) scale(1.1) rotate(-2deg);
         }
         
         .register-card {
-            background: linear-gradient(135deg, #d1f2eb, #a3e4d7) !important;
-            border: 2px solid #27ae60 !important;
+            background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+            border: 2px solid var(--navy-blue) !important;
             position: relative;
             overflow: hidden;
         }
@@ -1819,7 +1977,7 @@
             top: -5px;
             right: -5px;
             font-size: 1.2rem;
-            background: #27ae60;
+            background: var(--navy-blue);
             color: white;
             border-radius: 50%;
             width: 30px;
@@ -1832,8 +1990,8 @@
         }
         
         .nav-card:hover .register-card {
-            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
-            box-shadow: 0 20px 40px rgba(39, 174, 96, 0.4) !important;
+            background: var(--secondary-gradient) !important;
+            box-shadow: 0 20px 40px rgba(30, 58, 138, 0.4) !important;
             transform: translateY(-15px) scale(1.1) rotate(1deg);
         }
         
@@ -1932,6 +2090,52 @@
             }
         }
         
+        /* Responsive Navigation Pills */
+        @media (max-width: 1200px) {
+            .enhanced-nav .nav-link {
+                font-size: 1.1rem !important;
+                padding: 0.6rem 1.2rem !important;
+                min-width: 120px;
+            }
+            
+            .enhanced-nav .nav-link i {
+                font-size: 1.2rem !important;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .enhanced-nav {
+                gap: 0.5rem !important;
+            }
+            
+            .enhanced-nav .nav-link {
+                font-size: 1rem !important;
+                padding: 0.5rem 1rem !important;
+                min-width: 100px;
+                letter-spacing: 0.5px !important;
+            }
+            
+            .enhanced-nav .nav-link i {
+                font-size: 1.1rem !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .enhanced-nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem !important;
+                padding: 1rem 0;
+            }
+            
+            .enhanced-nav .nav-link {
+                font-size: 1.1rem !important;
+                padding: 0.75rem 2rem !important;
+                width: 200px;
+                text-align: center;
+            }
+        }
+        
         /* Responsive Navigation Cards */
         @media (max-width: 768px) {
             .nav-card-hover .card-body {
@@ -1956,6 +2160,17 @@
         }
         
         @media (max-width: 576px) {
+            .enhanced-nav .nav-link {
+                font-size: 1rem !important;
+                padding: 0.6rem 1.5rem !important;
+                width: 180px;
+                letter-spacing: 0.3px !important;
+            }
+            
+            .enhanced-nav .nav-link i {
+                font-size: 1rem !important;
+            }
+            
             .modern-nav-section {
                 padding: 1rem 0 !important;
             }
@@ -2191,199 +2406,93 @@
     <!-- MarketHub Header -->
     <header class="markethub-header bg-white shadow-sm sticky-top">
 
-        <!-- Main Header -->
-        <div class="main-header py-3">
+        <!-- Modern Header with Glassmorphism -->
+        <nav class="navbar navbar-expand-lg navbar-light py-3">
             <div class="container-fluid">
-                <div class="row align-items-center">
-                    <!-- Logo -->
-                    <div class="col-md-3">
-                        <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}">
-                            <i class="bi bi-shop text-sky-blue me-2" style="font-size: 2.5rem;"></i>
-                            <div>
-                                <h4 class="mb-0 fw-bold text-sky-blue">MarketHub</h4>
-                                <small class="text-muted">Second Hand Marketplace</small>
-                            </div>
-                        </a>
+                <!-- Enhanced Logo -->
+                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}" 
+                   style="font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.8rem;">
+                    <i class="bi bi-shop-window text-primary-blue me-3" style="font-size: 2.8rem; filter: drop-shadow(0 4px 8px rgba(37,99,235,0.3));"></i>
+                    <div style="line-height: 1;">
+                        <span class="fw-ultra-bold text-primary-blue">MarketHub</span>
+                        <small class="d-block text-secondary-blue" style="font-size: 0.75rem; letter-spacing: 0.5px;">PREMIUM MARKETPLACE</small>
                     </div>
+                </a>
 
-                    <!-- Search Bar -->
-                    <div class="col-md-6">
-                        <form class="search-form position-relative" method="GET" action="{% url 'home' %}">
-                            <div class="input-group">
-                                <input type="text" name="search" class="form-control form-control-lg" 
-                                       placeholder="Search for second-hand items..." 
-                                       value="{{ request.GET.search|default:'' }}">
-                                <select name="category" class="form-select form-select-lg" style="max-width: 150px;">
-                                    <option value="">All categories</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="fashion">Fashion</option>
-                                    <option value="home">Home & Living</option>
-                                    <option value="books">Books</option>
-                                    <option value="sports">Sports</option>
-                                    <option value="automotive">Automotive</option>
-                                </select>
-                                <button class="btn btn-primary btn-lg px-4" type="submit">
-                                    <i class="bi bi-search"></i>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- User Actions -->
-                    <div class="col-md-3">
-                        <div class="d-flex align-items-center justify-content-end">
-                            {% if user.is_authenticated %}
-                                <!-- Sell Button -->
-                                <a href="{% url 'create_product' %}" class="btn btn-outline-primary me-3">
-                                    <i class="bi bi-plus-circle me-1"></i>Sell Item
-                                </a>
-                                
-                                <!-- Cart -->
-                                <a href="{% url 'view_cart' %}" class="btn btn-outline-sky-blue me-3 position-relative cart-icon-ultra-modern">
-                                    <i class="bi bi-cart3"></i>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-sky-blue cart-counter-modern">
-                                        {{ cart_count|default:"0" }}
-                                    </span>
-                                </a>
-                                
-                                <!-- User Menu -->
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        <i class="bi bi-person-circle me-1"></i>{{ user.username|truncatechars:10 }}
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end">
-                                        <li><h6 class="dropdown-header">My Account</h6></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Profile</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'view_cart' %}"><i class="bi bi-bag-heart me-2"></i>My Cart</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i>Order History</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <form method="post" action="{% url 'logout' %}" class="d-inline w-100">
-                                                {% csrf_token %}
-                                                <button type="submit" class="dropdown-item text-danger">
-                                                    <i class="bi bi-box-arrow-right me-2"></i>Sign Out
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            {% else %}
-                                <div class="auth-buttons">
-                                    <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i>Sign In
-                                    </a>
-                                    <a href="{% url 'signup' %}" class="btn btn-primary">
-                                        <i class="bi bi-person-plus me-1"></i>Register
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modern Navigation Cards -->
-        <div class="modern-nav-section bg-white py-3">
-            <div class="container-fluid">
-                <div class="row g-2 justify-content-center">
-                    <!-- Home Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <a href="{% url 'home' %}" class="nav-card text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm nav-card-hover">
-                                <div class="card-body text-center p-3">
-                                    <i class="bi bi-house-heart-fill fs-3 text-sky-blue mb-3"></i>
-                                    <h6 class="card-title mb-2 fw-bold">Home</h6>
-                                    <small class="text-muted fw-medium">Welcome Hub</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <!-- Categories Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <div class="dropdown">
-                            <a href="#" class="nav-card text-decoration-none" data-bs-toggle="dropdown">
-                                <div class="card h-100 border-0 shadow-sm nav-card-hover">
-                                    <div class="card-body text-center p-3">
-                                        <i class="bi bi-grid-3x3-gap-fill fs-3 text-sky-blue mb-3"></i>
-                                        <h6 class="card-title mb-2 fw-bold">Categories</h6>
-                                        <small class="text-muted fw-medium">Shop by Type</small>
-                                    </div>
-                                </div>
+                <!-- Centered Navigation Links -->
+                <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                    <ul class="navbar-nav nav-pills enhanced-nav" style="gap: 0.75rem;">
+                        <li class="nav-item">
+                            <a class="nav-link active fw-bold px-4 py-3" href="{% url 'home' %}" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-house-door me-2" style="font-size: 1.3rem;"></i> Home</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle fw-bold px-4 py-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;">
+                                <i class="bi bi-grid me-2" style="font-size: 1.3rem;"></i> Categories
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-center shadow-lg border-0">
-                                <li><h6 class="dropdown-header fw-bold">Popular Categories</h6></li>
-                                <li><a class="dropdown-item" href="?category=electronics"><i class="bi bi-laptop me-2 text-primary"></i>Electronics & Tech</a></li>
-                                <li><a class="dropdown-item" href="?category=fashion"><i class="bi bi-bag me-2 text-danger"></i>Fashion & Clothing</a></li>
-                                <li><a class="dropdown-item" href="?category=home"><i class="bi bi-house me-2 text-warning"></i>Home & Living</a></li>
-                                <li><a class="dropdown-item" href="?category=vehicles"><i class="bi bi-car-front me-2 text-info"></i>Vehicles & Auto</a></li>
+                            <ul class="dropdown-menu shadow-lg" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-laptop me-2"></i> Electronics</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-gem me-2"></i> Jewelry</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-brush me-2"></i> Art</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold px-4 py-3" href="#" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-lightning-charge me-2" style="font-size: 1.3rem;"></i> Daily Deals</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold px-4 py-3" href="#" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-percent me-2" style="font-size: 1.3rem;"></i> Promotions</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- User Actions & Cart -->
+                <div class="d-flex align-items-center" style="gap: 1rem;">
+                    <!-- Search Toggle -->
+                    <button class="btn btn-outline-secondary rounded-pill" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse">
+                        <i class="bi bi-search"></i>
+                    </button>
+
+                    <!-- Cart Icon -->
+                    <a href="{% url 'view_cart' %}" class="btn btn-primary rounded-pill position-relative cart-icon-modern">
+                        <i class="bi bi-cart3"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-counter">
+                            {% if user.is_authenticated and user.cart.items.count %}{{ user.cart.items.count }}{% else %}0{% endif %}
+                        </span>
+                    </a>
+                    
+                    <!-- Auth Buttons -->
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary rounded-pill">Sign In</a>
+                        <a href="{% url 'signup' %}" class="btn btn-primary rounded-pill">Register</a>
+                    {% else %}
+                        <!-- User Dropdown -->
+                        <div class="dropdown">
+                            <a href="#" class="btn btn-light rounded-pill dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg">
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam me-2"></i> My Listings</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><h6 class="dropdown-header fw-bold">More Categories</h6></li>
-                                <li><a class="dropdown-item" href="?category=books"><i class="bi bi-book me-2 text-success"></i>Books & Education</a></li>
-                                <li><a class="dropdown-item" href="?category=sports"><i class="bi bi-trophy me-2 text-warning"></i>Sports & Fitness</a></li>
-                                <li><a class="dropdown-item" href="?category=hobbies"><i class="bi bi-palette me-2 text-purple"></i>Hobbies & Crafts</a></li>
-                                <li><a class="dropdown-item" href="?category=music"><i class="bi bi-music-note me-2 text-info"></i>Music & Instruments</a></li>
-                                <li><a class="dropdown-item" href="?category=baby"><i class="bi bi-heart me-2 text-danger"></i>Baby & Kids</a></li>
-                                <li><a class="dropdown-item" href="?category=garden"><i class="bi bi-flower1 me-2 text-success"></i>Garden & Outdoor</a></li>
+                                <li>
+                                    <form method="post" action="{% url 'logout' %}" class="d-inline w-100">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                                    </form>
+                                </li>
                             </ul>
                         </div>
-                    </div>
-                    
-                    <!-- Browse All Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <a href="{% url 'product_list' %}" class="nav-card text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm nav-card-hover">
-                                <div class="card-body text-center p-3">
-                                    <i class="bi bi-binoculars-fill fs-3 text-sky-blue mb-3"></i>
-                                    <h6 class="card-title mb-2 fw-bold">Browse All</h6>
-                                    <small class="text-muted fw-medium">Explore Items</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <!-- Daily Deals Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <a href="#" class="nav-card text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm nav-card-hover daily-deals-card">
-                                <div class="card-body text-center p-3">
-                                    <i class="bi bi-lightning-charge-fill fs-3 text-warning mb-3"></i>
-                                    <h6 class="card-title mb-2 fw-bold text-warning">Daily Deals</h6>
-                                    <small class="text-warning fw-bold">Flash Sales</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    <!-- Promotions Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <a href="#" class="nav-card text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm nav-card-hover promotions-card">
-                                <div class="card-body text-center p-3">
-                                    <i class="bi bi-tags-fill fs-3 text-danger mb-3"></i>
-                                    <h6 class="card-title mb-2 fw-bold text-danger">Promotions</h6>
-                                    <small class="text-danger fw-bold">Big Savings</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    
-                    {% if not user.is_authenticated %}
-                    <!-- Register Card -->
-                    <div class="col-lg-2 col-md-3 col-6">
-                        <a href="{% url 'signup' %}" class="nav-card text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm nav-card-hover register-card">
-                                <div class="card-body text-center p-3">
-                                    <i class="bi bi-rocket-takeoff-fill fs-3 text-success mb-3"></i>
-                                    <h6 class="card-title mb-2 fw-bold text-success">Join Us</h6>
-                                    <small class="text-success fw-bold">Start Journey</small>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
                     {% endif %}
                 </div>
+            </div>
+        </nav>
+
+        <!-- Collapsible Search Bar -->
+        <div class="collapse" id="searchCollapse">
+            <div class="container py-3">
+                <form class="d-flex">
+                    <input class="form-control form-control-lg me-2" type="search" placeholder="Search for anything...">
+                    <button class="btn btn-primary btn-lg" type="submit">Search</button>
+                </form>
             </div>
         </div>
     </header>
@@ -2443,6 +2552,7 @@
     {% load static %}
     <script src="{% static 'MarketHub/MarketHub.js' %}"></script>
     <script src="{% static 'homepage/js/newsletter.js' %}"></script>
+    <script src="{% static 'MarketHub/cart-enhancements.js' %}"></script>
     
     <!-- Enhanced Stats Counter Animation Script -->
     <script>

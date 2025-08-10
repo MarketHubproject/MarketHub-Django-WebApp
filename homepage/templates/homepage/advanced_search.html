@@ -1,0 +1,403 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Advanced Search - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .search-filters {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+    
+    .filter-group {
+        margin-bottom: 20px;
+    }
+    
+    .filter-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 8px;
+        display: block;
+    }
+    
+    .price-inputs {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    .saved-searches {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 20px;
+    }
+    
+    .search-tag {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 5px 15px;
+        margin: 5px;
+        font-size: 0.9em;
+    }
+    
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+    
+    .product-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .product-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+    
+    .product-info {
+        padding: 20px;
+    }
+    
+    .product-price {
+        font-size: 1.4em;
+        font-weight: bold;
+        color: #e74c3c;
+        margin-bottom: 10px;
+    }
+    
+    .product-name {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+    
+    .product-location {
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+    }
+    
+    .favorite-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">
+        <i class="fas fa-search me-2"></i>Advanced Search
+    </h2>
+    
+    <!-- Search Filters -->
+    <div class="search-filters">
+        <form method="get" action="{% url 'advanced_search' %}">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="filter-group">
+                        <label class="filter-label">Search Keywords</label>
+                        <input type="text" name="q" value="{{ current_query }}" class="form-control" placeholder="Search for products...">
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Category</label>
+                        <select name="category" class="form-select">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                                <option value="{{ category.0 }}" {% if current_category == category.0 %}selected{% endif %}>
+                                    {{ category.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Location</label>
+                        <select name="location" class="form-select">
+                            <option value="">All Locations</option>
+                            {% for location in locations %}
+                                <option value="{{ location.0 }}" {% if current_location == location.0 %}selected{% endif %}>
+                                    {{ location.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Condition</label>
+                        <select name="condition" class="form-select">
+                            <option value="">Any Condition</option>
+                            {% for condition in conditions %}
+                                <option value="{{ condition.0 }}" {% if current_condition == condition.0 %}selected{% endif %}>
+                                    {{ condition.1 }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="filter-group">
+                        <label class="filter-label">Price Range</label>
+                        <div class="price-inputs">
+                            <input type="number" name="min_price" value="{{ current_min_price }}" class="form-control" placeholder="Min">
+                            <span>-</span>
+                            <input type="number" name="max_price" value="{{ current_max_price }}" class="form-control" placeholder="Max">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select name="sort" class="form-select">
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                            <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Highest Rated</option>
+                            <option value="views" {% if current_sort == 'views' %}selected{% endif %}>Most Popular</option>
+                            <option value="alphabetical" {% if current_sort == 'alphabetical' %}selected{% endif %}>A-Z</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="col-md-2">
+                    <div class="filter-group">
+                        <label class="filter-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        {% if request.user.is_authenticated and current_query %}
+        <div class="mt-3">
+            <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#saveSearchModal">
+                <i class="fas fa-save me-2"></i>Save This Search
+            </button>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Saved Searches -->
+    {% if saved_searches %}
+    <div class="saved-searches">
+        <h5><i class="fas fa-star me-2"></i>Your Saved Searches</h5>
+        {% for search in saved_searches %}
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                    <span class="search-tag">{{ search.name }}</span>
+                    {% if search.query %}
+                        <small>"{{ search.query }}"</small>
+                    {% endif %}
+                </div>
+                <a href="{% url 'delete_saved_search' search.id %}" class="btn btn-sm btn-outline-light" 
+                   onclick="return confirm('Delete this saved search?')">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Search Results -->
+    {% if products %}
+    <div class="results-header">
+        <h4>
+            {% if total_results %}
+                {{ total_results }} result{{ total_results|pluralize }} found
+            {% else %}
+                Search Results
+            {% endif %}
+        </h4>
+    </div>
+    
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card position-relative">
+            {% if request.user.is_authenticated %}
+            <button class="favorite-btn" onclick="toggleFavorite({{ product.id }})">
+                <i class="fas fa-heart {% if product.id in user_favorites %}text-danger{% else %}text-muted{% endif %}" 
+                   id="heart-{{ product.id }}"></i>
+            </button>
+            {% endif %}
+            
+            <a href="{% url 'product_detail' product.id %}" class="text-decoration-none">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                {% else %}
+                    <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                        <i class="fas fa-image text-muted fa-3x"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="product-info">
+                    <div class="product-price">R{{ product.price }}</div>
+                    <div class="product-name">{{ product.name|truncatechars:40 }}</div>
+                    <div class="product-location">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        {{ product.get_location_display }}
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ product.get_condition_display }}</small>
+                        <small class="text-muted">{{ product.views_count }} views</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if products.has_other_pages %}
+    <nav class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            
+            {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            
+            {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% else %}
+        {% if request.GET.q or request.GET.category %}
+        <div class="text-center py-5">
+            <i class="fas fa-search-minus fa-3x text-muted mb-3"></i>
+            <h4>No results found</h4>
+            <p class="text-muted">Try adjusting your search criteria or browse all products.</p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary">Browse All Products</a>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- Save Search Modal -->
+{% if request.user.is_authenticated %}
+<div class="modal fade" id="saveSearchModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Save Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post" action="{% url 'save_search' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="hidden" name="query" value="{{ current_query }}">
+                    <input type="hidden" name="category" value="{{ current_category }}">
+                    <input type="hidden" name="min_price" value="{{ current_min_price }}">
+                    <input type="hidden" name="max_price" value="{{ current_max_price }}">
+                    <input type="hidden" name="location" value="{{ current_location }}">
+                    
+                    <div class="mb-3">
+                        <label for="search-name" class="form-label">Search Name</label>
+                        <input type="text" name="name" class="form-control" id="search-name" required>
+                    </div>
+                    
+                    <div class="form-check">
+                        <input type="checkbox" name="email_alerts" class="form-check-input" id="email-alerts">
+                        <label class="form-check-label" for="email-alerts">
+                            Email me when new items match this search
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function toggleFavorite(productId) {
+    fetch(`/products/toggle-favorite/${productId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const heart = document.getElementById(`heart-${productId}`);
+        if (data.is_favorite) {
+            heart.classList.add('text-danger');
+            heart.classList.remove('text-muted');
+        } else {
+            heart.classList.add('text-muted');
+            heart.classList.remove('text-danger');
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+</script>
+
+{% endblock %}

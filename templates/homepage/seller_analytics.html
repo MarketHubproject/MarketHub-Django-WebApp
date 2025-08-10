@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Seller Analytics Dashboard | MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .analytics-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+    .stat-card {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #3B82F6, #1E40AF);
+        color: white;
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+    .stat-value {
+        font-size: 3rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    .stat-card.revenue {
+        background: linear-gradient(135deg, #10B981, #059669);
+    }
+    .stat-card.products {
+        background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+    }
+    .stat-card.views {
+        background: linear-gradient(135deg, #F59E0B, #D97706);
+    }
+    .chart-container {
+        height: 400px;
+        background: #f8fafc;
+        border-radius: 10px;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
+    .product-row {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: #f8fafc;
+        border-left: 4px solid #3B82F6;
+    }
+    .notification-item {
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        background: #f8fafc;
+        border-left: 4px solid #10B981;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-primary mb-3">📊 Seller Analytics Dashboard</h1>
+            <p class="text-muted">Get insights into your product performance and sales analytics</p>
+        </div>
+    </div>
+
+    <!-- Key Performance Indicators -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card revenue">
+                <div class="stat-value">R{{ total_revenue|floatformat:2 }}</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card products">
+                <div class="stat-value">{{ total_products }}</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card views">
+                <div class="stat-value">{{ total_views|default:"0" }}</div>
+                <div class="stat-label">Total Views</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <div class="stat-value">{{ sold_products }}</div>
+                <div class="stat-label">Products Sold</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Status Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="analytics-card">
+                <h5 class="mb-3">📦 Product Status</h5>
+                <div class="row">
+                    <div class="col-4 text-center">
+                        <h3 class="text-success">{{ available_products }}</h3>
+                        <p class="mb-0">Available</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <h3 class="text-primary">{{ sold_products }}</h3>
+                        <p class="mb-0">Sold</p>
+                    </div>
+                    <div class="col-4 text-center">
+                        <h3 class="text-warning">{{ total_products|add:"-{{ available_products }}"|add:"-{{ sold_products }}" }}</h3>
+                        <p class="mb-0">Other</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="analytics-card">
+                <h5 class="mb-3">💰 Revenue Breakdown</h5>
+                <div class="chart-container" style="height: 200px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monthly Performance Chart -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="analytics-card">
+                <h5 class="mb-3">📈 Monthly Performance</h5>
+                <div class="chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performing Products -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="analytics-card">
+                <h5 class="mb-3">🏆 Top Performing Products</h5>
+                {% for product in top_products %}
+                    <div class="product-row">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h6 class="mb-1">{{ product.name }}</h6>
+                                <small class="text-muted">{{ product.category|title }}</small>
+                            </div>
+                            <div class="col-md-2">
+                                <strong>R{{ product.total_revenue|floatformat:2|default:"0.00" }}</strong>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="badge bg-primary">{{ product.total_orders }} orders</span>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="{% url 'product_analytics' product_id=product.id %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-chart-bar"></i> Analytics
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No sales data available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="analytics-card">
+                <h5 class="mb-3">🔔 Recent Notifications</h5>
+                <div style="max-height: 400px; overflow-y: auto;">
+                    {% for notification in notifications %}
+                        <div class="notification-item">
+                            <h6 class="mb-1">{{ notification.title }}</h6>
+                            <p class="mb-1 small">{{ notification.message|truncatechars:100 }}</p>
+                            <small class="text-muted">{{ notification.created_at|timesince }} ago</small>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No recent notifications.</p>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'notifications_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="analytics-card">
+                <h5 class="mb-3">⚡ Quick Actions</h5>
+                <div class="row">
+                    <div class="col-md-3">
+                        <a href="{% url 'create_product' %}" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-plus"></i> Add Product
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'notifications_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-bell"></i> Notifications
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{% url 'recommendations' %}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-magic"></i> Recommendations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Revenue Breakdown Chart
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revenueChart = new Chart(revenueCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Available', 'Sold', 'Other'],
+        datasets: [{
+            data: [{{ available_products }}, {{ sold_products }}, {{ total_products|add:"-{{ available_products }}"|add:"-{{ sold_products }}" }}],
+            backgroundColor: ['#10B981', '#3B82F6', '#F59E0B'],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+});
+
+// Monthly Performance Chart
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyData = {{ monthly_data|safe }};
+const monthlyLabels = Object.keys(monthlyData);
+const monthlyRevenue = Object.values(monthlyData).map(item => item.revenue);
+const monthlyOrders = Object.values(monthlyData).map(item => item.orders);
+
+const monthlyChart = new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: monthlyLabels,
+        datasets: [{
+            label: 'Revenue (R)',
+            data: monthlyRevenue,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.1,
+            yAxisID: 'y'
+        }, {
+            label: 'Orders',
+            data: monthlyOrders,
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.1,
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        scales: {
+            x: {
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Month'
+                }
+            },
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+                title: {
+                    display: true,
+                    text: 'Revenue (R)'
+                }
+            },
+            y1: {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                title: {
+                    display: true,
+                    text: 'Orders'
+                },
+                grid: {
+                    drawOnChartArea: false,
+                },
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

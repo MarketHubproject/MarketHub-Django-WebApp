@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem
+from .models import (
+    Product, Cart, CartItem, HeroSlide, Category, Promotion, Order, OrderItem,
+    Review, Favorite, ProductImage, SearchHistory, Notification, ProductView, SavedSearch
+)
 
 
 @admin.register(HeroSlide)
@@ -63,10 +66,35 @@ class PromotionAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'category', 'price', 'created_at']
-    list_filter = ['category', 'created_at']
-    search_fields = ['name', 'description']
+    list_display = ['name', 'category', 'price', 'condition', 'status', 'seller', 'is_featured', 'views_count', 'created_at']
+    list_filter = ['category', 'condition', 'status', 'is_featured', 'location', 'created_at']
+    list_editable = ['status', 'is_featured']
+    search_fields = ['name', 'description', 'seller__username']
     ordering = ['-created_at']
+    readonly_fields = ['views_count', 'created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Basic Information', {
+            'fields': ('name', 'description', 'image')
+        }),
+        ('Pricing', {
+            'fields': ('price', 'original_price')
+        }),
+        ('Classification', {
+            'fields': ('category', 'condition', 'status', 'location')
+        }),
+        ('Seller & Features', {
+            'fields': ('seller', 'is_featured', 'is_sold')
+        }),
+        ('Statistics', {
+            'fields': ('views_count',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
 
 
 class CartItemInline(admin.TabularInline):
@@ -188,3 +216,127 @@ class OrderItemAdmin(admin.ModelAdmin):
     def get_total_price(self, obj):
         return f"R{obj.get_total_price():.2f}"
     get_total_price.short_description = 'Total Price'
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['product', 'user', 'rating', 'is_approved', 'created_at']
+    list_filter = ['rating', 'is_approved', 'created_at']
+    list_editable = ['is_approved']
+    search_fields = ['product__name', 'user__username', 'title', 'comment']
+    ordering = ['-created_at']
+    readonly_fields = ['helpful_votes', 'created_at', 'updated_at']
+    
+    fieldsets = (
+        ('Review Details', {
+            'fields': ('product', 'user', 'rating', 'title')
+        }),
+        ('Content', {
+            'fields': ('comment',)
+        }),
+        ('Moderation', {
+            'fields': ('is_approved', 'helpful_votes')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['user', 'product', 'added_at']
+    list_filter = ['added_at']
+    search_fields = ['user__username', 'product__name']
+    ordering = ['-added_at']
+    readonly_fields = ['added_at']
+
+
+@admin.register(ProductImage)
+class ProductImageAdmin(admin.ModelAdmin):
+    list_display = ['product', 'alt_text', 'order', 'created_at']
+    list_filter = ['created_at']
+    list_editable = ['order']
+    search_fields = ['product__name', 'alt_text']
+    ordering = ['product', 'order']
+    readonly_fields = ['created_at']
+
+
+@admin.register(SearchHistory)
+class SearchHistoryAdmin(admin.ModelAdmin):
+    list_display = ['query', 'user', 'results_count', 'ip_address', 'created_at']
+    list_filter = ['created_at']
+    search_fields = ['query', 'user__username']
+    ordering = ['-created_at']
+    readonly_fields = ['created_at']
+    
+    def has_add_permission(self, request):
+        return False  # Prevent manual creation
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ['title', 'user', 'notification_type', 'is_read', 'created_at']
+    list_filter = ['notification_type', 'is_read', 'created_at']
+    list_editable = ['is_read']
+    search_fields = ['title', 'user__username', 'message']
+    ordering = ['-created_at']
+    readonly_fields = ['created_at']
+    
+    fieldsets = (
+        ('Notification Details', {
+            'fields': ('user', 'notification_type', 'title')
+        }),
+        ('Content', {
+            'fields': ('message', 'product')
+        }),
+        ('Status', {
+            'fields': ('is_read',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )
+
+
+@admin.register(ProductView)
+class ProductViewAdmin(admin.ModelAdmin):
+    list_display = ['product', 'user', 'ip_address', 'viewed_at']
+    list_filter = ['viewed_at']
+    search_fields = ['product__name', 'user__username', 'ip_address']
+    ordering = ['-viewed_at']
+    readonly_fields = ['viewed_at']
+    
+    def has_add_permission(self, request):
+        return False  # Prevent manual creation
+    
+    def has_change_permission(self, request, obj=None):
+        return False  # Prevent editing
+
+
+@admin.register(SavedSearch)
+class SavedSearchAdmin(admin.ModelAdmin):
+    list_display = ['name', 'user', 'category', 'is_active', 'email_alerts', 'created_at']
+    list_filter = ['category', 'is_active', 'email_alerts', 'created_at']
+    list_editable = ['is_active']
+    search_fields = ['name', 'user__username', 'query']
+    ordering = ['-created_at']
+    readonly_fields = ['created_at']
+    
+    fieldsets = (
+        ('Search Details', {
+            'fields': ('user', 'name', 'query')
+        }),
+        ('Filters', {
+            'fields': ('category', 'min_price', 'max_price', 'location')
+        }),
+        ('Settings', {
+            'fields': ('is_active', 'email_alerts')
+        }),
+        ('Timestamps', {
+            'fields': ('created_at',),
+            'classes': ('collapse',)
+        }),
+    )

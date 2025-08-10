@@ -33,11 +33,42 @@ urlpatterns = [
     path('category/<slug:slug>/', views.category_view, name='category_detail'),
     # Newsletter signup
     path('newsletter/signup/', views.newsletter_signup, name='newsletter_signup'),
-    # Checkout URLs
+    # Advanced search and saved searches
+    path('search/advanced/', views.advanced_search, name='advanced_search'),
+    path('search/save/', views.save_search, name='save_search'),
+    path('saved-search/delete/<int:search_id>/', views.delete_saved_search, name='delete_saved_search'),
+    
+    # Analytics URLs
+    path('analytics/product/<int:product_id>/', views.product_analytics, name='product_analytics'),
+    path('analytics/dashboard/', views.seller_analytics_dashboard, name='seller_analytics_dashboard'),
+    
+    # Messaging URLs
+    path('message/send/<int:product_id>/', views.send_message, name='send_message'),
+    path('notifications/', views.notifications_list, name='notifications_list'),
+    path('notifications/mark-all-read/', views.mark_all_notifications_read, name='mark_all_notifications_read'),
+    
+    # Recommendations
+    path('recommendations/', views.get_recommendations, name='recommendations'),
+    
+    # Checkout and Orders
     path('checkout/', views.checkout, name='checkout'),
     path('order-confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('order-history/', views.order_history, name='order_history'),
     path('order/<int:order_id>/', views.order_detail, name='order_detail'),
+    
+    # Payment URLs
+    path('payment/<int:order_id>/', views.checkout_payment, name='checkout_payment'),
+    path('payment-methods/', views.payment_methods, name='payment_methods'),
+    path('payment-methods/delete/<int:method_id>/', views.delete_payment_method, name='delete_payment_method'),
+    path('payment-methods/set-default/<int:method_id>/', views.set_default_payment_method, name='set_default_payment_method'),
+    
+    # Product Draft URLs
+    path('drafts/', views.product_drafts_list, name='product_drafts_list'),
+    path('drafts/save/', views.save_product_draft, name='save_product_draft'),
+    path('drafts/<int:draft_id>/edit/', views.edit_product_draft, name='edit_product_draft'),
+    path('drafts/<int:draft_id>/convert/', views.convert_draft_to_product, name='convert_draft_to_product'),
+    path('drafts/<int:draft_id>/delete/', views.delete_product_draft, name='delete_product_draft'),
+    path('drafts/auto-save/', views.auto_save_draft, name='auto_save_draft'),
 ]
 
 

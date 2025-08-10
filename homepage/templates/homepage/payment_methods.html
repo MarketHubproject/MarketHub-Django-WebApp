@@ -1,0 +1,45 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Payment Methods - MarketHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-credit-card me-2"></i>Payment Methods</h2>
+    
+    {% if payment_methods %}
+        <div class="row">
+            {% for method in payment_methods %}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5>**** **** **** {{ method.last_four }}</h5>
+                        <p>{{ method.get_card_type_display }} • Expires {{ method.expiry_month }}/{{ method.expiry_year }}</p>
+                        {% if method.is_default %}
+                            <span class="badge bg-primary">Default</span>
+                        {% endif %}
+                        <div class="mt-2">
+                            {% if not method.is_default %}
+                                <form method="post" action="{% url 'set_default_payment_method' method.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button class="btn btn-outline-primary btn-sm">Set as Default</button>
+                                </form>
+                            {% endif %}
+                            <form method="post" action="{% url 'delete_payment_method' method.id %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-outline-danger btn-sm" onclick="return confirm('Remove this payment method?')">Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-credit-card fa-3x text-muted mb-3"></i>
+            <h4>No payment methods saved</h4>
+            <p>Add a payment method during checkout to save it for future purchases.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

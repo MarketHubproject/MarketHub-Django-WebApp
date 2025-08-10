@@ -1,0 +1,572 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Seller Analytics Dashboard - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-card {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 25px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .dashboard-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .stat-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 12px;
+        color: white;
+        text-align: center;
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .stat-card:hover::before {
+        opacity: 1;
+    }
+    
+    .stat-number {
+        font-size: 2.5em;
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .stat-label {
+        font-size: 1em;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .stat-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 2em;
+        opacity: 0.3;
+    }
+    
+    .revenue-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+    
+    .products-card {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+    
+    .views-card {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+    
+    .chart-container {
+        position: relative;
+        height: 350px;
+        width: 100%;
+    }
+    
+    .product-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border: 1px solid #ecf0f1;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+    }
+    
+    .product-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+    }
+    
+    .product-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+    
+    .product-info {
+        flex-grow: 1;
+    }
+    
+    .product-name {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #2c3e50;
+    }
+    
+    .product-stats {
+        display: flex;
+        gap: 15px;
+        font-size: 0.9em;
+        color: #7f8c8d;
+    }
+    
+    .product-revenue {
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #27ae60;
+    }
+    
+    .notification-item {
+        display: flex;
+        align-items: start;
+        padding: 15px;
+        border-bottom: 1px solid #ecf0f1;
+        transition: background-color 0.3s;
+    }
+    
+    .notification-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        font-size: 0.9em;
+    }
+    
+    .notification-content {
+        flex-grow: 1;
+    }
+    
+    .notification-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #2c3e50;
+    }
+    
+    .notification-message {
+        font-size: 0.9em;
+        color: #7f8c8d;
+        line-height: 1.4;
+    }
+    
+    .notification-time {
+        font-size: 0.8em;
+        color: #bdc3c7;
+        margin-top: 5px;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .action-btn {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        background: white;
+        border: 2px solid #ecf0f1;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #2c3e50;
+        transition: all 0.3s;
+    }
+    
+    .action-btn:hover {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+        transform: translateY(-2px);
+    }
+    
+    .action-icon {
+        font-size: 1.5em;
+        margin-right: 15px;
+        width: 30px;
+        text-align: center;
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="fas fa-tachometer-alt me-2 text-primary"></i>Seller Analytics Dashboard</h2>
+            <p class="text-muted mb-0">Track your business performance and insights</p>
+        </div>
+        <div class="btn-group">
+            <a href="{% url 'create_product' %}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Product
+            </a>
+            <a href="{% url 'seller_dashboard' %}" class="btn btn-outline-primary">
+                <i class="fas fa-store me-2"></i>My Store
+            </a>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+        <a href="{% url 'create_product' %}" class="action-btn">
+            <i class="fas fa-plus action-icon"></i>
+            <div>
+                <strong>Add New Product</strong>
+                <div class="small text-muted">List a new item</div>
+            </div>
+        </a>
+        
+        <a href="{% url 'product_drafts_list' %}" class="action-btn">
+            <i class="fas fa-file-alt action-icon"></i>
+            <div>
+                <strong>View Drafts</strong>
+                <div class="small text-muted">Continue editing</div>
+            </div>
+        </a>
+        
+        <a href="{% url 'order_history' %}" class="action-btn">
+            <i class="fas fa-shopping-bag action-icon"></i>
+            <div>
+                <strong>Order History</strong>
+                <div class="small text-muted">Track sales</div>
+            </div>
+        </a>
+        
+        <a href="{% url 'notifications_list' %}" class="action-btn">
+            <i class="fas fa-bell action-icon"></i>
+            <div>
+                <strong>Notifications</strong>
+                <div class="small text-muted">Stay updated</div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Key Performance Indicators -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stat-card revenue-card">
+                <i class="fas fa-dollar-sign stat-icon"></i>
+                <span class="stat-number">R{{ total_revenue|floatformat:2 }}</span>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card products-card">
+                <i class="fas fa-box stat-icon"></i>
+                <span class="stat-number">{{ total_products }}</span>
+                <div class="stat-label">Total Products</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card">
+                <i class="fas fa-check-circle stat-icon"></i>
+                <span class="stat-number">{{ sold_products }}</span>
+                <div class="stat-label">Items Sold</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card views-card">
+                <i class="fas fa-eye stat-icon"></i>
+                <span class="stat-number">{{ total_views }}</span>
+                <div class="stat-label">Total Views</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts and Analytics -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="dashboard-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5><i class="fas fa-chart-line me-2"></i>Revenue Over Time</h5>
+                    <div class="btn-group btn-group-sm">
+                        <button type="button" class="btn btn-outline-primary active" onclick="updateChart('revenue')">Revenue</button>
+                        <button type="button" class="btn btn-outline-primary" onclick="updateChart('orders')">Orders</button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="dashboard-card">
+                <h5><i class="fas fa-chart-pie me-2"></i>Product Status</h5>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Products and Recent Activity -->
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="dashboard-card">
+                <h5><i class="fas fa-trophy me-2"></i>Top Performing Products</h5>
+                {% if top_products %}
+                    {% for product in top_products %}
+                    <div class="product-item">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                        {% else %}
+                            <div class="product-image bg-light d-flex align-items-center justify-content-center">
+                                <i class="fas fa-image text-muted"></i>
+                            </div>
+                        {% endif %}
+                        <div class="product-info">
+                            <div class="product-name">{{ product.name|truncatechars:30 }}</div>
+                            <div class="product-stats">
+                                <span><i class="fas fa-shopping-cart me-1"></i>{{ product.total_orders|default:0 }} sold</span>
+                                <span><i class="fas fa-eye me-1"></i>{{ product.views_count }} views</span>
+                            </div>
+                        </div>
+                        <div class="product-revenue">
+                            R{{ product.total_revenue|default:0|floatformat:2 }}
+                        </div>
+                        <a href="{% url 'product_analytics' product.id %}" class="btn btn-outline-primary btn-sm ms-2">
+                            <i class="fas fa-chart-bar"></i>
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                        <h6>No sales data yet</h6>
+                        <p class="text-muted">Start selling to see your top products here!</p>
+                        <a href="{% url 'create_product' %}" class="btn btn-primary btn-sm">Add Your First Product</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="dashboard-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5><i class="fas fa-bell me-2"></i>Recent Notifications</h5>
+                    <a href="{% url 'notifications_list' %}" class="btn btn-outline-primary btn-sm">View All</a>
+                </div>
+                
+                {% if notifications %}
+                    {% for notification in notifications %}
+                    <div class="notification-item">
+                        <div class="notification-icon {% if notification.notification_type == 'message' %}bg-info{% elif notification.notification_type == 'order' %}bg-success{% elif notification.notification_type == 'review' %}bg-warning{% else %}bg-primary{% endif %} text-white">
+                            {% if notification.notification_type == 'message' %}
+                                <i class="fas fa-envelope"></i>
+                            {% elif notification.notification_type == 'order' %}
+                                <i class="fas fa-shopping-cart"></i>
+                            {% elif notification.notification_type == 'review' %}
+                                <i class="fas fa-star"></i>
+                            {% else %}
+                                <i class="fas fa-info"></i>
+                            {% endif %}
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">{{ notification.title }}</div>
+                            <div class="notification-message">{{ notification.message|truncatechars:80 }}</div>
+                            <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
+                        </div>
+                        {% if not notification.is_read %}
+                            <span class="badge bg-primary">New</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
+                        <h6>No notifications yet</h6>
+                        <p class="text-muted">You'll see important updates here when they arrive.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Summary -->
+    <div class="dashboard-card">
+        <h5><i class="fas fa-chart-bar me-2"></i>Performance Summary</h5>
+        <div class="row text-center">
+            <div class="col-md-2">
+                <div class="border-end">
+                    <h4 class="text-success">{{ available_products }}</h4>
+                    <small class="text-muted">Available</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border-end">
+                    <h4 class="text-secondary">{{ sold_products }}</h4>
+                    <small class="text-muted">Sold</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border-end">
+                    <h4 class="text-info">{{ total_views }}</h4>
+                    <small class="text-muted">Total Views</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border-end">
+                    <h4 class="text-warning">{% if total_products > 0 %}{{ total_views|div:total_products|floatformat:0 }}{% else %}0{% endif %}</h4>
+                    <small class="text-muted">Avg Views/Product</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="border-end">
+                    <h4 class="text-primary">{% if sold_products > 0 %}R{{ total_revenue|div:sold_products|floatformat:2 }}{% else %}R0{% endif %}</h4>
+                    <small class="text-muted">Avg Sale Price</small>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <h4 class="text-danger">{% if total_products > 0 %}{{ sold_products|mul:100|div:total_products|floatformat:1 }}%{% else %}0%{% endif %}</h4>
+                <small class="text-muted">Conversion Rate</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Revenue Chart
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const monthlyData = {{ monthly_data|safe }};
+
+// Prepare data
+const months = Object.keys(monthlyData).reverse().slice(-6); // Last 6 months
+const revenueData = months.map(month => monthlyData[month] ? monthlyData[month].revenue : 0);
+const orderData = months.map(month => monthlyData[month] ? monthlyData[month].orders : 0);
+
+let currentChart = new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+        labels: months.map(month => {
+            const [year, monthNum] = month.split('-');
+            return new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+        }),
+        datasets: [{
+            label: 'Revenue (R)',
+            data: revenueData,
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#667eea',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                grid: {
+                    display: false
+                }
+            },
+            y: {
+                beginAtZero: true,
+                grid: {
+                    borderDash: [5, 5]
+                }
+            }
+        }
+    }
+});
+
+// Status Pie Chart
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Available', 'Sold', 'Pending'],
+        datasets: [{
+            data: [{{ available_products }}, {{ sold_products }}, {{ total_products|sub:available_products|sub:sold_products }}],
+            backgroundColor: ['#27ae60', '#e74c3c', '#f39c12'],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 20,
+                    usePointStyle: true
+                }
+            }
+        }
+    }
+});
+
+// Chart update function
+function updateChart(type) {
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    if (type === 'orders') {
+        currentChart.data.datasets[0] = {
+            label: 'Orders',
+            data: orderData,
+            borderColor: '#e74c3c',
+            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#e74c3c',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6
+        };
+    } else {
+        currentChart.data.datasets[0] = {
+            label: 'Revenue (R)',
+            data: revenueData,
+            borderColor: '#667eea',
+            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#667eea',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6
+        };
+    }
+    currentChart.update();
+}
+</script>
+
+{% endblock %}

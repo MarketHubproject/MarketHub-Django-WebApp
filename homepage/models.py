@@ -479,3 +479,130 @@ class OrderItem(models.Model):
 
     def get_total_price(self):
         return self.quantity * self.price
+
+
+class Payment(models.Model):
+    """Payment records for orders"""
+    PAYMENT_METHOD_CHOICES = [
+        ('card', 'Credit/Debit Card'),
+        ('payfast', 'PayFast'),
+        ('eft', 'EFT Transfer'),
+        ('cash', 'Cash on Delivery'),
+        ('paypal', 'PayPal'),
+    ]
+
+    PAYMENT_STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+        ('refunded', 'Refunded'),
+    ]
+
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=3, default='ZAR')
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='pending')
+    
+    # Payment Gateway Information
+    transaction_id = models.CharField(max_length=255, blank=True, null=True)
+    gateway_reference = models.CharField(max_length=255, blank=True, null=True)
+    gateway_response = models.JSONField(blank=True, null=True)
+    
+    # Card Payment Details (if applicable)
+    card_last_four = models.CharField(max_length=4, blank=True, null=True)
+    card_brand = models.CharField(max_length=20, blank=True, null=True)
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    # Fees and charges
+    gateway_fee = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    net_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f"Payment {self.transaction_id or 'Pending'} for Order {self.order.order_number}"
+        
+    def save(self, *args, **kwargs):
+        if not self.net_amount:
+            self.net_amount = self.amount - self.gateway_fee
+        super().save(*args, **kwargs)
+        
+    @property
+    def is_successful(self):
+        return self.status == 'completed'
+        
+    @property
+    def is_pending(self):
+        return self.status in ['pending', 'processing']
+
+
+class PaymentMethod(models.Model):
+    """Saved payment methods for users"""
+    CARD_TYPES = [
+        ('visa', 'Visa'),
+        ('mastercard', 'Mastercard'),
+        ('amex', 'American Express'),
+        ('other', 'Other'),
+    ]
+    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payment_methods')
+    card_type = models.CharField(max_length=20, choices=CARD_TYPES)
+    last_four = models.CharField(max_length=4)
+    expiry_month = models.CharField(max_length=2)
+    expiry_year = models.CharField(max_length=4)
+    cardholder_name = models.CharField(max_length=100)
+    
+    # Security - never store actual card numbers or CVV
+    token = models.CharField(max_length=255, help_text="Tokenized card reference from payment gateway")
+    
+    is_default = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-is_default', '-created_at']
+        
+    def __str__(self):
+        return f"{self.get_card_type_display()} ending in {self.last_four}"
+        
+    def save(self, *args, **kwargs):
+        if self.is_default:
+            # Ensure only one default payment method per user
+            PaymentMethod.objects.filter(user=self.user, is_default=True).update(is_default=False)
+        super().save(*args, **kwargs)
+
+
+class ProductDraft(models.Model):
+    """Saved drafts of products being created"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='product_drafts')
+    name = models.CharField(max_length=100, blank=True)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, blank=True)
+    condition = models.CharField(max_length=20, blank=True)
+    location = models.CharField(max_length=50, blank=True)
+    
+    # Image placeholder or temporary image
+    temp_image = models.ImageField(upload_to='product_drafts/', blank=True, null=True)
+    
+    # Additional metadata
+    draft_data = models.JSONField(blank=True, null=True, help_text="Additional form data")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-updated_at']
+        
+    def __str__(self):
+        return f"Draft: {self.name or 'Untitled'} by {self.user.username}"

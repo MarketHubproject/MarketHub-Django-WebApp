@@ -182,6 +182,9 @@
                         <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
                             <i class="bi bi-arrow-left me-2"></i>Cancel
                         </a>
+                        <button type="button" class="btn btn-outline-info btn-lg rounded-pill px-4" onclick="saveAsDraft()">
+                            <i class="bi bi-bookmark me-2"></i>Save Draft
+                        </button>
                         <button type="button" class="btn btn-info btn-lg rounded-pill px-4" onclick="previewProduct()">
                             <i class="bi bi-eye me-2"></i>Preview
                         </button>
@@ -189,6 +192,14 @@
                                 style="background: var(--success-gradient); border: none;">
                             <i class="bi bi-plus-square me-2"></i>Create Product
                         </button>
+                    </div>
+                    
+                    <!-- Auto-save Indicator -->
+                    <div id="autoSaveStatus" class="text-muted text-center mt-3" style="display: none;">
+                        <small>
+                            <i class="bi bi-cloud-check text-success me-1"></i>
+                            <span id="autoSaveMessage">Draft saved automatically</span>
+                        </small>
                     </div>
                 </form>
             </div>
@@ -319,6 +330,138 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Draft saving functionality
+let currentDraftId = null;
+let autoSaveTimer = null;
+
+// Auto-save every 30 seconds
+setTimeout(() => {
+    setupAutoSave();
+}, 5000); // Start auto-save after 5 seconds
+
+function setupAutoSave() {
+    const formInputs = document.querySelectorAll('#id_name, #id_description, #id_price, #id_category');
+    
+    formInputs.forEach(input => {
+        input.addEventListener('input', () => {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(autoSaveDraft, 3000); // Auto-save 3 seconds after stopping typing
+        });
+    });
+}
+
+function autoSaveDraft() {
+    const formData = new FormData();
+    const name = document.getElementById('id_name').value.trim();
+    const description = document.getElementById('id_description').value.trim();
+    const price = document.getElementById('id_price').value;
+    const category = document.getElementById('id_category').value;
+    
+    // Only auto-save if there's some content
+    if (name || description || price || category) {
+        formData.append('name', name);
+        formData.append('description', description);
+        formData.append('price', price || '');
+        formData.append('category', category);
+        
+        if (currentDraftId) {
+            formData.append('draft_id', currentDraftId);
+        }
+        
+        fetch('{% url "auto_save_draft" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentDraftId = data.draft_id;
+                showAutoSaveStatus('Draft saved automatically', 'success');
+            }
+        })
+        .catch(error => {
+            console.error('Auto-save error:', error);
+        });
+    }
+}
+
+function saveAsDraft() {
+    const formData = new FormData();
+    const name = document.getElementById('id_name').value.trim();
+    const description = document.getElementById('id_description').value.trim();
+    const price = document.getElementById('id_price').value;
+    const category = document.getElementById('id_category').value;
+    const imageFile = document.getElementById('id_image').files[0];
+    
+    if (!name && !description && !price && !category) {
+        alert('Please fill in at least one field to save as draft.');
+        return;
+    }
+    
+    formData.append('name', name);
+    formData.append('description', description);
+    formData.append('price', price || '');
+    formData.append('category', category);
+    
+    if (imageFile) {
+        formData.append('temp_image', imageFile);
+    }
+    
+    const saveButton = document.querySelector('button[onclick="saveAsDraft()"]');
+    const originalText = saveButton.innerHTML;
+    saveButton.innerHTML = '<i class="bi bi-spinner-border spinner-border-sm me-2"></i>Saving...';
+    saveButton.disabled = true;
+    
+    fetch('{% url "save_product_draft" %}', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            currentDraftId = data.draft_id;
+            showAutoSaveStatus('Draft saved successfully! <a href="{% url "product_drafts_list" %}" class="text-primary">View all drafts</a>', 'success');
+        } else {
+            showAutoSaveStatus('Error saving draft. Please try again.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Save draft error:', error);
+        showAutoSaveStatus('Error saving draft. Please try again.', 'error');
+    })
+    .finally(() => {
+        saveButton.innerHTML = originalText;
+        saveButton.disabled = false;
+    });
+}
+
+function showAutoSaveStatus(message, type = 'success') {
+    const statusDiv = document.getElementById('autoSaveStatus');
+    const messageSpan = document.getElementById('autoSaveMessage');
+    const icon = statusDiv.querySelector('i');
+    
+    messageSpan.innerHTML = message;
+    
+    if (type === 'success') {
+        icon.className = 'bi bi-cloud-check text-success me-1';
+    } else {
+        icon.className = 'bi bi-exclamation-triangle text-warning me-1';
+    }
+    
+    statusDiv.style.display = 'block';
+    
+    // Hide after 5 seconds
+    setTimeout(() => {
+        statusDiv.style.display = 'none';
+    }, 5000);
+}
+
 // Preview functionality
 function previewProduct() {
     const name = document.getElementById('id_name').value || 'Product Name';
@@ -329,7 +472,7 @@ function previewProduct() {
     
     document.getElementById('previewName').textContent = name;
     document.getElementById('previewDescription').textContent = description;
-    document.getElementById('previewPrice').textContent = '$' + price;
+    document.getElementById('previewPrice').textContent = 'R ' + price;
     document.getElementById('previewCategory').textContent = category;
     
     const previewImageContainer = document.getElementById('previewImageContainer');

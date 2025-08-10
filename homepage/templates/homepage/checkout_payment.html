@@ -1,0 +1,181 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}Payment - MarketHub{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb Navigation -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-light rounded-pill px-4 py-2">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none"><i class="bi bi-house-fill me-1"></i>Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'view_cart' %}" class="text-decoration-none">Cart</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'checkout' %}" class="text-decoration-none">Checkout</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Payment</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+            <!-- Header -->
+            <div class="card-header border-0 text-center py-4" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                <div class="mb-3">
+                    <div class="icon-circle mx-auto bg-white bg-opacity-20" style="width: 80px; height: 80px;">
+                        <i class="bi bi-credit-card-fill" style="font-size: 2.5rem; color: white;"></i>
+                    </div>
+                </div>
+                <h3 class="mb-1 fw-bold">Complete Payment</h3>
+                <p class="mb-0 opacity-90">Secure payment for Order {{ order.order_number }}</p>
+            </div>
+
+            <div class="card-body p-5">
+                <!-- Order Summary -->
+                <div class="mb-4 p-4 bg-light rounded-3">
+                    <h5 class="fw-bold mb-3"><i class="bi bi-receipt me-2"></i>Order Summary</h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Order Number:</span>
+                        <strong>{{ order.order_number }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>R{{ order.subtotal }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Shipping:</span>
+                        <span>R{{ order.shipping_cost }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total Amount:</strong>
+                        <strong class="text-success">R{{ order.total_amount }}</strong>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    <div class="mb-4">
+                        <label for="id_payment_method" class="form-label fw-semibold">
+                            <i class="bi bi-payment-method text-success me-2"></i>Payment Method
+                        </label>
+                        {{ form.payment_method }}
+                    </div>
+
+                    <!-- Card Payment Fields (shown/hidden via JavaScript) -->
+                    <div id="cardPaymentFields" style="display: none;">
+                        <h5 class="fw-bold mb-3"><i class="bi bi-credit-card me-2"></i>Card Details</h5>
+                        
+                        <div class="mb-3">
+                            <label for="id_cardholder_name" class="form-label">Cardholder Name</label>
+                            {{ form.cardholder_name }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_card_number" class="form-label">Card Number</label>
+                            {{ form.card_number }}
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="id_card_expiry_month" class="form-label">Month</label>
+                                {{ form.card_expiry_month }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="id_card_expiry_year" class="form-label">Year</label>
+                                {{ form.card_expiry_year }}
+                            </div>
+                            <div class="col-md-4">
+                                <label for="id_card_cvv" class="form-label">CVV</label>
+                                {{ form.card_cvv }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.save_payment_method }}
+                                <label class="form-check-label" for="id_save_payment_method">
+                                    Save this payment method for future purchases
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Notice -->
+                    <div class="alert alert-info rounded-3 mb-4">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <strong>Secure Payment:</strong> Your payment information is encrypted and secure. We never store your card details.
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{% url 'checkout' %}" class="btn btn-outline-secondary btn-lg rounded-pill px-4">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Checkout
+                        </a>
+                        <button type="submit" class="btn btn-success btn-lg rounded-pill px-4" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); border: none;">
+                            <i class="bi bi-lock-fill me-2"></i>Complete Payment
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="card-footer border-0 bg-light text-center py-3">
+                <small class="text-muted">
+                    <i class="bi bi-shield-check text-success me-1"></i>
+                    SSL encrypted secure payment processing
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentMethodSelect = document.getElementById('id_payment_method');
+    const cardFields = document.getElementById('cardPaymentFields');
+    
+    function toggleCardFields() {
+        if (paymentMethodSelect.value === 'card') {
+            cardFields.style.display = 'block';
+        } else {
+            cardFields.style.display = 'none';
+        }
+    }
+    
+    paymentMethodSelect.addEventListener('change', toggleCardFields);
+    toggleCardFields(); // Initial check
+    
+    // Card number formatting
+    const cardNumberInput = document.getElementById('id_card_number');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formattedValue = value.replace(/(\d{4})/g, '$1 ').trim();
+            if (formattedValue !== e.target.value) {
+                e.target.value = formattedValue;
+            }
+        });
+    }
+});
+</script>
+
+<style>
+.icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.form-control, .form-select {
+    border-radius: 0.5rem;
+    border: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #20c997;
+    box-shadow: 0 0 0 0.2rem rgba(32, 201, 151, 0.25);
+}
+</style>
+{% endblock %}
