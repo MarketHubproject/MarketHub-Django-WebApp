@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import {
   StatusBar,
   StyleSheet,
+  AppState,
 } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
 import ApiService from './src/services/mockApi';
@@ -19,17 +20,40 @@ function App(): React.JSX.Element {
 
   useEffect(() => {
     checkAuthStatus();
+    
+    // Set up interval to check auth status periodically
+    const authCheckInterval = setInterval(checkAuthStatus, 1000);
+    
+    // Also check when app becomes active
+    const handleAppStateChange = (nextAppState: string) => {
+      if (nextAppState === 'active') {
+        checkAuthStatus();
+      }
+    };
+    
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    
+    return () => {
+      clearInterval(authCheckInterval);
+      subscription?.remove();
+    };
   }, []);
 
   const checkAuthStatus = async (): Promise<void> => {
     try {
       const authenticated = await ApiService.isAuthenticated();
-      setIsAuthenticated(authenticated);
+      if (authenticated !== isAuthenticated) {
+        setIsAuthenticated(authenticated);
+      }
     } catch (error) {
       console.error('Error checking auth status:', error);
-      setIsAuthenticated(false);
+      if (isAuthenticated !== false) {
+        setIsAuthenticated(false);
+      }
     } finally {
-      setIsLoading(false);
+      if (isLoading) {
+        setIsLoading(false);
+      }
     }
   };
 

@@ -32,7 +32,6 @@ const LoginScreen = ({ navigation }: any): React.JSX.Element => {
       
       // Navigate to main app - this will be handled by the main App component
       // when it detects the authentication state change
-      Alert.alert('Success', 'Logged in successfully!');
     } catch (error: any) {
       Alert.alert('Login Failed', error.message || 'Invalid email or password');
     } finally {
