@@ -5,63 +5,18 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // Import actual screens
 import ProductsScreenComponent from './ProductsScreen';
 import ProductDetailScreenComponent from './ProductDetailScreen';
+import CartScreenComponent from './CartScreen';
+import SignupScreenComponent from './SignupScreen';
+import FavoritesScreenComponent from './FavoritesScreen';
+import ProfileScreenComponent from './ProfileScreen';
 
-// Basic placeholder component for screens
-const PlaceholderScreen: React.FC<{
-  title: string;
-  icon: string;
-  navigation?: any;
-}> = ({ title, icon, navigation }) => (
-  <View style={styles.container}>
-    <Icon name={icon} size={60} color="#007AFF" />
-    <Text style={styles.title}>{title}</Text>
-    <Text style={styles.subtitle}>Coming Soon</Text>
-    <Text style={styles.description}>
-      This screen is under development.{'\n'}
-      Check back later for updates!
-    </Text>
-    
-    {navigation && (
-      <TouchableOpacity 
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
-        <Text style={styles.backButtonText}>Go Back</Text>
-      </TouchableOpacity>
-    )}
-  </View>
-);
-
-// Export the actual screens
+// Export all actual screens
 export const ProductsScreen = ProductsScreenComponent;
 export const ProductDetailScreen = ProductDetailScreenComponent;
-
-export const FavoritesScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
-  <PlaceholderScreen title="Favorites" icon="favorite" navigation={navigation} />
-);
-
-export const CartScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
-  <PlaceholderScreen title="Cart" icon="shopping-cart" navigation={navigation} />
-);
-
-export const ProfileScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
-  <PlaceholderScreen title="Profile" icon="person" navigation={navigation} />
-);
-
-export const SignupScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
-  <View style={styles.container}>
-    <Icon name="person-add" size={60} color="#007AFF" />
-    <Text style={styles.title}>Sign Up</Text>
-    <Text style={styles.subtitle}>Create your account</Text>
-    
-    <TouchableOpacity 
-      style={styles.backButton}
-      onPress={() => navigation.goBack()}
-    >
-      <Text style={styles.backButtonText}>Back to Login</Text>
-    </TouchableOpacity>
-  </View>
-);
+export const CartScreen = CartScreenComponent;
+export const SignupScreen = SignupScreenComponent;
+export const FavoritesScreen = FavoritesScreenComponent;
+export const ProfileScreen = ProfileScreenComponent;
 
 const styles = StyleSheet.create({
   container: {
