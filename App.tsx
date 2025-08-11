@@ -11,7 +11,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
-import ApiService from './src/services/api';
+import ApiService from './src/services/mockApi';
 
 function App(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);

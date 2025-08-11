@@ -11,7 +11,7 @@ import {
   Modal,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/api';
+import ApiService from '../services/mockApi';
 import { useFocusEffect } from '@react-navigation/native';
 
 interface UserProfile {

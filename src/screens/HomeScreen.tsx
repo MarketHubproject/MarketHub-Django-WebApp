@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/api';
+import ApiService from '../services/mockApi';
 
 const { width } = Dimensions.get('window');
 
