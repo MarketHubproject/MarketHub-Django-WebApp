@@ -35,7 +35,7 @@ function App(): React.JSX.Element {
 
   if (isLoading) {
     // You can create a splash screen component here
-    return null;
+    return <></>;
   }
 
   return (

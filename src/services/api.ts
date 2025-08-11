@@ -1,10 +1,12 @@
-import axios from 'axios';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Configure your Django backend URL
 const BASE_URL = 'http://localhost:8000/api'; // Update this for production
 
 class ApiService {
+  private api: AxiosInstance;
+
   constructor() {
     this.api = axios.create({
       baseURL: BASE_URL,
@@ -15,9 +17,9 @@ class ApiService {
     });
 
     // Request interceptor to add auth token
-    this.api.interceptors.request.use(async (config) => {
+    this.api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
       const token = await AsyncStorage.getItem('authToken');
-      if (token) {
+      if (token && config.headers) {
         config.headers.Authorization = `Token ${token}`;
       }
       return config;
@@ -26,7 +28,7 @@ class ApiService {
     // Response interceptor to handle common errors
     this.api.interceptors.response.use(
       (response) => response,
-      async (error) => {
+      async (error: any) => {
         if (error.response?.status === 401) {
           // Token expired or invalid
           await AsyncStorage.removeItem('authToken');
@@ -39,7 +41,7 @@ class ApiService {
   }
 
   // Authentication
-  async login(email, password) {
+  async login(email: string, password: string): Promise<any> {
     try {
       const response = await this.api.post('/auth/login/', {
         email,
@@ -57,7 +59,7 @@ class ApiService {
     }
   }
 
-  async signup(userData) {
+  async signup(userData: any): Promise<any> {
     try {
       const response = await this.api.post('/auth/register/', userData);
       
@@ -72,7 +74,7 @@ class ApiService {
     }
   }
 
-  async logout() {
+  async logout(): Promise<void> {
     try {
       await this.api.post('/auth/logout/');
     } catch (error) {
@@ -85,9 +87,9 @@ class ApiService {
   }
 
   // Products
-  async getProducts(page = 1, category = null, search = null) {
+  async getProducts(page: number = 1, category: string | null = null, search: string | null = null): Promise<any> {
     try {
-      const params = { page };
+      const params: any = { page };
       if (category) params.category = category;
       if (search) params.search = search;
 
@@ -98,7 +100,7 @@ class ApiService {
     }
   }
 
-  async getProduct(id) {
+  async getProduct(id: number | string): Promise<any> {
     try {
       const response = await this.api.get(`/products/${id}/`);
       return response.data;
@@ -107,7 +109,7 @@ class ApiService {
     }
   }
 
-  async getFeaturedProducts() {
+  async getFeaturedProducts(): Promise<any> {
     try {
       const response = await this.api.get('/products/featured/');
       return response.data;
@@ -117,7 +119,7 @@ class ApiService {
   }
 
   // Categories
-  async getCategories() {
+  async getCategories(): Promise<any> {
     try {
       const response = await this.api.get('/categories/');
       return response.data;
@@ -127,7 +129,7 @@ class ApiService {
   }
 
   // Favorites
-  async getFavorites() {
+  async getFavorites(): Promise<any> {
     try {
       const response = await this.api.get('/favorites/');
       return response.data;
@@ -136,7 +138,7 @@ class ApiService {
     }
   }
 
-  async addToFavorites(productId) {
+  async addToFavorites(productId: number | string): Promise<any> {
     try {
       const response = await this.api.post('/favorites/', {
         product: productId,
@@ -147,7 +149,7 @@ class ApiService {
     }
   }
 
-  async removeFromFavorites(productId) {
+  async removeFromFavorites(productId: number | string): Promise<void> {
     try {
       await this.api.delete(`/favorites/${productId}/`);
     } catch (error) {
@@ -156,7 +158,7 @@ class ApiService {
   }
 
   // Cart
-  async getCart() {
+  async getCart(): Promise<any> {
     try {
       const response = await this.api.get('/cart/');
       return response.data;
@@ -165,7 +167,7 @@ class ApiService {
     }
   }
 
-  async addToCart(productId, quantity = 1) {
+  async addToCart(productId: number | string, quantity: number = 1): Promise<any> {
     try {
       const response = await this.api.post('/cart/', {
         product: productId,
@@ -177,7 +179,7 @@ class ApiService {
     }
   }
 
-  async updateCartItem(itemId, quantity) {
+  async updateCartItem(itemId: number | string, quantity: number): Promise<any> {
     try {
       const response = await this.api.patch(`/cart/${itemId}/`, {
         quantity,
@@ -188,7 +190,7 @@ class ApiService {
     }
   }
 
-  async removeFromCart(itemId) {
+  async removeFromCart(itemId: number | string): Promise<void> {
     try {
       await this.api.delete(`/cart/${itemId}/`);
     } catch (error) {
@@ -197,7 +199,7 @@ class ApiService {
   }
 
   // User Profile
-  async getUserProfile() {
+  async getUserProfile(): Promise<any> {
     try {
       const response = await this.api.get('/profile/');
       return response.data;
@@ -206,7 +208,7 @@ class ApiService {
     }
   }
 
-  async updateUserProfile(profileData) {
+  async updateUserProfile(profileData: any): Promise<any> {
     try {
       const response = await this.api.patch('/profile/', profileData);
       return response.data;
@@ -216,7 +218,7 @@ class ApiService {
   }
 
   // Orders
-  async getOrders() {
+  async getOrders(): Promise<any> {
     try {
       const response = await this.api.get('/orders/');
       return response.data;
@@ -225,7 +227,7 @@ class ApiService {
     }
   }
 
-  async createOrder(orderData) {
+  async createOrder(orderData: any): Promise<any> {
     try {
       const response = await this.api.post('/orders/', orderData);
       return response.data;
@@ -235,7 +237,7 @@ class ApiService {
   }
 
   // Error handler
-  handleError(error) {
+  private handleError(error: any): Error {
     if (error.response) {
       // Server responded with error status
       const message = error.response.data?.message || 

@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // Import actual screens
 import ProductsScreenComponent from './ProductsScreen';
+import ProductDetailScreenComponent from './ProductDetailScreen';
 
 // Basic placeholder component for screens
 const PlaceholderScreen: React.FC<{
@@ -31,12 +32,9 @@ const PlaceholderScreen: React.FC<{
   </View>
 );
 
-// Export the actual ProductsScreen
+// Export the actual screens
 export const ProductsScreen = ProductsScreenComponent;
-
-export const ProductDetailScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
-  <PlaceholderScreen title="Product Details" icon="info" navigation={navigation} />
-);
+export const ProductDetailScreen = ProductDetailScreenComponent;
 
 export const FavoritesScreen: React.FC<{ navigation: any }> = ({ navigation }) => (
   <PlaceholderScreen title="Favorites" icon="favorite" navigation={navigation} />
