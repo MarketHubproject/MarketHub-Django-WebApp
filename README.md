@@ -1,72 +1,441 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# MarketHub Mobile
 
-# Getting Started
+This is a React Native e-commerce mobile application built with [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Prerequisites
 
-## Step 1: Start the Metro Server
+### System Requirements
+- **Node.js** >= 18.x
+- **React Native CLI** ([Setup Guide](https://reactnative.dev/docs/environment-setup))
+- **Android Studio** (for Android development)
+- **Xcode** (for iOS development, macOS only)
+- **Git**
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+### Development Tools
+- VS Code or your preferred editor
+- Android Emulator or physical Android device
+- iOS Simulator or physical iPhone (macOS only)
 
-To start Metro, run the following command from the _root_ of your React Native project:
+## Installation
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd MarketHubMobile
+```
+
+### 2. Install Dependencies
+```bash
+npm install
+
+# For iOS only (macOS required)
+cd ios && pod install && cd ..
+```
+
+### 3. Environment Configuration
+
+The app uses environment-specific configuration files. Create the necessary `.env` files:
 
 ```bash
-# using npm
+# Copy the example file
+cp .env.example .env.development
+```
+
+Create additional environment files:
+```bash
+# Staging environment
+cp .env.example .env.staging
+
+# Production environment  
+cp .env.example .env.production
+```
+
+## Environment Variables
+
+Each `.env` file should contain the following variables:
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `API_BASE_URL` | Backend API base URL | `http://10.0.2.2:8000/api` (Android emulator)<br/>`http://localhost:8000/api` (iOS simulator) |
+| `IMAGE_BASE_URL` | Base URL for product images | `http://10.0.2.2:8000/media` |
+| `PLACEHOLDER_IMAGE_URL` | Service for placeholder images | `https://picsum.photos` |
+| `TIMEOUT` | API request timeout in milliseconds | `10000` |
+| `USE_MOCK_API` | Enable/disable mock API mode | `true` or `false` |
+
+### Environment-Specific Configuration
+
+#### Development (`.env.development`)
+```env
+API_BASE_URL=http://10.0.2.2:8000/api
+IMAGE_BASE_URL=http://10.0.2.2:8000/media
+PLACEHOLDER_IMAGE_URL=https://picsum.photos
+TIMEOUT=10000
+USE_MOCK_API=true
+```
+
+#### Staging (`.env.staging`)
+```env
+API_BASE_URL=https://staging-api.markethub.com/api
+IMAGE_BASE_URL=https://staging-api.markethub.com/media
+PLACEHOLDER_IMAGE_URL=https://picsum.photos
+TIMEOUT=10000
+USE_MOCK_API=false
+```
+
+#### Production (`.env.production`)
+```env
+API_BASE_URL=https://api.markethub.com/api
+IMAGE_BASE_URL=https://api.markethub.com/media
+PLACEHOLDER_IMAGE_URL=https://picsum.photos
+TIMEOUT=15000
+USE_MOCK_API=false
+```
+
+## Running the Application
+
+### Development Mode
+
+#### Start Metro Bundler
+```bash
+# Start with development environment
+npm run start:dev
+
+# OR use default start command
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+#### Run on Android
 ```bash
-# using npm
+# Development build
+npm run android:dev
+
+# OR use default android command
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### For iOS
+#### Run on iOS
+```bash
+# Development build
+npm run ios:dev
+
+# OR use default ios command  
+npm run ios
+```
+
+### Staging Environment
 
 ```bash
-# using npm
-npm run ios
+# Android
+npm run android:staging
 
-# OR using Yarn
-yarn ios
+# iOS
+npm run ios:staging
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+### Production Environment
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+```bash
+# Android (Release build)
+npm run android:prod
 
-## Step 3: Modifying your App
+# iOS (Release build)
+npm run ios:prod
+```
 
-Now that you have successfully run the app, let's modify it.
+## Switching Between Mock and Real API
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+The app supports two API modes:
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+### Mock API Mode (Default for Development)
+- **Purpose**: Test app functionality without backend
+- **Features**: Pre-populated data, simulated network delays
+- **Login Credentials**: 
+  - Email: `test@example.com`
+  - Password: `password`
 
-## Congratulations! :tada:
+### Real API Mode
+- **Purpose**: Connect to actual backend server
+- **Requirements**: Running backend server
 
-You've successfully run and modified your React Native App. :partying_face:
+### How to Switch
 
-### Now what?
+#### Method 1: Environment Variable (Recommended)
+Update your `.env` file:
+```env
+# Enable mock API
+USE_MOCK_API=true
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+# Disable mock API (use real backend)
+USE_MOCK_API=false
+```
 
-# Troubleshooting
+#### Method 2: Code Configuration
+Modify `src/services/index.ts`:
+```javascript
+import { config } from '../config/environment';
+import RealApi from './api';
+import MockApi from './mockApi';
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+// Force mock API
+const SelectedApi = MockApi;
+
+// Force real API
+// const SelectedApi = RealApi;
+
+// Use environment setting (recommended)
+// const SelectedApi = config.USE_MOCK_API ? MockApi : RealApi;
+
+export default SelectedApi;
+```
+
+**Note**: After changing the API mode, restart Metro bundler and rebuild the app.
+
+## Troubleshooting Common Issues
+
+### SSL Certificate Issues
+
+#### Problem
+```
+Network Error: Unable to resolve host / SSL handshake failed
+```
+
+#### Solutions
+
+1. **Development with Self-Signed Certificates**:
+   ```bash
+   # Android: Add network security config
+   # Create android/app/src/main/res/xml/network_security_config.xml
+   ```
+   ```xml
+   <?xml version="1.0" encoding="utf-8"?>
+   <network-security-config>
+       <domain-config cleartextTrafficPermitted="true">
+           <domain includeSubdomains="true">10.0.2.2</domain>
+           <domain includeSubdomains="true">localhost</domain>
+       </domain-config>
+   </network-security-config>
+   ```
+
+2. **iOS Simulator SSL Issues**:
+   ```bash
+   # Use HTTP instead of HTTPS for development
+   API_BASE_URL=http://localhost:8000/api
+   ```
+
+### Android Emulator Network Issues
+
+#### Problem
+```
+Network Error: Connection refused to localhost:8000
+```
+
+#### Solutions
+
+1. **Use Android Emulator IP**:
+   ```env
+   # Replace localhost with emulator IP
+   API_BASE_URL=http://10.0.2.2:8000/api
+   ```
+
+2. **Check Backend Server**:
+   ```bash
+   # Ensure backend is running and accessible
+   curl http://localhost:8000/api/health
+   ```
+
+3. **Enable Network Bridge**:
+   ```bash
+   # Start emulator with DNS
+   emulator -avd YourAVD -dns-server 8.8.8.8
+   ```
+
+### iOS Simulator Network Issues
+
+#### Problem
+```
+Network Error: localhost connection issues
+```
+
+#### Solutions
+
+1. **Use Localhost for iOS**:
+   ```env
+   # iOS Simulator can use localhost directly
+   API_BASE_URL=http://localhost:8000/api
+   ```
+
+2. **Check macOS Firewall**:
+   ```bash
+   # Temporarily disable firewall for testing
+   sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
+   ```
+
+### Metro Bundler Issues
+
+#### Problem
+```
+Error: Unable to resolve module react-native-config
+```
+
+#### Solutions
+
+1. **Clear Cache and Reinstall**:
+   ```bash
+   # Clear Metro cache
+   npx react-native start --reset-cache
+   
+   # Clear npm cache
+   npm cache clean --force
+   
+   # Reinstall dependencies
+   rm -rf node_modules package-lock.json
+   npm install
+   ```
+
+2. **Android: Clean Build**:
+   ```bash
+   cd android
+   ./gradlew clean
+   cd ..
+   ```
+
+3. **iOS: Clean Build**:
+   ```bash
+   cd ios
+   xcodebuild clean
+   rm -rf build/
+   pod install
+   cd ..
+   ```
+
+### Environment Variables Not Loading
+
+#### Problem
+App shows `undefined` for environment variables
+
+#### Solutions
+
+1. **Verify File Names**:
+   ```bash
+   # Check files exist
+   ls -la .env*
+   ```
+
+2. **Check File Format**:
+   ```env
+   # No spaces around = sign
+   API_BASE_URL=http://localhost:8000/api
+   
+   # Not this:
+   API_BASE_URL = http://localhost:8000/api
+   ```
+
+3. **Restart Everything**:
+   ```bash
+   # Kill Metro bundler
+   pkill -f metro
+   
+   # Restart with clean cache
+   npx react-native start --reset-cache
+   ```
+
+### Build Failures
+
+#### Problem
+```
+Build failed: Environment file not found
+```
+
+#### Solutions
+
+1. **Create Missing Environment Files**:
+   ```bash
+   # Ensure all environment files exist
+   touch .env.development .env.staging .env.production
+   ```
+
+2. **Use Default Environment**:
+   ```bash
+   # Fallback to default commands if env-specific fails
+   npm run android  # instead of android:dev
+   npm run ios      # instead of ios:dev
+   ```
+
+## Development Tips
+
+### Debugging Network Requests
+
+1. **Enable Network Logging**:
+   ```javascript
+   // Add to App.tsx for debugging
+   import { XMLHttpRequest } from 'react-native';
+   
+   const originalOpen = XMLHttpRequest.prototype.open;
+   XMLHttpRequest.prototype.open = function(method, url) {
+     console.log('API Request:', method, url);
+     return originalOpen.apply(this, arguments);
+   };
+   ```
+
+2. **React Native Debugger**:
+   - Install React Native Debugger
+   - Enable Network tab to monitor API calls
+
+### Testing Different Environments
+
+```bash
+# Quick environment test
+npm run android:dev     # Should show mock data
+npm run android:staging # Should connect to staging API
+npm run android:prod    # Should connect to production API
+```
+
+### Hot Reload Issues
+
+If hot reload stops working after environment changes:
+
+```bash
+# Reload the app manually
+# Android: Press 'R' twice in terminal or Cmd+M → Reload
+# iOS: Cmd+R in simulator
+```
+
+# Code Quality & Internationalization
+
+## Chinese Unicode Prevention
+
+This project enforces strict internationalization standards by preventing Chinese Unicode characters in source code.
+
+### Quick Check
+
+```bash
+# Check for Chinese Unicode characters
+npm run lint:chinese
+
+# Run full CI checks (Chinese + ESLint)
+npm run ci:check-chinese
+```
+
+### Why This Matters
+
+- **🌍 Internationalization**: All text should use translation keys
+- **🔧 Maintainability**: Prevents hardcoded text in source code
+- **✅ Quality**: Automated CI checks prevent regression
+
+### Example
+
+```javascript
+// ❌ Don't do this
+const title = "产品列表";
+
+// ✅ Do this instead
+import i18n from './src/services/i18n';
+const title = i18n.t('products.listTitle');
+```
+
+**See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.**
+
+---
 
 # Learn More
 

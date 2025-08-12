@@ -12,7 +12,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
 
 const LoginScreen = ({ navigation }: any): React.JSX.Element => {
   const [email, setEmail] = useState<string>('');

@@ -1,0 +1,15 @@
+{
+  "name": "eslint-plugin-markethub",
+  "version": "1.0.0",
+  "description": "ESLint plugin for MarketHub Mobile with custom rules",
+  "main": "index.js",
+  "author": "MarketHub Team",
+  "license": "MIT",
+  "keywords": [
+    "eslint",
+    "plugin",
+    "chinese",
+    "unicode",
+    "i18n"
+  ]
+}

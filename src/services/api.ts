@@ -1,16 +1,18 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { config } from '../config/environment';
+import { ApiError, logger, ErrorToast } from '../utils';
+import i18n from './i18n';
 
-// Configure your Django backend URL
-const BASE_URL = 'http://localhost:8000/api'; // Update this for production
+// Use environment-based configuration
 
 class ApiService {
   private api: AxiosInstance;
 
   constructor() {
     this.api = axios.create({
-      baseURL: BASE_URL,
-      timeout: 10000,
+      baseURL: config.API_BASE_URL,
+      timeout: config.TIMEOUT,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -79,7 +81,10 @@ class ApiService {
       await this.api.post('/auth/logout/');
     } catch (error) {
       // Continue with logout even if API call fails
-      console.warn('Logout API call failed:', error);
+      logger.warn('Logout API call failed', error, {
+        component: 'ApiService',
+        action: 'logout'
+      });
     } finally {
       await AsyncStorage.removeItem('authToken');
       await AsyncStorage.removeItem('userId');
@@ -236,20 +241,103 @@ class ApiService {
     }
   }
 
-  // Error handler
-  private handleError(error: any): Error {
+  // Error handler - returns consistent ApiError objects and shows Toast for network errors
+  private handleError(error: any): ApiError {
+    // Extract request details for logging
+    const url = error.config?.url || 'unknown';
+    const method = error.config?.method?.toUpperCase() || 'UNKNOWN';
+    
     if (error.response) {
       // Server responded with error status
-      const message = error.response.data?.message || 
-                     error.response.data?.detail || 
-                     `Server error: ${error.response.status}`;
-      return new Error(message);
+      const status = error.response.status;
+      const data = error.response.data;
+      
+      let title = 'Server Error';
+      let message = data?.message || data?.detail || 'Something went wrong on the server';
+      
+      // Customize error messages based on status codes
+      switch (status) {
+        case 400:
+          title = 'Invalid Request';
+          if (data?.email) {
+            message = 'Please check your email address';
+          } else if (data?.password) {
+            message = 'Please check your password';
+          } else {
+            message = data?.message || data?.detail || 'Please check your input and try again';
+          }
+          break;
+        case 401:
+          title = 'Authentication Failed';
+          message = 'Invalid email or password';
+          break;
+        case 403:
+          title = 'Access Denied';
+          message = 'You do not have permission to perform this action';
+          break;
+        case 404:
+          title = 'Not Found';
+          message = 'The requested resource was not found';
+          break;
+        case 422:
+          title = 'Validation Error';
+          message = data?.message || data?.detail || 'Please check your input';
+          break;
+        case 500:
+          title = 'Server Error';
+          message = 'Something went wrong on our end. Please try again later';
+          break;
+        default:
+          title = 'Server Error';
+          message = data?.message || data?.detail || `Server error (${status})`;
+      }
+      
+      // Log API error using centralized logger
+      logger.apiError(method, url, status, error, {
+        component: 'ApiService',
+        metadata: { responseData: data }
+      });
+      
+      return { title, message };
     } else if (error.request) {
-      // Network error
-      return new Error('Network error. Please check your connection.');
+      // Network error - show Toast with translated message
+      const networkErrorMessage = i18n.t('errors.networkError');
+      
+      // Show Toast notification for network errors
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: networkErrorMessage
+      });
+      
+      // Log network error
+      logger.networkError(`Network request failed: ${method} ${url}`, error, {
+        component: 'ApiService',
+        metadata: {
+          timeout: error.code === 'ECONNABORTED',
+          url,
+          method
+        }
+      });
+      
+      return {
+        title: 'Network Error',
+        message: networkErrorMessage
+      };
     } else {
       // Other error
-      return new Error(error.message || 'An unexpected error occurred.');
+      const unexpectedMessage = error.message || 'An unexpected error occurred';
+      
+      // Log unexpected error
+      logger.error(`Unexpected API error: ${method} ${url}`, error, {
+        component: 'ApiService',
+        action: 'handleError',
+        metadata: { url, method }
+      });
+      
+      return {
+        title: 'Unexpected Error',
+        message: unexpectedMessage
+      };
     }
   }
 

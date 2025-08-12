@@ -12,7 +12,8 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
+import { logger, ErrorToast } from '../utils';
 
 interface SignupForm {
   firstName: string;
@@ -122,7 +123,15 @@ const SignupScreen = ({ navigation }: any): React.JSX.Element => {
         ]
       );
     } catch (error: any) {
-      console.error('Signup error:', error);
+      logger.error('Signup error', error, {
+        component: 'SignupScreen',
+        action: 'handleSignup',
+        metadata: {
+          email: userData.email,
+          firstName: userData.first_name,
+          lastName: userData.last_name,
+        }
+      });
       
       // Handle specific error messages
       if (error.message?.includes('email')) {
@@ -264,9 +273,9 @@ const SignupScreen = ({ navigation }: any): React.JSX.Element => {
           {/* Password Requirements */}
           <View style={styles.passwordRequirements}>
             <Text style={styles.requirementsTitle}>Password Requirements:</Text>
-            <Text style={styles.requirementText}>• At least 8 characters</Text>
-            <Text style={styles.requirementText}>• Include uppercase and lowercase letters</Text>
-            <Text style={styles.requirementText}>• Include at least one number</Text>
+            <Text style={styles.requirementText}>- At least 8 characters</Text>
+            <Text style={styles.requirementText}>- Include uppercase and lowercase letters</Text>
+            <Text style={styles.requirementText}>- Include at least one number</Text>
           </View>
 
           {/* Signup Button */}

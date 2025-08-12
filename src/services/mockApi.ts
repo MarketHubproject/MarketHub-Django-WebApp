@@ -1,39 +1,60 @@
 // Mock API Service for testing without backend connection
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getPlaceholderImageUrl } from '../config/environment';
+import { ApiError, logger, ErrorToast } from '../utils';
+import i18n from './i18n';
 
-// Mock data
+// Mock data with working placeholder images
 const mockProducts = [
   {
     id: 1,
     name: 'iPhone 13',
     price: 699,
-    image: 'https://via.placeholder.com/300x300?text=iPhone+13',
+    image: getPlaceholderImageUrl(300, 300, 'iPhone 13'),
     category: 'Electronics',
     description: 'Latest iPhone with amazing features',
+    stock: 15,
+    rating: 4.5,
   },
   {
     id: 2,
     name: 'MacBook Pro',
     price: 1299,
-    image: 'https://via.placeholder.com/300x300?text=MacBook+Pro',
+    image: getPlaceholderImageUrl(300, 300, 'MacBook Pro'),
     category: 'Electronics',
     description: 'Professional laptop for developers',
+    stock: 8,
+    rating: 4.8,
   },
   {
     id: 3,
     name: 'Nike Air Max',
     price: 120,
-    image: 'https://via.placeholder.com/300x300?text=Nike+Shoes',
+    image: getPlaceholderImageUrl(300, 300, 'Nike Air Max'),
     category: 'Fashion',
     description: 'Comfortable running shoes',
+    stock: 22,
+    rating: 4.3,
   },
   {
     id: 4,
     name: 'Study Lamp',
     price: 25,
-    image: 'https://via.placeholder.com/300x300?text=Study+Lamp',
+    image: getPlaceholderImageUrl(300, 300, 'Study Lamp'),
     category: 'Furniture',
     description: 'LED desk lamp for students',
+    stock: 5,
+    rating: 4.0,
+  },
+  {
+    id: 5,
+    name: 'Wireless Headphones',
+    price: 89,
+    image: getPlaceholderImageUrl(300, 300, 'Wireless Headphones'),
+    category: 'Electronics',
+    description: 'High-quality wireless audio experience',
+    stock: 0, // Out of stock for testing
+    rating: 4.2,
   },
 ];
 
@@ -52,25 +73,40 @@ class MockApiService {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
+  // Error handler - returns consistent ApiError objects
+  private handleError(message: string, title?: string): ApiError {
+    return {
+      title: title || 'Error',
+      message: message
+    };
+  }
+
   // Authentication
   async login(email: string, password: string): Promise<any> {
-    await this.delay();
-    
-    if (email === 'test@example.com' && password === 'password') {
-      const token = 'mock-auth-token-12345';
-      await AsyncStorage.setItem('authToken', token);
-      await AsyncStorage.setItem('userId', '1');
+    try {
+      await this.delay();
       
-      return {
-        token,
-        user: {
-          id: 1,
-          email: 'test@example.com',
-          name: 'Test User',
-        },
-      };
-    } else {
-      throw new Error('Invalid credentials');
+      if (email === 'test@example.com' && password === 'password') {
+        const token = 'mock-auth-token-12345';
+        await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('userId', '1');
+        
+        return {
+          token,
+          user: {
+            id: 1,
+            email: 'test@example.com',
+            name: 'Test User',
+          },
+        };
+      } else {
+        throw this.handleError('Invalid email or password', 'Authentication Failed');
+      }
+    } catch (error: any) {
+      if (error.title && error.message) {
+        throw error; // Re-throw if it's already formatted
+      }
+      throw this.handleError('An error occurred during login', 'Login Error');
     }
   }
 
@@ -125,14 +161,21 @@ class MockApiService {
   }
 
   async getProduct(id: number | string): Promise<any> {
-    await this.delay();
-    
-    const product = mockProducts.find(p => p.id === parseInt(id.toString()));
-    if (!product) {
-      throw new Error('Product not found');
+    try {
+      await this.delay();
+      
+      const product = mockProducts.find(p => p.id === parseInt(id.toString()));
+      if (!product) {
+        throw this.handleError('The product you are looking for could not be found', 'Product Not Found');
+      }
+      
+      return product;
+    } catch (error: any) {
+      if (error.title && error.message) {
+        throw error; // Re-throw if it's already formatted
+      }
+      throw this.handleError('An error occurred while fetching the product', 'Product Error');
     }
-    
-    return product;
   }
 
   async getFeaturedProducts(): Promise<any> {

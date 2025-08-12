@@ -6,12 +6,15 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  Image,
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
+import i18n from '../services/i18n';
+import { getProductImageUrl } from '../config/environment';
+import { SmartImage } from '../components';
+import { logger, ErrorToast } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -51,55 +54,90 @@ const HomeScreen = ({ navigation }: any): React.JSX.Element => {
       
       setFeaturedProducts(productsResponse.results || productsResponse);
       setCategories(categoriesResponse.results || categoriesResponse);
-    } catch (error) {
-      console.error('Error loading home data:', error);
-      // You might want to show an error message to the user
+    } catch (error: any) {
+      // Log error using centralized logger
+      logger.error('Error loading home data', error, {
+        component: 'HomeScreen',
+        action: 'loadHomeData',
+        metadata: {
+          featuredProductsCount: featuredProducts.length,
+          categoriesCount: categories.length,
+        }
+      });
+      
+      // Check if it's a network error and show Toast if not already shown
+      // (The API service already shows Toast for network errors, but for non-network errors we show a generic one)
+      if (error?.title && error?.message) {
+        // This is already an ApiError from our service, no need to show Toast again
+        // as it was already handled by the API service
+      } else {
+        // Show a generic error toast for unexpected errors
+        ErrorToast.show({
+          title: i18n.t('common.error'),
+          message: i18n.t('errors.loadingError')
+        });
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  const renderProductCard = ({ item }: { item: Product }): React.JSX.Element => (
-    <TouchableOpacity 
-      style={styles.productCard}
-      onPress={() => navigation.navigate('Products', { 
-        screen: 'ProductDetail', 
-        params: { productId: item.id } 
-      })}
-    >
-      <Image 
-        source={{ 
-          uri: item.image || 'https://via.placeholder.com/150x150?text=No+Image' 
-        }} 
-        style={styles.productImage}
-        resizeMode="cover"
-      />
-      <View style={styles.productInfo}>
-        <Text style={styles.productName} numberOfLines={2}>{item.name}</Text>
-        <Text style={styles.productPrice}>${item.price}</Text>
-        <Text style={styles.productCategory}>{item.category}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const renderProductCard = ({ item }: { item: Product }): React.JSX.Element => {
+    // Guard against undefined item data
+    if (!item) {
+      return <View style={styles.productCard} />;
+    }
 
-  const renderCategoryCard = ({ item }: { item: Category }): React.JSX.Element => (
-    <TouchableOpacity 
-      style={styles.categoryCard}
-      onPress={() => navigation.navigate('Products', { 
-        screen: 'ProductsList',
-        params: { category: item.slug }
-      })}
-    >
-      <Icon name="category" size={32} color="#007AFF" />
-      <Text style={styles.categoryName}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+    return (
+      <TouchableOpacity 
+        style={styles.productCard}
+        onPress={() => navigation.navigate('Products', { 
+          screen: 'ProductDetail', 
+          params: { productId: item.id } 
+        })}
+      >
+        <SmartImage 
+          source={{ 
+            uri: getProductImageUrl(item) 
+          }} 
+          style={styles.productImage}
+          resizeMode="cover"
+          fallbackText={item.name}
+        />
+        <View style={styles.productInfo}>
+          <Text style={styles.productName} numberOfLines={2}>{item.name || ''}</Text>
+          <Text style={styles.productPrice}>${item.price || '0'}</Text>
+          <Text style={styles.productCategory}>{item.category || ''}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderCategoryCard = ({ item }: { item: Category }): React.JSX.Element => {
+    // Guard against undefined item data
+    if (!item) {
+      return <View style={styles.categoryCard} />;
+    }
+
+    return (
+      <TouchableOpacity 
+        style={styles.categoryCard}
+        onPress={() => navigation.navigate('Products', { 
+          screen: 'ProductsList',
+          params: { category: item.slug }
+        })}
+      >
+        <Icon name="category" size={32} color="#007AFF" />
+        <Text style={styles.categoryName}>{item.name || ''}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading...</Text>
+        <Text style={styles.loadingText}>{i18n.t('common.loading')}</Text>
       </View>
     );
   }
@@ -108,7 +146,7 @@ const HomeScreen = ({ navigation }: any): React.JSX.Element => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>MarketHub</Text>
+        <Text style={styles.headerTitle}>{i18n.t('home.marketHub')}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Cart')}>
           <Icon name="shopping-cart" size={28} color="#007AFF" />
         </TouchableOpacity>
@@ -116,60 +154,70 @@ const HomeScreen = ({ navigation }: any): React.JSX.Element => {
 
       {/* Welcome Section */}
       <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeTitle}>Welcome to MarketHub</Text>
+        <Text style={styles.welcomeTitle}>{i18n.t('home.welcomeTitle')}</Text>
         <Text style={styles.welcomeSubtitle}>
-          Discover amazing products from student sellers
+          {i18n.t('home.welcomeSubtitle')}
         </Text>
       </View>
 
       {/* Categories Section */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Shop by Category</Text>
+          <Text style={styles.sectionTitle}>{i18n.t('home.shopByCategory')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Products')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>{i18n.t('common.seeAll')}</Text>
           </TouchableOpacity>
         </View>
         
         <FlatList
           data={categories.slice(0, 6)} // Show first 6 categories
           renderItem={renderCategoryCard}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item?.id?.toString() ?? String(index)}
           numColumns={3}
           scrollEnabled={false}
           contentContainerStyle={styles.categoriesGrid}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>{i18n.t('products.noProductsFound')}</Text>
+            </View>
+          }
         />
       </View>
 
       {/* Featured Products Section */}
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Featured Products</Text>
+          <Text style={styles.sectionTitle}>{i18n.t('home.featuredProducts')}</Text>
           <TouchableOpacity onPress={() => navigation.navigate('Products')}>
-            <Text style={styles.seeAllText}>See All</Text>
+            <Text style={styles.seeAllText}>{i18n.t('common.seeAll')}</Text>
           </TouchableOpacity>
         </View>
         
         <FlatList
           data={featuredProducts}
           renderItem={renderProductCard}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item, index) => item?.id?.toString() ?? String(index)}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.productsContainer}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>{i18n.t('products.noProductsFound')}</Text>
+            </View>
+          }
         />
       </View>
 
       {/* Quick Actions */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Quick Actions</Text>
+        <Text style={styles.sectionTitle}>{i18n.t('home.quickActions')}</Text>
         <View style={styles.quickActions}>
           <TouchableOpacity 
             style={styles.quickActionButton}
             onPress={() => navigation.navigate('Favorites')}
           >
             <Icon name="favorite" size={24} color="#FF6B6B" />
-            <Text style={styles.quickActionText}>Favorites</Text>
+            <Text style={styles.quickActionText}>{i18n.t('navigation.favorites')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -177,7 +225,7 @@ const HomeScreen = ({ navigation }: any): React.JSX.Element => {
             onPress={() => navigation.navigate('Profile')}
           >
             <Icon name="person" size={24} color="#4ECDC4" />
-            <Text style={styles.quickActionText}>Profile</Text>
+            <Text style={styles.quickActionText}>{i18n.t('navigation.profile')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
@@ -185,7 +233,7 @@ const HomeScreen = ({ navigation }: any): React.JSX.Element => {
             onPress={() => navigation.navigate('Products')}
           >
             <Icon name="search" size={24} color="#45B7D1" />
-            <Text style={styles.quickActionText}>Search</Text>
+            <Text style={styles.quickActionText}>{i18n.t('common.search')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -336,6 +384,18 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#333',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
   },
 });
 

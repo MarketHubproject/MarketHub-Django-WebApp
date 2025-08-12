@@ -5,15 +5,18 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Image,
   Alert,
   ActivityIndicator,
   Dimensions,
   Share,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
+import i18n from '../services/i18n';
 import { useFocusEffect } from '@react-navigation/native';
+import { getProductImageUrl } from '../config/environment';
+import { SmartImage } from '../components';
+import { logger, ErrorToast } from '../utils';
 
 const { width } = Dimensions.get('window');
 const numColumns = 2;
@@ -56,10 +59,21 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
       const favoritesData = await ApiService.getFavorites();
       setFavorites(favoritesData.results || favoritesData || []);
     } catch (error: any) {
-      console.error('Error loading favorites:', error);
-      // Don't show alert for empty favorites or authentication errors
+      logger.error('Error loading favorites', error, {
+        component: 'FavoritesScreen',
+        action: 'loadFavorites',
+        metadata: {
+          showRefreshing,
+          favoritesCount: favorites.length,
+        }
+      });
+      
+      // Don't show error for empty favorites or authentication errors
       if (!error.message?.includes('empty') && !error.message?.includes('authentication')) {
-        Alert.alert('Error', 'Failed to load favorites. Please try again.');
+        ErrorToast.show({
+          title: i18n.t('common.error'),
+          message: i18n.t('errors.loadingError')
+        });
       }
     } finally {
       setLoading(false);
@@ -69,12 +83,12 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
 
   const removeFromFavorites = async (favoriteId: number, productId: number): Promise<void> => {
     Alert.alert(
-      'Remove from Favorites',
+      i18n.t('common.remove'),
       'Are you sure you want to remove this item from your favorites?',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: i18n.t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remove',
+          text: i18n.t('common.remove'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -86,9 +100,24 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
                 prevFavorites.filter(item => item.id !== favoriteId)
               );
               
-              Alert.alert('Removed', 'Item removed from favorites');
+              ErrorToast.show({
+                title: i18n.t('common.success'),
+                message: 'Item removed from favorites'
+              });
             } catch (error: any) {
-              Alert.alert('Error', error.message || 'Failed to remove item from favorites');
+              logger.error('Error removing from favorites', error, {
+                component: 'FavoritesScreen',
+                action: 'removeFromFavorites',
+                metadata: {
+                  favoriteId,
+                  productId,
+                }
+              });
+              
+              ErrorToast.show({
+                title: i18n.t('common.error'),
+                message: error.message || 'Failed to remove item from favorites'
+              });
             } finally {
               setRemovingItems(prev => {
                 const newSet = new Set(prev);
@@ -104,7 +133,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
 
   const addToCart = async (product: FavoriteProduct['product']): Promise<void> => {
     if (product.stock === 0) {
-      Alert.alert('Out of Stock', 'This item is currently out of stock.');
+      Alert.alert(i18n.t('products.outOfStock'), 'This item is currently out of stock.');
       return;
     }
 
@@ -123,7 +152,19 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
         ]
       );
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to add item to cart');
+      logger.error('Error adding to cart from favorites', error, {
+        component: 'FavoritesScreen',
+        action: 'addToCart',
+        metadata: {
+          productId: product.id,
+          productName: product.name,
+        }
+      });
+      
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: error.message || 'Failed to add item to cart'
+      });
     }
   };
 
@@ -133,8 +174,15 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
         message: `Check out this product: ${product.name}\nPrice: $${product.price}\n\nShared from MarketHub`,
         title: product.name,
       });
-    } catch (error) {
-      console.error('Error sharing product:', error);
+    } catch (error: any) {
+      logger.error('Error sharing product', error, {
+        component: 'FavoritesScreen',
+        action: 'shareProduct',
+        metadata: {
+          productId: product.id,
+          productName: product.name,
+        }
+      });
     }
   };
 
@@ -168,16 +216,17 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
           onPress={() => navigateToProduct(item.product.id)}
           style={styles.productImageContainer}
         >
-          <Image
+          <SmartImage
             source={{
-              uri: item.product.image || 'https://via.placeholder.com/150x150?text=No+Image'
+              uri: getProductImageUrl(item.product)
             }}
             style={styles.productImage}
             resizeMode="cover"
+            fallbackText={item.product.name}
           />
           {isOutOfStock && (
             <View style={styles.outOfStockOverlay}>
-              <Text style={styles.outOfStockText}>OUT OF STOCK</Text>
+              <Text style={styles.outOfStockText}>{i18n.t('products.outOfStock').toUpperCase()}</Text>
             </View>
           )}
         </TouchableOpacity>
@@ -193,7 +242,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
           <Text style={styles.productPrice}>${item.product.price}</Text>
           
           {isLowStock && !isOutOfStock && (
-            <Text style={styles.lowStockText}>Only {item.product.stock} left!</Text>
+            <Text style={styles.lowStockText}>{i18n.t('products.onlyXLeft', { count: item.product.stock })}</Text>
           )}
           
           <Text style={styles.addedDate}>
@@ -231,7 +280,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
         >
           <Icon name="shopping-cart" size={16} color={isOutOfStock ? "#ccc" : "#FFFFFF"} />
           <Text style={[styles.addToCartText, isOutOfStock && styles.disabledText]}>
-            {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            {isOutOfStock ? i18n.t('products.outOfStock') : i18n.t('common.add') + ' to Cart'}
           </Text>
         </TouchableOpacity>
       </View>
@@ -257,7 +306,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
   const renderHeader = (): React.JSX.Element => (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
-        <Text style={styles.headerTitle}>My Favorites</Text>
+        <Text style={styles.headerTitle}>{i18n.t('navigation.favorites')}</Text>
         {favorites.length > 0 && (
           <Text style={styles.favoriteCount}>
             {favorites.length} item{favorites.length !== 1 ? 's' : ''}

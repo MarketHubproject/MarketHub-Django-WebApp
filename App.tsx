@@ -12,7 +12,8 @@ import {
   AppState,
 } from 'react-native';
 import AppNavigator from './src/navigation/AppNavigator';
-import ApiService from './src/services/mockApi';
+import ApiService from './src/services';
+import { I18nProvider } from './src/contexts/I18nContext';
 
 function App(): React.JSX.Element {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -63,10 +64,10 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <>
+    <I18nProvider>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
       <AppNavigator isAuthenticated={isAuthenticated} />
-    </>
+    </I18nProvider>
   );
 }
 

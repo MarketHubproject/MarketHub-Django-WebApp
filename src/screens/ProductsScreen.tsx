@@ -5,16 +5,19 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Image,
   TextInput,
-  Dimensions,
-  ActivityIndicator,
   Alert,
+  ActivityIndicator,
+  RefreshControl,
   Modal,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
-
+import ApiService from '../services';
+import i18n from '../services/i18n';
+import { getProductImageUrl } from '../config/environment';
+import { SmartImage } from '../components';
+import { logger, ErrorToast } from '../utils';
 const { width } = Dimensions.get('window');
 const numColumns = 2;
 const productWidth = (width - 60) / numColumns; // 60 = padding + margin
@@ -78,11 +81,28 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
       const categoriesList = categoriesResponse.results || categoriesResponse;
 
       setProducts(productsList);
-      setCategories([{ id: 0, name: 'All Categories', slug: '' }, ...categoriesList]);
+      setCategories([{ id: 0, name: i18n.t('products.allCategories'), slug: '' }, ...categoriesList]);
       setHasMore(productsResponse.next ? true : false);
-    } catch (error) {
-      console.error('Error loading products:', error);
-      Alert.alert('Error', 'Failed to load products. Please try again.');
+    } catch (error: any) {
+      logger.error('Error loading products', error, {
+        component: 'ProductsScreen',
+        action: 'loadInitialData',
+        metadata: {
+          initialCategory,
+          productsCount: products.length,
+          categoriesCount: categories.length,
+        }
+      });
+      
+      // Show error toast instead of alert
+      if (error?.title && error?.message) {
+        // This is already an ApiError from our service
+      } else {
+        ErrorToast.show({
+          title: i18n.t('common.error'),
+          message: i18n.t('errors.loadingError')
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -99,8 +119,23 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
       setProducts(prev => [...prev, ...newProducts]);
       setPage(prev => prev + 1);
       setHasMore(response.next ? true : false);
-    } catch (error) {
-      console.error('Error loading more products:', error);
+    } catch (error: any) {
+      logger.error('Error loading more products', error, {
+        component: 'ProductsScreen',
+        action: 'loadMoreProducts',
+        metadata: {
+          page,
+          selectedCategory,
+          searchQuery,
+          productsCount: products.length,
+        }
+      });
+      
+      // Show error toast for pagination errors
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: i18n.t('errors.loadingError')
+      });
     } finally {
       setLoading(false);
     }
@@ -174,12 +209,13 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
       style={styles.productCard}
       onPress={() => navigation.navigate('ProductDetail', { productId: item.id })}
     >
-      <Image
+      <SmartImage
         source={{
-          uri: item.image || 'https://via.placeholder.com/150x150?text=No+Image'
+          uri: getProductImageUrl(item)
         }}
         style={styles.productImage}
         resizeMode="cover"
+        fallbackText={item.name}
       />
       <View style={styles.productInfo}>
         <Text style={styles.productName} numberOfLines={2}>
@@ -188,10 +224,10 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
         <Text style={styles.productPrice}>${item.price}</Text>
         <Text style={styles.productCategory}>{item.category}</Text>
         {item.stock <= 5 && item.stock > 0 && (
-          <Text style={styles.lowStockText}>Only {item.stock} left!</Text>
+          <Text style={styles.lowStockText}>{i18n.t('products.onlyXLeft', { count: item.stock })}</Text>
         )}
         {item.stock === 0 && (
-          <Text style={styles.outOfStockText}>Out of Stock</Text>
+          <Text style={styles.outOfStockText}>{i18n.t('products.outOfStock')}</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -203,7 +239,7 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
         <Icon name="search" size={20} color="#666" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search products..."
+          placeholder={i18n.t('products.searchPlaceholder')}
           value={searchQuery}
           onChangeText={handleSearch}
           returnKeyType="search"
@@ -221,11 +257,11 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
           onPress={() => setShowFilters(true)}
         >
           <Icon name="filter-list" size={20} color="#007AFF" />
-          <Text style={styles.filterButtonText}>Filters</Text>
+          <Text style={styles.filterButtonText}>{i18n.t('products.filters')}</Text>
         </TouchableOpacity>
         
         <Text style={styles.resultsCount}>
-          {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''}
+          {i18n.t('products.productCount', { count: filteredProducts.length })}
         </Text>
       </View>
     </View>
@@ -241,7 +277,7 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Filters & Sort</Text>
+            <Text style={styles.modalTitle}>{i18n.t('products.filtersAndSort')}</Text>
             <TouchableOpacity onPress={() => setShowFilters(false)}>
               <Icon name="close" size={24} color="#333" />
             </TouchableOpacity>
@@ -249,7 +285,7 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
 
           {/* Categories */}
           <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>Categories</Text>
+            <Text style={styles.filterSectionTitle}>{i18n.t('products.categories')}</Text>
             <FlatList
               data={categories}
               keyExtractor={(item) => item.id.toString()}
@@ -279,12 +315,12 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
 
           {/* Sort Options */}
           <View style={styles.filterSection}>
-            <Text style={styles.filterSectionTitle}>Sort By</Text>
+            <Text style={styles.filterSectionTitle}>{i18n.t('products.sortBy')}</Text>
             {[
-              { value: 'name', label: 'Name (A-Z)' },
-              { value: 'price_low', label: 'Price (Low to High)' },
-              { value: 'price_high', label: 'Price (High to Low)' },
-              { value: 'newest', label: 'Newest First' },
+              { value: 'name', label: i18n.t('products.nameAZ') },
+              { value: 'price_low', label: i18n.t('products.priceLowHigh') },
+              { value: 'price_high', label: i18n.t('products.priceHighLow') },
+              { value: 'newest', label: i18n.t('products.newestFirst') },
             ].map((option) => (
               <TouchableOpacity
                 key={option.value}
@@ -313,7 +349,7 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
             style={styles.applyFiltersButton}
             onPress={() => setShowFilters(false)}
           >
-            <Text style={styles.applyFiltersButtonText}>Apply Filters</Text>
+            <Text style={styles.applyFiltersButtonText}>{i18n.t('products.applyFilters')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -324,7 +360,7 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading products...</Text>
+        <Text style={styles.loadingText}>{i18n.t('products.loadingProducts')}</Text>
       </View>
     );
   }
@@ -354,9 +390,9 @@ const ProductsScreen = ({ navigation, route }: any): React.JSX.Element => {
         ListEmptyComponent={() => (
           <View style={styles.emptyContainer}>
             <Icon name="search-off" size={60} color="#ccc" />
-            <Text style={styles.emptyText}>No products found</Text>
+            <Text style={styles.emptyText}>{i18n.t('products.noProductsFound')}</Text>
             <Text style={styles.emptySubtext}>
-              Try adjusting your search or filters
+              {i18n.t('products.adjustSearchFilters')}
             </Text>
           </View>
         )}

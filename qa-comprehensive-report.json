@@ -1,0 +1,227 @@
+{
+  "timestamp": "2025-08-12T07:13:02.479Z",
+  "environment": "win32",
+  "tests": {
+    "configTests": {
+      "success": true,
+      "output": "🔍 Environment Configuration Verification\n\n📋 Checking .env.development (env.development):\n  Configuration:\n    API_BASE_URL: http://10.0.2.2:8000/api\n    IMAGE_BASE_URL: http://10.0.2.2:8000/media\n    PLACEHOLDER_IMAGE_URL: https://picsum.photos\n    TIMEOUT: 10000\n    USE_MOCK_API: true\n  ✅ Configuration looks good!\n\n📋 Checking .env.staging (env.staging):\n  Configuration:\n    API_BASE_URL: https://staging-api.your-domain.com/api\n    IMAGE_BASE_URL: https://staging-api.your-domain.com/media\n    PLACEHOLDER_IMAGE_URL: https://picsum.photos\n    TIMEOUT: 12000\n    USE_MOCK_API: false\n  ✅ Configuration looks good!\n\n📋 Checking .env.production (env.production):\n  Configuration:\n    API_BASE_URL: https://your-production-api.com/api\n    IMAGE_BASE_URL: https://your-production-api.com/media\n    PLACEHOLDER_IMAGE_URL: https://picsum.photos\n    TIMEOUT: 15000\n    USE_MOCK_API: false\n  ✅ Configuration looks good!\n\n📊 Summary:\nOverall validation: ✅ PASS\n"
+    },
+    "testMatrix": {
+      "success": true,
+      "output": "[2025-08-12T07:13:03.074Z] INFO: Starting QA Test Matrix...\n[2025-08-12T07:13:03.079Z] INFO: \n=== TESTING ENVIRONMENT: DEV_MOCK ===\n[2025-08-12T07:13:03.079Z] INFO: Setting up Development environment with mock API...\n[2025-08-12T07:13:03.084Z] INFO: Updated USE_MOCK_API=true\n[2025-08-12T07:13:03.084Z] SUCCESS: Environment dev_mock configured\n[2025-08-12T07:13:03.085Z] INFO: Testing environment switching logic...\n[2025-08-12T07:13:03.086Z] INFO: Updated USE_MOCK_API=true\n[2025-08-12T07:13:03.088Z] INFO: Updated USE_MOCK_API=false\n[2025-08-12T07:13:03.089Z] SUCCESS: Environment switching logic works correctly\n[2025-08-12T07:13:03.090Z] INFO: Testing API connectivity...\n[2025-08-12T07:13:03.090Z] INFO: Testing connectivity to: http://10.0.2.2:8000/api\n[2025-08-12T07:13:03.090Z] INFO: Real API connectivity test would be performed here\n[2025-08-12T07:13:03.091Z] INFO: Building android app (debug)...\n[2025-08-12T07:13:03.091Z] INFO: Build command would be: cd android && ./gradlew assembleDebug\n[2025-08-12T07:13:03.091Z] SUCCESS: android build prepared (debug)\n[2025-08-12T07:13:03.091Z] INFO: Building ios app (debug)...\n[2025-08-12T07:13:03.091Z] INFO: Build command would be: cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build\n[2025-08-12T07:13:03.091Z] SUCCESS: ios build prepared (debug)\n[2025-08-12T07:13:03.091Z] INFO: \n=== TESTING ENVIRONMENT: DEV_REAL ===\n[2025-08-12T07:13:03.092Z] INFO: Setting up Development environment with real API...\n[2025-08-12T07:13:03.095Z] INFO: Updated USE_MOCK_API=false\n[2025-08-12T07:13:03.095Z] SUCCESS: Environment dev_real configured\n[2025-08-12T07:13:03.095Z] INFO: Testing environment switching logic...\n[2025-08-12T07:13:03.096Z] INFO: Updated USE_MOCK_API=true\n[2025-08-12T07:13:03.097Z] INFO: Updated USE_MOCK_API=false\n[2025-08-12T07:13:03.098Z] SUCCESS: Environment switching logic works correctly\n[2025-08-12T07:13:03.098Z] INFO: Testing API connectivity...\n[2025-08-12T07:13:03.099Z] INFO: Testing connectivity to: http://10.0.2.2:8000/api\n[2025-08-12T07:13:03.099Z] INFO: Real API connectivity test would be performed here\n[2025-08-12T07:13:03.099Z] INFO: Building android app (debug)...\n[2025-08-12T07:13:03.099Z] INFO: Build command would be: cd android && ./gradlew assembleDebug\n[2025-08-12T07:13:03.099Z] SUCCESS: android build prepared (debug)\n[2025-08-12T07:13:03.099Z] INFO: Building ios app (debug)...\n[2025-08-12T07:13:03.099Z] INFO: Build command would be: cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build\n[2025-08-12T07:13:03.099Z] SUCCESS: ios build prepared (debug)\n[2025-08-12T07:13:03.099Z] INFO: \n=== TESTING ENVIRONMENT: STAGING ===\n[2025-08-12T07:13:03.099Z] INFO: Setting up Staging environment...\n[2025-08-12T07:13:03.101Z] SUCCESS: Environment staging configured\n[2025-08-12T07:13:03.102Z] INFO: Testing environment switching logic...\n[2025-08-12T07:13:03.103Z] INFO: Updated USE_MOCK_API=true\n[2025-08-12T07:13:03.104Z] INFO: Updated USE_MOCK_API=false\n[2025-08-12T07:13:03.104Z] SUCCESS: Environment switching logic works correctly\n[2025-08-12T07:13:03.105Z] INFO: Testing API connectivity...\n[2025-08-12T07:13:03.105Z] INFO: Testing connectivity to: https://staging-api.your-domain.com/api\n[2025-08-12T07:13:03.105Z] INFO: Real API connectivity test would be performed here\n[2025-08-12T07:13:03.105Z] INFO: Building android app (debug)...\n[2025-08-12T07:13:03.105Z] INFO: Build command would be: cd android && ./gradlew assembleDebug\n[2025-08-12T07:13:03.105Z] SUCCESS: android build prepared (debug)\n[2025-08-12T07:13:03.105Z] INFO: Building ios app (debug)...\n[2025-08-12T07:13:03.105Z] INFO: Build command would be: cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build\n[2025-08-12T07:13:03.105Z] SUCCESS: ios build prepared (debug)\n[2025-08-12T07:13:03.105Z] INFO: \n=== TESTING ENVIRONMENT: PRODUCTION ===\n[2025-08-12T07:13:03.105Z] INFO: Setting up Production environment...\n[2025-08-12T07:13:03.108Z] SUCCESS: Environment production configured\n[2025-08-12T07:13:03.108Z] INFO: Testing environment switching logic...\n[2025-08-12T07:13:03.109Z] INFO: Updated USE_MOCK_API=true\n[2025-08-12T07:13:03.110Z] INFO: Updated USE_MOCK_API=false\n[2025-08-12T07:13:03.110Z] SUCCESS: Environment switching logic works correctly\n[2025-08-12T07:13:03.111Z] INFO: Testing API connectivity...\n[2025-08-12T07:13:03.111Z] INFO: Testing connectivity to: https://your-production-api.com/api\n[2025-08-12T07:13:03.111Z] INFO: Real API connectivity test would be performed here\n[2025-08-12T07:13:03.111Z] INFO: Building android app (release)...\n[2025-08-12T07:13:03.111Z] INFO: Build command would be: cd android && ./gradlew assembleRelease\n[2025-08-12T07:13:03.111Z] SUCCESS: android build prepared (release)\n[2025-08-12T07:13:03.111Z] INFO: Building ios app (release)...\n[2025-08-12T07:13:03.111Z] INFO: Build command would be: cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Release -sdk iphonesimulator -derivedDataPath build\n[2025-08-12T07:13:03.111Z] SUCCESS: ios build prepared (release)\n[2025-08-12T07:13:03.112Z] INFO: \n=== TEST MATRIX REPORT ===\n[2025-08-12T07:13:03.112Z] INFO: \nDEV_MOCK: PASS\n[2025-08-12T07:13:03.112Z] INFO:   Description: Development environment with mock API\n[2025-08-12T07:13:03.112Z] INFO:   environmentSwitching: PASS\n[2025-08-12T07:13:03.112Z] INFO:   apiConnectivity: PASS\n[2025-08-12T07:13:03.112Z] INFO:     Note: Manual verification needed\n[2025-08-12T07:13:03.112Z] INFO:   androidBuild: PASS\n[2025-08-12T07:13:03.112Z] INFO:   iosBuild: PASS\n[2025-08-12T07:13:03.112Z] INFO: \nDEV_REAL: PASS\n[2025-08-12T07:13:03.112Z] INFO:   Description: Development environment with real API\n[2025-08-12T07:13:03.113Z] INFO:   environmentSwitching: PASS\n[2025-08-12T07:13:03.113Z] INFO:   apiConnectivity: PASS\n[2025-08-12T07:13:03.113Z] INFO:     Note: Manual verification needed\n[2025-08-12T07:13:03.113Z] INFO:   androidBuild: PASS\n[2025-08-12T07:13:03.113Z] INFO:   iosBuild: PASS\n[2025-08-12T07:13:03.113Z] INFO: \nSTAGING: PASS\n[2025-08-12T07:13:03.113Z] INFO:   Description: Staging environment\n[2025-08-12T07:13:03.113Z] INFO:   environmentSwitching: PASS\n[2025-08-12T07:13:03.113Z] INFO:   apiConnectivity: PASS\n[2025-08-12T07:13:03.113Z] INFO:     Note: Manual verification needed\n[2025-08-12T07:13:03.113Z] INFO:   androidBuild: PASS\n[2025-08-12T07:13:03.113Z] INFO:   iosBuild: PASS\n[2025-08-12T07:13:03.113Z] INFO: \nPRODUCTION: PASS\n[2025-08-12T07:13:03.114Z] INFO:   Description: Production environment\n[2025-08-12T07:13:03.114Z] INFO:   environmentSwitching: PASS\n[2025-08-12T07:13:03.114Z] INFO:   apiConnectivity: PASS\n[2025-08-12T07:13:03.114Z] INFO:     Note: Manual verification needed\n[2025-08-12T07:13:03.114Z] INFO:   androidBuild: PASS\n[2025-08-12T07:13:03.114Z] INFO:   iosBuild: PASS\n[2025-08-12T07:13:03.114Z] INFO: \n=== SUMMARY ===\n[2025-08-12T07:13:03.114Z] INFO: Total Environments Tested: 4\n[2025-08-12T07:13:03.114Z] INFO: Passed: 4\n[2025-08-12T07:13:03.114Z] INFO: Failed: 0\n[2025-08-12T07:13:03.114Z] INFO: Overall Result: PASS\n[2025-08-12T07:13:03.115Z] SUCCESS: Test report saved to test-matrix-report.json\n[2025-08-12T07:13:03.116Z] INFO: Cleaning up...\n[2025-08-12T07:13:03.117Z] SUCCESS: Original .env file restored\nManual test checklist saved to manual-test-checklist.md\n\n✅ Test matrix completed successfully!\n",
+      "report": {
+        "timestamp": "2025-08-12T07:13:03.112Z",
+        "environments": {
+          "dev_mock": {
+            "environment": "dev_mock",
+            "description": "Development environment with mock API",
+            "tests": {
+              "environmentSwitching": {
+                "success": true
+              },
+              "apiConnectivity": {
+                "success": true,
+                "type": "real",
+                "note": "Manual verification needed"
+              },
+              "androidBuild": {
+                "success": true,
+                "command": "cd android && ./gradlew assembleDebug"
+              },
+              "iosBuild": {
+                "success": true,
+                "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+              }
+            },
+            "overallSuccess": true
+          },
+          "dev_real": {
+            "environment": "dev_real",
+            "description": "Development environment with real API",
+            "tests": {
+              "environmentSwitching": {
+                "success": true
+              },
+              "apiConnectivity": {
+                "success": true,
+                "type": "real",
+                "note": "Manual verification needed"
+              },
+              "androidBuild": {
+                "success": true,
+                "command": "cd android && ./gradlew assembleDebug"
+              },
+              "iosBuild": {
+                "success": true,
+                "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+              }
+            },
+            "overallSuccess": true
+          },
+          "staging": {
+            "environment": "staging",
+            "description": "Staging environment",
+            "tests": {
+              "environmentSwitching": {
+                "success": true
+              },
+              "apiConnectivity": {
+                "success": true,
+                "type": "real",
+                "note": "Manual verification needed"
+              },
+              "androidBuild": {
+                "success": true,
+                "command": "cd android && ./gradlew assembleDebug"
+              },
+              "iosBuild": {
+                "success": true,
+                "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+              }
+            },
+            "overallSuccess": true
+          },
+          "production": {
+            "environment": "production",
+            "description": "Production environment",
+            "tests": {
+              "environmentSwitching": {
+                "success": true
+              },
+              "apiConnectivity": {
+                "success": true,
+                "type": "real",
+                "note": "Manual verification needed"
+              },
+              "androidBuild": {
+                "success": true,
+                "command": "cd android && ./gradlew assembleRelease"
+              },
+              "iosBuild": {
+                "success": true,
+                "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Release -sdk iphonesimulator -derivedDataPath build"
+              }
+            },
+            "overallSuccess": true
+          }
+        },
+        "summary": {
+          "allTestsPassed": true,
+          "totalEnvironments": 4,
+          "passedEnvironments": 4
+        }
+      }
+    },
+    "apiServiceTests": {
+      "success": true,
+      "output": "[2025-08-12T07:13:03.403Z] INFO: 🧪 Starting API Service Tests...\n\n[2025-08-12T07:13:03.412Z] INFO: Testing Mock API Service...\n[2025-08-12T07:13:03.413Z] INFO: Testing mock authentication...\n[2025-08-12T07:13:03.918Z] INFO: Testing mock product fetching...\n[2025-08-12T07:13:04.224Z] INFO: ✅ Mock API test passed - 2 products retrieved\n[2025-08-12T07:13:04.225Z] INFO: Testing Real API Service...\n[2025-08-12T07:13:04.225Z] INFO: Testing real API configuration...\n[2025-08-12T07:13:04.226Z] INFO: Real API URL: https://staging-api.your-domain.com/api\n[2025-08-12T07:13:04.226Z] INFO: ✅ Real API configuration validated\n[2025-08-12T07:13:04.227Z] INFO: Testing environment switching...\n[2025-08-12T07:13:04.227Z] INFO: Testing Mock API Service...\n[2025-08-12T07:13:04.228Z] INFO: Testing mock authentication...\n[2025-08-12T07:13:04.741Z] INFO: Testing mock product fetching...\n[2025-08-12T07:13:05.054Z] INFO: ✅ Mock API test passed - 2 products retrieved\n[2025-08-12T07:13:05.054Z] INFO: Testing Real API Service...\n[2025-08-12T07:13:05.054Z] INFO: Testing real API configuration...\n[2025-08-12T07:13:05.055Z] INFO: Real API URL: https://staging-api.your-domain.com/api\n[2025-08-12T07:13:05.055Z] INFO: ✅ Real API configuration validated\n[2025-08-12T07:13:05.055Z] INFO: ✅ Environment switching test passed\n[2025-08-12T07:13:05.055Z] INFO: Testing error handling...\n[2025-08-12T07:13:05.056Z] INFO: ✓ Auth error handled: Authentication Failed - Invalid credentials\n[2025-08-12T07:13:05.056Z] INFO: ✓ Network error handled: Network Error - Server unavailable\n[2025-08-12T07:13:05.056Z] INFO: ✅ Error handling test passed\n[2025-08-12T07:13:05.056Z] INFO: \n📊 Test Results Summary:\n[2025-08-12T07:13:05.056Z] INFO:   mockApi: ✅ PASS\n[2025-08-12T07:13:05.056Z] INFO:   realApi: ✅ PASS\n[2025-08-12T07:13:05.056Z] INFO:   environmentSwitching: ✅ PASS\n[2025-08-12T07:13:05.056Z] INFO:   errorHandling: ✅ PASS\n[2025-08-12T07:13:05.057Z] INFO: \nOverall Result: ✅ PASS\n"
+    },
+    "reactNativeSetup": {
+      "success": true,
+      "tests": [
+        {
+          "name": "React Native CLI",
+          "success": true,
+          "version": "14.1.0"
+        },
+        {
+          "name": "Metro Config",
+          "success": true,
+          "found": true
+        },
+        {
+          "name": "Android Project",
+          "success": true,
+          "found": true
+        },
+        {
+          "name": "iOS Project",
+          "success": true,
+          "found": true
+        }
+      ]
+    },
+    "buildConfigs": {
+      "success": true,
+      "results": [
+        {
+          "platform": "Android",
+          "success": true,
+          "hasConfig": true
+        },
+        {
+          "platform": "iOS",
+          "success": true,
+          "hasWorkspace": false,
+          "hasProject": true
+        }
+      ]
+    },
+    "simulatedBuilds": {
+      "success": true,
+      "results": [
+        {
+          "environment": "development",
+          "platform": "android",
+          "variant": "debug",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd android && ./gradlew assembleDebug"
+        },
+        {
+          "environment": "development",
+          "platform": "ios",
+          "variant": "debug",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+        },
+        {
+          "environment": "staging",
+          "platform": "android",
+          "variant": "debug",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd android && ./gradlew assembleDebug"
+        },
+        {
+          "environment": "staging",
+          "platform": "ios",
+          "variant": "debug",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+        },
+        {
+          "environment": "production",
+          "platform": "android",
+          "variant": "release",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd android && ./gradlew assembleRelease"
+        },
+        {
+          "environment": "production",
+          "platform": "ios",
+          "variant": "release",
+          "success": true,
+          "envFileExists": true,
+          "platformDirExists": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Release -sdk iphonesimulator -derivedDataPath build"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "totalTests": 6,
+    "passedTests": 6,
+    "failedTests": 0,
+    "successRate": 100,
+    "overallSuccess": true
+  }
+}

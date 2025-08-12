@@ -5,14 +5,17 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Image,
   Alert,
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
+import i18n from '../services/i18n';
 import { useFocusEffect } from '@react-navigation/native';
+import { getProductImageUrl } from '../config/environment';
+import { SmartImage } from '../components';
+import { logger, ErrorToast } from '../utils';
 
 const { width } = Dimensions.get('window');
 
@@ -59,10 +62,21 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
       const cartData = await ApiService.getCart();
       setCart(cartData);
     } catch (error: any) {
-      console.error('Error loading cart:', error);
-      // Don't show alert for empty cart or authentication errors
+      logger.error('Error loading cart', error, {
+        component: 'CartScreen',
+        action: 'loadCart',
+        metadata: {
+          showRefreshing,
+          cartItemsCount: cart?.items?.length || 0,
+        }
+      });
+      
+      // Don't show error for empty cart or authentication errors
       if (!error.message?.includes('empty') && !error.message?.includes('authentication')) {
-        Alert.alert('Error', 'Failed to load cart. Please try again.');
+        ErrorToast.show({
+          title: i18n.t('common.error'),
+          message: i18n.t('cart.failedToLoad')
+        });
       }
     } finally {
       setLoading(false);
@@ -106,7 +120,21 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
         };
       });
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to update quantity');
+      logger.error('Error updating cart item quantity', error, {
+        component: 'CartScreen',
+        action: 'updateQuantity',
+        metadata: {
+          itemId,
+          newQuantity,
+          cartItemsCount: cart?.items?.length || 0,
+        }
+      });
+      
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: error.message || i18n.t('cart.failedToUpdate')
+      });
+      
       // Reload cart to sync with server state
       loadCart();
     } finally {
@@ -116,12 +144,12 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
 
   const removeFromCart = async (itemId: number): Promise<void> => {
     Alert.alert(
-      'Remove Item',
-      'Are you sure you want to remove this item from your cart?',
+      i18n.t('cart.removeItem'),
+      i18n.t('cart.removeItemConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: i18n.t('common.cancel'), style: 'cancel' },
         {
-          text: 'Remove',
+          text: i18n.t('common.remove'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -143,7 +171,20 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
                 };
               });
             } catch (error: any) {
-              Alert.alert('Error', error.message || 'Failed to remove item');
+              logger.error('Error removing cart item', error, {
+                component: 'CartScreen',
+                action: 'removeFromCart',
+                metadata: {
+                  itemId,
+                  cartItemsCount: cart?.items?.length || 0,
+                }
+              });
+              
+              ErrorToast.show({
+                title: i18n.t('common.error'),
+                message: error.message || i18n.t('cart.failedToRemove')
+              });
+              
               loadCart();
             } finally {
               setUpdating(null);
@@ -158,15 +199,18 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
     if (!cart || cart.items.length === 0) return;
 
     Alert.alert(
-      'Checkout',
-      `Total: $${cart.total.toFixed(2)}\n\nCheckout functionality will be implemented with payment integration.`,
+      i18n.t('cart.checkout'),
+      i18n.t('cart.checkoutTotal', { amount: cart.total.toFixed(2) }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: i18n.t('common.cancel'), style: 'cancel' },
         {
-          text: 'Continue',
+          text: i18n.t('common.continue'),
           onPress: () => {
             // TODO: Implement checkout flow
-            Alert.alert('Coming Soon', 'Checkout and payment processing will be implemented in the next phase.');
+            Alert.alert(
+              i18n.t('common.comingSoon'), 
+              i18n.t('cart.checkoutImplementation')
+            );
           }
         }
       ]
@@ -177,7 +221,10 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
     if (item.quantity < item.product.stock) {
       updateQuantity(item.id, item.quantity + 1);
     } else {
-      Alert.alert('Stock Limit', `Only ${item.product.stock} items available in stock.`);
+      Alert.alert(
+        i18n.t('cart.stockLimit'), 
+        i18n.t('cart.onlyXAvailable', { count: item.product.stock })
+      );
     }
   };
 
@@ -207,12 +254,13 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
           style={styles.productImageContainer}
           onPress={() => navigateToProduct(item.product.id)}
         >
-          <Image
+          <SmartImage
             source={{
-              uri: item.product.image || 'https://via.placeholder.com/80x80?text=No+Image'
+              uri: getProductImageUrl(item.product)
             }}
             style={styles.productImage}
             resizeMode="cover"
+            fallbackText={item.product.name}
           />
           {(isOutOfStock || hasStockIssue) && (
             <View style={styles.stockIssueOverlay}>
@@ -232,11 +280,11 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
           
           {hasStockIssue && (
             <Text style={styles.stockWarning}>
-              Only {item.product.stock} in stock
+              {i18n.t('cart.onlyXInStock', { count: item.product.stock })}
             </Text>
           )}
           {isOutOfStock && (
-            <Text style={styles.outOfStockText}>Out of stock</Text>
+            <Text style={styles.outOfStockText}>{i18n.t('cart.outOfStock')}</Text>
           )}
         </View>
 
@@ -296,15 +344,15 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
   const renderEmptyCart = (): React.JSX.Element => (
     <View style={styles.emptyContainer}>
       <Icon name="shopping-cart" size={80} color="#ccc" />
-      <Text style={styles.emptyTitle}>Your Cart is Empty</Text>
+      <Text style={styles.emptyTitle}>{i18n.t('cart.yourCartEmpty')}</Text>
       <Text style={styles.emptySubtitle}>
-        Add some products to get started!
+        {i18n.t('cart.addProductsToStart')}
       </Text>
       <TouchableOpacity
         style={styles.shopButton}
         onPress={() => navigation.navigate('Products')}
       >
-        <Text style={styles.shopButtonText}>Start Shopping</Text>
+        <Text style={styles.shopButtonText}>{i18n.t('cart.startShopping')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -319,7 +367,7 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
     return (
       <View style={styles.summaryContainer}>
         <View style={styles.summaryRow}>
-          <Text style={styles.summaryLabel}>Items ({cart.items_count})</Text>
+          <Text style={styles.summaryLabel}>{i18n.t('cart.items', { count: cart.items_count })}</Text>
           <Text style={styles.summaryValue}>
             ${cart.items.reduce((sum, item) => sum + item.subtotal, 0).toFixed(2)}
           </Text>
@@ -328,13 +376,13 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
         <View style={styles.summaryDivider} />
         
         <View style={styles.summaryRow}>
-          <Text style={styles.totalLabel}>Total</Text>
+          <Text style={styles.totalLabel}>{i18n.t('cart.total')}</Text>
           <Text style={styles.totalValue}>${cart.total.toFixed(2)}</Text>
         </View>
 
         {hasStockIssues && (
           <Text style={styles.stockIssueWarning}>
-            ⚠️ Some items have stock issues. Please review your cart.
+            {i18n.t('cart.stockIssueWarning')}
           </Text>
         )}
 
@@ -344,7 +392,7 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
           disabled={hasStockIssues}
         >
           <Text style={styles.checkoutButtonText}>
-            Proceed to Checkout
+            {i18n.t('cart.proceedToCheckout')}
           </Text>
         </TouchableOpacity>
       </View>
@@ -355,7 +403,7 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading your cart...</Text>
+        <Text style={styles.loadingText}>{i18n.t('cart.loadingCart')}</Text>
       </View>
     );
   }
@@ -364,7 +412,7 @@ const CartScreen = ({ navigation }: any): React.JSX.Element => {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Shopping Cart</Text>
+        <Text style={styles.headerTitle}>{i18n.t('cart.shoppingCart')}</Text>
         {cart && cart.items.length > 0 && (
           <TouchableOpacity onPress={() => loadCart(true)}>
             <Icon name="refresh" size={24} color="#007AFF" />

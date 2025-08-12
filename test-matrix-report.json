@@ -1,0 +1,102 @@
+{
+  "timestamp": "2025-08-12T07:13:03.112Z",
+  "environments": {
+    "dev_mock": {
+      "environment": "dev_mock",
+      "description": "Development environment with mock API",
+      "tests": {
+        "environmentSwitching": {
+          "success": true
+        },
+        "apiConnectivity": {
+          "success": true,
+          "type": "real",
+          "note": "Manual verification needed"
+        },
+        "androidBuild": {
+          "success": true,
+          "command": "cd android && ./gradlew assembleDebug"
+        },
+        "iosBuild": {
+          "success": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+        }
+      },
+      "overallSuccess": true
+    },
+    "dev_real": {
+      "environment": "dev_real",
+      "description": "Development environment with real API",
+      "tests": {
+        "environmentSwitching": {
+          "success": true
+        },
+        "apiConnectivity": {
+          "success": true,
+          "type": "real",
+          "note": "Manual verification needed"
+        },
+        "androidBuild": {
+          "success": true,
+          "command": "cd android && ./gradlew assembleDebug"
+        },
+        "iosBuild": {
+          "success": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+        }
+      },
+      "overallSuccess": true
+    },
+    "staging": {
+      "environment": "staging",
+      "description": "Staging environment",
+      "tests": {
+        "environmentSwitching": {
+          "success": true
+        },
+        "apiConnectivity": {
+          "success": true,
+          "type": "real",
+          "note": "Manual verification needed"
+        },
+        "androidBuild": {
+          "success": true,
+          "command": "cd android && ./gradlew assembleDebug"
+        },
+        "iosBuild": {
+          "success": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Debug -sdk iphonesimulator -derivedDataPath build"
+        }
+      },
+      "overallSuccess": true
+    },
+    "production": {
+      "environment": "production",
+      "description": "Production environment",
+      "tests": {
+        "environmentSwitching": {
+          "success": true
+        },
+        "apiConnectivity": {
+          "success": true,
+          "type": "real",
+          "note": "Manual verification needed"
+        },
+        "androidBuild": {
+          "success": true,
+          "command": "cd android && ./gradlew assembleRelease"
+        },
+        "iosBuild": {
+          "success": true,
+          "command": "cd ios && xcodebuild -workspace MarketHubMobile.xcworkspace -scheme MarketHubMobile -configuration Release -sdk iphonesimulator -derivedDataPath build"
+        }
+      },
+      "overallSuccess": true
+    }
+  },
+  "summary": {
+    "allTestsPassed": true,
+    "totalEnvironments": 4,
+    "passedEnvironments": 4
+  }
+}

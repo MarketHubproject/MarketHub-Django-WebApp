@@ -11,8 +11,11 @@ import {
   Modal,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
 import { useFocusEffect } from '@react-navigation/native';
+import { useI18n } from '../contexts/I18nContext';
+import { SmartAvatar } from '../components';
+import { logger, ErrorToast } from '../utils';
 
 interface UserProfile {
   id: number;
@@ -31,6 +34,7 @@ interface EditProfileForm {
 }
 
 const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
+  const { t, setLanguage, language } = useI18n();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [editModalVisible, setEditModalVisible] = useState<boolean>(false);
@@ -52,9 +56,19 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
       setLoading(true);
       const profileData = await ApiService.getUserProfile();
       setProfile(profileData);
-    } catch (error) {
-      console.error('Error loading profile:', error);
-      Alert.alert('Error', 'Failed to load profile information.');
+    } catch (error: any) {
+      logger.error('Error loading profile', error, {
+        component: 'ProfileScreen',
+        action: 'loadProfile',
+        metadata: {
+          userId: profile?.id,
+        }
+      });
+      
+      ErrorToast.show({
+        title: t('common.error'),
+        message: t('profile.failedToLoadProfile')
+      });
     } finally {
       setLoading(false);
     }
@@ -85,30 +99,91 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
       setProfile(updatedProfile);
       setEditModalVisible(false);
       
-      Alert.alert('Success', 'Profile updated successfully!');
+      ErrorToast.show({
+        title: t('common.success'),
+        message: t('profile.profileUpdated')
+      });
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to update profile.');
+      logger.error('Error updating profile', error, {
+        component: 'ProfileScreen',
+        action: 'handleSaveProfile',
+        metadata: {
+          userId: profile?.id,
+          updateData: editForm,
+        }
+      });
+      
+      ErrorToast.show({
+        title: t('common.error'),
+        message: error.message || t('profile.failedToUpdate')
+      });
     } finally {
       setUpdating(false);
     }
   };
 
+  const handleLanguageSwitch = (): void => {
+    const currentLanguageName = language === 'en' ? t('profile.english') : t('profile.chinese');
+    const targetLanguage = language === 'en' ? 'zh' : 'en';
+    const targetLanguageName = targetLanguage === 'en' ? t('profile.english') : t('profile.chinese');
+    
+    Alert.alert(
+      t('profile.language'),
+      `Switch to ${targetLanguageName}?`,
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.confirm'),
+          onPress: async () => {
+            try {
+              await setLanguage(targetLanguage);
+              Alert.alert(
+                t('common.success'),
+                t('profile.languageChanged', { language: targetLanguageName })
+              );
+            } catch (error: any) {
+              logger.error('Error changing language', error, {
+                component: 'ProfileScreen',
+                action: 'handleLanguageSwitch',
+                metadata: {
+                  targetLanguage,
+                  currentLanguage: language,
+                }
+              });
+              
+              ErrorToast.show({
+                title: t('common.error'),
+                message: 'Failed to change language.'
+              });
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const handleLogout = (): void => {
     Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
+      t('profile.logout'),
+      t('profile.logoutConfirm'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Logout',
+          text: t('profile.logout'),
           style: 'destructive',
           onPress: async () => {
             try {
               await ApiService.logout();
               // Navigation will be handled automatically by the main App component
               // when it detects the authentication state change
-            } catch (error) {
-              console.error('Logout error:', error);
+            } catch (error: any) {
+              logger.error('Logout error', error, {
+                component: 'ProfileScreen',
+                action: 'handleLogout',
+                metadata: {
+                  userId: profile?.id,
+                }
+              });
               // Even if logout fails on the server, we should clear local auth
             }
           }
@@ -172,7 +247,7 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
         <View style={styles.modalContent}>
           {/* Header */}
           <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>Edit Profile</Text>
+            <Text style={styles.modalTitle}>{t('profile.editProfile')}</Text>
             <TouchableOpacity onPress={() => setEditModalVisible(false)}>
               <Icon name="close" size={24} color="#333" />
             </TouchableOpacity>
@@ -181,34 +256,34 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
           {/* Form */}
           <View style={styles.editForm}>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>First Name</Text>
+              <Text style={styles.inputLabel}>{t('profile.firstName')}</Text>
               <TextInput
                 style={styles.textInput}
                 value={editForm.firstName}
                 onChangeText={(text) => setEditForm(prev => ({ ...prev, firstName: text }))}
-                placeholder="Enter first name"
+                placeholder={t('profile.enterFirstName')}
                 editable={!updating}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Last Name</Text>
+              <Text style={styles.inputLabel}>{t('profile.lastName')}</Text>
               <TextInput
                 style={styles.textInput}
                 value={editForm.lastName}
                 onChangeText={(text) => setEditForm(prev => ({ ...prev, lastName: text }))}
-                placeholder="Enter last name"
+                placeholder={t('profile.enterLastName')}
                 editable={!updating}
               />
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Phone Number (Optional)</Text>
+              <Text style={styles.inputLabel}>{t('profile.phoneOptional')}</Text>
               <TextInput
                 style={styles.textInput}
                 value={editForm.phone}
                 onChangeText={(text) => setEditForm(prev => ({ ...prev, phone: text }))}
-                placeholder="Enter phone number"
+                placeholder={t('profile.enterPhone')}
                 keyboardType="phone-pad"
                 editable={!updating}
               />
@@ -222,7 +297,7 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
               onPress={() => setEditModalVisible(false)}
               disabled={updating}
             >
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -233,7 +308,7 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
               {updating ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
-                <Text style={styles.saveButtonText}>Save Changes</Text>
+                <Text style={styles.saveButtonText}>{t('profile.saveChanges')}</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -246,7 +321,7 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading profile...</Text>
+        <Text style={styles.loadingText}>{t('profile.loadingProfile')}</Text>
       </View>
     );
   }
@@ -255,9 +330,9 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
     return (
       <View style={styles.errorContainer}>
         <Icon name="error-outline" size={60} color="#FF6B6B" />
-        <Text style={styles.errorText}>Failed to load profile</Text>
+        <Text style={styles.errorText}>{t('profile.failedToLoadProfile')}</Text>
         <TouchableOpacity style={styles.retryButton} onPress={loadProfile}>
-          <Text style={styles.retryButtonText}>Try Again</Text>
+          <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -268,15 +343,19 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={styles.headerTitle}>{t('profile.profile')}</Text>
         </View>
 
         {/* Profile Info */}
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
-            <View style={styles.avatar}>
-              <Icon name="person" size={40} color="#007AFF" />
-            </View>
+            <SmartAvatar
+              name={`${profile.first_name} ${profile.last_name}`}
+              size={80}
+              backgroundColor="#F0F8FF"
+              textColor="#007AFF"
+              style={styles.avatar}
+            />
           </View>
           
           <Text style={styles.profileName}>
@@ -289,100 +368,100 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
           )}
           
           <Text style={styles.joinDate}>
-            Member since {formatDate(profile.date_joined)}
+            {t('profile.memberSince', { date: formatDate(profile.date_joined) })}
           </Text>
 
           <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
             <Icon name="edit" size={18} color="#007AFF" />
-            <Text style={styles.editProfileText}>Edit Profile</Text>
+            <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
           </TouchableOpacity>
         </View>
 
         {/* Account Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
+          <Text style={styles.sectionTitle}>{t('profile.account')}</Text>
           
           {renderMenuItem(
             'receipt-long',
-            'Order History',
-            'View your past orders',
-            () => Alert.alert('Coming Soon', 'Order history will be implemented in the next phase.')
+            t('profile.orderHistory'),
+            t('profile.viewPastOrders'),
+            () => Alert.alert(t('common.comingSoon'), t('profile.orderHistoryImplementation'))
           )}
 
           {renderMenuItem(
             'favorite',
-            'My Favorites',
-            'Manage saved items',
+            t('profile.myFavorites'),
+            t('profile.manageSavedItems'),
             () => navigation.navigate('Favorites')
           )}
 
           {renderMenuItem(
             'shopping-cart',
-            'Shopping Cart',
-            'View cart items',
+            t('profile.shoppingCart'),
+            t('profile.viewCartItems'),
             () => navigation.navigate('Cart')
           )}
         </View>
 
         {/* Settings Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Settings</Text>
+          <Text style={styles.sectionTitle}>{t('profile.settings')}</Text>
           
           {renderMenuItem(
             'notifications',
-            'Notifications',
-            'Manage notification preferences',
-            () => Alert.alert('Coming Soon', 'Notification settings will be implemented in the next phase.'),
+            t('profile.notifications'),
+            t('profile.manageNotifications'),
+            () => Alert.alert(t('common.comingSoon'), t('profile.notificationSettingsImplementation')),
             undefined,
             true
           )}
 
           {renderMenuItem(
             'lock',
-            'Change Password',
-            'Update your password',
-            () => Alert.alert('Coming Soon', 'Password change will be implemented in the next phase.'),
+            t('profile.changePassword'),
+            t('profile.updatePassword'),
+            () => Alert.alert(t('common.comingSoon'), t('profile.passwordChangeImplementation')),
             undefined,
             true
           )}
 
           {renderMenuItem(
             'language',
-            'Language',
-            'English',
-            () => Alert.alert('Coming Soon', 'Language settings will be implemented in the next phase.'),
+            t('profile.language'),
+            language === 'en' ? t('profile.english') : t('profile.chinese'),
+            handleLanguageSwitch,
             undefined,
-            true
+            false
           )}
         </View>
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
+          <Text style={styles.sectionTitle}>{t('profile.support')}</Text>
           
           {renderMenuItem(
             'help',
-            'Help & Support',
-            'Get help and contact us',
-            () => Alert.alert('Help & Support', 'For support, please contact us at support@markethub.com'),
+            t('profile.helpSupport'),
+            t('profile.getHelp'),
+            () => Alert.alert(t('profile.helpSupport'), t('profile.supportMessage')),
             undefined,
             true
           )}
 
           {renderMenuItem(
             'info',
-            'About',
-            'App version and info',
-            () => Alert.alert('About MarketHub', 'MarketHub Mobile v1.0.0\n\nA student marketplace for buying and selling products.'),
+            t('profile.about'),
+            t('profile.appVersionInfo'),
+            () => Alert.alert(t('profile.about'), t('profile.aboutMessage')),
             undefined,
             true
           )}
 
           {renderMenuItem(
             'policy',
-            'Privacy Policy',
-            'Read our privacy policy',
-            () => Alert.alert('Privacy Policy', 'Privacy policy content will be available in the next update.'),
+            t('profile.privacyPolicy'),
+            t('profile.readPrivacyPolicy'),
+            () => Alert.alert(t('profile.privacyPolicy'), t('profile.privacyPolicyImplementation')),
             undefined,
             true
           )}
@@ -392,8 +471,8 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
         <View style={styles.section}>
           {renderMenuItem(
             'logout',
-            'Logout',
-            'Sign out of your account',
+            t('profile.logout'),
+            t('profile.signOutAccount'),
             handleLogout,
             undefined,
             false
@@ -402,7 +481,7 @@ const ProfileScreen = ({ navigation }: any): React.JSX.Element => {
 
         {/* App Version */}
         <View style={styles.footer}>
-          <Text style={styles.versionText}>Version 1.0.0</Text>
+          <Text style={styles.versionText}>{t('profile.version')}</Text>
         </View>
       </ScrollView>
 
@@ -478,12 +557,6 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#F0F8FF',
-    justifyContent: 'center',
-    alignItems: 'center',
     borderWidth: 2,
     borderColor: '#007AFF',
   },

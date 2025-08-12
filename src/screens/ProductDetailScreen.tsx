@@ -5,14 +5,17 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Image,
-  Dimensions,
-  ActivityIndicator,
   Alert,
+  ActivityIndicator,
   Share,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services/mockApi';
+import ApiService from '../services';
+import i18n from '../services/i18n';
+import { getProductImageUrl } from '../config/environment';
+import { SmartImage } from '../components';
+import { logger, ErrorToast } from '../utils';
 
 const { width, height } = Dimensions.get('window');
 
@@ -53,9 +56,19 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
       setLoading(true);
       const productData = await ApiService.getProduct(productId);
       setProduct(productData);
-    } catch (error) {
-      console.error('Error loading product details:', error);
-      Alert.alert('Error', 'Failed to load product details. Please try again.');
+    } catch (error: any) {
+      logger.error('Error loading product details', error, {
+        component: 'ProductDetailScreen',
+        action: 'loadProductDetails',
+        metadata: {
+          productId,
+        }
+      });
+      
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: i18n.t('errors.loadingError')
+      });
       navigation.goBack();
     } finally {
       setLoading(false);
@@ -79,7 +92,19 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
         ]
       );
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to add item to cart');
+      logger.error('Error adding to cart', error, {
+        component: 'ProductDetailScreen',
+        action: 'handleAddToCart',
+        metadata: {
+          productId,
+          quantity,
+        }
+      });
+      
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: error.message || 'Failed to add item to cart'
+      });
     } finally {
       setAddingToCart(false);
     }
@@ -99,7 +124,19 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
         Alert.alert('Added', 'Product added to favorites');
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to update favorites');
+      logger.error('Error toggling favorites', error, {
+        component: 'ProductDetailScreen',
+        action: 'handleToggleFavorite',
+        metadata: {
+          productId,
+          isFavorite,
+        }
+      });
+      
+      ErrorToast.show({
+        title: i18n.t('common.error'),
+        message: error.message || 'Failed to update favorites'
+      });
     } finally {
       setAddingToFavorites(false);
     }
@@ -113,8 +150,15 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
         message: `Check out this product: ${product.name}\nPrice: $${product.price}\n\nShared from MarketHub`,
         title: product.name,
       });
-    } catch (error) {
-      console.error('Error sharing product:', error);
+    } catch (error: any) {
+      logger.error('Error sharing product', error, {
+        component: 'ProductDetailScreen',
+        action: 'handleShare',
+        metadata: {
+          productId,
+          productName: product?.name,
+        }
+      });
     }
   };
 
@@ -194,12 +238,14 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Product Image */}
         <View style={styles.imageContainer}>
-          <Image
+          <SmartImage
             source={{
-              uri: product.image || 'https://via.placeholder.com/400x300?text=No+Image'
+              uri: getProductImageUrl(product)
             }}
             style={styles.productImage}
             resizeMode="cover"
+            fallbackText={product.name}
+            loadingSize="large"
           />
           {isOutOfStock && (
             <View style={styles.outOfStockOverlay}>
@@ -308,7 +354,7 @@ const ProductDetailScreen = ({ route, navigation }: any): React.JSX.Element => {
               <>
                 <Icon name="shopping-cart" size={20} color="#FFFFFF" />
                 <Text style={styles.addToCartText}>
-                  Add to Cart • ${(product.price * quantity).toFixed(2)}
+                  Add to Cart - ${(product.price * quantity).toFixed(2)}
                 </Text>
               </>
             )}
