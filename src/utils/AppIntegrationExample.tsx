@@ -1,13 +1,13 @@
 /**
  * Example of how to integrate the Toast component in your main App.tsx file
- * 
+ *
  * IMPORTANT: This is an example only. You need to add the <Toast /> component
  * to your actual App.tsx file for the error handling system to work.
  */
 
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import Toast from 'react-native-toast-message';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 // Your existing imports...
 // import YourRootNavigator from './navigation/RootNavigator';
@@ -17,7 +17,7 @@ const App = () => {
     <NavigationContainer>
       {/* Your existing navigation and components */}
       {/* <YourRootNavigator /> */}
-      
+
       {/* 
         IMPORTANT: Add this Toast component at the bottom of your App component
         This enables the error handling system to display toast messages
@@ -31,12 +31,15 @@ export default App;
 
 /**
  * Optional: Custom Toast Configuration
- * 
+ *
  * If you want to customize the appearance of toast messages,
  * you can create a custom configuration like this:
  */
 
-import { BaseToast, ErrorToast as RNErrorToast } from 'react-native-toast-message';
+import {
+  BaseToast,
+  ErrorToast as RNErrorToast,
+} from "react-native-toast-message";
 
 const toastConfig = {
   // Success toast customization
@@ -44,9 +47,9 @@ const toastConfig = {
     <BaseToast
       {...props}
       style={{
-        borderLeftColor: '#28a745',
+        borderLeftColor: "#28a745",
         borderLeftWidth: 7,
-        width: '90%',
+        width: "90%",
         height: 70,
       }}
       contentContainerStyle={{
@@ -54,34 +57,34 @@ const toastConfig = {
       }}
       text1Style={{
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+        fontWeight: "bold",
+        color: "#333",
       }}
       text2Style={{
         fontSize: 14,
-        color: '#666',
+        color: "#666",
       }}
     />
   ),
-  
+
   // Error toast customization
   error: (props: any) => (
     <RNErrorToast
       {...props}
       style={{
-        borderLeftColor: '#dc3545',
+        borderLeftColor: "#dc3545",
         borderLeftWidth: 7,
-        width: '90%',
+        width: "90%",
         height: 70,
       }}
       text1Style={{
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+        fontWeight: "bold",
+        color: "#333",
       }}
       text2Style={{
         fontSize: 14,
-        color: '#666',
+        color: "#666",
       }}
     />
   ),
@@ -91,19 +94,19 @@ const toastConfig = {
     <BaseToast
       {...props}
       style={{
-        borderLeftColor: '#17a2b8',
+        borderLeftColor: "#17a2b8",
         borderLeftWidth: 7,
-        width: '90%',
+        width: "90%",
         height: 70,
       }}
       text1Style={{
         fontSize: 16,
-        fontWeight: 'bold',
-        color: '#333',
+        fontWeight: "bold",
+        color: "#333",
       }}
       text2Style={{
         fontSize: 14,
-        color: '#666',
+        color: "#666",
       }}
     />
   ),
@@ -114,7 +117,7 @@ const AppWithCustomToast = () => {
   return (
     <NavigationContainer>
       {/* Your app content */}
-      
+
       {/* Custom configured Toast */}
       <Toast config={toastConfig} />
     </NavigationContainer>

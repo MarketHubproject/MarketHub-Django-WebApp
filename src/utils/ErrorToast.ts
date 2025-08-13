@@ -1,4 +1,4 @@
-import Toast from 'react-native-toast-message';
+import Toast from "react-native-toast-message";
 
 export interface ApiError {
   title: string;
@@ -15,26 +15,26 @@ export class ErrorToast {
    */
   static show(error: ApiError): void {
     Toast.show({
-      type: 'error',
+      type: "error",
       text1: error.title,
       text2: error.message,
       visibilityTime: 4000,
       autoHide: true,
-      position: 'top',
+      position: "top",
     });
   }
 
   /**
    * Show a generic error toast
    */
-  static showGeneric(message: string = 'An unexpected error occurred'): void {
+  static showGeneric(message: string = "An unexpected error occurred"): void {
     Toast.show({
-      type: 'error',
-      text1: 'Error',
+      type: "error",
+      text1: "Error",
       text2: message,
       visibilityTime: 4000,
       autoHide: true,
-      position: 'top',
+      position: "top",
     });
   }
 
@@ -43,12 +43,12 @@ export class ErrorToast {
    */
   static showNetwork(): void {
     Toast.show({
-      type: 'error',
-      text1: 'Network Error',
-      text2: 'Please check your internet connection and try again',
+      type: "error",
+      text1: "Network Error",
+      text2: "Please check your internet connection and try again",
       visibilityTime: 4000,
       autoHide: true,
-      position: 'top',
+      position: "top",
     });
   }
 
@@ -57,12 +57,12 @@ export class ErrorToast {
    */
   static showSuccess(title: string, message?: string): void {
     Toast.show({
-      type: 'success',
+      type: "success",
       text1: title,
       text2: message,
       visibilityTime: 3000,
       autoHide: true,
-      position: 'top',
+      position: "top",
     });
   }
 
@@ -71,12 +71,12 @@ export class ErrorToast {
    */
   static showInfo(title: string, message?: string): void {
     Toast.show({
-      type: 'info',
+      type: "info",
       text1: title,
       text2: message,
       visibilityTime: 3000,
       autoHide: true,
-      position: 'top',
+      position: "top",
     });
   }
 

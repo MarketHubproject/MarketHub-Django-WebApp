@@ -1,0 +1,220 @@
+{
+  "parameters": {
+    "enable_ar_features": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "conditionalValues": {
+        "beta_users": {
+          "value": "true"
+        },
+        "ios_users": {
+          "value": "false"
+        },
+        "android_users": {
+          "value": "false"
+        }
+      },
+      "description": "Enable AR product viewing features"
+    },
+    "enable_social_sharing": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "conditionalValues": {
+        "new_users": {
+          "value": "false"
+        }
+      },
+      "description": "Enable social sharing and referral features"
+    },
+    "rewards_program_rollout": {
+      "defaultValue": {
+        "value": "100"
+      },
+      "conditionalValues": {
+        "stage_1": {
+          "value": "10"
+        },
+        "stage_2": {
+          "value": "30"
+        },
+        "stage_3": {
+          "value": "50"
+        }
+      },
+      "description": "Percentage of users who can access rewards program"
+    },
+    "chat_support_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "conditionalValues": {
+        "high_load": {
+          "value": "false"
+        }
+      },
+      "description": "Enable in-app chat support"
+    },
+    "offline_mode_enabled": {
+      "defaultValue": {
+        "value": "true"
+      },
+      "description": "Enable offline browsing and cart functionality"
+    },
+    "push_notification_frequency": {
+      "defaultValue": {
+        "value": "normal"
+      },
+      "conditionalValues": {
+        "high_engagement_users": {
+          "value": "frequent"
+        },
+        "low_engagement_users": {
+          "value": "minimal"
+        }
+      },
+      "description": "Push notification frequency setting"
+    },
+    "recommended_products_count": {
+      "defaultValue": {
+        "value": "10"
+      },
+      "conditionalValues": {
+        "performance_mode": {
+          "value": "5"
+        },
+        "premium_users": {
+          "value": "20"
+        }
+      },
+      "description": "Number of recommended products to show"
+    },
+    "subscription_features_enabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "conditionalValues": {
+        "beta_users": {
+          "value": "true"
+        },
+        "premium_users": {
+          "value": "true"
+        }
+      },
+      "description": "Enable subscription and recurring order features"
+    },
+    "analytics_sampling_rate": {
+      "defaultValue": {
+        "value": "1.0"
+      },
+      "conditionalValues": {
+        "production": {
+          "value": "0.1"
+        },
+        "staging": {
+          "value": "0.5"
+        }
+      },
+      "description": "Analytics event sampling rate"
+    },
+    "maintenance_mode": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Enable maintenance mode banner"
+    },
+    "force_update_required": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Force users to update to continue using the app"
+    },
+    "minimum_supported_version": {
+      "defaultValue": {
+        "value": "1.0.0"
+      },
+      "description": "Minimum app version that can access the service"
+    }
+  },
+  "conditions": [
+    {
+      "name": "beta_users",
+      "expression": "device.userProperty['user_group'] == 'beta'",
+      "tagColor": "BLUE"
+    },
+    {
+      "name": "ios_users",
+      "expression": "device.os == 'ios'",
+      "tagColor": "GREEN"
+    },
+    {
+      "name": "android_users",
+      "expression": "device.os == 'android'",
+      "tagColor": "ORANGE"
+    },
+    {
+      "name": "new_users",
+      "expression": "device.userProperty['account_age_days'] < 7",
+      "tagColor": "PURPLE"
+    },
+    {
+      "name": "high_engagement_users",
+      "expression": "device.userProperty['sessions_last_week'] > 10",
+      "tagColor": "RED"
+    },
+    {
+      "name": "low_engagement_users",
+      "expression": "device.userProperty['sessions_last_week'] <= 3",
+      "tagColor": "BROWN"
+    },
+    {
+      "name": "premium_users",
+      "expression": "device.userProperty['subscription_tier'] == 'premium'",
+      "tagColor": "PINK"
+    },
+    {
+      "name": "high_load",
+      "expression": "percent <= 90",
+      "tagColor": "RED"
+    },
+    {
+      "name": "performance_mode",
+      "expression": "device.userProperty['performance_mode'] == 'true'",
+      "tagColor": "CYAN"
+    },
+    {
+      "name": "stage_1",
+      "expression": "percent <= 10",
+      "tagColor": "BLUE"
+    },
+    {
+      "name": "stage_2", 
+      "expression": "percent <= 30",
+      "tagColor": "GREEN"
+    },
+    {
+      "name": "stage_3",
+      "expression": "percent <= 50", 
+      "tagColor": "ORANGE"
+    },
+    {
+      "name": "production",
+      "expression": "device.userProperty['environment'] == 'production'",
+      "tagColor": "RED"
+    },
+    {
+      "name": "staging",
+      "expression": "device.userProperty['environment'] == 'staging'",
+      "tagColor": "YELLOW"
+    }
+  ],
+  "version": {
+    "versionNumber": "1",
+    "updateTime": "2024-01-01T00:00:00Z",
+    "updateUser": {
+      "email": "admin@markethub.com"
+    },
+    "description": "Initial Remote Config setup for progressive rollout"
+  }
+}

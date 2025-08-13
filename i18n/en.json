@@ -19,7 +19,12 @@
     "edit": "Edit",
     "continue": "Continue",
     "comingSoon": "Coming Soon",
-    "or": "OR"
+    "or": "OR",
+    "new": "New",
+    "sale": "Sale",
+    "featured": "Featured",
+    "popular": "Popular",
+    "trending": "Trending"
   },
   "auth": {
     "welcomeBack": "Welcome Back!",
@@ -142,6 +147,90 @@
     "supportMessage": "For support, please contact us at support@markethub.com",
     "aboutMessage": "MarketHub Mobile v1.0.0\n\nA student marketplace for buying and selling products.",
     "privacyPolicyImplementation": "Privacy policy content will be available in the next update."
+  },
+  "chat": {
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "liveChat": "Live Chat",
+    "chatWithUs": "Chat with us",
+    "howCanWeHelp": "How can we help you?",
+    "searchFAQ": "Search FAQ...",
+    "frequentlyAsked": "Frequently Asked Questions",
+    "suggestedArticles": "Suggested Articles",
+    "viewAllFAQ": "View All FAQ",
+    "helpful": "Helpful",
+    "notHelpful": "Not Helpful",
+    "wasThisHelpful": "Was this helpful?",
+    "stillNeedHelp": "Still need help?",
+    "startChat": "Start Chat",
+    "connectingAgent": "Connecting to agent...",
+    "connectedToAgent": "Connected to support agent",
+    "agentJoined": "Agent has joined the chat",
+    "agentLeft": "Agent has left the chat",
+    "typingIndicator": "Agent is typing...",
+    "messageDelivered": "Message delivered",
+    "messageFailed": "Message failed to send",
+    "retryMessage": "Retry",
+    "endChat": "End Chat",
+    "endChatConfirm": "Are you sure you want to end this chat?",
+    "chatEnded": "Chat ended",
+    "chatHistory": "Chat History",
+    "noChatHistory": "No chat history available",
+    "typeMessage": "Type a message...",
+    "sendMessage": "Send",
+    "chatUnavailable": "Chat is currently unavailable. Please try again later.",
+    "connectionError": "Connection error. Please check your internet connection.",
+    "escalateToAgent": "Escalate to Agent",
+    "escalating": "Escalating to human agent...",
+    "botResponse": "Hi! I'm here to help. You can:",
+    "botSuggestions": [
+      "Browse our FAQ articles",
+      "Chat with a live agent",
+      "Search for specific topics"
+    ],
+    "offline": "Offline",
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "supportAgent": "Support Agent",
+    "bot": "MarketHub Assistant"
+  },
+  "faq": {
+    "categories": {
+      "general": "General",
+      "orders": "Orders",
+      "payments": "Payments",
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "account": "Account",
+      "technical": "Technical"
+    },
+    "articles": {
+      "howToOrder": {
+        "title": "How to place an order?",
+        "content": "To place an order: 1) Browse products, 2) Add items to cart, 3) Proceed to checkout, 4) Complete payment. You'll receive a confirmation email once your order is placed."
+      },
+      "paymentMethods": {
+        "title": "What payment methods do you accept?",
+        "content": "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, and Google Pay. All payments are processed securely."
+      },
+      "shipping": {
+        "title": "How long does shipping take?",
+        "content": "Standard shipping takes 3-5 business days. Express shipping takes 1-2 business days. You'll receive tracking information via email once your order ships."
+      },
+      "returns": {
+        "title": "What is your return policy?",
+        "content": "We offer a 30-day return policy. Items must be in original condition. Contact our support team to initiate a return. Refunds are processed within 5-7 business days."
+      },
+      "accountIssues": {
+        "title": "I'm having trouble with my account",
+        "content": "For account issues: 1) Try resetting your password, 2) Clear your app cache, 3) Update the app to the latest version. If problems persist, contact our support team."
+      },
+      "technicalSupport": {
+        "title": "App is not working properly",
+        "content": "Try these steps: 1) Close and reopen the app, 2) Check your internet connection, 3) Update to the latest app version, 4) Restart your device. Contact support if issues continue."
+      }
+    }
   },
   "errors": {
     "loadingError": "Failed to load data. Please try again.",

@@ -47,7 +47,7 @@ class Logger {
    */
   debug(message: string, data?: any, context?: LogContext): void {
     if (this.level <= LogLevel.DEBUG) {
-      this.log('DEBUG', message, data, context);
+      this.log("DEBUG", message, data, context);
     }
   }
 
@@ -56,7 +56,7 @@ class Logger {
    */
   info(message: string, data?: any, context?: LogContext): void {
     if (this.level <= LogLevel.INFO) {
-      this.log('INFO', message, data, context);
+      this.log("INFO", message, data, context);
     }
   }
 
@@ -65,7 +65,7 @@ class Logger {
    */
   warn(message: string, data?: any, context?: LogContext): void {
     if (this.level <= LogLevel.WARN) {
-      this.log('WARN', message, data, context);
+      this.log("WARN", message, data, context);
     }
   }
 
@@ -74,40 +74,46 @@ class Logger {
    */
   error(message: string, error?: Error | any, context?: LogContext): void {
     if (this.level <= LogLevel.ERROR) {
-      this.log('ERROR', message, error, context);
+      this.log("ERROR", message, error, context);
     }
   }
 
   /**
    * Internal logging method
    */
-  private log(level: string, message: string, data?: any, context?: LogContext): void {
+  private log(
+    level: string,
+    message: string,
+    data?: any,
+    context?: LogContext
+  ): void {
     const timestamp = new Date().toISOString();
     const mergedContext = { ...this.context, ...context };
-    
+
     // Create formatted message
     const prefix = `[${timestamp}] [${level}]`;
-    const contextInfo = Object.keys(mergedContext).length > 0 
-      ? ` [${JSON.stringify(mergedContext)}]` 
-      : '';
+    const contextInfo =
+      Object.keys(mergedContext).length > 0
+        ? ` [${JSON.stringify(mergedContext)}]`
+        : "";
     const fullMessage = `${prefix}${contextInfo} ${message}`;
 
     // Use appropriate console method based on level
     switch (level) {
-      case 'DEBUG':
-      case 'INFO':
-        console.log(fullMessage, data || '');
+      case "DEBUG":
+      case "INFO":
+        console.log(fullMessage, data || "");
         break;
-      case 'WARN':
-        console.warn(fullMessage, data || '');
+      case "WARN":
+        console.warn(fullMessage, data || "");
         break;
-      case 'ERROR':
-        console.error(fullMessage, data || '');
+      case "ERROR":
+        console.error(fullMessage, data || "");
         break;
     }
 
     // In production, you could send logs to a remote service here
-    if (!__DEV__ && (level === 'ERROR' || level === 'WARN')) {
+    if (!__DEV__ && (level === "ERROR" || level === "WARN")) {
       this.sendToRemoteLogging(level, message, data, mergedContext);
     }
   }
@@ -116,15 +122,14 @@ class Logger {
    * Send logs to remote logging service (placeholder for production)
    */
   private sendToRemoteLogging(
-    level: string, 
-    message: string, 
-    data?: any, 
+    level: string,
+    message: string,
+    data?: any,
     context?: LogContext
   ): void {
     // In a real app, this would send logs to services like:
     // - Sentry, Bugsnag, LogRocket, etc.
     // For now, this is just a placeholder
-    
     // Example implementation:
     // try {
     //   LoggingService.send({
@@ -163,7 +168,7 @@ class Logger {
   ): void {
     const apiContext = {
       ...context,
-      component: context?.component || 'API',
+      component: context?.component || "API",
       action: `${method} ${url}`,
       metadata: {
         ...context?.metadata,
@@ -182,8 +187,8 @@ class Logger {
   networkError(message: string, error?: any, context?: LogContext): void {
     const networkContext = {
       ...context,
-      component: context?.component || 'Network',
-      action: 'connectivity_check',
+      component: context?.component || "Network",
+      action: "connectivity_check",
     };
 
     this.error(`Network error: ${message}`, error, networkContext);

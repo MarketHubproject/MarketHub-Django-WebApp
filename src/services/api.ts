@@ -1,8 +1,8 @@
-import axios, { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { config } from '../config/environment';
-import { ApiError, logger, ErrorToast } from '../utils';
-import i18n from './i18n';
+import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { config } from "../config/environment";
+import { ApiError, logger, ErrorToast } from "../utils";
+import i18n from "./i18n";
 
 // Use environment-based configuration
 
@@ -14,18 +14,20 @@ class ApiService {
       baseURL: config.API_BASE_URL,
       timeout: config.TIMEOUT,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     // Request interceptor to add auth token
-    this.api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token && config.headers) {
-        config.headers.Authorization = `Token ${token}`;
+    this.api.interceptors.request.use(
+      async (config: InternalAxiosRequestConfig) => {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token && config.headers) {
+          config.headers.Authorization = `Token ${token}`;
+        }
+        return config;
       }
-      return config;
-    });
+    );
 
     // Response interceptor to handle common errors
     this.api.interceptors.response.use(
@@ -33,8 +35,8 @@ class ApiService {
       async (error: any) => {
         if (error.response?.status === 401) {
           // Token expired or invalid
-          await AsyncStorage.removeItem('authToken');
-          await AsyncStorage.removeItem('userId');
+          await AsyncStorage.removeItem("authToken");
+          await AsyncStorage.removeItem("userId");
           // You might want to redirect to login here
         }
         return Promise.reject(error);
@@ -45,16 +47,16 @@ class ApiService {
   // Authentication
   async login(email: string, password: string): Promise<any> {
     try {
-      const response = await this.api.post('/auth/login/', {
+      const response = await this.api.post("/auth/login/", {
         email,
         password,
       });
-      
+
       if (response.data.token) {
-        await AsyncStorage.setItem('authToken', response.data.token);
-        await AsyncStorage.setItem('userId', response.data.user.id.toString());
+        await AsyncStorage.setItem("authToken", response.data.token);
+        await AsyncStorage.setItem("userId", response.data.user.id.toString());
       }
-      
+
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -63,13 +65,13 @@ class ApiService {
 
   async signup(userData: any): Promise<any> {
     try {
-      const response = await this.api.post('/auth/register/', userData);
-      
+      const response = await this.api.post("/auth/register/", userData);
+
       if (response.data.token) {
-        await AsyncStorage.setItem('authToken', response.data.token);
-        await AsyncStorage.setItem('userId', response.data.user.id.toString());
+        await AsyncStorage.setItem("authToken", response.data.token);
+        await AsyncStorage.setItem("userId", response.data.user.id.toString());
       }
-      
+
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -78,27 +80,31 @@ class ApiService {
 
   async logout(): Promise<void> {
     try {
-      await this.api.post('/auth/logout/');
+      await this.api.post("/auth/logout/");
     } catch (error) {
       // Continue with logout even if API call fails
-      logger.warn('Logout API call failed', error, {
-        component: 'ApiService',
-        action: 'logout'
+      logger.warn("Logout API call failed", error, {
+        component: "ApiService",
+        action: "logout",
       });
     } finally {
-      await AsyncStorage.removeItem('authToken');
-      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem("authToken");
+      await AsyncStorage.removeItem("userId");
     }
   }
 
   // Products
-  async getProducts(page: number = 1, category: string | null = null, search: string | null = null): Promise<any> {
+  async getProducts(
+    page: number = 1,
+    category: string | null = null,
+    search: string | null = null
+  ): Promise<any> {
     try {
       const params: any = { page };
       if (category) params.category = category;
       if (search) params.search = search;
 
-      const response = await this.api.get('/products/', { params });
+      const response = await this.api.get("/products/", { params });
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -116,7 +122,7 @@ class ApiService {
 
   async getFeaturedProducts(): Promise<any> {
     try {
-      const response = await this.api.get('/products/featured/');
+      const response = await this.api.get("/products/featured/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -126,7 +132,7 @@ class ApiService {
   // Categories
   async getCategories(): Promise<any> {
     try {
-      const response = await this.api.get('/categories/');
+      const response = await this.api.get("/categories/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -136,7 +142,7 @@ class ApiService {
   // Favorites
   async getFavorites(): Promise<any> {
     try {
-      const response = await this.api.get('/favorites/');
+      const response = await this.api.get("/favorites/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -145,7 +151,7 @@ class ApiService {
 
   async addToFavorites(productId: number | string): Promise<any> {
     try {
-      const response = await this.api.post('/favorites/', {
+      const response = await this.api.post("/favorites/", {
         product: productId,
       });
       return response.data;
@@ -165,16 +171,19 @@ class ApiService {
   // Cart
   async getCart(): Promise<any> {
     try {
-      const response = await this.api.get('/cart/');
+      const response = await this.api.get("/cart/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
     }
   }
 
-  async addToCart(productId: number | string, quantity: number = 1): Promise<any> {
+  async addToCart(
+    productId: number | string,
+    quantity: number = 1
+  ): Promise<any> {
     try {
-      const response = await this.api.post('/cart/', {
+      const response = await this.api.post("/cart/", {
         product: productId,
         quantity,
       });
@@ -184,7 +193,10 @@ class ApiService {
     }
   }
 
-  async updateCartItem(itemId: number | string, quantity: number): Promise<any> {
+  async updateCartItem(
+    itemId: number | string,
+    quantity: number
+  ): Promise<any> {
     try {
       const response = await this.api.patch(`/cart/${itemId}/`, {
         quantity,
@@ -203,10 +215,73 @@ class ApiService {
     }
   }
 
+  // Recommendations
+  async getRecommendations(userId?: string | number): Promise<any> {
+    try {
+      const params: any = {};
+      if (userId) params.user_id = userId;
+
+      const response = await this.api.get("/api/v1/recommendations/", {
+        params,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async logProductImpression(
+    productId: number | string,
+    userId?: string | number,
+    context?: string
+  ): Promise<void> {
+    try {
+      const data: any = {
+        product_id: productId,
+        event_type: "impression",
+        context: context || "unknown",
+      };
+      if (userId) data.user_id = userId;
+
+      await this.api.post("/api/v1/recommendations/events/", data);
+    } catch (error) {
+      // Don't throw error for logging - just log it
+      logger.warn("Failed to log product impression", error, {
+        component: "ApiService",
+        action: "logProductImpression",
+        metadata: { productId, userId, context },
+      });
+    }
+  }
+
+  async logProductClick(
+    productId: number | string,
+    userId?: string | number,
+    context?: string
+  ): Promise<void> {
+    try {
+      const data: any = {
+        product_id: productId,
+        event_type: "click",
+        context: context || "unknown",
+      };
+      if (userId) data.user_id = userId;
+
+      await this.api.post("/api/v1/recommendations/events/", data);
+    } catch (error) {
+      // Don't throw error for logging - just log it
+      logger.warn("Failed to log product click", error, {
+        component: "ApiService",
+        action: "logProductClick",
+        metadata: { productId, userId, context },
+      });
+    }
+  }
+
   // User Profile
   async getUserProfile(): Promise<any> {
     try {
-      const response = await this.api.get('/profile/');
+      const response = await this.api.get("/profile/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -215,7 +290,7 @@ class ApiService {
 
   async updateUserProfile(profileData: any): Promise<any> {
     try {
-      const response = await this.api.patch('/profile/', profileData);
+      const response = await this.api.patch("/profile/", profileData);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -225,7 +300,7 @@ class ApiService {
   // Orders
   async getOrders(): Promise<any> {
     try {
-      const response = await this.api.get('/orders/');
+      const response = await this.api.get("/orders/");
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -234,7 +309,7 @@ class ApiService {
 
   async createOrder(orderData: any): Promise<any> {
     try {
-      const response = await this.api.post('/orders/', orderData);
+      const response = await this.api.post("/orders/", orderData);
       return response.data;
     } catch (error) {
       throw this.handleError(error);
@@ -244,111 +319,179 @@ class ApiService {
   // Error handler - returns consistent ApiError objects and shows Toast for network errors
   private handleError(error: any): ApiError {
     // Extract request details for logging
-    const url = error.config?.url || 'unknown';
-    const method = error.config?.method?.toUpperCase() || 'UNKNOWN';
-    
+    const url = error.config?.url || "unknown";
+    const method = error.config?.method?.toUpperCase() || "UNKNOWN";
+
     if (error.response) {
       // Server responded with error status
       const status = error.response.status;
       const data = error.response.data;
-      
-      let title = 'Server Error';
-      let message = data?.message || data?.detail || 'Something went wrong on the server';
-      
+
+      let title = "Server Error";
+      let message =
+        data?.message || data?.detail || "Something went wrong on the server";
+
       // Customize error messages based on status codes
       switch (status) {
         case 400:
-          title = 'Invalid Request';
+          title = "Invalid Request";
           if (data?.email) {
-            message = 'Please check your email address';
+            message = "Please check your email address";
           } else if (data?.password) {
-            message = 'Please check your password';
+            message = "Please check your password";
           } else {
-            message = data?.message || data?.detail || 'Please check your input and try again';
+            message =
+              data?.message ||
+              data?.detail ||
+              "Please check your input and try again";
           }
           break;
         case 401:
-          title = 'Authentication Failed';
-          message = 'Invalid email or password';
+          title = "Authentication Failed";
+          message = "Invalid email or password";
           break;
         case 403:
-          title = 'Access Denied';
-          message = 'You do not have permission to perform this action';
+          title = "Access Denied";
+          message = "You do not have permission to perform this action";
           break;
         case 404:
-          title = 'Not Found';
-          message = 'The requested resource was not found';
+          title = "Not Found";
+          message = "The requested resource was not found";
           break;
         case 422:
-          title = 'Validation Error';
-          message = data?.message || data?.detail || 'Please check your input';
+          title = "Validation Error";
+          message = data?.message || data?.detail || "Please check your input";
           break;
         case 500:
-          title = 'Server Error';
-          message = 'Something went wrong on our end. Please try again later';
+          title = "Server Error";
+          message = "Something went wrong on our end. Please try again later";
           break;
         default:
-          title = 'Server Error';
+          title = "Server Error";
           message = data?.message || data?.detail || `Server error (${status})`;
       }
-      
+
       // Log API error using centralized logger
       logger.apiError(method, url, status, error, {
-        component: 'ApiService',
-        metadata: { responseData: data }
+        component: "ApiService",
+        metadata: { responseData: data },
       });
-      
+
       return { title, message };
     } else if (error.request) {
       // Network error - show Toast with translated message
-      const networkErrorMessage = i18n.t('errors.networkError');
-      
+      const networkErrorMessage = i18n.t("errors.networkError");
+
       // Show Toast notification for network errors
       ErrorToast.show({
-        title: i18n.t('common.error'),
-        message: networkErrorMessage
+        title: i18n.t("common.error"),
+        message: networkErrorMessage,
       });
-      
+
       // Log network error
       logger.networkError(`Network request failed: ${method} ${url}`, error, {
-        component: 'ApiService',
+        component: "ApiService",
         metadata: {
-          timeout: error.code === 'ECONNABORTED',
+          timeout: error.code === "ECONNABORTED",
           url,
-          method
-        }
+          method,
+        },
       });
-      
+
       return {
-        title: 'Network Error',
-        message: networkErrorMessage
+        title: "Network Error",
+        message: networkErrorMessage,
       };
     } else {
       // Other error
-      const unexpectedMessage = error.message || 'An unexpected error occurred';
-      
+      const unexpectedMessage = error.message || "An unexpected error occurred";
+
       // Log unexpected error
       logger.error(`Unexpected API error: ${method} ${url}`, error, {
-        component: 'ApiService',
-        action: 'handleError',
-        metadata: { url, method }
+        component: "ApiService",
+        action: "handleError",
+        metadata: { url, method },
       });
-      
+
       return {
-        title: 'Unexpected Error',
-        message: unexpectedMessage
+        title: "Unexpected Error",
+        message: unexpectedMessage,
       };
+    }
+  }
+
+  // Rewards & Loyalty Methods
+  async getPointsBalance(): Promise<any> {
+    try {
+      const response = await this.api.get("/rewards/balance/");
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async getLoyaltyStatus(): Promise<any> {
+    try {
+      const response = await this.api.get("/rewards/loyalty-status/");
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async redeemPoints(
+    redemptionOptionId: string,
+    pointsToRedeem: number
+  ): Promise<any> {
+    try {
+      const response = await this.api.post("/rewards/redeem/", {
+        redemption_option_id: redemptionOptionId,
+        points_to_redeem: pointsToRedeem,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async validateVoucherForOrder(
+    voucherCode: string,
+    orderAmount: number
+  ): Promise<any> {
+    try {
+      const response = await this.api.post("/rewards/validate-voucher/", {
+        voucher_code: voucherCode,
+        order_amount: orderAmount,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  async calculateOrderPoints(
+    orderAmount: number,
+    orderItems?: any[]
+  ): Promise<any> {
+    try {
+      const response = await this.api.post("/rewards/calculate-points/", {
+        order_amount: orderAmount,
+        order_items: orderItems,
+      });
+      return response.data;
+    } catch (error) {
+      throw this.handleError(error);
     }
   }
 
   // Utility methods
   async isAuthenticated() {
-    const token = await AsyncStorage.getItem('authToken');
+    const token = await AsyncStorage.getItem("authToken");
     return !!token;
   }
 
   async getCurrentUserId() {
-    return await AsyncStorage.getItem('userId');
+    return await AsyncStorage.getItem("userId");
   }
 }
 

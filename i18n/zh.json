@@ -19,7 +19,12 @@
     "edit": "编辑",
     "continue": "继续",
     "comingSoon": "敬请期待",
-    "or": "或"
+    "or": "或",
+    "new": "新品",
+    "sale": "促销",
+    "featured": "精选",
+    "popular": "热门",
+    "trending": "流行"
   },
   "auth": {
     "welcomeBack": "欢迎回来！",
@@ -142,6 +147,90 @@
     "supportMessage": "如需支持，请通过 support@markethub.com 联系我们",
     "aboutMessage": "MarketHub Mobile v1.0.0\n\n学生买卖商品的市场平台。",
     "privacyPolicyImplementation": "隐私政策内容将在下次更新中提供。"
+  },
+  "chat": {
+    "support": "支持",
+    "helpCenter": "帮助中心",
+    "liveChat": "在线客服",
+    "chatWithUs": "联系客服",
+    "howCanWeHelp": "我们能为您做些什么？",
+    "searchFAQ": "搜索常见问题...",
+    "frequentlyAsked": "常见问题",
+    "suggestedArticles": "推荐文章",
+    "viewAllFAQ": "查看所有常见问题",
+    "helpful": "有帮助",
+    "notHelpful": "没有帮助",
+    "wasThisHelpful": "这对您有帮助吗？",
+    "stillNeedHelp": "仍需要帮助？",
+    "startChat": "开始聊天",
+    "connectingAgent": "连接客服中...",
+    "connectedToAgent": "已连接到客服代表",
+    "agentJoined": "客服代表已加入聊天",
+    "agentLeft": "客服代表已离开聊天",
+    "typingIndicator": "客服正在输入中...",
+    "messageDelivered": "消息已送达",
+    "messageFailed": "消息发送失败",
+    "retryMessage": "重试",
+    "endChat": "结束聊天",
+    "endChatConfirm": "确定要结束此次聊天吗？",
+    "chatEnded": "聊天已结束",
+    "chatHistory": "聊天历史",
+    "noChatHistory": "暂无聊天历史",
+    "typeMessage": "输入消息...",
+    "sendMessage": "发送",
+    "chatUnavailable": "客服暂时无法使用。请稍后重试。",
+    "connectionError": "连接错误。请检查网络连接。",
+    "escalateToAgent": "转接人工客服",
+    "escalating": "正在转接人工客服...",
+    "botResponse": "您好！我来帮助您。您可以：",
+    "botSuggestions": [
+      "浏览常见问题文章",
+      "与在线客服聊天",
+      "搜索特定主题"
+    ],
+    "offline": "离线",
+    "online": "在线",
+    "away": "暂离",
+    "busy": "忙碌",
+    "supportAgent": "客服代表",
+    "bot": "MarketHub 助手"
+  },
+  "faq": {
+    "categories": {
+      "general": "一般问题",
+      "orders": "订单",
+      "payments": "支付",
+      "shipping": "物流",
+      "returns": "退换货",
+      "account": "账户",
+      "technical": "技术支持"
+    },
+    "articles": {
+      "howToOrder": {
+        "title": "如何下订单？",
+        "content": "下订单步骤：1) 浏览商品，2) 添加商品到购物车，3) 进入结账页面，4) 完成支付。订单确认后您将收到确认邮件。"
+      },
+      "paymentMethods": {
+        "title": "支持哪些支付方式？",
+        "content": "我们支持所有主流信用卡（Visa、MasterCard、American Express）、PayPal、Apple Pay 和 Google Pay。所有支付都通过安全加密处理。"
+      },
+      "shipping": {
+        "title": "物流配送需要多长时间？",
+        "content": "标准配送需要3-5个工作日。快速配送需要1-2个工作日。订单发货后您将收到包含物流跟踪信息的邮件。"
+      },
+      "returns": {
+        "title": "退货政策是什么？",
+        "content": "我们提供30天退货政策。商品必须保持原有状态。请联系客服团队发起退货。退款将在5-7个工作日内处理完成。"
+      },
+      "accountIssues": {
+        "title": "我的账户出现问题",
+        "content": "账户问题解决方案：1) 尝试重置密码，2) 清除应用缓存，3) 更新应用到最新版本。如问题仍存在，请联系客服团队。"
+      },
+      "technicalSupport": {
+        "title": "应用无法正常运行",
+        "content": "请尝试以下步骤：1) 关闭并重新打开应用，2) 检查网络连接，3) 更新到最新应用版本，4) 重启设备。如问题继续，请联系技术支持。"
+      }
+    }
   },
   "errors": {
     "loadingError": "加载数据失败。请重试。",

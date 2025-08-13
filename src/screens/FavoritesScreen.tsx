@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,16 +9,16 @@ import {
   ActivityIndicator,
   Dimensions,
   Share,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import ApiService from '../services';
-import i18n from '../services/i18n';
-import { useFocusEffect } from '@react-navigation/native';
-import { getProductImageUrl } from '../config/environment';
-import { SmartImage } from '../components';
-import { logger, ErrorToast } from '../utils';
+} from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import ApiService from "../services";
+import i18n from "../services/i18n";
+import { useFocusEffect } from "@react-navigation/native";
+import { getProductImageUrl } from "../config/environment";
+import { SmartImage } from "../components";
+import { logger, ErrorToast } from "../utils";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 const numColumns = 2;
 const productWidth = (width - 60) / numColumns;
 
@@ -59,20 +59,23 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
       const favoritesData = await ApiService.getFavorites();
       setFavorites(favoritesData.results || favoritesData || []);
     } catch (error: any) {
-      logger.error('Error loading favorites', error, {
-        component: 'FavoritesScreen',
-        action: 'loadFavorites',
+      logger.error("Error loading favorites", error, {
+        component: "FavoritesScreen",
+        action: "loadFavorites",
         metadata: {
           showRefreshing,
           favoritesCount: favorites.length,
-        }
+        },
       });
-      
+
       // Don't show error for empty favorites or authentication errors
-      if (!error.message?.includes('empty') && !error.message?.includes('authentication')) {
+      if (
+        !error.message?.includes("empty") &&
+        !error.message?.includes("authentication")
+      ) {
         ErrorToast.show({
-          title: i18n.t('common.error'),
-          message: i18n.t('errors.loadingError')
+          title: i18n.t("common.error"),
+          message: i18n.t("errors.loadingError"),
         });
       }
     } finally {
@@ -81,144 +84,159 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
     }
   };
 
-  const removeFromFavorites = async (favoriteId: number, productId: number): Promise<void> => {
+  const removeFromFavorites = async (
+    favoriteId: number,
+    productId: number
+  ): Promise<void> => {
     Alert.alert(
-      i18n.t('common.remove'),
-      'Are you sure you want to remove this item from your favorites?',
+      i18n.t("common.remove"),
+      "Are you sure you want to remove this item from your favorites?",
       [
-        { text: i18n.t('common.cancel'), style: 'cancel' },
+        { text: i18n.t("common.cancel"), style: "cancel" },
         {
-          text: i18n.t('common.remove'),
-          style: 'destructive',
+          text: i18n.t("common.remove"),
+          style: "destructive",
           onPress: async () => {
             try {
-              setRemovingItems(prev => new Set(prev).add(favoriteId));
+              setRemovingItems((prev) => new Set(prev).add(favoriteId));
               await ApiService.removeFromFavorites(productId);
-              
+
               // Update local state
-              setFavorites(prevFavorites => 
-                prevFavorites.filter(item => item.id !== favoriteId)
+              setFavorites((prevFavorites) =>
+                prevFavorites.filter((item) => item.id !== favoriteId)
               );
-              
+
               ErrorToast.show({
-                title: i18n.t('common.success'),
-                message: 'Item removed from favorites'
+                title: i18n.t("common.success"),
+                message: "Item removed from favorites",
               });
             } catch (error: any) {
-              logger.error('Error removing from favorites', error, {
-                component: 'FavoritesScreen',
-                action: 'removeFromFavorites',
+              logger.error("Error removing from favorites", error, {
+                component: "FavoritesScreen",
+                action: "removeFromFavorites",
                 metadata: {
                   favoriteId,
                   productId,
-                }
+                },
               });
-              
+
               ErrorToast.show({
-                title: i18n.t('common.error'),
-                message: error.message || 'Failed to remove item from favorites'
+                title: i18n.t("common.error"),
+                message:
+                  error.message || "Failed to remove item from favorites",
               });
             } finally {
-              setRemovingItems(prev => {
+              setRemovingItems((prev) => {
                 const newSet = new Set(prev);
                 newSet.delete(favoriteId);
                 return newSet;
               });
             }
-          }
-        }
+          },
+        },
       ]
     );
   };
 
-  const addToCart = async (product: FavoriteProduct['product']): Promise<void> => {
+  const addToCart = async (
+    product: FavoriteProduct["product"]
+  ): Promise<void> => {
     if (product.stock === 0) {
-      Alert.alert(i18n.t('products.outOfStock'), 'This item is currently out of stock.');
+      Alert.alert(
+        i18n.t("products.outOfStock"),
+        "This item is currently out of stock."
+      );
       return;
     }
 
     try {
       await ApiService.addToCart(product.id, 1);
-      
+
       Alert.alert(
-        'Added to Cart!',
+        "Added to Cart!",
         `${product.name} has been added to your cart.`,
         [
-          { text: 'Continue Shopping', style: 'cancel' },
-          { 
-            text: 'View Cart', 
-            onPress: () => navigation.navigate('Cart') 
-          }
+          { text: "Continue Shopping", style: "cancel" },
+          {
+            text: "View Cart",
+            onPress: () => navigation.navigate("Cart"),
+          },
         ]
       );
     } catch (error: any) {
-      logger.error('Error adding to cart from favorites', error, {
-        component: 'FavoritesScreen',
-        action: 'addToCart',
+      logger.error("Error adding to cart from favorites", error, {
+        component: "FavoritesScreen",
+        action: "addToCart",
         metadata: {
           productId: product.id,
           productName: product.name,
-        }
+        },
       });
-      
+
       ErrorToast.show({
-        title: i18n.t('common.error'),
-        message: error.message || 'Failed to add item to cart'
+        title: i18n.t("common.error"),
+        message: error.message || "Failed to add item to cart",
       });
     }
   };
 
-  const shareProduct = async (product: FavoriteProduct['product']): Promise<void> => {
+  const shareProduct = async (
+    product: FavoriteProduct["product"]
+  ): Promise<void> => {
     try {
       await Share.share({
         message: `Check out this product: ${product.name}\nPrice: $${product.price}\n\nShared from MarketHub`,
         title: product.name,
       });
     } catch (error: any) {
-      logger.error('Error sharing product', error, {
-        component: 'FavoritesScreen',
-        action: 'shareProduct',
+      logger.error("Error sharing product", error, {
+        component: "FavoritesScreen",
+        action: "shareProduct",
         metadata: {
           productId: product.id,
           productName: product.name,
-        }
+        },
       });
     }
   };
 
   const navigateToProduct = (productId: number): void => {
-    navigation.navigate('Products', {
-      screen: 'ProductDetail',
-      params: { productId }
+    navigation.navigate("Products", {
+      screen: "ProductDetail",
+      params: { productId },
     });
   };
 
   const navigateToShopping = (): void => {
-    navigation.navigate('Products');
+    navigation.navigate("Products");
   };
 
   const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
-  const renderFavoriteItem = ({ item }: { item: FavoriteProduct }): React.JSX.Element => {
+  const renderFavoriteItem = ({
+    item,
+  }: {
+    item: FavoriteProduct;
+  }): React.JSX.Element => {
     const isRemoving = removingItems.has(item.id);
     const isOutOfStock = item.product.stock === 0;
     const isLowStock = item.product.stock <= 5 && item.product.stock > 0;
 
     return (
       <View style={styles.favoriteCard}>
-        <TouchableOpacity 
+        <TouchableOpacity
           onPress={() => navigateToProduct(item.product.id)}
           style={styles.productImageContainer}
         >
           <SmartImage
             source={{
-              uri: getProductImageUrl(item.product)
+              uri: getProductImageUrl(item.product),
             }}
             style={styles.productImage}
             resizeMode="cover"
@@ -226,7 +244,9 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
           />
           {isOutOfStock && (
             <View style={styles.outOfStockOverlay}>
-              <Text style={styles.outOfStockText}>{i18n.t('products.outOfStock').toUpperCase()}</Text>
+              <Text style={styles.outOfStockText}>
+                {i18n.t("products.outOfStock").toUpperCase()}
+              </Text>
             </View>
           )}
         </TouchableOpacity>
@@ -237,14 +257,16 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
               {item.product.name}
             </Text>
           </TouchableOpacity>
-          
+
           <Text style={styles.productCategory}>{item.product.category}</Text>
           <Text style={styles.productPrice}>${item.product.price}</Text>
-          
+
           {isLowStock && !isOutOfStock && (
-            <Text style={styles.lowStockText}>{i18n.t('products.onlyXLeft', { count: item.product.stock })}</Text>
+            <Text style={styles.lowStockText}>
+              {i18n.t("products.onlyXLeft", { count: item.product.stock })}
+            </Text>
           )}
-          
+
           <Text style={styles.addedDate}>
             Added {formatDate(item.created_at)}
           </Text>
@@ -258,7 +280,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
           >
             <Icon name="share" size={18} color="#666" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[styles.actionButton, isRemoving && styles.disabledButton]}
             onPress={() => removeFromFavorites(item.id, item.product.id)}
@@ -274,13 +296,24 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
 
         {/* Add to Cart Button */}
         <TouchableOpacity
-          style={[styles.addToCartButton, isOutOfStock && styles.disabledButton]}
+          style={[
+            styles.addToCartButton,
+            isOutOfStock && styles.disabledButton,
+          ]}
           onPress={() => addToCart(item.product)}
           disabled={isOutOfStock}
         >
-          <Icon name="shopping-cart" size={16} color={isOutOfStock ? "#ccc" : "#FFFFFF"} />
-          <Text style={[styles.addToCartText, isOutOfStock && styles.disabledText]}>
-            {isOutOfStock ? i18n.t('products.outOfStock') : i18n.t('common.add') + ' to Cart'}
+          <Icon
+            name="shopping-cart"
+            size={16}
+            color={isOutOfStock ? "#ccc" : "#FFFFFF"}
+          />
+          <Text
+            style={[styles.addToCartText, isOutOfStock && styles.disabledText]}
+          >
+            {isOutOfStock
+              ? i18n.t("products.outOfStock")
+              : i18n.t("common.add") + " to Cart"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -294,10 +327,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
       <Text style={styles.emptySubtitle}>
         Start adding products to your favorites to see them here!
       </Text>
-      <TouchableOpacity
-        style={styles.shopButton}
-        onPress={navigateToShopping}
-      >
+      <TouchableOpacity style={styles.shopButton} onPress={navigateToShopping}>
         <Text style={styles.shopButtonText}>Explore Products</Text>
       </TouchableOpacity>
     </View>
@@ -306,10 +336,10 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
   const renderHeader = (): React.JSX.Element => (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
-        <Text style={styles.headerTitle}>{i18n.t('navigation.favorites')}</Text>
+        <Text style={styles.headerTitle}>{i18n.t("navigation.favorites")}</Text>
         {favorites.length > 0 && (
           <Text style={styles.favoriteCount}>
-            {favorites.length} item{favorites.length !== 1 ? 's' : ''}
+            {favorites.length} item{favorites.length !== 1 ? "s" : ""}
           </Text>
         )}
       </View>
@@ -333,7 +363,7 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
   return (
     <View style={styles.container}>
       {renderHeader()}
-      
+
       {favorites.length === 0 ? (
         renderEmptyFavorites()
       ) : (
@@ -368,40 +398,40 @@ const FavoritesScreen = ({ navigation }: any): React.JSX.Element => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FA',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#F8F9FA",
   },
   loadingText: {
     marginTop: 12,
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E1E1',
+    borderBottomColor: "#E1E1E1",
   },
   headerLeft: {
     flex: 1,
   },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   favoriteCount: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginTop: 2,
   },
   favoritesList: {
@@ -411,10 +441,10 @@ const styles = StyleSheet.create({
     width: productWidth,
     marginBottom: 16,
     marginRight: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 12,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -424,141 +454,141 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   productImageContainer: {
-    position: 'relative',
+    position: "relative",
     marginBottom: 8,
   },
   productImage: {
-    width: '100%',
+    width: "100%",
     height: 120,
     borderRadius: 8,
   },
   outOfStockOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   outOfStockText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   productInfo: {
     marginBottom: 8,
   },
   productName: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
+    fontWeight: "600",
+    color: "#333",
     marginBottom: 4,
     lineHeight: 18,
   },
   productCategory: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   productPrice: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007AFF',
+    fontWeight: "bold",
+    color: "#007AFF",
     marginBottom: 4,
   },
   lowStockText: {
     fontSize: 11,
-    color: '#FF8C00',
-    fontWeight: '500',
+    color: "#FF8C00",
+    fontWeight: "500",
     marginBottom: 4,
   },
   addedDate: {
     fontSize: 11,
-    color: '#999',
+    color: "#999",
   },
   actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   actionButton: {
     padding: 8,
     borderRadius: 6,
-    backgroundColor: '#F8F9FA',
+    backgroundColor: "#F8F9FA",
   },
   disabledButton: {
     opacity: 0.5,
   },
   addToCartButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#007AFF',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#007AFF",
     paddingVertical: 10,
     borderRadius: 8,
   },
   addToCartText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 4,
   },
   disabledText: {
-    color: '#ccc',
+    color: "#ccc",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 40,
   },
   emptyTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginTop: 16,
     marginBottom: 8,
   },
   emptySubtitle: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginBottom: 32,
     lineHeight: 22,
   },
   shopButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
   },
   shopButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   footer: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingVertical: 20,
   },
   continueShoppingButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F0F8FF',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F8FF",
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#007AFF',
+    borderColor: "#007AFF",
   },
   continueShoppingText: {
-    color: '#007AFF',
+    color: "#007AFF",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 8,
   },
 });

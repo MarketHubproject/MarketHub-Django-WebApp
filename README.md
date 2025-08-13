@@ -1,6 +1,37 @@
-# MarketHub Mobile
+# MarketHub Mobile 📱
 
-This is a React Native e-commerce mobile application built with [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+[![React Native](https://img.shields.io/badge/React%20Native-0.75.4-blue.svg)](https://reactnative.dev/)
+[![Version](https://img.shields.io/badge/Version-0.0.1-green.svg)](package.json)
+[![License](https://img.shields.io/badge/License-MIT-orange.svg)](#)
+
+A comprehensive e-commerce mobile application built with React Native, featuring advanced analytics, chat support, rewards program, offline performance, and social sharing capabilities.
+
+## 🚀 Key Features
+
+### Core E-commerce
+- **Product Catalog**: Browse, search, and filter products
+- **Shopping Cart**: Add, update, and manage cart items
+- **User Authentication**: Secure login and registration
+- **Order Management**: Place orders and track history
+- **Favorites**: Save and manage favorite products
+
+### Advanced Features
+- **🏆 Rewards & Loyalty Program**: Earn points, redeem vouchers, tier-based benefits
+- **💬 In-App Chat Support**: Live chat with FAQ system and bot escalation
+- **📊 Advanced Analytics**: Firebase Analytics, Crashlytics, and custom event tracking
+- **📱 Push Notifications**: Real-time notifications via Firebase Cloud Messaging
+- **🔄 Offline Performance**: Offline-first architecture with data synchronization
+- **🔗 Social Sharing**: Share products with deep linking via Branch.io
+- **🌍 Internationalization**: Multi-language support (English, Chinese)
+- **♿ Accessibility**: WCAG compliant with screen reader support
+
+### Technical Highlights
+- **Real-time Chat**: Stream Chat SDK integration
+- **Performance Monitoring**: Shopify Performance monitoring
+- **State Management**: Zustand for global state
+- **Data Fetching**: TanStack Query with offline persistence
+- **Type Safety**: Full TypeScript implementation
+- **Testing**: Unit, integration, and E2E test coverage
 
 ## Prerequisites
 

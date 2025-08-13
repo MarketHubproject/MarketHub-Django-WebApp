@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SmartImage Basic Rendering should render correctly with a valid image source 1`] = `
+<View
+  style={
+    [
+      {
+        "overflow": "hidden",
+      },
+      {
+        "height": 100,
+        "width": 100,
+      },
+    ]
+  }
+>
+  <Image
+    onError={[Function]}
+    onLoad={[Function]}
+    onLoadStart={[Function]}
+    source={
+      {
+        "uri": "https://example.com/image.jpg",
+      }
+    }
+    style={
+      [
+        {
+          "bottom": 0,
+          "left": 0,
+          "position": "absolute",
+          "right": 0,
+          "top": 0,
+        },
+        {
+          "resizeMode": "cover",
+        },
+      ]
+    }
+  />
+  <View
+    style={
+      {
+        "alignItems": "center",
+        "backgroundColor": "#F8F9FA",
+        "bottom": 0,
+        "justifyContent": "center",
+        "left": 0,
+        "position": "absolute",
+        "right": 0,
+        "top": 0,
+      }
+    }
+  >
+    <ActivityIndicator
+      color="#007AFF"
+      size="small"
+    />
+  </View>
+</View>
+`;

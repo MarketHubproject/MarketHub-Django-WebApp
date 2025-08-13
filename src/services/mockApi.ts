@@ -1,83 +1,163 @@
 // Mock API Service for testing without backend connection
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getPlaceholderImageUrl } from '../config/environment';
-import { ApiError, logger, ErrorToast } from '../utils';
-import i18n from './i18n';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getPlaceholderImageUrl } from "../config/environment";
+import { ApiError, logger, ErrorToast } from "../utils";
+import i18n from "./i18n";
 
 // Mock data with working placeholder images
 const mockProducts = [
   {
     id: 1,
-    name: 'iPhone 13',
-    price: 699,
-    image: getPlaceholderImageUrl(300, 300, 'iPhone 13'),
-    category: 'Electronics',
-    description: 'Latest iPhone with amazing features',
+    name: "iPhone 13",
+    price: 12999,
+    image: getPlaceholderImageUrl(300, 300, "iPhone 13"),
+    category: "Electronics",
+    description:
+      "Latest iPhone with amazing features, A15 Bionic chip, advanced camera system, and all-day battery life.",
     stock: 15,
     rating: 4.5,
+    location: {
+      city: "Johannesburg",
+      province: "Gauteng",
+      area: "Sandton",
+    },
+    seller: {
+      id: 1,
+      name: "TechHub SA",
+      email: "sales@techhub.co.za",
+      location: {
+        city: "Johannesburg",
+        province: "Gauteng",
+      },
+    },
+    created_at: "2024-01-15T10:00:00Z",
   },
   {
     id: 2,
-    name: 'MacBook Pro',
-    price: 1299,
-    image: getPlaceholderImageUrl(300, 300, 'MacBook Pro'),
-    category: 'Electronics',
-    description: 'Professional laptop for developers',
+    name: "MacBook Pro",
+    price: 28999,
+    image: getPlaceholderImageUrl(300, 300, "MacBook Pro"),
+    category: "Electronics",
+    description:
+      "Professional laptop for developers with M2 chip, 16GB RAM, and 512GB SSD storage.",
     stock: 8,
     rating: 4.8,
+    location: {
+      city: "Cape Town",
+      province: "Western Cape",
+      area: "Century City",
+    },
+    seller: {
+      id: 2,
+      name: "Apple Store CPT",
+      email: "info@applestore.co.za",
+      location: {
+        city: "Cape Town",
+        province: "Western Cape",
+      },
+    },
+    created_at: "2024-02-01T14:30:00Z",
   },
   {
     id: 3,
-    name: 'Nike Air Max',
-    price: 120,
-    image: getPlaceholderImageUrl(300, 300, 'Nike Air Max'),
-    category: 'Fashion',
-    description: 'Comfortable running shoes',
+    name: "Nike Air Max",
+    price: 2299,
+    image: getPlaceholderImageUrl(300, 300, "Nike Air Max"),
+    category: "Fashion",
+    description:
+      "Comfortable running shoes with Nike Air cushioning technology and breathable mesh upper.",
     stock: 22,
     rating: 4.3,
+    location: {
+      city: "Durban",
+      province: "KwaZulu-Natal",
+      area: "Umhlanga",
+    },
+    seller: {
+      id: 3,
+      name: "SportZone",
+      email: "orders@sportzone.co.za",
+      location: {
+        city: "Durban",
+        province: "KwaZulu-Natal",
+      },
+    },
+    created_at: "2024-01-28T09:15:00Z",
   },
   {
     id: 4,
-    name: 'Study Lamp',
-    price: 25,
-    image: getPlaceholderImageUrl(300, 300, 'Study Lamp'),
-    category: 'Furniture',
-    description: 'LED desk lamp for students',
+    name: "Study Lamp",
+    price: 450,
+    image: getPlaceholderImageUrl(300, 300, "Study Lamp"),
+    category: "Furniture",
+    description:
+      "LED desk lamp for students with adjustable brightness, USB charging port, and flexible arm.",
     stock: 5,
     rating: 4.0,
+    location: {
+      city: "Pretoria",
+      province: "Gauteng",
+      area: "Hatfield",
+    },
+    seller: {
+      id: 4,
+      name: "HomeDecor Plus",
+      email: "support@homedecor.co.za",
+      location: {
+        city: "Pretoria",
+        province: "Gauteng",
+      },
+    },
+    created_at: "2024-02-10T16:45:00Z",
   },
   {
     id: 5,
-    name: 'Wireless Headphones',
-    price: 89,
-    image: getPlaceholderImageUrl(300, 300, 'Wireless Headphones'),
-    category: 'Electronics',
-    description: 'High-quality wireless audio experience',
+    name: "Wireless Headphones",
+    price: 1599,
+    image: getPlaceholderImageUrl(300, 300, "Wireless Headphones"),
+    category: "Electronics",
+    description:
+      "High-quality wireless audio experience with active noise cancellation and 30-hour battery life.",
     stock: 0, // Out of stock for testing
     rating: 4.2,
+    location: {
+      city: "Port Elizabeth",
+      province: "Eastern Cape",
+      area: "Greenacres",
+    },
+    seller: {
+      id: 5,
+      name: "Audio Experts",
+      email: "sales@audioexperts.co.za",
+      location: {
+        city: "Port Elizabeth",
+        province: "Eastern Cape",
+      },
+    },
+    created_at: "2024-01-20T11:20:00Z",
   },
 ];
 
 const mockCategories = [
-  { id: 1, name: 'Electronics', slug: 'electronics' },
-  { id: 2, name: 'Fashion', slug: 'fashion' },
-  { id: 3, name: 'Books', slug: 'books' },
-  { id: 4, name: 'Furniture', slug: 'furniture' },
-  { id: 5, name: 'Sports', slug: 'sports' },
-  { id: 6, name: 'Health', slug: 'health' },
+  { id: 1, name: "Electronics", slug: "electronics" },
+  { id: 2, name: "Fashion", slug: "fashion" },
+  { id: 3, name: "Books", slug: "books" },
+  { id: 4, name: "Furniture", slug: "furniture" },
+  { id: 5, name: "Sports", slug: "sports" },
+  { id: 6, name: "Health", slug: "health" },
 ];
 
 class MockApiService {
   // Helper to simulate network delay
   private delay(ms: number = 500): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // Error handler - returns consistent ApiError objects
   private handleError(message: string, title?: string): ApiError {
     return {
-      title: title || 'Error',
-      message: message
+      title: title || "Error",
+      message: message,
     };
   }
 
@@ -85,38 +165,41 @@ class MockApiService {
   async login(email: string, password: string): Promise<any> {
     try {
       await this.delay();
-      
-      if (email === 'test@example.com' && password === 'password') {
-        const token = 'mock-auth-token-12345';
-        await AsyncStorage.setItem('authToken', token);
-        await AsyncStorage.setItem('userId', '1');
-        
+
+      if (email === "test@example.com" && password === "password") {
+        const token = "mock-auth-token-12345";
+        await AsyncStorage.setItem("authToken", token);
+        await AsyncStorage.setItem("userId", "1");
+
         return {
           token,
           user: {
             id: 1,
-            email: 'test@example.com',
-            name: 'Test User',
+            email: "test@example.com",
+            name: "Test User",
           },
         };
       } else {
-        throw this.handleError('Invalid email or password', 'Authentication Failed');
+        throw this.handleError(
+          "Invalid email or password",
+          "Authentication Failed"
+        );
       }
     } catch (error: any) {
       if (error.title && error.message) {
         throw error; // Re-throw if it's already formatted
       }
-      throw this.handleError('An error occurred during login', 'Login Error');
+      throw this.handleError("An error occurred during login", "Login Error");
     }
   }
 
   async signup(userData: any): Promise<any> {
     await this.delay();
-    
-    const token = 'mock-auth-token-12345';
-    await AsyncStorage.setItem('authToken', token);
-    await AsyncStorage.setItem('userId', '1');
-    
+
+    const token = "mock-auth-token-12345";
+    await AsyncStorage.setItem("authToken", token);
+    await AsyncStorage.setItem("userId", "1");
+
     return {
       token,
       user: {
@@ -129,29 +212,36 @@ class MockApiService {
 
   async logout(): Promise<void> {
     await this.delay(200);
-    await AsyncStorage.removeItem('authToken');
-    await AsyncStorage.removeItem('userId');
+    await AsyncStorage.removeItem("authToken");
+    await AsyncStorage.removeItem("userId");
   }
 
   // Products
-  async getProducts(page: number = 1, category: string | null = null, search: string | null = null): Promise<any> {
+  async getProducts(
+    page: number = 1,
+    category: string | null = null,
+    search: string | null = null
+  ): Promise<any> {
     await this.delay();
-    
+
     let products = [...mockProducts];
-    
+
     // Filter by category
     if (category) {
-      products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
-    }
-    
-    // Filter by search
-    if (search) {
-      products = products.filter(p => 
-        p.name.toLowerCase().includes(search.toLowerCase()) ||
-        p.description.toLowerCase().includes(search.toLowerCase())
+      products = products.filter(
+        (p) => p.category.toLowerCase() === category.toLowerCase()
       );
     }
-    
+
+    // Filter by search
+    if (search) {
+      products = products.filter(
+        (p) =>
+          p.name.toLowerCase().includes(search.toLowerCase()) ||
+          p.description.toLowerCase().includes(search.toLowerCase())
+      );
+    }
+
     return {
       results: products,
       count: products.length,
@@ -163,18 +253,26 @@ class MockApiService {
   async getProduct(id: number | string): Promise<any> {
     try {
       await this.delay();
-      
-      const product = mockProducts.find(p => p.id === parseInt(id.toString()));
+
+      const product = mockProducts.find(
+        (p) => p.id === parseInt(id.toString())
+      );
       if (!product) {
-        throw this.handleError('The product you are looking for could not be found', 'Product Not Found');
+        throw this.handleError(
+          "The product you are looking for could not be found",
+          "Product Not Found"
+        );
       }
-      
+
       return product;
     } catch (error: any) {
       if (error.title && error.message) {
         throw error; // Re-throw if it's already formatted
       }
-      throw this.handleError('An error occurred while fetching the product', 'Product Error');
+      throw this.handleError(
+        "An error occurred while fetching the product",
+        "Product Error"
+      );
     }
   }
 
@@ -196,11 +294,13 @@ class MockApiService {
   // Favorites
   async getFavorites(): Promise<any> {
     await this.delay();
-    const favorites = await AsyncStorage.getItem('favorites');
+    const favorites = await AsyncStorage.getItem("favorites");
     const favoriteIds = favorites ? JSON.parse(favorites) : [];
-    
-    const favoriteProducts = mockProducts.filter(p => favoriteIds.includes(p.id));
-    
+
+    const favoriteProducts = mockProducts.filter((p) =>
+      favoriteIds.includes(p.id)
+    );
+
     return {
       results: favoriteProducts,
     };
@@ -208,61 +308,87 @@ class MockApiService {
 
   async addToFavorites(productId: number | string): Promise<any> {
     await this.delay();
-    
-    const favorites = await AsyncStorage.getItem('favorites');
+
+    const favorites = await AsyncStorage.getItem("favorites");
     const favoriteIds = favorites ? JSON.parse(favorites) : [];
-    
+
     const id = parseInt(productId.toString());
     if (!favoriteIds.includes(id)) {
       favoriteIds.push(id);
-      await AsyncStorage.setItem('favorites', JSON.stringify(favoriteIds));
+      await AsyncStorage.setItem("favorites", JSON.stringify(favoriteIds));
     }
-    
+
     return { success: true };
   }
 
   async removeFromFavorites(productId: number | string): Promise<void> {
     await this.delay();
-    
-    const favorites = await AsyncStorage.getItem('favorites');
+
+    const favorites = await AsyncStorage.getItem("favorites");
     const favoriteIds = favorites ? JSON.parse(favorites) : [];
-    
+
     const id = parseInt(productId.toString());
     const updatedFavorites = favoriteIds.filter((fId: number) => fId !== id);
-    
-    await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+
+    await AsyncStorage.setItem("favorites", JSON.stringify(updatedFavorites));
   }
 
   // Cart
   async getCart(): Promise<any> {
     await this.delay();
-    
-    const cart = await AsyncStorage.getItem('cart');
+
+    const cart = await AsyncStorage.getItem("cart");
     const cartItems = cart ? JSON.parse(cart) : [];
-    
-    const cartWithProducts = cartItems.map((item: any) => {
-      const product = mockProducts.find(p => p.id === item.productId);
-      return {
-        id: item.id,
-        product,
-        quantity: item.quantity,
-      };
-    });
-    
+
+    const cartWithProducts = cartItems
+      .map((item: any) => {
+        const product = mockProducts.find((p) => p.id === item.productId);
+        if (!product) return null;
+
+        return {
+          id: item.id,
+          product: {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            category: product.category,
+            stock: product.stock,
+          },
+          quantity: item.quantity,
+          subtotal: product.price * item.quantity,
+        };
+      })
+      .filter(Boolean);
+
+    const total = cartWithProducts.reduce(
+      (sum: number, item: any) => sum + item.subtotal,
+      0
+    );
+    const items_count = cartWithProducts.reduce(
+      (sum: number, item: any) => sum + item.quantity,
+      0
+    );
+
     return {
-      results: cartWithProducts,
+      items: cartWithProducts,
+      total,
+      items_count,
     };
   }
 
-  async addToCart(productId: number | string, quantity: number = 1): Promise<any> {
+  async addToCart(
+    productId: number | string,
+    quantity: number = 1
+  ): Promise<any> {
     await this.delay();
-    
-    const cart = await AsyncStorage.getItem('cart');
+
+    const cart = await AsyncStorage.getItem("cart");
     const cartItems = cart ? JSON.parse(cart) : [];
-    
+
     const id = parseInt(productId.toString());
     const existingItem = cartItems.find((item: any) => item.productId === id);
-    
+
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
@@ -272,64 +398,67 @@ class MockApiService {
         quantity,
       });
     }
-    
-    await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+
+    await AsyncStorage.setItem("cart", JSON.stringify(cartItems));
     return { success: true };
   }
 
-  async updateCartItem(itemId: number | string, quantity: number): Promise<any> {
+  async updateCartItem(
+    itemId: number | string,
+    quantity: number
+  ): Promise<any> {
     await this.delay();
-    
-    const cart = await AsyncStorage.getItem('cart');
+
+    const cart = await AsyncStorage.getItem("cart");
     const cartItems = cart ? JSON.parse(cart) : [];
-    
+
     const id = parseInt(itemId.toString());
     const item = cartItems.find((item: any) => item.id === id);
-    
+
     if (item) {
       item.quantity = quantity;
-      await AsyncStorage.setItem('cart', JSON.stringify(cartItems));
+      await AsyncStorage.setItem("cart", JSON.stringify(cartItems));
     }
-    
+
     return { success: true };
   }
 
   async removeFromCart(itemId: number | string): Promise<void> {
     await this.delay();
-    
-    const cart = await AsyncStorage.getItem('cart');
+
+    const cart = await AsyncStorage.getItem("cart");
     const cartItems = cart ? JSON.parse(cart) : [];
-    
+
     const id = parseInt(itemId.toString());
     const updatedCart = cartItems.filter((item: any) => item.id !== id);
-    
-    await AsyncStorage.setItem('cart', JSON.stringify(updatedCart));
+
+    await AsyncStorage.setItem("cart", JSON.stringify(updatedCart));
   }
 
   // User Profile
   async getUserProfile(): Promise<any> {
     await this.delay();
-    
-    const profile = await AsyncStorage.getItem('userProfile');
+
+    const profile = await AsyncStorage.getItem("userProfile");
     if (profile) {
       return JSON.parse(profile);
     }
-    
+
     return {
       id: 1,
-      name: 'Test User',
-      email: 'test@example.com',
-      phone: '+1234567890',
+      name: "Test User",
+      email: "test@example.com",
+      phone: "+1234567890",
     };
   }
 
   async updateUserProfile(profileData: any): Promise<any> {
     await this.delay();
-    
+
     const currentProfile = await this.getUserProfile();
     const updatedProfile = { ...currentProfile, ...profileData };
-    
-    await AsyncStorage.setItem('userProfile', JSON.stringify(updatedProfile));
+
+    await AsyncStorage.setItem("userProfile", JSON.stringify(updatedProfile));
     return updatedProfile;
   }
 
@@ -343,25 +472,25 @@ class MockApiService {
 
   async createOrder(orderData: any): Promise<any> {
     await this.delay();
-    
+
     // Clear cart after creating order
-    await AsyncStorage.removeItem('cart');
-    
+    await AsyncStorage.removeItem("cart");
+
     return {
       id: Date.now(),
-      status: 'pending',
+      status: "pending",
       ...orderData,
     };
   }
 
   // Utility methods
   async isAuthenticated(): Promise<boolean> {
-    const token = await AsyncStorage.getItem('authToken');
+    const token = await AsyncStorage.getItem("authToken");
     return !!token;
   }
 
   async getCurrentUserId(): Promise<string | null> {
-    return await AsyncStorage.getItem('userId');
+    return await AsyncStorage.getItem("userId");
   }
 }
 

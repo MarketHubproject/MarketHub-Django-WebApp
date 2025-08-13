@@ -1,0 +1,32 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../src",
+    "paths": {
+      "@/*": ["*"],
+      "@/components/*": ["components/*"],
+      "@/screens/*": ["screens/*"],
+      "@/features/*": ["features/*"],
+      "@/shared/*": ["shared/*"],
+      "@/services/*": ["services/*"],
+      "@/utils/*": ["utils/*"],
+      "@/contexts/*": ["contexts/*"],
+      "@/navigation/*": ["navigation/*"],
+      "@/theme/*": ["theme/*"],
+      "@/types/*": ["types/*"],
+      "@/config/*": ["config/*"]
+    },
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "../src/**/*",
+    "../App.tsx",
+    "../index.js"
+  ],
+  "exclude": [
+    "../node_modules",
+    "../android",
+    "../ios"
+  ]
+}

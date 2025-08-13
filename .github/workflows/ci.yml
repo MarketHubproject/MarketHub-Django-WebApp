@@ -1,14 +1,20 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, release/* ]
   pull_request:
     branches: [ main, develop ]
 
+env:
+  NODE_VERSION: '18'
+  JAVA_VERSION: '11'
+  RUBY_VERSION: '3.0'
+
 jobs:
-  chinese-unicode-check:
-    name: Check for Chinese Unicode Characters
+  # Code Quality & Linting
+  lint:
+    name: Code Quality & Linting
     runs-on: ubuntu-latest
     
     steps:
@@ -18,7 +24,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
     - name: Install dependencies
@@ -27,13 +33,23 @@ jobs:
     - name: Check for Chinese Unicode characters
       run: npm run lint:chinese
       
+    - name: Check i18n keys
+      run: npm run lint:i18n
+      
     - name: Run ESLint
       run: npm run lint
       
+    - name: Run Prettier check
+      run: npx prettier --check "src/**/*.{js,jsx,ts,tsx,json}"
+      
+    - name: TypeScript check
+      run: npx tsc --noEmit
+
+  # Unit & Integration Tests
   test:
-    name: Run Tests
+    name: Unit & Integration Tests
     runs-on: ubuntu-latest
-    needs: chinese-unicode-check
+    needs: lint
     
     steps:
     - name: Checkout code
@@ -42,11 +58,356 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
     - name: Install dependencies
       run: npm ci
       
-    - name: Run tests
-      run: npm test
+    - name: Run unit tests
+      run: npm run test:ci
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          coverage/
+          jest-results.xml
+
+  # Security Scanning
+  security:
+    name: Security Scanning
+    runs-on: ubuntu-latest
+    needs: lint
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run npm audit
+      run: npm audit --audit-level moderate
+      
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        languages: javascript
+
+  # Build Android
+  build-android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    needs: [test, security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'adopt'
+        java-version: ${{ env.JAVA_VERSION }}
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create env files
+      run: |
+        echo "API_URL=${{ secrets.API_URL_STAGING }}" > .env.staging
+        echo "API_URL=${{ secrets.API_URL_PRODUCTION }}" > .env.production
+        echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env.staging
+        echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env.production
+      
+    - name: Cache Gradle dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+      
+    - name: Build Android Debug
+      run: |
+        cd android
+        ./gradlew assembleDebug
+      
+    - name: Build Android Release
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+      run: |
+        cd android
+        ./gradlew assembleRelease
+      env:
+        MYAPP_UPLOAD_STORE_FILE: ${{ secrets.ANDROID_KEYSTORE_FILE }}
+        MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+        MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      
+    - name: Upload Android artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: android-builds
+        path: |
+          android/app/build/outputs/apk/debug/
+          android/app/build/outputs/apk/release/
+
+  # Build iOS
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    needs: [test, security]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/release/')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ env.RUBY_VERSION }}
+        bundler-cache: true
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install CocoaPods
+      run: cd ios && pod install --repo-update
+      
+    - name: Create env files
+      run: |
+        echo "API_URL=${{ secrets.API_URL_STAGING }}" > .env.staging
+        echo "API_URL=${{ secrets.API_URL_PRODUCTION }}" > .env.production
+        echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env.staging
+        echo "SENTRY_DSN=${{ secrets.SENTRY_DSN }}" >> .env.production
+      
+    - name: Build iOS Debug
+      run: |
+        xcodebuild -workspace ios/MarketHubMobile.xcworkspace \
+          -scheme MarketHubMobile \
+          -configuration Debug \
+          -sdk iphonesimulator \
+          -derivedDataPath ios/build \
+          build
+      
+    - name: Setup certificates and provisioning profiles
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+      env:
+        BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_BUILD_CERTIFICATE_BASE64 }}
+        P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
+        BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_BUILD_PROVISION_PROFILE_BASE64 }}
+        KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+      run: |
+        # create variables
+        CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+        PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+        
+        # import certificate and provisioning profile from secrets
+        echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode --output $CERTIFICATE_PATH
+        echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode --output $PP_PATH
+        
+        # create temporary keychain
+        security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        
+        # import certificate to keychain
+        security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+        security list-keychain -d user -s $KEYCHAIN_PATH
+        
+        # apply provisioning profile
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+      
+    - name: Build iOS Release
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+      run: |
+        xcodebuild -workspace ios/MarketHubMobile.xcworkspace \
+          -scheme MarketHubMobile \
+          -configuration Release \
+          -sdk iphoneos \
+          -derivedDataPath ios/build \
+          -archivePath ios/build/MarketHubMobile.xcarchive \
+          archive
+      
+    - name: Export IPA
+      if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
+      run: |
+        xcodebuild -exportArchive \
+          -archivePath ios/build/MarketHubMobile.xcarchive \
+          -exportOptionsPlist ios/ExportOptions.plist \
+          -exportPath ios/build
+      
+    - name: Upload iOS artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ios-builds
+        path: |
+          ios/build/Build/Products/Debug-iphonesimulator/
+          ios/build/*.ipa
+
+  # E2E Tests
+  e2e-tests:
+    name: E2E Tests
+    runs-on: macos-latest
+    needs: [build-android, build-ios]
+    if: github.ref == 'refs/heads/develop' || github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Install Detox CLI
+      run: npm install -g detox-cli
+      
+    - name: Download iOS build
+      uses: actions/download-artifact@v3
+      with:
+        name: ios-builds
+        path: ios/build/
+      
+    - name: Setup iOS Simulator
+      run: |
+        xcrun simctl create "iPhone 15" "iPhone 15"
+        xcrun simctl boot "iPhone 15"
+      
+    - name: Run Detox E2E tests
+      run: |
+        detox build --configuration ios.sim.debug
+        detox test --configuration ios.sim.debug --headless
+      
+    - name: Upload E2E test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          e2e/artifacts/
+          detox-test-results.xml
+
+  # Deploy to TestFlight
+  deploy-testflight:
+    name: Deploy to TestFlight
+    runs-on: macos-latest
+    needs: [build-ios]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download iOS build
+      uses: actions/download-artifact@v3
+      with:
+        name: ios-builds
+        path: ios/build/
+      
+    - name: Upload to TestFlight
+      env:
+        APP_STORE_CONNECT_USERNAME: ${{ secrets.APP_STORE_CONNECT_USERNAME }}
+        APP_STORE_CONNECT_PASSWORD: ${{ secrets.APP_STORE_CONNECT_PASSWORD }}
+      run: |
+        xcrun altool --upload-app \
+          --type ios \
+          --file ios/build/MarketHubMobile.ipa \
+          --username "$APP_STORE_CONNECT_USERNAME" \
+          --password "$APP_STORE_CONNECT_PASSWORD"
+
+  # Deploy to Google Play Internal Testing
+  deploy-play-internal:
+    name: Deploy to Play Internal Testing
+    runs-on: ubuntu-latest
+    needs: [build-android]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Download Android build
+      uses: actions/download-artifact@v3
+      with:
+        name: android-builds
+        path: android/app/build/outputs/apk/
+      
+    - name: Setup Google Play Service Account
+      env:
+        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+      run: |
+        echo '${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}' > google-play-service-account.json
+      
+    - name: Upload to Google Play Internal Testing
+      uses: r0adkll/upload-google-play@v1
+      with:
+        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        packageName: com.markethubmobile.app
+        releaseFiles: android/app/build/outputs/apk/release/app-release.apk
+        track: internal
+        status: completed
+
+  # Notify team
+  notify:
+    name: Notify Team
+    runs-on: ubuntu-latest
+    needs: [deploy-testflight, deploy-play-internal]
+    if: always() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    
+    steps:
+    - name: Notify Slack
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#mobile-releases'
+        text: |
+          MarketHub Mobile CI/CD Pipeline
+          Branch: ${{ github.ref_name }}
+          Commit: ${{ github.sha }}
+          Status: ${{ job.status }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,18 +1,18 @@
 /**
  * Examples of how to use the new error handling system in your components
- * 
+ *
  * IMPORTANT: These are examples only. Use these patterns in your actual components.
  * Don't import this file directly in your app.
  */
 
-import { ApiErrorHandler, ErrorToast } from './index';
-import api from '../services/api';
+import { ApiErrorHandler, ErrorToast } from "./index";
+import api from "../services/api";
 
 // Example 1: Basic API call with error handling
 export const exampleLoginFunction = async (email: string, password: string) => {
   try {
     const result = await api.login(email, password);
-    ErrorToast.showSuccess('Welcome!', 'Login successful');
+    ErrorToast.showSuccess("Welcome!", "Login successful");
     return result;
   } catch (error) {
     // The error is already formatted by api.handleError()
@@ -40,7 +40,11 @@ export const exampleCustomMessage = async (userData: any) => {
     return result;
   } catch (error) {
     // Override the error message with a custom one
-    ApiErrorHandler.handle(error, true, 'Failed to create account. Please try again.');
+    ApiErrorHandler.handle(
+      error,
+      true,
+      "Failed to create account. Please try again."
+    );
     throw error;
   }
 };
@@ -62,12 +66,16 @@ export const exampleMultipleAPICalls = async () => {
   try {
     const [products, categories] = await Promise.all([
       api.getProducts(),
-      api.getCategories()
+      api.getCategories(),
     ]);
-    
+
     return { products, categories };
   } catch (error) {
-    ApiErrorHandler.handle(error, true, 'Failed to load data. Please refresh and try again.');
+    ApiErrorHandler.handle(
+      error,
+      true,
+      "Failed to load data. Please refresh and try again."
+    );
     throw error;
   }
 };
@@ -114,5 +122,5 @@ export default {
   exampleCustomMessage,
   exampleAuthError,
   exampleMultipleAPICalls,
-  exampleComponentUsage
+  exampleComponentUsage,
 };

@@ -1,5 +1,5 @@
-import ErrorToast, { ApiError } from './ErrorToast';
-import logger from './logger';
+import ErrorToast, { ApiError } from "./ErrorToast";
+import logger from "./logger";
 
 /**
  * Centralized API error handler utility
@@ -12,46 +12,51 @@ export class ApiErrorHandler {
    * @param showToast - Whether to show a toast message (default: true)
    * @param customMessage - Optional custom message to override the error message
    */
-  static handle(error: any, showToast: boolean = true, customMessage?: string): void {
+  static handle(
+    error: any,
+    showToast: boolean = true,
+    customMessage?: string
+  ): void {
     // Check if error is already in the ApiError format
-    if (error && typeof error === 'object' && error.title && error.message) {
+    if (error && typeof error === "object" && error.title && error.message) {
       const apiError: ApiError = {
         title: error.title,
-        message: customMessage || error.message
+        message: customMessage || error.message,
       };
-      
+
       if (showToast) {
         ErrorToast.show(apiError);
       }
-      
+
       // Log error for debugging using centralized logger
-      logger.warn('API Error handled', null, {
-        component: 'ApiErrorHandler',
-        action: 'handle',
+      logger.warn("API Error handled", null, {
+        component: "ApiErrorHandler",
+        action: "handle",
         metadata: {
           title: apiError.title,
           message: apiError.message,
-          showToast
-        }
+          showToast,
+        },
       });
       return;
     }
 
     // Handle other error types (fallback)
-    const message = customMessage || error?.message || 'An unexpected error occurred';
-    
+    const message =
+      customMessage || error?.message || "An unexpected error occurred";
+
     if (showToast) {
       ErrorToast.showGeneric(message);
     }
-    
-    logger.warn('Unhandled error in ApiErrorHandler', error, {
-      component: 'ApiErrorHandler',
-      action: 'handle',
+
+    logger.warn("Unhandled error in ApiErrorHandler", error, {
+      component: "ApiErrorHandler",
+      action: "handle",
       metadata: {
         message,
         showToast,
-        customMessage
-      }
+        customMessage,
+      },
     });
   }
 
@@ -62,10 +67,10 @@ export class ApiErrorHandler {
     if (showToast) {
       ErrorToast.showNetwork();
     }
-    logger.networkError('Network error handled by ApiErrorHandler', null, {
-      component: 'ApiErrorHandler',
-      action: 'handleNetwork',
-      metadata: { showToast }
+    logger.networkError("Network error handled by ApiErrorHandler", null, {
+      component: "ApiErrorHandler",
+      action: "handleNetwork",
+      metadata: { showToast },
     });
   }
 
@@ -74,7 +79,7 @@ export class ApiErrorHandler {
    */
   static handleAuth(error: any, onAuthFailure?: () => void): void {
     ApiErrorHandler.handle(error, true);
-    
+
     // Execute custom auth failure callback (e.g., redirect to login)
     if (onAuthFailure) {
       onAuthFailure();

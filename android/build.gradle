@@ -18,4 +18,20 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://www.jitpack.io" }
+        maven {
+            // TransistorSoft repositories
+            url "${project(':react-native-background-fetch').projectDir}/libs"
+        }
+        maven {
+            // react-native-background-fetch
+            url("https://transistorsoft.github.io/react-native-background-fetch/")
+        }
+    }
+}
+
 apply plugin: "com.facebook.react.rootproject"

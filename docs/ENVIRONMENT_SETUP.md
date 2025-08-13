@@ -1,102 +1,151 @@
-# Environment Configuration
+# Environment Configuration Setup
 
-This project uses React Native Config for managing environment variables across different deployment stages.
+This document explains how to configure different environments (development, staging, production) for the MarketHub Mobile app using react-native-config.
 
-## Setup
+## Overview
 
-1. Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
-
-2. Update the values in `.env` with your development configuration:
-   ```bash
-   API_BASE_URL=https://your-dev-api.com/api
-   IMAGE_BASE_URL=https://your-dev-api.com/media
-   PLACEHOLDER_IMAGE_URL=https://picsum.photos
-   API_TIMEOUT=10000
-   ```
+The app is configured to support multiple environments through environment-specific `.env` files and corresponding build scripts.
 
 ## Environment Files
 
-- `.env` - Development environment (default)
-- `.env.staging` - Staging environment
-- `.env.production` - Production environment
-- `.env.example` - Template with all required variables
+- `.env.development` - Development environment settings
+- `.env.staging` - Staging environment settings  
+- `.env.production` - Production environment settings
 
-## Available Variables
+## Package.json Scripts
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `API_BASE_URL` | Base URL for API endpoints | `https://api.example.com/api` |
-| `IMAGE_BASE_URL` | Base URL for images | `https://api.example.com/media` |
-| `PLACEHOLDER_IMAGE_URL` | Service for placeholder images | `https://picsum.photos` |
-| `API_TIMEOUT` | Request timeout in milliseconds | `10000` |
+The following scripts have been added to `package.json`:
 
-## Running with Different Environments
+```json
+{
+  "start:dev": "ENVFILE=.env.development react-native start",
+  "android:dev": "ENVFILE=.env.development react-native run-android",
+  "ios:dev": "ENVFILE=.env.development react-native run-ios",
+  "android:staging": "ENVFILE=.env.staging react-native run-android --variant=stagingDebug",
+  "ios:staging": "ENVFILE=.env.staging react-native run-ios",
+  "android:prod": "ENVFILE=.env.production react-native run-android --variant=release",
+  "ios:prod": "ENVFILE=.env.production react-native run-ios --configuration Release"
+}
+```
 
-### Development (default)
+## Android Configuration
+
+### Build Variants
+
+The Android `build.gradle` has been configured with the following build types:
+
+- **debug** - Standard debug build
+- **stagingDebug** - Debug build with staging configuration and different package ID
+- **release** - Production release build
+
+### React Native Config Integration
+
+- Added `apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"` to `android/app/build.gradle`
+- Added proguard rules for react-native-config in `android/app/proguard-rules.pro`
+
+### Usage
+
 ```bash
-npm start
-npm run android
-npm run ios
+# Development
+npm run android:dev
+
+# Staging
+npm run android:staging
+
+# Production
+npm run android:prod
+```
+
+## iOS Configuration
+
+### Manual Setup Required
+
+iOS configuration requires manual setup in Xcode. See `ios/CONFIG.md` for detailed instructions.
+
+### Key Steps:
+
+1. Add build script phase to copy environment file
+2. Create staging build configuration
+3. Set up schemes for different environments
+4. Configure environment variables
+
+### Usage
+
+```bash
+# Development
+npm run ios:dev
+
+# Staging  
+npm run ios:staging
+
+# Production
+npm run ios:prod
+```
+
+## Metro Server
+
+Environment-specific Metro servers can be started with:
+
+```bash
+# Development
+npm run start:dev
+```
+
+The Metro bundler will use the environment variables from the specified `.env` file during the bundle process.
+
+## Environment Variables
+
+All environment variables defined in the `.env` files are accessible in JavaScript code through:
+
+```javascript
+import Config from 'react-native-config';
+
+const apiUrl = Config.API_BASE_URL;
+const imageUrl = Config.IMAGE_BASE_URL;
+```
+
+## Testing the Setup
+
+1. **Verify Android build variants:**
+   ```bash
+   cd android && ./gradlew tasks --all | grep assemble
+   ```
+
+2. **Test environment switching:**
+   ```bash
+   npm run android:dev    # Should use development API
+   npm run android:staging # Should use staging API
+   ```
+
+3. **Check environment variables in app:**
+   Add logging to verify the correct environment is loaded:
+   ```javascript
+   console.log('Current API URL:', Config.API_BASE_URL);
+   ```
+
+## Troubleshooting
+
+1. **Android builds fail:** Make sure Android project is synced and build variants are recognized
+2. **iOS environment not switching:** Verify the build script phase is added correctly in Xcode
+3. **Environment variables undefined:** Ensure the correct `.env` file exists and react-native-config is properly linked
+
+## Build Commands Summary
+
+### Development
+```bash
+npm run start:dev      # Start Metro with dev env
+npm run android:dev    # Android debug with dev env
+npm run ios:dev        # iOS debug with dev env
 ```
 
 ### Staging
 ```bash
-npm run start:staging
-npm run android:staging
-npm run ios:staging
+npm run android:staging # Android staging debug build
+npm run ios:staging     # iOS staging build
 ```
 
 ### Production
 ```bash
-npm run start:production
-npm run android:production
-npm run ios:production
+npm run android:prod    # Android release build
+npm run ios:prod        # iOS release build
 ```
-
-## Platform-Specific Setup
-
-### Android
-React Native Config automatically handles Android configuration. No additional setup required.
-
-### iOS
-After installing react-native-config, you need to run:
-```bash
-cd ios && pod install && cd ..
-```
-
-This will configure the iOS project to use the environment variables.
-
-## Usage in Code
-
-```typescript
-import Config from 'react-native-config';
-
-// Direct access
-const apiUrl = Config.API_BASE_URL;
-
-// Or use the configured environment helper
-import { config } from './src/config/environment';
-const apiUrl = config.API_BASE_URL;
-```
-
-## Security Notes
-
-- Environment files (`.env`, `.env.production`, `.env.staging`) are included in `.gitignore`
-- Only commit `.env.example` to show required variables
-- Never commit sensitive API keys or secrets to version control
-- Use different API endpoints and keys for different environments
-
-## Troubleshooting
-
-### Variables not loading
-1. Ensure you're using the correct environment file name
-2. Restart Metro bundler after changing environment files
-3. For iOS, clean and rebuild the project
-
-### Build issues
-1. Make sure all required variables are present in the environment file
-2. Check that variable names match exactly (case-sensitive)
-3. For production builds, ensure `.env.production` exists and is properly configured
