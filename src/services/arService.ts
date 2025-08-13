@@ -2,8 +2,7 @@ import { Platform } from "react-native";
 import DeviceInfo from "react-native-device-info";
 import { ARCapabilities, ARSession, AR3DModel } from "../shared/types";
 import { logger } from "../utils";
-// import analytics from "@react-native-firebase/analytics";
-const analytics = { logEvent: () => {}, setUserId: () => {}, setUserProperty: () => {} } as any;
+import analytics from '../utils/analyticsStub';
 
 class ARService {
   private arSessions: Map<string, ARSession> = new Map();
@@ -100,7 +99,7 @@ class ARService {
     this.arSessions.set(sessionId, session);
 
     // Track session start
-    analytics().logEvent("ar_session_start", {
+    analytics.logEvent("ar_session_start", {
       product_id: productId,
       view_type: viewType,
       platform: Platform.OS,
@@ -134,7 +133,7 @@ class ARService {
     };
 
     // Track session end and analytics
-    analytics().logEvent("ar_session_end", {
+    analytics.logEvent("ar_session_end", {
       product_id: session.productId,
       view_type: session.viewType,
       platform: session.platform,
@@ -162,7 +161,7 @@ class ARService {
     if (session) {
       session.interactions++;
 
-      analytics().logEvent("ar_interaction", {
+      analytics.logEvent("ar_interaction", {
         product_id: session.productId,
         session_id: sessionId,
         interaction_type: interactionType,

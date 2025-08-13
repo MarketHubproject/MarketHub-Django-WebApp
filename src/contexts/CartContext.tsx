@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useReducer, ReactNode } from "react";
-// import AnalyticsService from "../services/analytics";
-const AnalyticsService = { trackAddToCart: () => {} } as any;
+import AnalyticsService from '../utils/analyticsStub';
 
 export interface CartItem {
   id: number;

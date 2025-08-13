@@ -12,8 +12,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { logger, ErrorToast } from "../utils";
-// import AnalyticsService from "../services/analytics";
-const AnalyticsService = { trackProductBrowse: () => {}, trackScreenView: () => {}, trackProductView: () => {} } as any;
+import AnalyticsService from '../utils/analyticsStub';
 
 interface Category {
   id: number;

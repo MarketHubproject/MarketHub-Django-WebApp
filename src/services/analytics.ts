@@ -1,5 +1,4 @@
-// import analytics from "@react-native-firebase/analytics";
-const analytics = { logEvent: () => {}, logScreenView: () => {}, setUserId: () => {}, setUserProperty: () => {} } as any;
+import analytics from '../utils/analyticsStub';
 // import remoteConfig from "@react-native-firebase/remote-config";
 const remoteConfig = { setDefaults: () => {}, setConfigSettings: () => {}, fetchAndActivate: () => {}, fetch: () => {}, activate: () => {}, getBoolean: () => false, getNumber: () => 0, getString: () => '' } as any;
 import { logger } from "../utils";
@@ -146,9 +145,9 @@ class AnalyticsService {
       const timestamp = new Date().toISOString();
 
       await Promise.all([
-        analytics().setUserProperty("first_open_time", timestamp),
-        analytics().setUserProperty("app_version", "1.0.0"),
-        analytics().setUserProperty("platform", "react_native"),
+        analytics.setUserProperty("first_open_time", timestamp),
+        analytics.setUserProperty("app_version", "1.0.0"),
+        analytics.setUserProperty("platform", "react_native"),
       ]);
     } catch (error) {
       logger.error("Error setting user properties:", error);
@@ -173,7 +172,7 @@ class AnalyticsService {
       this.userProperties = { ...this.userProperties, ...properties };
 
       for (const [key, value] of Object.entries(properties)) {
-        await analytics().setUserProperty(key, String(value));
+        await analytics.setUserProperty(key, String(value));
       }
     } catch (error) {
       logger.error("Error setting user properties:", error);
@@ -185,7 +184,7 @@ class AnalyticsService {
    */
   async setUserId(userId: string): Promise<void> {
     try {
-      await analytics().setUserId(userId);
+      await analytics.setUserId(userId);
       await this.setUserProperties({ user_id: userId });
     } catch (error) {
       logger.error("Error setting user ID:", error);
@@ -210,7 +209,7 @@ class AnalyticsService {
         platform: "react_native",
       };
 
-      await analytics().logEvent(eventName, enhancedParameters);
+      await analytics.logEvent(eventName, enhancedParameters);
 
       logger.info(`Analytics event tracked: ${eventName}`, enhancedParameters);
     } catch (error) {
@@ -226,7 +225,7 @@ class AnalyticsService {
     screenClass?: string
   ): Promise<void> {
     try {
-      await analytics().logScreenView({
+      await analytics.logScreenView({
         screen_name: screenName,
         screen_class: screenClass || screenName,
       });

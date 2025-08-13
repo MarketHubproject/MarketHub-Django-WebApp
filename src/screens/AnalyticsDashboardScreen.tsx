@@ -11,8 +11,7 @@ import {
   Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
-// import AnalyticsService, { FEATURE_FLAGS } from "../services/analytics";
-const AnalyticsService = { trackScreenView: () => {}, getAllFeatureFlags: () => Promise.resolve({}), trackEvent: () => {}, refreshRemoteConfig: () => {} } as any;
+import AnalyticsService from '../utils/analyticsStub';
 const FEATURE_FLAGS = { AR_ROLLOUT_PERCENTAGE: 'ar_rollout_percentage' } as any;
 import { logger } from "../utils";
 

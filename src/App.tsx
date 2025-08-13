@@ -9,12 +9,12 @@ import React from "react";
 import { StatusBar, View } from "react-native";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import AppNavigator from "./src/navigation/AppNavigator";
-import { I18nProvider } from "./src/contexts/I18nContext";
-import { ChatProvider } from "./src/contexts/ChatContext";
-import { FloatingChat } from "./src/components/chat";
-import { queryClient } from "./src/shared/api/queryClient";
-import { useIsAuthenticated } from "./src/shared/stores/authStore";
+import AppNavigator from "./navigation/AppNavigator";
+import { I18nProvider } from "./contexts/I18nContext";
+import { ChatProvider } from "./contexts/ChatContext";
+import { FloatingChat } from "./components/chat";
+import { queryClient } from "./shared/api/queryClient";
+import { useIsAuthenticated } from "./shared/stores/authStore";
 
 function App(): React.JSX.Element {
   return (

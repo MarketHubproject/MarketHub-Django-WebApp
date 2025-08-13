@@ -1,8 +1,6 @@
 import messaging from "@react-native-firebase/messaging";
-// import analytics from "@react-native-firebase/analytics";
-const analytics = { logEvent: () => {}, setUserId: () => {}, setUserProperty: () => {} } as any;
+import analytics from '../utils/analyticsStub';
 import { AppState, Platform } from "react-native";
-import AnalyticsService from "./analytics";
 
 export class FirebaseService {
   private static instance: FirebaseService;
@@ -30,8 +28,8 @@ export class FirebaseService {
       // Set up message handlers
       this.setupMessageHandlers();
 
-      // Initialize Analytics service
-      await AnalyticsService.initialize();
+      // Initialize Analytics service (stub)
+      await analytics.initialize();
 
       console.log("Firebase initialized successfully");
     } catch (error) {
@@ -165,7 +163,7 @@ export class FirebaseService {
    */
   async trackNotificationOpen(remoteMessage: any): Promise<void> {
     try {
-      await analytics().logEvent("notification_opened", {
+      await analytics.logEvent("notification_opened", {
         notification_id: remoteMessage.messageId,
         campaign_id: remoteMessage.data?.campaignId,
         category: remoteMessage.data?.category,
@@ -185,7 +183,7 @@ export class FirebaseService {
     value?: number
   ): Promise<void> {
     try {
-      await analytics().logEvent("notification_conversion", {
+      await analytics.logEvent("notification_conversion", {
         notification_id: notificationId,
         conversion_type: conversionType,
         value: value || 0,

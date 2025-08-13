@@ -18,8 +18,7 @@ import { SmartImage } from "../components";
 import { getProductImageUrl } from "../config/environment";
 import i18n from "../services/i18n";
 import { logger, ErrorToast } from "../utils";
-// import AnalyticsService from "../services/analytics";
-const AnalyticsService = { trackCheckoutBegin: () => {}, trackScreenView: () => {}, trackPurchase: () => {} } as any;
+import AnalyticsService from '../utils/analyticsStub';
 
 interface Address {
   id: string;
