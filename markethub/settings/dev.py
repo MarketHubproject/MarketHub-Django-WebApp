@@ -219,25 +219,18 @@ AXES_LOCKOUT_URL = None  # No custom lockout URL
 AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
 
 # Configure authentication backends for Axes
-# In testing mode, don't use AxesBackend to avoid request parameter issues
+# Temporarily disable Axes backend to fix session_hash issue
 import sys
-if 'test' in sys.argv:
-    # For testing, use only Django's default backend
-    AUTHENTICATION_BACKENDS = [
-        'django.contrib.auth.backends.ModelBackend',
-    ]
-else:
-    # For normal operation, use Axes backend
-    AUTHENTICATION_BACKENDS = [
-        'axes.backends.AxesBackend',  # AxesBackend should come first
-        'django.contrib.auth.backends.ModelBackend',  # Django's default backend
-    ]
+# Disable Axes backend temporarily to fix login issues
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Django's default backend only
+]
 
-# Enable Axes middleware in development but make it more permissive
-if 'axes.middleware.AxesMiddleware' not in MIDDLEWARE:
-    # Insert after AuthenticationMiddleware
-    auth_index = MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware')
-    MIDDLEWARE.insert(auth_index + 1, 'axes.middleware.AxesMiddleware')
+# Temporarily disable Axes middleware to fix login issues
+# if 'axes.middleware.AxesMiddleware' not in MIDDLEWARE:
+#     # Insert after AuthenticationMiddleware
+#     auth_index = MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware')
+#     MIDDLEWARE.insert(auth_index + 1, 'axes.middleware.AxesMiddleware')
 
 print(f"[DEV SETTINGS] Django Axes enabled with lenient settings")
 print(f"[DEV SETTINGS] Axes failure limit: {AXES_FAILURE_LIMIT}")

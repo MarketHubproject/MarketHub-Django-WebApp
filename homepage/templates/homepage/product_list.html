@@ -23,14 +23,14 @@
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4">
                 <form method="GET" action="" class="row g-3 align-items-end">
-                    <div class="col-lg-5 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <label for="searchInput" class="form-label fw-semibold">
                             <i class="bi bi-search text-primary me-1"></i>Search Products
                         </label>
                         <input type="text" id="searchInput" name="q" class="form-control form-control-lg rounded-pill" 
                                placeholder="Search by name, description..." value="{{ request.GET.q }}">
                     </div>
-                    <div class="col-lg-4 col-md-6">
+                    <div class="col-lg-3 col-md-6">
                         <label for="categorySelect" class="form-label fw-semibold">
                             <i class="bi bi-tags text-primary me-1"></i>Category
                         </label>
@@ -44,7 +44,23 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="col-lg-3 col-md-12">
+                    <div class="col-lg-3 col-md-6">
+                        <label for="locationSelect" class="form-label fw-semibold">
+                            <i class="bi bi-geo-alt text-primary me-1"></i>Location
+                        </label>
+                        <select id="locationSelect" name="location" class="form-select form-select-lg rounded-pill">
+                            <option value="">📍 All Locations</option>
+                            <option value="cape_town_central" {% if request.GET.location == 'cape_town_central' %}selected{% endif %}>Cape Town Central</option>
+                            <option value="cape_town_northern_suburbs" {% if request.GET.location == 'cape_town_northern_suburbs' %}selected{% endif %}>Northern Suburbs</option>
+                            <option value="cape_town_southern_suburbs" {% if request.GET.location == 'cape_town_southern_suburbs' %}selected{% endif %}>Southern Suburbs</option>
+                            <option value="cape_town_western_suburbs" {% if request.GET.location == 'cape_town_western_suburbs' %}selected{% endif %}>Western Suburbs</option>
+                            <option value="cape_town_eastern_suburbs" {% if request.GET.location == 'cape_town_eastern_suburbs' %}selected{% endif %}>Eastern Suburbs</option>
+                            <option value="cape_town_atlantic_seaboard" {% if request.GET.location == 'cape_town_atlantic_seaboard' %}selected{% endif %}>Atlantic Seaboard</option>
+                            <option value="cape_town_west_coast" {% if request.GET.location == 'cape_town_west_coast' %}selected{% endif %}>West Coast</option>
+                            <option value="cape_town_helderberg" {% if request.GET.location == 'cape_town_helderberg' %}selected{% endif %}>Helderberg</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
                         <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill">
                             <i class="bi bi-funnel me-2"></i>Filter & Search
                         </button>
@@ -89,7 +105,13 @@
                 <!-- Card Body -->
                 <div class="card-body d-flex flex-column p-4">
                     <h5 class="card-title fw-bold mb-3 text-dark">{{ product.name }}</h5>
-                    <p class="card-text text-muted flex-grow-1 mb-4">{{ product.description|truncatewords:20 }}</p>
+                    <p class="card-text text-muted flex-grow-1 mb-3">{{ product.description|truncatewords:20|escape }}</p>
+                    
+                    <!-- Location Information -->
+                    <div class="d-flex align-items-center text-muted mb-4">
+                        <i class="bi bi-geo-alt-fill me-2" style="color: #dc3545; font-size: 0.9rem;"></i>
+                        <small class="fw-medium">{{ product.get_location_display }}</small>
+                    </div>
                     
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 mt-auto">

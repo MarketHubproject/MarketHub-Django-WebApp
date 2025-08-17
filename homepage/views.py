@@ -121,12 +121,31 @@ def home(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        from .forms import ExtendedUserCreationForm
+        form = ExtendedUserCreationForm(request.POST, request.FILES)
+        
+        # Add request context for logging
+        form._request_ip = request.META.get('REMOTE_ADDR')
+        form._request_user_agent = request.META.get('HTTP_USER_AGENT', '')
+        
         if form.is_valid():
-            form.save()
+            user = form.save()
+            messages.success(
+                request, 
+                f'Account created successfully for {user.username}! '
+                'Your ID/Passport has been uploaded for verification. '
+                'You will receive an email notification once your account is approved.'
+            )
             return redirect('login')
+        else:
+            messages.error(
+                request,
+                'Please correct the errors below and ensure all required fields are filled.'
+            )
     else:
-        form = UserCreationForm()
+        from .forms import ExtendedUserCreationForm
+        form = ExtendedUserCreationForm()
+    
     return render(request, 'homepage/signup.html', {'form': form})
 
 
@@ -178,6 +197,8 @@ def product_list(request):
         products = products.filter(name__icontains=query)
     if category:
         products = products.filter(category=category)
+    if location_filter:
+        products = products.filter(location=location_filter)
 
     paginator = Paginator(products, 6)  # Show 6 products per page
     page_number = request.GET.get('page')
@@ -250,6 +271,15 @@ def add_to_cart(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
 
+    # Handle AJAX requests
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({
+            'success': True,
+            'message': f'{product.name} added to cart!',
+            'cart_count': cart.items.count(),
+            'cart_total': cart.get_total_price()
+        })
+    
     messages.success(request, f'{product.name} added to cart!')
     return redirect('product_list')
 
@@ -1690,9 +1720,122 @@ def test_icons(request):
     return render(request, 'homepage/test_icons.html')
 
 
+def daily_deals(request):
+    """Daily deals page with special offers"""
+    from django.core.paginator import Paginator
+    
+    # Get products with special deals (you can add logic here to filter by deal criteria)
+    # For now, we'll show random products as "deals"
+    products_list = Product.objects.all().order_by('?')  # Random order for variety
+    
+    # Paginate results
+    paginator = Paginator(products_list, 12)  # Show 12 products per page
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
+    # Calculate some stats for the page
+    deals_count = products_list.count()
+    
+    context = {
+        'products': products,
+        'deals_count': deals_count,
+        'page_title': 'Daily Deals',
+    }
+    
+    return render(request, 'homepage/daily_deals.html', context)
+
+
+def promotions(request):
+    """Promotions page with category-based offers"""
+    from django.core.paginator import Paginator
+    
+    # Get category filter from URL parameters
+    category_filter = request.GET.get('category', 'all')
+    
+    # Start with all products
+    products_list = Product.objects.all()
+    
+    # Apply category filter if specified
+    if category_filter and category_filter != 'all':
+        products_list = products_list.filter(category=category_filter)
+    
+    # Order by newest first
+    products_list = products_list.order_by('-created_at')
+    
+    # Paginate results
+    paginator = Paginator(products_list, 12)  # Show 12 products per page
+    page_number = request.GET.get('page')
+    products = paginator.get_page(page_number)
+    
+    # Calculate some promotional stats
+    active_promotions = Product.objects.count()
+    categories_on_sale = Product.objects.values('category').distinct().count()
+    total_savings = 50  # Mock percentage for display
+    
+    context = {
+        'products': products,
+        'current_category': category_filter,
+        'active_promotions': active_promotions,
+        'categories_on_sale': categories_on_sale,
+        'total_savings': total_savings,
+        'page_title': 'Special Promotions',
+    }
+    
+    return render(request, 'homepage/promotions.html', context)
+
+
 def style_guide(request):
     """Modern style guide showcasing the new design system"""
     return render(request, 'homepage/style_guide.html')
+
+
+@require_POST
+def quick_view_product(request, product_id):
+    """API endpoint for quick view product data"""
+    try:
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Get product reviews and average rating
+        reviews = Review.objects.filter(product=product)
+        avg_rating = reviews.aggregate(avg_rating=Avg('rating'))['avg_rating'] or 0
+        
+        # Check if user has favorited this product
+        is_favorited = False
+        if request.user.is_authenticated:
+            is_favorited = Favorite.objects.filter(user=request.user, product=product).exists()
+        
+        product_data = {
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'price': str(product.price),
+            'category': product.get_category_display(),
+            'location': product.get_location_display(),
+            'condition': product.get_condition_display() if hasattr(product, 'condition') else 'Good',
+            'image_url': product.image.url if product.image else None,
+            'seller': product.seller.username,
+            'created_at': product.created_at.strftime('%B %d, %Y'),
+            'avg_rating': round(avg_rating, 1),
+            'review_count': reviews.count(),
+            'is_favorited': is_favorited,
+            'is_available': product.status == 'available' if hasattr(product, 'status') else True,
+        }
+        
+        return JsonResponse({
+            'success': True,
+            'product': product_data
+        })
+        
+    except Product.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Product not found'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
 
 
 def csrf_test(request):

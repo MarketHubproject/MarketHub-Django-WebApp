@@ -21,7 +21,7 @@
             
             <!-- Form Body -->
             <div class="card-body p-4">
-                <form method="POST" class="needs-validation" novalidate>
+                <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
                     {% csrf_token %}
                     
                     <!-- Username Field -->
@@ -118,14 +118,105 @@
                         {% endif %}
                     </div>
                     
+                    <!-- ID/Passport Verification Section -->
+                    <div class="mb-4 p-3 bg-light rounded-3">
+                        <h5 class="mb-3 text-center">
+                            <i class="bi bi-shield-check text-success me-2"></i>Identity Verification
+                        </h5>
+                        <p class="text-muted text-center small mb-4">
+                            To ensure platform security, please provide a valid ID or passport for verification.
+                        </p>
+                        
+                        <!-- ID Type Selection -->
+                        <div class="mb-4">
+                            <label for="id_id_type" class="form-label fw-semibold">
+                                <i class="bi bi-card-checklist text-success me-2"></i>Document Type
+                            </label>
+                            <select name="id_type" id="id_id_type" 
+                                    class="form-select form-select-lg rounded-pill" required>
+                                <option value="">Select document type...</option>
+                                <option value="national_id"{% if form.id_type.value == 'national_id' %} selected{% endif %}>National ID</option>
+                                <option value="passport"{% if form.id_type.value == 'passport' %} selected{% endif %}>Passport</option>
+                            </select>
+                            {% if form.id_type.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.id_type.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- ID Number -->
+                        <div class="mb-4">
+                            <label for="id_id_number" class="form-label fw-semibold">
+                                <i class="bi bi-hash text-success me-2"></i>ID/Passport Number
+                            </label>
+                            <input type="text" name="id_number" id="id_id_number" 
+                                   class="form-control form-control-lg rounded-pill" 
+                                   placeholder="Enter your ID or passport number"
+                                   value="{{ form.id_number.value|default:'' }}"
+                                   required>
+                            {% if form.id_number.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.id_number.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- ID Front Image -->
+                        <div class="mb-4">
+                            <label for="id_id_front_image" class="form-label fw-semibold">
+                                <i class="bi bi-image text-success me-2"></i>Document Front Image
+                            </label>
+                            <input type="file" name="id_front_image" id="id_id_front_image" 
+                                   class="form-control form-control-lg" 
+                                   accept="image/*" required>
+                            {% if form.id_front_image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.id_front_image.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text text-muted">
+                                <small><i class="bi bi-info-circle me-1"></i>Upload a clear photo of the front of your document (max 10MB)</small>
+                            </div>
+                        </div>
+                        
+                        <!-- ID Back Image -->
+                        <div class="mb-4" id="back-image-section">
+                            <label for="id_id_back_image" class="form-label fw-semibold">
+                                <i class="bi bi-image text-success me-2"></i>Document Back Image
+                            </label>
+                            <input type="file" name="id_back_image" id="id_id_back_image" 
+                                   class="form-control form-control-lg" 
+                                   accept="image/*">
+                            {% if form.id_back_image.errors %}
+                                <div class="invalid-feedback d-block">
+                                    <i class="bi bi-exclamation-circle me-1"></i>
+                                    {% for error in form.id_back_image.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <div class="form-text text-muted">
+                                <small><i class="bi bi-info-circle me-1"></i>Upload a clear photo of the back of your document (required for National ID, optional for Passport)</small>
+                            </div>
+                        </div>
+                        
+                        <!-- Privacy Notice -->
+                        <div class="alert alert-info rounded-3 mt-3">
+                            <i class="bi bi-shield-lock me-2"></i>
+                            <strong>Privacy Notice:</strong> Your documents are encrypted and securely stored. They will only be used for verification purposes and will be reviewed by authorized staff only.
+                        </div>
+                    </div>
+                    
                     <!-- Terms & Conditions -->
                     <div class="mb-4">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="agreeTerms" required>
                             <label class="form-check-label" for="agreeTerms">
                                 <small>
-                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
-                                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a>, 
+                                    <a href="#" class="text-decoration-none">Privacy Policy</a>, and consent to the verification of my identity documents
                                 </small>
                             </label>
                         </div>
@@ -229,6 +320,115 @@ document.addEventListener('DOMContentLoaded', function() {
         usernameField.addEventListener('blur', function() {
             // Future: Add AJAX call to check username availability
             console.log('Username validation:', this.value);
+        });
+    }
+    
+    // ID verification form enhancements
+    const idTypeSelect = document.getElementById('id_id_type');
+    const backImageSection = document.getElementById('back-image-section');
+    const backImageInput = document.getElementById('id_id_back_image');
+    
+    if (idTypeSelect && backImageSection && backImageInput) {
+        function toggleBackImageRequirement() {
+            const selectedType = idTypeSelect.value;
+            const helpText = backImageSection.querySelector('.form-text');
+            
+            if (selectedType === 'national_id') {
+                backImageInput.setAttribute('required', 'required');
+                helpText.innerHTML = '<small><i class="bi bi-info-circle me-1"></i>Upload a clear photo of the back of your National ID (required)</small>';
+                backImageSection.style.opacity = '1';
+            } else if (selectedType === 'passport') {
+                backImageInput.removeAttribute('required');
+                helpText.innerHTML = '<small><i class="bi bi-info-circle me-1"></i>Upload a photo of the back of your passport (optional - most passports don\'t require back image)</small>';
+                backImageSection.style.opacity = '0.7';
+            } else {
+                backImageInput.removeAttribute('required');
+                helpText.innerHTML = '<small><i class="bi bi-info-circle me-1"></i>Upload a clear photo of the back of your document (requirement depends on document type)</small>';
+                backImageSection.style.opacity = '0.5';
+            }
+        }
+        
+        // Initialize on page load
+        toggleBackImageRequirement();
+        
+        // Listen for changes
+        idTypeSelect.addEventListener('change', toggleBackImageRequirement);
+    }
+    
+    // File upload validation and preview
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            
+            if (file) {
+                // Check file size
+                if (file.size > maxSize) {
+                    alert('File size must be less than 10MB. Please choose a smaller file.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Check file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Visual feedback
+                this.classList.add('is-valid');
+                this.classList.remove('is-invalid');
+                
+                // Update help text with file name
+                const helpText = this.parentNode.querySelector('.form-text');
+                if (helpText) {
+                    const originalText = helpText.innerHTML;
+                    helpText.innerHTML = originalText + '<br><small class="text-success"><i class="bi bi-check-circle me-1"></i>Selected: ' + file.name + '</small>';
+                }
+            }
+        });
+    });
+    
+    // Form submission validation
+    const form = document.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const idType = document.getElementById('id_id_type').value;
+            const frontImage = document.getElementById('id_id_front_image').files[0];
+            const backImage = document.getElementById('id_id_back_image').files[0];
+            
+            // Validate ID verification fields
+            if (!idType) {
+                alert('Please select a document type.');
+                e.preventDefault();
+                return;
+            }
+            
+            if (!frontImage) {
+                alert('Please upload the front image of your document.');
+                e.preventDefault();
+                return;
+            }
+            
+            if (idType === 'national_id' && !backImage) {
+                alert('Please upload the back image of your National ID.');
+                e.preventDefault();
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Creating Account...';
+            submitBtn.disabled = true;
+            
+            // Re-enable button after 30 seconds as failsafe
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 30000);
         });
     }
 });

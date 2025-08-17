@@ -2472,12 +2472,12 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-modern btn-glass" href="#">
+                            <a class="nav-link btn-modern btn-glass" href="{% url 'daily_deals' %}">
                                 <i class="bi bi-lightning-charge me-2"></i> Daily Deals
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link btn-modern btn-glass" href="#">
+                            <a class="nav-link btn-modern btn-glass" href="{% url 'promotions' %}">
                                 <i class="bi bi-percent me-2"></i> Promotions
                             </a>
                         </li>
@@ -2485,6 +2485,19 @@
                             <a class="nav-link btn-modern btn-glass" href="{% url 'style_guide' %}">
                                 <i class="bi bi-palette me-2"></i> Style Guide
                             </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn-modern btn-accent" href="#" id="studentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-mortarboard me-2"></i> Student Portal
+                            </a>
+                            <ul class="dropdown-menu shadow-lg animate-fade-in-up" aria-labelledby="studentDropdown" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem;">
+                                <li><h6 class="dropdown-header">Student Verification</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'students:register' %}"><i class="bi bi-person-plus me-2"></i> Student Registration</a></li>
+                                <li><a class="dropdown-item" href="{% url 'students:login' %}"><i class="bi bi-box-arrow-in-right me-2"></i> Student Sign In</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'students:index' %}"><i class="bi bi-info-circle me-2"></i> How It Works</a></li>
+                                <li><a class="dropdown-item" href="{% url 'students:help' %}"><i class="bi bi-question-circle me-2"></i> Help & Support</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>

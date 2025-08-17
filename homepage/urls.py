@@ -6,6 +6,9 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    # Special Pages
+    path('daily-deals/', views.daily_deals, name='daily_deals'),
+    path('promotions/', views.promotions, name='promotions'),
     path('signup/', views.signup, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
@@ -83,6 +86,9 @@ urlpatterns = [
     path('drafts/<int:draft_id>/convert/', views.convert_draft_to_product, name='convert_draft_to_product'),
     path('drafts/<int:draft_id>/delete/', views.delete_product_draft, name='delete_product_draft'),
     path('drafts/auto-save/', views.auto_save_draft, name='auto_save_draft'),
+    
+    # API URLs
+    path('api/product/<int:product_id>/quick-view/', views.quick_view_product, name='quick_view_product'),
     
     # Testing URLs
     path('test_icons/', views.test_icons, name='test_icons'),

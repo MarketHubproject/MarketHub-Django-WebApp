@@ -1,0 +1,405 @@
+{% extends "students/base.html" %}
+{% load static %}
+
+{% block title %}Help & Support - Student Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Help Header -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="help-header">
+                <div class="help-icon mb-4">
+                    <i class="bi bi-question-circle-fill text-primary" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold text-primary mb-3">Help & Support</h1>
+                <p class="lead text-muted">Get answers to common questions about student verification and account management.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Help -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-6">
+            <div class="search-help-box p-4 bg-light rounded-3">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="bi bi-search text-muted"></i>
+                    </span>
+                    <input type="text" class="form-control border-start-0" placeholder="Search help articles..." id="helpSearch">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="h4 fw-bold text-primary mb-4">Quick Help</h2>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center">
+                            <i class="bi bi-person-badge text-primary mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Verification Status</h5>
+                            <p class="card-text small text-muted">Check your verification progress</p>
+                            <a href="{% url 'students:dashboard' %}" class="btn btn-outline-primary btn-sm">Check Status</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center">
+                            <i class="bi bi-upload text-success mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Upload ID</h5>
+                            <p class="card-text small text-muted">Submit your student ID photo</p>
+                            <a href="{% url 'students:upload_id' %}" class="btn btn-outline-success btn-sm">Upload Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center">
+                            <i class="bi bi-envelope text-info mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Email Support</h5>
+                            <p class="card-text small text-muted">Contact our support team</p>
+                            <a href="mailto:support@markethub.co.za" class="btn btn-outline-info btn-sm">Email Us</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                        <div class="card-body text-center">
+                            <i class="bi bi-telephone text-warning mb-3" style="font-size: 2rem;"></i>
+                            <h5 class="card-title">Phone Support</h5>
+                            <p class="card-text small text-muted">Call us for immediate help</p>
+                            <a href="tel:+27123456789" class="btn btn-outline-warning btn-sm">Call Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Sections -->
+    <div class="row">
+        <div class="col-12">
+            <h2 class="h4 fw-bold text-primary mb-4">Frequently Asked Questions</h2>
+            
+            <!-- Getting Started -->
+            <div class="help-section mb-5">
+                <h3 class="h5 fw-bold text-secondary mb-3">
+                    <i class="bi bi-play-circle me-2"></i>Getting Started
+                </h3>
+                <div class="accordion" id="gettingStartedAccordion">
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                How do I register as a student?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#gettingStartedAccordion">
+                            <div class="accordion-body">
+                                <p>To register as a student:</p>
+                                <ol>
+                                    <li>Click on "Student Registration" in the Student Portal dropdown</li>
+                                    <li>Fill out the registration form with your personal details</li>
+                                    <li>Use your university email address for verification</li>
+                                    <li>Create a secure password</li>
+                                    <li>Verify your email address through the link sent to your inbox</li>
+                                    <li>Upload your student ID for verification</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                What universities are supported?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#gettingStartedAccordion">
+                            <div class="accordion-body">
+                                <p>We currently support students from the following South African universities:</p>
+                                <ul>
+                                    <li>University of Cape Town (UCT)</li>
+                                    <li>University of the Witwatersrand (Wits)</li>
+                                    <li>University of Pretoria (UP)</li>
+                                    <li>Stellenbosch University (SU)</li>
+                                    <li>University of KwaZulu-Natal (UKZN)</li>
+                                    <li>Rhodes University</li>
+                                    <li>University of the Western Cape (UWC)</li>
+                                    <li>North-West University (NWU)</li>
+                                    <li>University of the Free State (UFS)</li>
+                                    <li>Nelson Mandela University</li>
+                                </ul>
+                                <p>Don't see your university? <a href="mailto:support@markethub.co.za">Contact us</a> to request support for additional institutions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Process -->
+            <div class="help-section mb-5">
+                <h3 class="h5 fw-bold text-secondary mb-3">
+                    <i class="bi bi-shield-check me-2"></i>Verification Process
+                </h3>
+                <div class="accordion" id="verificationAccordion">
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                How long does verification take?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#verificationAccordion">
+                            <div class="accordion-body">
+                                <p>The verification process typically takes:</p>
+                                <ul>
+                                    <li><strong>Email Verification:</strong> Instant (check your inbox and spam folder)</li>
+                                    <li><strong>Student ID Verification:</strong> 1-3 business days</li>
+                                    <li><strong>Manual Review (if needed):</strong> Up to 5 business days</li>
+                                </ul>
+                                <p>You'll receive email notifications at each step of the process.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                What should I include in my student ID photo?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#verificationAccordion">
+                            <div class="accordion-body">
+                                <p>For successful verification, your student ID photo should:</p>
+                                <ul>
+                                    <li>Show your full student ID card clearly</li>
+                                    <li>Include your name, student number, and university name</li>
+                                    <li>Be well-lit and not blurry</li>
+                                    <li>Show all four corners of the ID</li>
+                                    <li>Be in color (not black and white)</li>
+                                    <li>Be current and not expired</li>
+                                </ul>
+                                <div class="alert alert-info mt-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    <strong>Tip:</strong> Use the camera feature on the upload page for best results!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Management -->
+            <div class="help-section mb-5">
+                <h3 class="h5 fw-bold text-secondary mb-3">
+                    <i class="bi bi-person-gear me-2"></i>Account Management
+                </h3>
+                <div class="accordion" id="accountAccordion">
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                I forgot my password. How do I reset it?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#accountAccordion">
+                            <div class="accordion-body">
+                                <p>To reset your password:</p>
+                                <ol>
+                                    <li>Go to the Student Sign In page</li>
+                                    <li>Click "Forgot Password?"</li>
+                                    <li>Enter your email address</li>
+                                    <li>Check your email for password reset instructions</li>
+                                    <li>Follow the link to create a new password</li>
+                                </ol>
+                                <p>If you don't receive the email within 10 minutes, check your spam folder or contact support.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+                                How do I update my profile information?
+                            </button>
+                        </h2>
+                        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#accountAccordion">
+                            <div class="accordion-body">
+                                <p>To update your profile:</p>
+                                <ol>
+                                    <li>Sign in to your student account</li>
+                                    <li>Go to your Dashboard</li>
+                                    <li>Click "Edit Profile" or the settings icon</li>
+                                    <li>Update your information</li>
+                                    <li>Save your changes</li>
+                                </ol>
+                                <div class="alert alert-warning mt-3">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Note:</strong> Changing your university email may require re-verification.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <div class="help-section mb-5">
+                <h3 class="h5 fw-bold text-secondary mb-3">
+                    <i class="bi bi-tools me-2"></i>Troubleshooting
+                </h3>
+                <div class="accordion" id="troubleshootingAccordion">
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq7">
+                                My verification was rejected. What should I do?
+                            </button>
+                        </h2>
+                        <div id="faq7" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                            <div class="accordion-body">
+                                <p>If your verification was rejected:</p>
+                                <ol>
+                                    <li>Check the rejection reason in your dashboard</li>
+                                    <li>Review the photo guidelines above</li>
+                                    <li>Take a new, clearer photo of your student ID</li>
+                                    <li>Upload the new photo through your dashboard</li>
+                                    <li>Wait for the review process to complete</li>
+                                </ol>
+                                <p>Common rejection reasons include:</p>
+                                <ul>
+                                    <li>Blurry or unclear photos</li>
+                                    <li>Expired student IDs</li>
+                                    <li>Missing information on the ID</li>
+                                    <li>Poor lighting or image quality</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8">
+                                I'm having technical issues with the website
+                            </button>
+                        </h2>
+                        <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#troubleshootingAccordion">
+                            <div class="accordion-body">
+                                <p>If you're experiencing technical issues:</p>
+                                <ol>
+                                    <li>Try refreshing the page</li>
+                                    <li>Clear your browser cache and cookies</li>
+                                    <li>Try using a different browser</li>
+                                    <li>Disable browser extensions temporarily</li>
+                                    <li>Check your internet connection</li>
+                                </ol>
+                                <p>Still having problems? Please contact our technical support team with:</p>
+                                <ul>
+                                    <li>Description of the issue</li>
+                                    <li>Browser and version you're using</li>
+                                    <li>Any error messages you see</li>
+                                    <li>Steps you took before the issue occurred</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="contact-support bg-primary text-white rounded-3 p-4 text-center">
+                <h3 class="h4 fw-bold mb-3">Still Need Help?</h3>
+                <p class="mb-4">Our support team is here to help you with any questions or issues.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-envelope-fill me-2" style="font-size: 1.5rem;"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Email Support</div>
+                                <small>support@markethub.co.za</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-telephone-fill me-2" style="font-size: 1.5rem;"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Phone Support</div>
+                                <small>+27 12 345 6789</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <i class="bi bi-clock-fill me-2" style="font-size: 1.5rem;"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Support Hours</div>
+                                <small>Mon-Fri 8AM-6PM SAST</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+.help-icon {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+.help-header h1 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+}
+.help-header p {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Help search functionality
+    const searchInput = document.getElementById('helpSearch');
+    const faqItems = document.querySelectorAll('.accordion-item');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        faqItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm) || searchTerm === '') {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

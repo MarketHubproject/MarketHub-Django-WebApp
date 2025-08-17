@@ -691,22 +691,72 @@
         <div class="MarketHub-grid">
             {% for product in products %}
             <div class="MarketHub-product-card" data-product-id="{{ product.id }}">
-                <div class="product-image-container">
+                <div class="product-image-container position-relative">
                     {% if product.image %}
-                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
+                        <!-- Loading placeholder -->
+                        <div class="image-loading-placeholder" style="position: absolute; top: 0; left: 0; width: 100%; height: 250px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 0.75rem 0.75rem 0 0; display: flex; align-items: center; justify-content: center; flex-direction: column; z-index: 1;">
+                            <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <small class="text-muted mt-2">Loading image...</small>
+                        </div>
+                        
+                        <!-- Actual image with lazy loading -->
+                        <img src="{{ product.image.url }}" 
+                             class="product-image" 
+                             alt="{{ product.name }}" 
+                             style="width: 100%; height: 250px; object-fit: cover; border-radius: 0.75rem 0.75rem 0 0; opacity: 0; transition: opacity 0.3s ease;"
+                             onload="this.style.opacity='1'; this.parentElement.querySelector('.image-loading-placeholder').style.display='none';"
+                             onerror="this.style.display='none'; this.parentElement.querySelector('.product-placeholder').style.display='flex';">
+                        
+                        <!-- Enhanced fallback placeholder -->
+                        <div class="product-placeholder" style="display: none; width: 100%; height: 250px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 0.75rem 0.75rem 0 0; align-items: center; justify-content: center; flex-direction: column; position: relative;">
+                            <i class="bi bi-image-fill text-muted mb-2" style="font-size: 2.5rem;"></i>
+                            <small class="text-muted mb-2">Image not available</small>
+                            <div class="placeholder-pattern" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\"><rect width=\"20\" height=\"20\" fill=\"none\"/><rect width=\"10\" height=\"10\" fill=\"rgba(0,0,0,0.02)\"/><rect x=\"10\" y=\"10\" width=\"10\" height=\"10\" fill=\"rgba(0,0,0,0.02)\"/></svg>'); opacity: 0.5; border-radius: 0.75rem 0.75rem 0 0;"></div>
+                        </div>
                     {% else %}
-                        <div class="product-placeholder">
-                            <i class="bi bi-image"></i>
+                        <!-- Enhanced no-image placeholder -->
+                        <div class="product-placeholder" style="width: 100%; height: 250px; background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 0.75rem 0.75rem 0 0; display: flex; align-items: center; justify-content: center; flex-direction: column; position: relative; overflow: hidden;">
+                            <div class="placeholder-icon-container mb-3" style="background: rgba(255,255,255,0.8); border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <i class="bi bi-camera text-muted" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <small class="text-muted fw-medium mb-1">No image available</small>
+                            <small class="text-muted opacity-75" style="font-size: 0.75rem;">{{ product.get_category_display }}</small>
+                            
+                            <!-- Decorative pattern -->
+                            <div class="placeholder-pattern" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"30\" height=\"30\" viewBox=\"0 0 30 30\"><rect width=\"30\" height=\"30\" fill=\"none\"/><circle cx=\"15\" cy=\"15\" r=\"2\" fill=\"rgba(0,0,0,0.03)\"/><circle cx=\"5\" cy=\"5\" r=\"1\" fill=\"rgba(0,0,0,0.02)\"/><circle cx=\"25\" cy=\"5\" r=\"1\" fill=\"rgba(0,0,0,0.02)\"/><circle cx=\"5\" cy=\"25\" r=\"1\" fill=\"rgba(0,0,0,0.02)\"/><circle cx=\"25\" cy=\"25\" r=\"1\" fill=\"rgba(0,0,0,0.02)\"/></svg>'); opacity: 0.3; border-radius: 0.75rem 0.75rem 0 0;"></div>
                         </div>
                     {% endif %}
                     
-                    <!-- Favorite Button -->
+                    <!-- Additional Images Indicator -->
+                    {% if product.additional_images.count > 0 %}
+                    <div class="position-absolute bottom-0 start-0 m-2">
+                        <span class="badge bg-dark bg-opacity-75 text-white px-2 py-1" style="border-radius: 12px; font-size: 0.75rem;">
+                            <i class="bi bi-images me-1"></i>+{{ product.additional_images.count }}
+                        </span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
                     {% if user.is_authenticated %}
-                    <div class="favorite-btn-container position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+                    <div class="product-action-buttons position-absolute" style="top: 10px; right: 10px; z-index: 10; display: flex; flex-direction: column; gap: 8px;">
+                        <!-- Favorite Button -->
                         <button class="btn btn-sm favorite-btn {% if product.id in user_favorites %}favorited{% endif %}" 
                                 onclick="toggleFavorite({{ product.id }}, this)"
-                                style="background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; transition: all 0.2s;">
-                            <i class="bi bi-heart{% if product.id in user_favorites %}-fill{% endif %}" style="color: {% if product.id in user_favorites %}#e74c3c{% else %}#bdc3c7{% endif %};"></i>
+                                data-product-id="{{ product.id }}"
+                                style="background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"
+                                title="Add to Favorites">
+                            <i class="bi bi-heart{% if product.id in user_favorites %}-fill{% endif %}" style="color: {% if product.id in user_favorites %}#e74c3c{% else %}#6c757d{% endif %}; font-size: 0.9rem;"></i>
+                        </button>
+                        
+                        <!-- Compare Button -->
+                        <button class="btn btn-sm compare-btn" 
+                                onclick="toggleCompare({{ product.id }}, this)"
+                                data-product-id="{{ product.id }}"
+                                style="background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"
+                                title="Add to Compare">
+                            <i class="bi bi-arrow-left-right" style="color: #6c757d; font-size: 0.9rem;"></i>
                         </button>
                     </div>
                     {% endif %}
@@ -727,20 +777,31 @@
                 <div class="product-info">
                     <h5 class="product-title">{{ product.name }}</h5>
                     
-                    <!-- Rating Stars -->
+                    <!-- Dynamic Rating Stars -->
                     <div class="product-rating mb-2">
                         <div class="rating-stars">
-                            <!-- Static 5-star rating for demo - can be made dynamic later -->
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star-fill text-warning"></i>
-                            <i class="bi bi-star text-warning"></i>
+                            {% with avg_rating=product.get_average_rating|default:0 %}
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg_rating|floatformat:0 %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                            {% endwith %}
                         </div>
-                        <span class="rating-text text-muted">(4.0)</span>
+                        <span class="rating-text text-muted">{% if product.get_review_count > 0 %}({{ product.get_average_rating|floatformat:1 }} - {{ product.get_review_count }} review{{ product.get_review_count|pluralize }}){% else %}(No reviews){% endif %}</span>
                     </div>
                     
-                    <p class="product-description text-muted">{{ product.description|truncatewords:12 }}</p>
+                    <p class="product-description text-muted">{{ product.description|truncatewords:12|escape }}</p>
+                    
+                    <!-- Location Information -->
+                    <div class="product-location mb-2">
+                        <div class="d-flex align-items-center text-muted">
+                            <i class="bi bi-geo-alt-fill me-1" style="color: #dc3545; font-size: 0.85rem;"></i>
+                            <small class="fw-medium">{{ product.get_location_display }}</small>
+                        </div>
+                    </div>
                     
                     <div class="product-price-section">
                         <div class="price-container">
@@ -875,7 +936,7 @@
                                 <span class="badge bg-light text-dark px-3 py-2">{{ product.get_category_display }}</span>
                             </div>
                             <h1 class="featured-product-title mb-4">{{ product.name }}</h1>
-                            <p class="featured-product-description mb-4">{{ product.description|truncatewords:25 }}</p>
+                            <p class="featured-product-description mb-4">{{ product.description|truncatewords:25|escape }}</p>
                             <div class="featured-product-price mb-4">
                                 <span class="price-label text-muted">Price</span>
                                 <span class="price-value display-6 fw-bold text-primary ms-2">{{ product.price|rand_format }}</span>
@@ -1351,7 +1412,417 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = 'scale(1)';
         });
     });
+    
+    // Initialize lazy loading for images
+    initLazyLoading();
 });
+
+// Lazy Loading Implementation
+function initLazyLoading() {
+    const lazyImages = document.querySelectorAll('img.lazy-load');
+    
+    // Use Intersection Observer for better performance
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    loadImage(img);
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            // Start loading when image is 200px away from viewport
+            rootMargin: '200px'
+        });
+        
+        lazyImages.forEach(img => imageObserver.observe(img));
+    } else {
+        // Fallback for older browsers
+        lazyImages.forEach(img => loadImage(img));
+    }
+}
+
+// Load individual image
+function loadImage(img) {
+    const src = img.getAttribute('data-src');
+    if (src) {
+        // Create a new image to preload
+        const newImg = new Image();
+        
+        newImg.onload = function() {
+            // Image loaded successfully
+            img.src = src;
+            img.removeAttribute('data-src');
+        };
+        
+        newImg.onerror = function() {
+            // Image failed to load, trigger error handling
+            img.dispatchEvent(new Event('error'));
+        };
+        
+        newImg.src = src;
+    }
+}
+
+// Image retry functionality
+function retryImageLoad(button) {
+    const container = button.closest('.product-image-container');
+    const img = container.querySelector('.lazy-load');
+    const placeholder = container.querySelector('.image-loading-placeholder');
+    
+    if (img && img.getAttribute('data-src')) {
+        // Reset loading state
+        placeholder.innerHTML = `
+            <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <small class="text-muted mt-2">Retrying...</small>
+        `;
+        placeholder.style.display = 'flex';
+        img.style.display = 'block';
+        
+        // Retry loading the image
+        loadImage(img);
+    }
+}
+
+// Progressive image enhancement
+function enhanceImageDisplay() {
+    const productImages = document.querySelectorAll('.product-image');
+    
+    productImages.forEach(img => {
+        // Add smooth transition for image load
+        img.addEventListener('load', function() {
+            this.style.transition = 'opacity 0.3s ease';
+            this.style.opacity = '1';
+        });
+        
+        // Enhance error handling
+        img.addEventListener('error', function() {
+            const container = this.closest('.product-image-container');
+            const placeholder = container.querySelector('.image-loading-placeholder');
+            
+            // Show enhanced error state
+            placeholder.innerHTML = `
+                <i class="bi bi-exclamation-triangle text-warning mb-2" style="font-size: 2.5rem;"></i>
+                <small class="text-muted mb-2">Failed to load image</small>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="retryImageLoad(this)">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Try Again
+                </button>
+            `;
+            placeholder.style.display = 'flex';
+            this.style.display = 'none';
+        });
+    });
+}
+
+// Product Comparison Functionality
+let compareList = JSON.parse(localStorage.getItem('compareList') || '[]');
+const MAX_COMPARE_ITEMS = 4;
+
+function toggleCompare(productId, button) {
+    const productCard = button.closest('.MarketHub-product-card');
+    const productData = {
+        id: productId,
+        name: productCard.querySelector('.product-title').textContent.trim(),
+        price: productCard.querySelector('.current-price').textContent.trim(),
+        image: productCard.querySelector('.product-image')?.src || productCard.querySelector('.lazy-load')?.getAttribute('data-src') || '',
+        category: productCard.querySelector('.category-badge .badge')?.textContent.trim() || '',
+        rating: getProductRating(productCard),
+        location: productCard.querySelector('.product-location small')?.textContent.trim() || ''
+    };
+    
+    const index = compareList.findIndex(item => item.id == productId);
+    const icon = button.querySelector('i');
+    
+    if (index > -1) {
+        // Remove from comparison
+        compareList.splice(index, 1);
+        icon.style.color = '#6c757d';
+        button.classList.remove('comparing');
+        showToast('Removed from comparison', 'info');
+    } else {
+        // Add to comparison
+        if (compareList.length >= MAX_COMPARE_ITEMS) {
+            showToast(`You can only compare up to ${MAX_COMPARE_ITEMS} products`, 'warning');
+            return;
+        }
+        
+        compareList.push(productData);
+        icon.style.color = '#007bff';
+        button.classList.add('comparing');
+        showToast('Added to comparison', 'success');
+    }
+    
+    // Update localStorage
+    localStorage.setItem('compareList', JSON.stringify(compareList));
+    
+    // Update comparison panel
+    updateComparisonPanel();
+    
+    // Animate button
+    button.style.transform = 'scale(1.2)';
+    setTimeout(() => {
+        button.style.transform = 'scale(1)';
+    }, 200);
+}
+
+function getProductRating(productCard) {
+    const filledStars = productCard.querySelectorAll('.rating-stars .bi-star-fill').length;
+    const halfStars = productCard.querySelectorAll('.rating-stars .bi-star-half').length;
+    return filledStars + (halfStars * 0.5);
+}
+
+function updateComparisonPanel() {
+    let panel = document.getElementById('comparison-panel');
+    
+    if (compareList.length === 0) {
+        if (panel) {
+            panel.remove();
+        }
+        return;
+    }
+    
+    if (!panel) {
+        panel = document.createElement('div');
+        panel.id = 'comparison-panel';
+        panel.innerHTML = `
+            <div class="comparison-header d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-arrow-left-right me-2" style="color: #007bff;"></i>
+                    <h6 class="mb-0 fw-bold">Compare Products</h6>
+                </div>
+                <button class="btn btn-sm btn-outline-secondary" onclick="clearComparison()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="comparison-items"></div>
+            <div class="comparison-actions mt-3">
+                <button class="btn btn-primary btn-sm w-100" onclick="viewComparison()" ${compareList.length < 2 ? 'disabled' : ''}>
+                    <i class="bi bi-eye me-1"></i>Compare (${compareList.length})
+                </button>
+            </div>
+        `;
+        
+        panel.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 400px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            padding: 20px;
+            z-index: 1000;
+            border: 1px solid #e9ecef;
+            animation: slideInUp 0.3s ease;
+        `;
+        
+        document.body.appendChild(panel);
+    }
+    
+    const itemsContainer = panel.querySelector('.comparison-items');
+    const compareButton = panel.querySelector('.comparison-actions button');
+    
+    itemsContainer.innerHTML = compareList.map(item => `
+        <div class="comparison-item d-flex align-items-center mb-2 p-2 rounded" style="background: #f8f9fa;">
+            <img src="${item.image}" alt="${item.name}" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px; margin-right: 12px;" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"40\" height=\"40\" viewBox=\"0 0 40 40\"><rect width=\"40\" height=\"40\" fill=\"%23f8f9fa\"/><text x=\"20\" y=\"20\" text-anchor=\"middle\" dy=\".3em\" fill=\"%236c757d\" font-size=\"12\" font-family=\"Arial\">No Image</text></svg>';">
+            <div class="flex-grow-1" style="min-width: 0;">
+                <div class="fw-medium text-truncate" style="font-size: 0.875rem;">${item.name}</div>
+                <div class="text-muted" style="font-size: 0.75rem;">${item.price}</div>
+            </div>
+            <button class="btn btn-sm btn-outline-danger" onclick="removeFromComparison(${item.id})" style="margin-left: 8px;">
+                <i class="bi bi-x" style="font-size: 0.75rem;"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    compareButton.disabled = compareList.length < 2;
+    compareButton.innerHTML = `<i class="bi bi-eye me-1"></i>Compare (${compareList.length})`;
+}
+
+function removeFromComparison(productId) {
+    const index = compareList.findIndex(item => item.id == productId);
+    if (index > -1) {
+        compareList.splice(index, 1);
+        localStorage.setItem('compareList', JSON.stringify(compareList));
+        
+        // Update button state
+        const compareBtn = document.querySelector(`[data-product-id="${productId}"].compare-btn`);
+        if (compareBtn) {
+            const icon = compareBtn.querySelector('i');
+            icon.style.color = '#6c757d';
+            compareBtn.classList.remove('comparing');
+        }
+        
+        updateComparisonPanel();
+        showToast('Removed from comparison', 'info');
+    }
+}
+
+function clearComparison() {
+    compareList = [];
+    localStorage.removeItem('compareList');
+    
+    // Reset all compare button states
+    document.querySelectorAll('.compare-btn').forEach(btn => {
+        const icon = btn.querySelector('i');
+        icon.style.color = '#6c757d';
+        btn.classList.remove('comparing');
+    });
+    
+    updateComparisonPanel();
+    showToast('Comparison cleared', 'info');
+}
+
+function viewComparison() {
+    if (compareList.length < 2) {
+        showToast('Please select at least 2 products to compare', 'warning');
+        return;
+    }
+    
+    // Create and show comparison modal
+    showComparisonModal();
+}
+
+function showComparisonModal() {
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+        <div class="modal fade" id="comparisonModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="bi bi-arrow-left-right me-2"></i>
+                            Product Comparison
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th width="20%">Feature</th>
+                                        ${compareList.map(item => `<th width="${80/compareList.length}%" class="text-center">${item.name}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="fw-bold">Image</td>
+                                        ${compareList.map(item => `
+                                            <td class="text-center">
+                                                <img src="${item.image}" alt="${item.name}" class="img-thumbnail" style="width: 100px; height: 100px; object-fit: cover;" onerror="this.src='data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100\" height=\"100\" fill=\"%23f8f9fa\" stroke=\"%23dee2e6\"/><text x=\"50\" y=\"50\" text-anchor=\"middle\" dy=\".3em\" fill=\"%236c757d\" font-size=\"12\" font-family=\"Arial\">No Image</text></svg>';">
+                                            </td>
+                                        `).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Price</td>
+                                        ${compareList.map(item => `<td class="text-center">${item.price}</td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Category</td>
+                                        ${compareList.map(item => `<td class="text-center"><span class="badge bg-primary">${item.category}</span></td>`).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Rating</td>
+                                        ${compareList.map(item => `
+                                            <td class="text-center">
+                                                ${generateStars(item.rating)}
+                                                <div class="mt-1">${item.rating}/5</div>
+                                            </td>
+                                        `).join('')}
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Location</td>
+                                        ${compareList.map(item => `<td class="text-center">${item.location}</td>`).join('')}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-danger" onclick="clearComparison(); bootstrap.Modal.getInstance(document.getElementById('comparisonModal')).hide();">Clear All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    const bsModal = new bootstrap.Modal(document.getElementById('comparisonModal'));
+    bsModal.show();
+    
+    // Clean up modal after hiding
+    document.getElementById('comparisonModal').addEventListener('hidden.bs.modal', function() {
+        modal.remove();
+    });
+}
+
+function generateStars(rating) {
+    let stars = '';
+    for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+            stars += '<i class="bi bi-star-fill text-warning"></i>';
+        } else if (i - 0.5 <= rating) {
+            stars += '<i class="bi bi-star-half text-warning"></i>';
+        } else {
+            stars += '<i class="bi bi-star text-warning"></i>';
+        }
+    }
+    return stars;
+}
+
+// Initialize comparison on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Update comparison states based on localStorage
+    compareList.forEach(item => {
+        const compareBtn = document.querySelector(`[data-product-id="${item.id}"].compare-btn`);
+        if (compareBtn) {
+            const icon = compareBtn.querySelector('i');
+            icon.style.color = '#007bff';
+            compareBtn.classList.add('comparing');
+        }
+    });
+    
+    // Show comparison panel if items exist
+    if (compareList.length > 0) {
+        updateComparisonPanel();
+    }
+    
+    // Add hover effects to compare buttons
+    document.querySelectorAll('.compare-btn').forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(255, 255, 255, 1)';
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255, 255, 255, 0.9)';
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+
+// Add slide-in animation for comparison panel
+if (!document.getElementById('comparison-styles')) {
+    const style = document.createElement('style');
+    style.id = 'comparison-styles';
+    style.textContent = `
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .comparison-item:hover {
+            background: #e9ecef !important;
+            transition: background 0.2s ease;
+        }
+    `;
+    document.head.appendChild(style);
+}
 </script>
 
 <!-- Add CSRF token for AJAX requests -->

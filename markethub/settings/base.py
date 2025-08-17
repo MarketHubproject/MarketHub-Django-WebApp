@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'csp',
-    'axes',  # Re-enabled with proper configuration
+    # 'axes',  # Re-enabled with proper configuration - temporarily disabled
     'homepage',
     'profiles',
     'student_rewards',

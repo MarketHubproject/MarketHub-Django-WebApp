@@ -252,7 +252,7 @@ class Favorite(models.Model):
         ordering = ['-added_at']
 
     def __str__(self):
-        return f"{self.user.username} - {self.product.name}"
+        return f"{self.user.username}'s verification profile"
 
 
 class Review(models.Model):
@@ -611,3 +611,316 @@ class ProductDraft(models.Model):
         
     def __str__(self):
         return f"Draft: {self.name or 'Untitled'} by {self.user.username}"
+
+
+def user_id_upload_path(instance, filename):
+    """Generate secure upload path for user ID/passport images"""
+    # Create a hash-based filename to avoid collisions
+    ext = filename.split('.')[-1]
+    filename = f"{instance.user.id}_{timezone.now().strftime('%Y%m%d_%H%M%S')}.{ext}"
+    return f"user_ids/{timezone.now().year}/{timezone.now().month}/{filename}"
+
+
+class UserVerificationProfile(models.Model):
+    """Extended profile for regular users with ID/Passport verification"""
+    
+    ID_TYPE_CHOICES = [
+        ('id', 'South African ID Document'),
+        ('passport', 'Passport'),
+    ]
+    
+    VERIFICATION_STATUS_CHOICES = [
+        ('pending', 'Pending Upload'),
+        ('uploaded', 'Document Uploaded'),
+        ('processing', 'Processing'),
+        ('verified', 'Verified'),
+        ('rejected', 'Rejected'),
+        ('expired', 'Expired'),
+        ('appealing', 'Under Appeal'),
+    ]
+    
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='verification_profile')
+    
+    # Personal Information
+    phone_number = models.CharField(max_length=20, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    
+    # ID/Passport Verification
+    id_type = models.CharField(
+        max_length=10,
+        choices=ID_TYPE_CHOICES,
+        help_text="Choose between South African ID or Passport"
+    )
+    id_number = models.CharField(
+        max_length=50, 
+        blank=True, 
+        help_text="ID or Passport number"
+    )
+    id_image_front = models.ImageField(
+        upload_to=user_id_upload_path, 
+        null=True, 
+        blank=True,
+        help_text="Upload front side of ID or passport photo page"
+    )
+    id_image_back = models.ImageField(
+        upload_to=user_id_upload_path, 
+        null=True, 
+        blank=True,
+        help_text="Upload back side of ID (not required for passport)"
+    )
+    id_verified = models.CharField(
+        max_length=20,
+        choices=VERIFICATION_STATUS_CHOICES,
+        default='pending'
+    )
+    
+    # Verification Details
+    verified_at = models.DateTimeField(null=True, blank=True)
+    verified_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        related_name='verified_users'
+    )
+    rejection_reason = models.TextField(blank=True)
+    verification_notes = models.TextField(blank=True, help_text="Internal notes for verification")
+    
+    # Extracted Data from OCR/Manual Review
+    extracted_name = models.CharField(max_length=200, blank=True)
+    extracted_id_number = models.CharField(max_length=50, blank=True)
+    extracted_date_of_birth = models.DateField(null=True, blank=True)
+    extracted_address = models.TextField(blank=True)
+    ocr_raw_data = models.JSONField(default=dict, blank=True)
+    
+    # Security & Privacy
+    id_hash_front = models.CharField(max_length=64, blank=True, help_text="SHA-256 hash of front image")
+    id_hash_back = models.CharField(max_length=64, blank=True, help_text="SHA-256 hash of back image")
+    upload_ip = models.GenericIPAddressField(null=True, blank=True)
+    upload_user_agent = models.TextField(blank=True)
+    
+    # Expiration and Lifecycle
+    id_expires_at = models.DateTimeField(null=True, blank=True, help_text="When the ID/passport expires")
+    verification_expires_at = models.DateTimeField(null=True, blank=True, help_text="When verification expires")
+    last_verification_check = models.DateTimeField(auto_now=True)
+    
+    # Status Tracking
+    terms_accepted = models.BooleanField(default=False)
+    privacy_consent = models.BooleanField(default=False)
+    is_approved_user = models.BooleanField(default=False, help_text="User approved for platform access")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.user.get_full_name() or self.user.username} - {self.get_id_type_display()}"
+    
+    def save(self, *args, **kwargs):
+        import hashlib
+        
+        # Generate hash of ID images if uploaded
+        if self.id_image_front and not self.id_hash_front:
+            self.id_hash_front = self._generate_image_hash(self.id_image_front)
+        
+        if self.id_image_back and not self.id_hash_back:
+            self.id_hash_back = self._generate_image_hash(self.id_image_back)
+        
+        # Set verification expiration (2 years from verification)
+        if self.id_verified == 'verified' and self.verified_at and not self.verification_expires_at:
+            from datetime import timedelta
+            self.verification_expires_at = self.verified_at + timedelta(days=730)
+        
+        # Update user approval status
+        if self.id_verified == 'verified':
+            self.is_approved_user = True
+        elif self.id_verified in ['rejected', 'expired']:
+            self.is_approved_user = False
+        
+        super().save(*args, **kwargs)
+    
+    def _generate_image_hash(self, image_field):
+        """Generate SHA-256 hash of the uploaded image"""
+        if image_field:
+            image_field.seek(0)
+            content = image_field.read()
+            image_field.seek(0)
+            import hashlib
+            return hashlib.sha256(content).hexdigest()
+        return ''
+    
+    @property
+    def is_verified(self):
+        """Check if the user is verified and verification hasn't expired"""
+        if self.id_verified != 'verified':
+            return False
+        
+        if self.verification_expires_at and timezone.now() > self.verification_expires_at:
+            # Mark as expired
+            self.id_verified = 'expired'
+            self.is_approved_user = False
+            self.save(update_fields=['id_verified', 'is_approved_user'])
+            return False
+        
+        return True
+    
+    @property
+    def verification_progress(self):
+        """Get verification progress percentage"""
+        progress_map = {
+            'pending': 0,
+            'uploaded': 25,
+            'processing': 50,
+            'verified': 100,
+            'rejected': 0,
+            'expired': 0,
+            'appealing': 75,
+        }
+        return progress_map.get(self.id_verified, 0)
+    
+    @property
+    def can_upload_id(self):
+        """Check if user can upload/re-upload ID"""
+        return self.id_verified in ['pending', 'rejected', 'expired']
+    
+    def mark_as_verified(self, verified_by_user, notes=''):
+        """Mark user as verified"""
+        self.id_verified = 'verified'
+        self.verified_at = timezone.now()
+        self.verified_by = verified_by_user
+        self.verification_notes = notes
+        self.is_approved_user = True
+        from datetime import timedelta
+        self.verification_expires_at = timezone.now() + timedelta(days=730)
+        self.save()
+        
+        # Log the verification
+        UserVerificationLog.objects.create(
+            user_profile=self,
+            action='manual_verify',
+            result='approved',
+            details={'notes': notes, 'verified_by': verified_by_user.username},
+            performed_by=verified_by_user
+        )
+    
+    def mark_as_rejected(self, rejected_by_user, reason):
+        """Mark user as rejected"""
+        self.id_verified = 'rejected'
+        self.rejection_reason = reason
+        self.verification_notes = f"Rejected: {reason}"
+        self.is_approved_user = False
+        self.save()
+        
+        # Log the rejection
+        UserVerificationLog.objects.create(
+            user_profile=self,
+            action='manual_reject',
+            result='rejected',
+            details={'reason': reason, 'rejected_by': rejected_by_user.username},
+            performed_by=rejected_by_user
+        )
+    
+    class Meta:
+        db_table = 'homepage_userprofile'
+        verbose_name = "User Profile"
+        verbose_name_plural = "User Profiles"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['id_verified']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['verification_expires_at']),
+            models.Index(fields=['is_approved_user']),
+        ]
+
+
+class UserVerificationLog(models.Model):
+    """Log all user verification-related actions for audit purposes"""
+    
+    ACTION_CHOICES = [
+        ('upload', 'ID/Passport Uploaded'),
+        ('auto_verify', 'Automatic Verification'),
+        ('manual_review', 'Manual Review'),
+        ('approve', 'Approved'),
+        ('reject', 'Rejected'),
+        ('appeal', 'Appeal Submitted'),
+        ('reupload', 'ID Re-uploaded'),
+        ('expire', 'Verification Expired'),
+        ('delete', 'Data Deleted'),
+    ]
+    
+    RESULT_CHOICES = [
+        ('success', 'Success'),
+        ('failure', 'Failure'),
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+        ('error', 'Error'),
+    ]
+    
+    user_profile = models.ForeignKey(UserVerificationProfile, on_delete=models.CASCADE, related_name='verification_logs')
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    result = models.CharField(max_length=20, choices=RESULT_CHOICES)
+    details = models.JSONField(default=dict, blank=True)
+    
+    # Request Information
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.TextField(blank=True)
+    
+    # Staff Action
+    performed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user_profile.user.username} - {self.action} - {self.result}"
+    
+    class Meta:
+        db_table = 'homepage_userverificationlog'
+        verbose_name = "User Verification Log"
+        verbose_name_plural = "User Verification Logs"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user_profile', 'action']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['result']),
+        ]
+
+
+class UserVerificationAppeal(models.Model):
+    """Model for handling user verification appeals"""
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending Review'),
+        ('under_review', 'Under Review'),
+        ('approved', 'Appeal Approved'),
+        ('denied', 'Appeal Denied'),
+        ('withdrawn', 'Withdrawn'),
+    ]
+    
+    user_profile = models.ForeignKey(UserVerificationProfile, on_delete=models.CASCADE, related_name='appeals')
+    reason = models.TextField(help_text="Reason for the appeal")
+    additional_documents = models.FileField(
+        upload_to='user_appeal_documents/',
+        null=True,
+        blank=True,
+        help_text="Optional additional documentation"
+    )
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    
+    # Review Information
+    reviewed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    review_notes = models.TextField(blank=True)
+    reviewed_at = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Appeal by {self.user_profile.user.username} - {self.status}"
+    
+    class Meta:
+        db_table = 'homepage_userverificationappeal'
+        verbose_name = "User Verification Appeal"
+        verbose_name_plural = "User Verification Appeals"
+        ordering = ['-created_at']

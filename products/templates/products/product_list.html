@@ -45,6 +45,48 @@
     .favorite-btn.not-favorited {
       color: #bdc3c7;
     }
+    .compare-btn {
+      position: absolute;
+      top: 10px;
+      right: 55px; /* Position it left of the favorite button */
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #3498db;
+    }
+    .compare-btn:hover {
+      background: white;
+      transform: scale(1.1);
+    }
+    .compare-btn.active {
+      background: #3498db;
+      color: white;
+    }
+    .comparison-card {
+      border: 1px solid #e3e6f0;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .comparison-card img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .comparison-card h6 {
+      font-size: 0.85rem;
+      margin: 8px 0 4px 0;
+    }
+    .comparison-card .price {
+      color: #27ae60;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
     .location-badge {
       background: linear-gradient(45deg, #87CEEB, #4682B4);
       color: white;
@@ -127,13 +169,38 @@
     </div>
   </div>
 
-  <div class="container">
+<div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Available Products</h2>
       {% if user.is_authenticated %}
-        <a href="{% url 'favorites_list' %}" class="btn btn-outline-danger"><i class="bi bi-heart me-2"></i>My Favorites</a>
+        <div>
+          <a href="{% url 'favorites_list' %}" class="btn btn-outline-danger me-2"><i class="bi bi-heart me-2"></i>My Favorites</a>
+          <button id="compare-products-btn" class="btn btn-outline-primary d-none">
+            <i class="bi bi-bar-chart-fill me-2"></i>Compare (<span id="compare-count">0</span>)
+          </button>
+        </div>
       {% endif %}
     </div>
+    
+    <!-- Comparison Panel (initially hidden) -->
+    {% if user.is_authenticated %}
+    <div id="comparison-panel" class="card mb-4 d-none">
+      <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h5 class="m-0">Products Comparison</h5>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" id="close-comparison-panel"></button>
+      </div>
+      <div class="card-body">
+        <div id="comparison-products-container" class="row g-3">
+          <!-- Products for comparison will be inserted here by JavaScript -->
+        </div>
+        <div class="text-center mt-3">
+          <button id="clear-comparison" class="btn btn-sm btn-outline-secondary me-2">Clear All</button>
+          <button id="view-comparison" class="btn btn-sm btn-primary">Compare Products</button>
+        </div>
+      </div>
+      <div class="card-footer text-muted small">Select up to 4 products to compare</div>
+    </div>
+    {% endif %}
 
     {% if products %}
       <div class="row g-4">
@@ -148,8 +215,16 @@
                 {% endif %}
                 
                 {% if user.is_authenticated %}
+                  <button class="compare-btn" 
+                          onclick="toggleComparison({{ product.id }}, '{{ product.name|escapejs }}', '{{ product.price }}', '{{ product.image.url|default:'https://via.placeholder.com/300x200?text=No+Image' }}', this)"
+                          data-bs-toggle="tooltip"
+                          title="Compare this product">
+                    <i class="bi bi-bar-chart-line"></i>
+                  </button>
                   <button class="favorite-btn {% if product.id in user_favorites %}favorited{% else %}not-favorited{% endif %}" 
-                          onclick="toggleFavorite({{ product.id }}, this)">
+                          onclick="toggleFavorite({{ product.id }}, this)"
+                          data-bs-toggle="tooltip"
+                          title="Add to favorites">
                     <i class="bi {% if product.id in user_favorites %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
                   </button>
                 {% endif %}
@@ -275,6 +350,250 @@
       }
       return cookieValue;
     }
+
+    // Product comparison functionality
+    let comparisonProducts = JSON.parse(localStorage.getItem('comparisonProducts') || '[]');
+    const maxComparisonProducts = 4;
+
+    function toggleComparison(productId, productName, productPrice, productImage, button) {
+      const productIndex = comparisonProducts.findIndex(p => p.id == productId);
+      
+      if (productIndex > -1) {
+        // Remove from comparison
+        comparisonProducts.splice(productIndex, 1);
+        button.classList.remove('active');
+        showMessage('Product removed from comparison', 'info');
+      } else {
+        // Add to comparison
+        if (comparisonProducts.length >= maxComparisonProducts) {
+          showMessage(`You can compare up to ${maxComparisonProducts} products at a time`, 'warning');
+          return;
+        }
+        
+        comparisonProducts.push({
+          id: productId,
+          name: productName,
+          price: productPrice,
+          image: productImage
+        });
+        button.classList.add('active');
+        showMessage('Product added to comparison', 'success');
+      }
+      
+      // Update localStorage
+      localStorage.setItem('comparisonProducts', JSON.stringify(comparisonProducts));
+      
+      // Update UI
+      updateComparisonUI();
+    }
+
+    function updateComparisonUI() {
+      const compareBtn = document.getElementById('compare-products-btn');
+      const compareCount = document.getElementById('compare-count');
+      const comparisonPanel = document.getElementById('comparison-panel');
+      const comparisonContainer = document.getElementById('comparison-products-container');
+      
+      // Update count and button visibility
+      compareCount.textContent = comparisonProducts.length;
+      
+      if (comparisonProducts.length > 0) {
+        compareBtn.classList.remove('d-none');
+        comparisonPanel.classList.remove('d-none');
+      } else {
+        compareBtn.classList.add('d-none');
+        comparisonPanel.classList.add('d-none');
+      }
+      
+      // Update comparison panel content
+      comparisonContainer.innerHTML = '';
+      comparisonProducts.forEach((product, index) => {
+        const productCard = document.createElement('div');
+        productCard.className = 'col-md-3';
+        productCard.innerHTML = `
+          <div class="comparison-card position-relative">
+            <button class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-1" 
+                    onclick="removeFromComparison(${product.id})" 
+                    style="z-index: 10; width: 25px; height: 25px; padding: 0;"
+                    title="Remove from comparison">
+              <i class="bi bi-x" style="font-size: 0.8rem;"></i>
+            </button>
+            <img src="${product.image}" alt="${product.name}" class="mb-2">
+            <h6>${product.name.length > 20 ? product.name.substring(0, 20) + '...' : product.name}</h6>
+            <div class="price">R${product.price}</div>
+          </div>
+        `;
+        comparisonContainer.appendChild(productCard);
+      });
+      
+      // Update button states on page
+      document.querySelectorAll('.compare-btn').forEach(btn => {
+        const onclick = btn.getAttribute('onclick');
+        if (onclick) {
+          const productId = onclick.match(/toggleComparison\((\d+),/)?.[1];
+          if (productId && comparisonProducts.some(p => p.id == productId)) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        }
+      });
+    }
+
+    function removeFromComparison(productId) {
+      const productIndex = comparisonProducts.findIndex(p => p.id == productId);
+      if (productIndex > -1) {
+        comparisonProducts.splice(productIndex, 1);
+        localStorage.setItem('comparisonProducts', JSON.stringify(comparisonProducts));
+        updateComparisonUI();
+        showMessage('Product removed from comparison', 'info');
+      }
+    }
+
+    function clearAllComparisons() {
+      comparisonProducts = [];
+      localStorage.removeItem('comparisonProducts');
+      updateComparisonUI();
+      showMessage('All products cleared from comparison', 'info');
+    }
+
+    function viewComparison() {
+      if (comparisonProducts.length < 2) {
+        showMessage('Please select at least 2 products to compare', 'warning');
+        return;
+      }
+      
+      // Create comparison modal or redirect to comparison page
+      showComparisonModal();
+    }
+
+    function showComparisonModal() {
+      // Create and show modal with comparison table
+      const modalHTML = `
+        <div class="modal fade" id="comparisonModal" tabindex="-1" aria-labelledby="comparisonModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="comparisonModalLabel">Product Comparison</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="table-responsive">
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Feature</th>
+                        ${comparisonProducts.map(product => `<th class="text-center">${product.name}</th>`).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>Image</strong></td>
+                        ${comparisonProducts.map(product => `
+                          <td class="text-center">
+                            <img src="${product.image}" alt="${product.name}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+                          </td>
+                        `).join('')}
+                      </tr>
+                      <tr>
+                        <td><strong>Price</strong></td>
+                        ${comparisonProducts.map(product => `<td class="text-center"><span class="text-success fw-bold">R${product.price}</span></td>`).join('')}
+                      </tr>
+                      <tr>
+                        <td><strong>Actions</strong></td>
+                        ${comparisonProducts.map(product => `
+                          <td class="text-center">
+                            <a href="/products/${product.id}/" class="btn btn-sm btn-primary me-1">View Details</a>
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeFromComparison(${product.id}); location.reload();">Remove</button>
+                          </td>
+                        `).join('')}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-danger" onclick="clearAllComparisons(); location.reload();">Clear All</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      // Remove existing modal if present
+      const existingModal = document.getElementById('comparisonModal');
+      if (existingModal) {
+        existingModal.remove();
+      }
+      
+      // Add modal to body and show
+      document.body.insertAdjacentHTML('beforeend', modalHTML);
+      const modal = new bootstrap.Modal(document.getElementById('comparisonModal'));
+      modal.show();
+    }
+
+    function showMessage(message, type = 'info') {
+      // Create toast notification
+      const toastId = 'toast-' + Date.now();
+      const toastHTML = `
+        <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : type === 'danger' ? 'danger' : 'info'} border-0" id="${toastId}" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+            <div class="toast-body">
+              ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      `;
+      
+      // Create toast container if it doesn't exist
+      let toastContainer = document.getElementById('toast-container');
+      if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.id = 'toast-container';
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        toastContainer.style.zIndex = '1070';
+        document.body.appendChild(toastContainer);
+      }
+      
+      toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+      const toast = new bootstrap.Toast(document.getElementById(toastId));
+      toast.show();
+      
+      // Remove toast element after it's hidden
+      document.getElementById(toastId).addEventListener('hidden.bs.toast', function() {
+        this.remove();
+      });
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize tooltips
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+      tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+      });
+      
+      // Initialize comparison UI
+      updateComparisonUI();
+      
+      // Event listeners for comparison panel buttons
+      document.getElementById('compare-products-btn')?.addEventListener('click', function() {
+        const panel = document.getElementById('comparison-panel');
+        if (panel.classList.contains('d-none')) {
+          panel.classList.remove('d-none');
+        } else {
+          panel.classList.add('d-none');
+        }
+      });
+      
+      document.getElementById('close-comparison-panel')?.addEventListener('click', function() {
+        document.getElementById('comparison-panel').classList.add('d-none');
+      });
+      
+      document.getElementById('clear-comparison')?.addEventListener('click', clearAllComparisons);
+      document.getElementById('view-comparison')?.addEventListener('click', viewComparison);
+    });
   </script>
   
   <!-- Add CSRF token for AJAX requests -->

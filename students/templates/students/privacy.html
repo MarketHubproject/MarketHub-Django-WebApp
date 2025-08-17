@@ -1,0 +1,568 @@
+{% extends "students/base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy - Student Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Privacy Header -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <div class="privacy-header">
+                <div class="privacy-icon mb-4">
+                    <i class="bi bi-shield-lock-fill text-primary" style="font-size: 4rem;"></i>
+                </div>
+                <h1 class="display-4 fw-bold text-primary mb-3">Student Privacy Policy</h1>
+                <p class="lead text-muted">Your privacy and data security are our top priorities. Learn how we protect your student information.</p>
+                <div class="badge bg-light text-primary fs-6 px-3 py-2">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Last Updated: January 2025
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Overview -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="alert alert-info border-0 shadow-sm p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h4 class="alert-heading mb-2">
+                            <i class="bi bi-info-circle me-2"></i>Privacy at a Glance
+                        </h4>
+                        <p class="mb-0">We collect only necessary student information for verification purposes. Your data is encrypted, never sold, and you can request deletion at any time.</p>
+                    </div>
+                    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <a href="#your-rights" class="btn btn-outline-info">Your Rights <i class="bi bi-arrow-down ms-1"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+        <!-- Table of Contents -->
+        <div class="col-lg-3">
+            <div class="position-sticky" style="top: 2rem;">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0"><i class="bi bi-list me-2"></i>Contents</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <nav class="nav nav-pills flex-column">
+                            <a class="nav-link border-0 rounded-0 text-start" href="#information-collected">Information We Collect</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#how-we-use">How We Use Your Data</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#data-protection">Data Protection</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#sharing">Data Sharing</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#your-rights">Your Rights</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#retention">Data Retention</a>
+                            <a class="nav-link border-0 rounded-0 text-start" href="#contact">Contact Us</a>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-9">
+            <!-- Information We Collect -->
+            <section id="information-collected" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-collection text-primary me-2"></i>
+                            Information We Collect
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <h5>Student Registration Information</h5>
+                        <ul class="mb-4">
+                            <li><strong>Personal Details:</strong> Full name, date of birth, contact information</li>
+                            <li><strong>University Information:</strong> University name, student number, course of study</li>
+                            <li><strong>Contact Information:</strong> University email address, phone number</li>
+                            <li><strong>Account Credentials:</strong> Username, encrypted password</li>
+                        </ul>
+
+                        <h5>Verification Documents</h5>
+                        <ul class="mb-4">
+                            <li><strong>Student ID Photos:</strong> Images of your current student identification card</li>
+                            <li><strong>Metadata:</strong> Upload timestamp, device information, IP address</li>
+                        </ul>
+
+                        <h5>Technical Information</h5>
+                        <ul class="mb-0">
+                            <li><strong>Usage Data:</strong> Pages visited, time spent, feature usage</li>
+                            <li><strong>Device Information:</strong> Browser type, device type, operating system</li>
+                            <li><strong>Log Data:</strong> Access times, login attempts, verification status changes</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How We Use Your Data -->
+            <section id="how-we-use" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-gear text-primary me-2"></i>
+                            How We Use Your Data
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6>Student Verification</h6>
+                                        <p class="text-muted small mb-0">Verify your status as a current university student</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-shield-check text-success fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6>Account Security</h6>
+                                        <p class="text-muted small mb-0">Protect your account and prevent unauthorized access</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-envelope text-success fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6>Communication</h6>
+                                        <p class="text-muted small mb-0">Send verification updates and important notices</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-graph-up text-success fs-4"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6>Service Improvement</h6>
+                                        <p class="text-muted small mb-0">Improve our verification process and user experience</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning border-0 mt-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-exclamation-triangle me-2"></i>What We DON'T Do
+                            </h6>
+                            <ul class="mb-0">
+                                <li>We never sell your personal information to third parties</li>
+                                <li>We don't use your data for advertising or marketing purposes</li>
+                                <li>We don't share student IDs with anyone outside our verification team</li>
+                                <li>We don't track you across other websites</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Protection -->
+            <section id="data-protection" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-shield-fill-check text-primary me-2"></i>
+                            Data Protection & Security
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="security-feature">
+                                    <div class="security-icon mb-3">
+                                        <i class="bi bi-lock-fill text-primary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h6>Encryption</h6>
+                                    <p class="text-muted small">All data encrypted in transit and at rest using AES-256</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="security-feature">
+                                    <div class="security-icon mb-3">
+                                        <i class="bi bi-server text-primary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h6>Secure Storage</h6>
+                                    <p class="text-muted small">Data stored on secure, compliant cloud infrastructure</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="security-feature">
+                                    <div class="security-icon mb-3">
+                                        <i class="bi bi-person-check text-primary" style="font-size: 3rem;"></i>
+                                    </div>
+                                    <h6>Access Control</h6>
+                                    <p class="text-muted small">Strict access controls and regular security audits</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5>Security Measures</h5>
+                        <ul>
+                            <li><strong>HTTPS/TLS:</strong> All communications encrypted using industry-standard protocols</li>
+                            <li><strong>Database Security:</strong> Encrypted databases with regular backups</li>
+                            <li><strong>Access Logs:</strong> All access to student data is logged and monitored</li>
+                            <li><strong>Staff Training:</strong> All staff trained on data protection and privacy</li>
+                            <li><strong>Regular Audits:</strong> Security assessments and vulnerability testing</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Sharing -->
+            <section id="sharing" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-share text-primary me-2"></i>
+                            Data Sharing & Disclosure
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-success border-0">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-check-circle me-2"></i>Limited Sharing Policy
+                            </h6>
+                            <p class="mb-0">We only share your information in very specific, limited circumstances as outlined below.</p>
+                        </div>
+
+                        <h5>When We May Share Information</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Circumstance</th>
+                                        <th>Information Shared</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>University Verification</strong></td>
+                                        <td>Student status confirmation only</td>
+                                        <td>Verify current enrollment status</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Legal Compliance</strong></td>
+                                        <td>As required by law</td>
+                                        <td>Court orders, legal investigations</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Service Providers</strong></td>
+                                        <td>Encrypted data only</td>
+                                        <td>Cloud hosting, security services</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Safety Concerns</strong></td>
+                                        <td>Relevant information only</td>
+                                        <td>Prevent fraud or protect safety</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-info border-0">
+                            <strong>Note:</strong> We never sell, rent, or trade your personal information for commercial purposes.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Your Rights -->
+            <section id="your-rights" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-person-check text-primary me-2"></i>
+                            Your Privacy Rights
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p>As a student user, you have the following rights regarding your personal data:</p>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-start border-primary border-4 h-100">
+                                    <div class="card-body">
+                                        <h6><i class="bi bi-eye me-2"></i>Right to Access</h6>
+                                        <p class="card-text small text-muted">View all personal data we have about you</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-start border-primary border-4 h-100">
+                                    <div class="card-body">
+                                        <h6><i class="bi bi-pencil me-2"></i>Right to Correction</h6>
+                                        <p class="card-text small text-muted">Update or correct any inaccurate information</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-start border-primary border-4 h-100">
+                                    <div class="card-body">
+                                        <h6><i class="bi bi-trash me-2"></i>Right to Deletion</h6>
+                                        <p class="card-text small text-muted">Request deletion of your personal data</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-start border-primary border-4 h-100">
+                                    <div class="card-body">
+                                        <h6><i class="bi bi-download me-2"></i>Right to Portability</h6>
+                                        <p class="card-text small text-muted">Export your data in a machine-readable format</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning border-0 mt-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-info-circle me-2"></i>Exercise Your Rights
+                            </h6>
+                            <p>To exercise any of these rights, contact us at <strong>privacy@markethub.co.za</strong> or use the contact form below. We'll respond within 30 days.</p>
+                            <a href="#contact" class="btn btn-outline-warning btn-sm">Contact Privacy Team</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Retention -->
+            <section id="retention" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-light">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-clock text-primary me-2"></i>
+                            Data Retention Policy
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p>We retain your personal data only as long as necessary for the purposes outlined in this policy:</p>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Data Type</th>
+                                        <th>Retention Period</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Registration Data</strong></td>
+                                        <td>While account is active + 2 years</td>
+                                        <td>Account management, verification history</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Student ID Images</strong></td>
+                                        <td>1 year after graduation/withdrawal</td>
+                                        <td>Verification purposes, compliance</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Verification Logs</strong></td>
+                                        <td>5 years</td>
+                                        <td>Audit trail, compliance requirements</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Technical Logs</strong></td>
+                                        <td>1 year</td>
+                                        <td>Security monitoring, troubleshooting</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="alert alert-info border-0">
+                            <strong>Automatic Deletion:</strong> We automatically delete data when retention periods expire. You can also request earlier deletion by contacting us.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact -->
+            <section id="contact" class="mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="card-title mb-0">
+                            <i class="bi bi-envelope me-2"></i>
+                            Contact Our Privacy Team
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Have questions about this privacy policy or want to exercise your rights? We're here to help.</p>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-envelope-fill me-2"></i>Email</h6>
+                                <p><a href="mailto:privacy@markethub.co.za">privacy@markethub.co.za</a></p>
+
+                                <h6><i class="bi bi-telephone-fill me-2"></i>Phone</h6>
+                                <p><a href="tel:+27123456789">+27 12 345 6789</a></p>
+
+                                <h6><i class="bi bi-clock-fill me-2"></i>Response Time</h6>
+                                <p>We respond to privacy inquiries within 5-10 business days</p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6><i class="bi bi-geo-alt-fill me-2"></i>Mailing Address</h6>
+                                <address>
+                                    MarketHub Privacy Team<br>
+                                    123 University Avenue<br>
+                                    Cape Town, 8001<br>
+                                    South Africa
+                                </address>
+
+                                <h6><i class="bi bi-shield-check me-2"></i>Data Protection Officer</h6>
+                                <p>Available for complex privacy matters and POPIA compliance questions</p>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success border-0 mt-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-check-circle me-2"></i>Quick Privacy Support
+                            </h6>
+                            <p class="mb-3">For immediate help with common privacy requests:</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="mailto:privacy@markethub.co.za?subject=Data Access Request" class="btn btn-outline-success btn-sm">Request My Data</a>
+                                <a href="mailto:privacy@markethub.co.za?subject=Data Deletion Request" class="btn btn-outline-success btn-sm">Delete My Data</a>
+                                <a href="mailto:privacy@markethub.co.za?subject=Data Correction Request" class="btn btn-outline-success btn-sm">Correct My Data</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="text-center py-4 border-top">
+                <p class="text-muted small mb-2">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    This privacy policy was last updated on <strong>January 15, 2025</strong>
+                </p>
+                <p class="text-muted small mb-0">
+                    We may update this policy periodically. Significant changes will be communicated via email.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.privacy-header .privacy-icon {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+.privacy-header h1 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.2s forwards;
+}
+.privacy-header p {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease 0.4s forwards;
+}
+.security-feature {
+    transition: transform 0.3s ease;
+}
+.security-feature:hover {
+    transform: translateY(-5px);
+}
+.nav-pills .nav-link {
+    color: #6c757d;
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+.nav-pills .nav-link:hover {
+    background-color: #f8f9fa;
+    color: #495057;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Highlight target section */
+section:target {
+    animation: highlight 2s ease-in-out;
+}
+
+@keyframes highlight {
+    0% { background-color: rgba(0, 123, 255, 0.1); }
+    100% { background-color: transparent; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scroll for navigation links
+    const navLinks = document.querySelectorAll('.nav-link[href^="#"]');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Update active nav link
+                navLinks.forEach(nl => nl.classList.remove('active'));
+                this.classList.add('active');
+            }
+        });
+    });
+
+    // Update active nav link on scroll
+    window.addEventListener('scroll', function() {
+        let current = '';
+        const sections = document.querySelectorAll('section[id]');
+        
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 100;
+            const sectionHeight = section.offsetHeight;
+            
+            if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
