@@ -1,0 +1,330 @@
+{% extends 'students/base.html' %}
+{% load static %}
+
+{% block title %}Student Login - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .login-card {
+        box-shadow: var(--student-shadow-lg);
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    
+    .login-header {
+        background: var(--student-gradient-primary);
+        color: white;
+        text-align: center;
+        padding: 2.5rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+    
+    .login-header h1 {
+        color: white;
+        font-size: 2.25rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .login-header p {
+        opacity: 0.9;
+        font-size: 1rem;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .login-body {
+        padding: 2.5rem;
+        background: white;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid var(--student-border);
+        border-radius: 12px;
+        padding: 1.25rem 0.75rem 0.75rem;
+        height: auto;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: var(--student-primary);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .form-floating label {
+        color: var(--student-text-secondary);
+        font-weight: 500;
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+    
+    .form-floating .form-control:focus ~ label,
+    .form-floating .form-control:not(:placeholder-shown) ~ label {
+        color: var(--student-primary);
+        font-weight: 600;
+    }
+    
+    .form-check {
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-check-input {
+        margin: 0;
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--student-primary);
+        border-color: var(--student-primary);
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: var(--student-text-primary);
+        margin-bottom: 0;
+    }
+    
+    .btn-login {
+        background: var(--student-gradient-primary);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--student-shadow-purple);
+        color: white;
+    }
+    
+    .btn-login:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .forgot-password {
+        text-align: center;
+        margin-top: 1rem;
+    }
+    
+    .forgot-password a {
+        color: var(--student-primary);
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+    
+    .forgot-password a:hover {
+        text-decoration: underline;
+    }
+    
+    .need-account {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--student-border);
+    }
+    
+    .need-account a {
+        color: var(--student-primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .need-account a:hover {
+        text-decoration: underline;
+    }
+    
+    .welcome-back {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(110, 231, 183, 0.1) 100%);
+        border-left: 4px solid var(--student-success);
+        color: #065f46;
+        border-radius: 12px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .welcome-back .bi {
+        font-size: 1.5rem;
+        color: var(--student-success);
+    }
+    
+    @media (max-width: 768px) {
+        .login-body {
+            padding: 2rem 1.5rem;
+        }
+        
+        .login-header {
+            padding: 2rem 1.5rem;
+        }
+        
+        .login-header h1 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container login-container">
+    <div class="card login-card">
+        <div class="login-header">
+            <h1><i class="bi bi-mortarboard-fill me-3"></i>Welcome Back</h1>
+            <p>Sign in to your student account</p>
+        </div>
+        
+        <div class="login-body">
+            <!-- Welcome message for returning students -->
+            <div class="welcome-back">
+                <i class="bi bi-shield-check"></i>
+                <div>
+                    <strong>Secure Student Portal</strong><br>
+                    <small>Your verification status and student benefits await</small>
+                </div>
+            </div>
+            
+            <form method="post" id="loginForm" novalidate>
+                {% csrf_token %}
+                
+                <!-- Username -->
+                <div class="form-floating">
+                    {{ form.username }}
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Password -->
+                <div class="form-floating">
+                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}">Password</label>
+                    {% if form.password.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.password.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Remember Me -->
+                <div class="form-check">
+                    {{ form.remember_me }}
+                    <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                        Keep me signed in
+                    </label>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-login" id="submitBtn">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                    Sign In
+                </button>
+            </form>
+            
+            <!-- Forgot Password -->
+            <div class="forgot-password">
+                <a href="#" onclick="showForgotPassword()">Forgot your password?</a>
+            </div>
+            
+            <!-- Need Account -->
+            <div class="need-account">
+                <p class="text-muted">Don't have a student account yet?</p>
+                <a href="{% url 'students:register' %}">Register as a student</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Form validation
+    function validateForm() {
+        const username = document.getElementById('{{ form.username.id_for_label }}').value.trim();
+        const password = document.getElementById('{{ form.password.id_for_label }}').value;
+        
+        const isValid = username && password;
+        submitBtn.disabled = !isValid;
+    }
+    
+    // Validate form on input changes
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+    
+    // Initialize validation
+    validateForm();
+    
+    // Form submission handling
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Show loading state
+        if (!submitBtn.disabled) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Signing In...';
+        }
+    });
+    
+    // Auto-focus first field
+    const firstInput = form.querySelector('input[type="text"], input[type="email"]');
+    if (firstInput) {
+        firstInput.focus();
+    }
+});
+
+function showForgotPassword() {
+    alert('Password reset functionality will be available soon. Please contact support if you need assistance.');
+}
+</script>
+{% endblock %}

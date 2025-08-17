@@ -1,0 +1,554 @@
+{% extends 'students/base.html' %}
+{% load static %}
+
+{% block title %}Student Portal - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: var(--student-gradient-primary);
+        color: white;
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        margin-bottom: 3rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        z-index: 1;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: white;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        font-weight: 500;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.9;
+        line-height: 1.6;
+    }
+    
+    .hero-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .btn-hero-primary {
+        background: white;
+        color: var(--student-primary);
+        font-weight: 700;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        border: 2px solid white;
+    }
+    
+    .btn-hero-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+        color: var(--student-primary);
+    }
+    
+    .btn-hero-secondary {
+        background: transparent;
+        color: white;
+        font-weight: 700;
+        padding: 1rem 2.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-size: 1.1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.3s ease;
+        border: 2px solid white;
+    }
+    
+    .btn-hero-secondary:hover {
+        background: white;
+        color: var(--student-primary);
+        transform: translateY(-3px);
+    }
+    
+    .benefits-section {
+        margin-bottom: 3rem;
+    }
+    
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+    
+    .benefit-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .benefit-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--student-shadow-lg);
+        border-color: var(--student-primary);
+    }
+    
+    .benefit-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--student-gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .benefit-card h3 {
+        color: var(--student-text-primary);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+    
+    .benefit-card p {
+        color: var(--student-text-secondary);
+        line-height: 1.6;
+    }
+    
+    .process-section {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 3rem;
+    }
+    
+    .process-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .process-header h2 {
+        color: var(--student-text-primary);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .process-header p {
+        color: var(--student-text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .process-timeline {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .process-step {
+        text-align: center;
+        position: relative;
+    }
+    
+    .process-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        top: 40px;
+        right: -1rem;
+        width: 2rem;
+        height: 2px;
+        background: var(--student-border);
+        z-index: 1;
+    }
+    
+    .step-number {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: var(--student-gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 auto 1.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .process-step h4 {
+        color: var(--student-text-primary);
+        margin-bottom: 1rem;
+        font-size: 1.25rem;
+    }
+    
+    .process-step p {
+        color: var(--student-text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .universities-section {
+        background: var(--student-bg-secondary);
+        border-radius: 20px;
+        padding: 3rem;
+        margin-bottom: 3rem;
+    }
+    
+    .universities-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .universities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .university-badge {
+        background: white;
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        box-shadow: var(--student-shadow);
+        transition: all 0.2s ease;
+    }
+    
+    .university-badge:hover {
+        transform: translateY(-2px);
+    }
+    
+    .university-badge .bi {
+        font-size: 1.5rem;
+        color: var(--student-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .university-name {
+        font-weight: 600;
+        color: var(--student-text-primary);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .cta-section {
+        background: var(--student-gradient-accent);
+        color: white;
+        border-radius: 20px;
+        padding: 3rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        z-index: 1;
+    }
+    
+    .cta-content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .cta-section h2 {
+        color: white;
+        font-size: 2.25rem;
+        margin-bottom: 1rem;
+    }
+    
+    .cta-section p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+    
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+        }
+        
+        .hero-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn-hero-primary,
+        .btn-hero-secondary {
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+        
+        .process-timeline {
+            grid-template-columns: 1fr;
+        }
+        
+        .process-step:not(:last-child)::after {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container fade-in-up">
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="bi bi-mortarboard-fill me-3"></i>
+                Student Portal
+            </h1>
+            <p class="hero-subtitle">Exclusive discounts for verified students</p>
+            <p class="hero-description">
+                Join thousands of students who save money with exclusive student discounts. 
+                Get verified in minutes and unlock special offers from your favorite brands.
+            </p>
+            <div class="hero-actions">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'students:dashboard' %}" class="btn-hero-primary">
+                        <i class="bi bi-speedometer2"></i>
+                        View Dashboard
+                    </a>
+                    <a href="/" class="btn-hero-secondary">
+                        <i class="bi bi-shop"></i>
+                        Shop Now
+                    </a>
+                {% else %}
+                    <a href="{% url 'students:register' %}" class="btn-hero-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Get Started
+                    </a>
+                    <a href="{% url 'students:login' %}" class="btn-hero-secondary">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="row text-center mb-5">
+            <div class="col">
+                <h2 style="color: var(--student-text-primary); font-size: 2.5rem; margin-bottom: 1rem;">
+                    Why Choose Student Portal?
+                </h2>
+                <p style="color: var(--student-text-secondary); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    Get exclusive access to student-only discounts and offers from top brands
+                </p>
+            </div>
+        </div>
+        
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3>Secure Verification</h3>
+                <p>Your student ID is processed securely with bank-level encryption and deleted after verification.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+                <h3>Fast Approval</h3>
+                <p>Most student verifications are processed within 24-48 hours. Get your discounts quickly!</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-gift"></i>
+                </div>
+                <h3>Exclusive Offers</h3>
+                <p>Access student-only discounts up to 50% off on electronics, software, clothing, and more.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-globe"></i>
+                </div>
+                <h3>Global Universities</h3>
+                <p>Supporting students from universities worldwide. If yours isn't listed, let us know!</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <h3>24/7 Support</h3>
+                <p>Need help? Our dedicated student support team is here to assist you anytime.</p>
+            </div>
+            
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </div>
+                <h3>Always Valid</h3>
+                <p>Your student status is automatically renewed each year while you're enrolled.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Process Section -->
+    <section class="process-section">
+        <div class="process-header">
+            <h2>How It Works</h2>
+            <p>Getting verified is simple and takes just a few minutes. Follow these easy steps:</p>
+        </div>
+        
+        <div class="process-timeline">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h4>Register</h4>
+                <p>Create your account with your university email address</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h4>Verify Email</h4>
+                <p>Check your university email and click the verification link</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h4>Upload ID</h4>
+                <p>Take a photo of your student ID card or upload an existing photo</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h4>Get Verified</h4>
+                <p>Our team reviews your ID and approves your student status</p>
+            </div>
+            
+            <div class="process-step">
+                <div class="step-number">5</div>
+                <h4>Start Saving</h4>
+                <p>Browse and enjoy exclusive student discounts and offers</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Universities Section -->
+    <section class="universities-section">
+        <div class="universities-header">
+            <h2 style="color: var(--student-text-primary); margin-bottom: 1rem;">Supported Universities</h2>
+            <p style="color: var(--student-text-secondary);">We support students from major universities worldwide</p>
+        </div>
+        
+        <div class="universities-grid">
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">Harvard University</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">Stanford University</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">MIT</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">UC Berkeley</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">Oxford University</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">Cambridge University</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-building"></i>
+                <p class="university-name">University of Toronto</p>
+            </div>
+            <div class="university-badge">
+                <i class="bi bi-plus-circle"></i>
+                <p class="university-name">& Many More</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2>Ready to Start Saving?</h2>
+            <p>Join thousands of students who are already saving money with exclusive discounts</p>
+            {% if not user.is_authenticated %}
+                <div class="hero-actions">
+                    <a href="{% url 'students:register' %}" class="btn-hero-primary">
+                        <i class="bi bi-person-plus"></i>
+                        Create Account
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

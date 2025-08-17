@@ -1,0 +1,963 @@
+{% extends 'students/base.html' %}
+{% load static %}
+
+{% block title %}Upload Student ID - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .upload-header {
+        background: var(--student-gradient-primary);
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .upload-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        z-index: 1;
+    }
+    
+    .upload-header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .upload-header h1 {
+        color: white;
+        margin-bottom: 0.5rem;
+        font-size: 2.25rem;
+    }
+    
+    .upload-methods {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .upload-method {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+        position: relative;
+    }
+    
+    .upload-method:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--student-shadow-lg);
+        border-color: var(--student-primary);
+    }
+    
+    .upload-method.active {
+        border-color: var(--student-primary);
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    }
+    
+    .upload-method-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--student-gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+    }
+    
+    .upload-method h3 {
+        margin-bottom: 1rem;
+        color: var(--student-text-primary);
+    }
+    
+    .upload-method p {
+        color: var(--student-text-secondary);
+        margin: 0;
+    }
+    
+    .camera-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+        display: none;
+    }
+    
+    .camera-container.active {
+        display: block;
+    }
+    
+    .camera-viewer {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        border-radius: 16px;
+        overflow: hidden;
+        background: #000;
+        aspect-ratio: 16/9;
+    }
+    
+    .camera-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+    
+    .camera-video.active {
+        display: block;
+    }
+    
+    .camera-canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+    }
+    
+    .camera-canvas.active {
+        display: block;
+    }
+    
+    .camera-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: white;
+        background: linear-gradient(135deg, #374151, #111827);
+    }
+    
+    .camera-placeholder .bi {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+    }
+    
+    .camera-overlay {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        height: 60%;
+        border: 2px dashed rgba(255, 255, 255, 0.8);
+        border-radius: 12px;
+        pointer-events: none;
+    }
+    
+    .camera-overlay::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border: 2px solid var(--student-primary);
+        border-radius: 12px;
+        opacity: 0;
+        animation: pulse-border 2s infinite;
+    }
+    
+    @keyframes pulse-border {
+        0%, 100% { opacity: 0; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+    }
+    
+    .camera-controls {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-camera {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-camera-primary {
+        background: var(--student-gradient-primary);
+        color: white;
+    }
+    
+    .btn-camera-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--student-shadow-purple);
+    }
+    
+    .btn-camera-secondary {
+        background: transparent;
+        color: var(--student-primary);
+        border: 2px solid var(--student-primary);
+    }
+    
+    .btn-camera-secondary:hover {
+        background: var(--student-primary);
+        color: white;
+        transform: translateY(-2px);
+    }
+    
+    .btn-camera-success {
+        background: var(--student-success);
+        color: white;
+    }
+    
+    .btn-camera-success:hover {
+        background: #059669;
+        transform: translateY(-2px);
+    }
+    
+    .file-upload-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+        display: none;
+    }
+    
+    .file-upload-container.active {
+        display: block;
+    }
+    
+    .file-drop-zone {
+        border: 3px dashed var(--student-border);
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background: var(--student-bg-secondary);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-bottom: 2rem;
+    }
+    
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--student-primary);
+        background: rgba(99, 102, 241, 0.05);
+        transform: scale(1.02);
+    }
+    
+    .file-drop-zone .bi {
+        font-size: 4rem;
+        color: var(--student-primary);
+        margin-bottom: 1rem;
+    }
+    
+    .file-drop-zone h3 {
+        color: var(--student-text-primary);
+        margin-bottom: 1rem;
+    }
+    
+    .file-drop-zone p {
+        color: var(--student-text-secondary);
+        margin: 0;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    .file-requirements {
+        background: rgba(59, 130, 246, 0.05);
+        border-left: 4px solid var(--student-info);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .file-requirements h4 {
+        color: var(--student-info);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .file-requirements ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: var(--student-text-primary);
+    }
+    
+    .file-requirements li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .preview-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+        display: none;
+    }
+    
+    .preview-container.active {
+        display: block;
+    }
+    
+    .preview-image {
+        width: 100%;
+        max-width: 500px;
+        height: auto;
+        border-radius: 16px;
+        box-shadow: var(--student-shadow);
+        margin: 0 auto 2rem;
+        display: block;
+    }
+    
+    .preview-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .upload-progress {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+        display: none;
+        text-align: center;
+    }
+    
+    .upload-progress.active {
+        display: block;
+    }
+    
+    .progress-circle {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: conic-gradient(var(--student-primary) 0deg, var(--student-border) 0deg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        position: relative;
+    }
+    
+    .progress-circle::before {
+        content: '';
+        position: absolute;
+        inset: 8px;
+        background: white;
+        border-radius: 50%;
+    }
+    
+    .progress-text {
+        position: relative;
+        z-index: 2;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--student-primary);
+    }
+    
+    .upload-success {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+        display: none;
+        text-align: center;
+    }
+    
+    .upload-success.active {
+        display: block;
+    }
+    
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: var(--student-success);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        margin: 0 auto 1.5rem;
+        animation: success-bounce 0.6s ease;
+    }
+    
+    @keyframes success-bounce {
+        0% { transform: scale(0); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+    
+    .tips-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+    }
+    
+    .tips-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .tip-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: var(--student-gradient-primary);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 1.2rem;
+    }
+    
+    .tip-content h4 {
+        color: var(--student-text-primary);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+    
+    .tip-content p {
+        color: var(--student-text-secondary);
+        font-size: 0.875rem;
+        margin: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .upload-methods {
+            grid-template-columns: 1fr;
+        }
+        
+        .camera-controls,
+        .preview-actions {
+            flex-direction: column;
+        }
+        
+        .btn-camera {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container upload-container fade-in-up">
+    <!-- Upload Header -->
+    <div class="upload-header">
+        <div class="upload-header-content">
+            <h1><i class="bi bi-camera-fill me-3"></i>Upload Your Student ID</h1>
+            <p>Take a clear photo or upload an image of your student ID card for verification</p>
+        </div>
+    </div>
+    
+    <!-- Upload Method Selection -->
+    <div class="upload-methods">
+        <div class="upload-method" id="cameraMethod" onclick="selectMethod('camera')">
+            <div class="upload-method-icon">
+                <i class="bi bi-camera-fill"></i>
+            </div>
+            <h3>Use Camera</h3>
+            <p>Take a photo directly with your device camera for the best quality</p>
+        </div>
+        
+        <div class="upload-method" id="fileMethod" onclick="selectMethod('file')">
+            <div class="upload-method-icon">
+                <i class="bi bi-folder-fill"></i>
+            </div>
+            <h3>Upload File</h3>
+            <p>Select an existing photo of your student ID from your device</p>
+        </div>
+    </div>
+    
+    <!-- Camera Capture -->
+    <div class="camera-container" id="cameraContainer">
+        <h2 class="text-center mb-4">
+            <i class="bi bi-camera me-2"></i>
+            Camera Capture
+        </h2>
+        
+        <div class="camera-viewer" id="cameraViewer">
+            <video id="cameraVideo" class="camera-video" autoplay muted playsinline></video>
+            <canvas id="cameraCanvas" class="camera-canvas"></canvas>
+            <div class="camera-placeholder" id="cameraPlaceholder">
+                <i class="bi bi-camera-video"></i>
+                <p>Click "Start Camera" to begin</p>
+            </div>
+            <div class="camera-overlay"></div>
+        </div>
+        
+        <div class="camera-controls">
+            <button class="btn-camera btn-camera-primary" id="startCameraBtn" onclick="startCamera()">
+                <i class="bi bi-camera-video"></i>
+                Start Camera
+            </button>
+            <button class="btn-camera btn-camera-success" id="captureBtn" onclick="capturePhoto()" style="display: none;">
+                <i class="bi bi-camera"></i>
+                Capture Photo
+            </button>
+            <button class="btn-camera btn-camera-secondary" id="retakeBtn" onclick="retakePhoto()" style="display: none;">
+                <i class="bi bi-arrow-clockwise"></i>
+                Retake
+            </button>
+            <button class="btn-camera btn-camera-secondary" id="stopCameraBtn" onclick="stopCamera()" style="display: none;">
+                <i class="bi bi-stop-circle"></i>
+                Stop Camera
+            </button>
+        </div>
+    </div>
+    
+    <!-- File Upload -->
+    <div class="file-upload-container" id="fileContainer">
+        <h2 class="text-center mb-4">
+            <i class="bi bi-cloud-upload me-2"></i>
+            File Upload
+        </h2>
+        
+        <div class="file-drop-zone" id="fileDropZone" onclick="document.getElementById('fileInput').click()">
+            <i class="bi bi-cloud-upload"></i>
+            <h3>Drop your file here or click to browse</h3>
+            <p>Select a photo of your student ID card</p>
+        </div>
+        
+        <input type="file" id="fileInput" class="file-input" accept="image/jpeg,image/jpg,image/png,application/pdf" onchange="handleFileSelect(event)">
+        
+        <div class="file-requirements">
+            <h4><i class="bi bi-info-circle me-2"></i>File Requirements</h4>
+            <ul>
+                <li>Format: JPG, PNG, or PDF</li>
+                <li>Maximum size: 10 MB</li>
+                <li>Image should be clear and well-lit</li>
+                <li>All text should be readable</li>
+                <li>Avoid glare and shadows</li>
+            </ul>
+        </div>
+    </div>
+    
+    <!-- Preview -->
+    <div class="preview-container" id="previewContainer">
+        <h2 class="text-center mb-4">
+            <i class="bi bi-eye me-2"></i>
+            Preview Your Photo
+        </h2>
+        
+        <img id="previewImage" class="preview-image" alt="Student ID Preview">
+        
+        <div class="preview-actions">
+            <button class="btn-camera btn-camera-secondary" onclick="goBack()">
+                <i class="bi bi-arrow-left"></i>
+                Go Back
+            </button>
+            <button class="btn-camera btn-camera-primary" onclick="uploadPhoto()">
+                <i class="bi bi-cloud-upload"></i>
+                Upload Photo
+            </button>
+        </div>
+    </div>
+    
+    <!-- Upload Progress -->
+    <div class="upload-progress" id="uploadProgress">
+        <div class="progress-circle" id="progressCircle">
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+        <h3>Uploading Your Student ID</h3>
+        <p>Please wait while we process your photo...</p>
+    </div>
+    
+    <!-- Upload Success -->
+    <div class="upload-success" id="uploadSuccess">
+        <div class="success-icon">
+            <i class="bi bi-check"></i>
+        </div>
+        <h2>Upload Successful!</h2>
+        <p>Your student ID has been uploaded successfully. Our team will review it and update your verification status within 24-48 hours.</p>
+        <div style="margin-top: 2rem;">
+            <a href="{% url 'students:dashboard' %}" class="btn-camera btn-camera-primary">
+                <i class="bi bi-speedometer2"></i>
+                View Dashboard
+            </a>
+        </div>
+    </div>
+    
+    <!-- Tips -->
+    <div class="tips-container">
+        <h2 class="text-center mb-4">Tips for Best Results</h2>
+        <div class="tips-grid">
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="bi bi-lightbulb"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Good Lighting</h4>
+                    <p>Ensure your ID is well-lit with natural light or bright indoor lighting</p>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="bi bi-aspect-ratio"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Fill the Frame</h4>
+                    <p>Make sure your ID card fills most of the photo frame for better readability</p>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Avoid Glare</h4>
+                    <p>Position the card to avoid reflections and glare from lights or flash</p>
+                </div>
+            </div>
+            
+            <div class="tip-item">
+                <div class="tip-icon">
+                    <i class="bi bi-eye"></i>
+                </div>
+                <div class="tip-content">
+                    <h4>Clear Focus</h4>
+                    <p>Ensure all text and details on your ID card are sharp and in focus</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentMethod = null;
+let cameraStream = null;
+let capturedImage = null;
+
+// Method selection
+function selectMethod(method) {
+    currentMethod = method;
+    
+    // Update UI
+    document.querySelectorAll('.upload-method').forEach(el => el.classList.remove('active'));
+    document.getElementById(method + 'Method').classList.add('active');
+    
+    // Show/hide containers
+    document.getElementById('cameraContainer').classList.toggle('active', method === 'camera');
+    document.getElementById('fileContainer').classList.toggle('active', method === 'file');
+    
+    // Reset other containers
+    hideAllContainers();
+}
+
+function hideAllContainers() {
+    document.getElementById('previewContainer').classList.remove('active');
+    document.getElementById('uploadProgress').classList.remove('active');
+    document.getElementById('uploadSuccess').classList.remove('active');
+}
+
+// Camera functions
+async function startCamera() {
+    try {
+        const constraints = {
+            video: {
+                width: { ideal: 1920 },
+                height: { ideal: 1080 },
+                facingMode: 'environment' // Prefer back camera
+            }
+        };
+        
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+        const video = document.getElementById('cameraVideo');
+        
+        video.srcObject = cameraStream;
+        video.classList.add('active');
+        
+        document.getElementById('cameraPlaceholder').style.display = 'none';
+        document.getElementById('startCameraBtn').style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'inline-flex';
+        document.getElementById('stopCameraBtn').style.display = 'inline-flex';
+        
+    } catch (error) {
+        console.error('Error accessing camera:', error);
+        alert('Unable to access camera. Please ensure you have granted camera permissions and try again.');
+    }
+}
+
+function capturePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    const context = canvas.getContext('2d');
+    
+    // Set canvas size to match video
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    // Draw video frame to canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    
+    // Convert to blob
+    canvas.toBlob(blob => {
+        capturedImage = blob;
+        showPreview(URL.createObjectURL(blob));
+    }, 'image/jpeg', 0.8);
+    
+    // Update UI
+    video.classList.remove('active');
+    canvas.classList.add('active');
+    document.getElementById('captureBtn').style.display = 'none';
+    document.getElementById('retakeBtn').style.display = 'inline-flex';
+}
+
+function retakePhoto() {
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    
+    video.classList.add('active');
+    canvas.classList.remove('active');
+    
+    document.getElementById('captureBtn').style.display = 'inline-flex';
+    document.getElementById('retakeBtn').style.display = 'none';
+    
+    capturedImage = null;
+}
+
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        cameraStream = null;
+    }
+    
+    const video = document.getElementById('cameraVideo');
+    const canvas = document.getElementById('cameraCanvas');
+    
+    video.classList.remove('active');
+    canvas.classList.remove('active');
+    
+    document.getElementById('cameraPlaceholder').style.display = 'flex';
+    document.getElementById('startCameraBtn').style.display = 'inline-flex';
+    document.getElementById('captureBtn').style.display = 'none';
+    document.getElementById('retakeBtn').style.display = 'none';
+    document.getElementById('stopCameraBtn').style.display = 'none';
+    
+    capturedImage = null;
+}
+
+// File upload functions
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        if (validateFile(file)) {
+            capturedImage = file;
+            showPreview(URL.createObjectURL(file));
+        }
+    }
+}
+
+function validateFile(file) {
+    // Check file size (10MB limit)
+    if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB. Please choose a smaller file.');
+        return false;
+    }
+    
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Please upload a JPG, PNG, or PDF file.');
+        return false;
+    }
+    
+    return true;
+}
+
+// Drag and drop functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('fileDropZone');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+        dropZone.classList.add('dragover');
+    }
+    
+    function unhighlight() {
+        dropZone.classList.remove('dragover');
+    }
+    
+    dropZone.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (validateFile(file)) {
+                capturedImage = file;
+                showPreview(URL.createObjectURL(file));
+            }
+        }
+    }
+});
+
+// Preview functions
+function showPreview(imageSrc) {
+    hideAllContainers();
+    document.getElementById('previewImage').src = imageSrc;
+    document.getElementById('previewContainer').classList.add('active');
+}
+
+function goBack() {
+    hideAllContainers();
+    if (currentMethod === 'camera') {
+        document.getElementById('cameraContainer').classList.add('active');
+        retakePhoto();
+    } else {
+        document.getElementById('fileContainer').classList.add('active');
+        document.getElementById('fileInput').value = '';
+    }
+    capturedImage = null;
+}
+
+// Upload functions
+async function uploadPhoto() {
+    if (!capturedImage) {
+        alert('No image selected');
+        return;
+    }
+    
+    hideAllContainers();
+    document.getElementById('uploadProgress').classList.add('active');
+    
+    const formData = new FormData();
+    formData.append('id_image', capturedImage);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    
+    try {
+        const response = await fetch('{% url "students:upload_id_ajax" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            hideAllContainers();
+            document.getElementById('uploadSuccess').classList.add('active');
+        } else {
+            alert('Upload failed: ' + (data.error || 'Unknown error'));
+            goBack();
+        }
+        
+    } catch (error) {
+        console.error('Upload error:', error);
+        alert('Upload failed. Please try again.');
+        goBack();
+    }
+}
+
+// Simulate progress for demo (replace with actual upload progress)
+function simulateProgress() {
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress > 100) progress = 100;
+        
+        updateProgress(progress);
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+        }
+    }, 200);
+}
+
+function updateProgress(percent) {
+    const circle = document.getElementById('progressCircle');
+    const text = document.getElementById('progressText');
+    
+    const degrees = (percent / 100) * 360;
+    circle.style.background = `conic-gradient(var(--student-primary) ${degrees}deg, var(--student-border) ${degrees}deg)`;
+    text.textContent = Math.round(percent) + '%';
+}
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+    }
+});
+
+// CSRF token setup
+document.addEventListener('DOMContentLoaded', function() {
+    // Add CSRF token to page if not present
+    if (!document.querySelector('[name=csrfmiddlewaretoken]')) {
+        const csrfToken = document.createElement('input');
+        csrfToken.type = 'hidden';
+        csrfToken.name = 'csrfmiddlewaretoken';
+        csrfToken.value = '{{ csrf_token }}';
+        document.body.appendChild(csrfToken);
+    }
+});
+</script>
+{% endblock %}

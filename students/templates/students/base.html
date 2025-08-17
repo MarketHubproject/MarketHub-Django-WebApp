@@ -1,0 +1,468 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MarketHub Student Portal{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}MarketHub Student Portal - Verify your student status for exclusive discounts and offers{% endblock %}">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Student Portal CSS -->
+    <link rel="stylesheet" href="{% static 'students/css/student-portal.css' %}">
+    
+    <style>
+        /* Student Portal Theme - Education-focused Purple & Blue */
+        :root {
+            --student-primary: #6366f1;        /* Indigo */
+            --student-primary-dark: #4f46e5;   /* Dark Indigo */
+            --student-secondary: #8b5cf6;      /* Purple */
+            --student-accent: #06b6d4;         /* Cyan */
+            --student-success: #10b981;        /* Emerald */
+            --student-warning: #f59e0b;        /* Amber */
+            --student-danger: #ef4444;         /* Red */
+            --student-info: #3b82f6;           /* Blue */
+            
+            --student-bg-primary: #f8fafc;     /* Slate 50 */
+            --student-bg-secondary: #f1f5f9;   /* Slate 100 */
+            --student-bg-dark: #0f172a;        /* Slate 900 */
+            
+            --student-text-primary: #1e293b;   /* Slate 800 */
+            --student-text-secondary: #64748b; /* Slate 500 */
+            --student-text-muted: #94a3b8;     /* Slate 400 */
+            
+            --student-border: #e2e8f0;         /* Slate 200 */
+            --student-border-dark: #334155;    /* Slate 700 */
+            
+            --student-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --student-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --student-shadow-purple: 0 8px 32px rgba(139, 92, 246, 0.3);
+            
+            --student-gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --student-gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            --student-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        /* Base Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--student-bg-primary);
+            color: var(--student-text-primary);
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: var(--student-text-primary);
+        }
+        
+        /* Student Portal Navbar */
+        .student-navbar {
+            background: white;
+            border-bottom: 1px solid var(--student-border);
+            box-shadow: var(--student-shadow);
+            backdrop-filter: blur(10px);
+        }
+        
+        .student-navbar .navbar-brand {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            color: var(--student-primary) !important;
+            font-size: 1.5rem;
+        }
+        
+        .student-navbar .navbar-brand .bi {
+            color: var(--student-secondary);
+            margin-right: 0.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .student-navbar .nav-link {
+            color: var(--student-text-secondary) !important;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .student-navbar .nav-link:hover {
+            color: var(--student-primary) !important;
+        }
+        
+        .student-navbar .nav-link.active {
+            color: var(--student-primary) !important;
+            font-weight: 600;
+        }
+        
+        /* Main Content */
+        .student-main {
+            min-height: calc(100vh - 80px);
+            padding: 2rem 0;
+        }
+        
+        /* Cards */
+        .student-card {
+            background: white;
+            border: 1px solid var(--student-border);
+            border-radius: 16px;
+            box-shadow: var(--student-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .student-card:hover {
+            box-shadow: var(--student-shadow-lg);
+            transform: translateY(-4px);
+        }
+        
+        /* Buttons */
+        .btn-student-primary {
+            background: var(--student-gradient-primary);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-student-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--student-shadow-purple);
+            color: white;
+        }
+        
+        .btn-student-outline {
+            border: 2px solid var(--student-primary);
+            color: var(--student-primary);
+            background: transparent;
+            font-weight: 600;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-student-outline:hover {
+            background: var(--student-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Progress Indicators */
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .progress-step-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--student-border);
+            z-index: 1;
+        }
+        
+        .progress-step-item.completed::after {
+            background: var(--student-success);
+        }
+        
+        .progress-step-item.active::after {
+            background: linear-gradient(90deg, var(--student-success) 50%, var(--student-border) 50%);
+        }
+        
+        .progress-step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--student-border);
+            color: var(--student-text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            z-index: 2;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .progress-step-item.completed .progress-step-circle {
+            background: var(--student-success);
+            color: white;
+        }
+        
+        .progress-step-item.active .progress-step-circle {
+            background: var(--student-primary);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+        
+        .progress-step-label {
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+            color: var(--student-text-secondary);
+        }
+        
+        .progress-step-item.completed .progress-step-label {
+            color: var(--student-success);
+        }
+        
+        .progress-step-item.active .progress-step-label {
+            color: var(--student-primary);
+            font-weight: 600;
+        }
+        
+        /* Alert Styles */
+        .alert-student {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-student-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 197, 253, 0.1) 100%);
+            border-left: 4px solid var(--student-info);
+            color: #1e40af;
+        }
+        
+        .alert-student-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(110, 231, 183, 0.1) 100%);
+            border-left: 4px solid var(--student-success);
+            color: #065f46;
+        }
+        
+        .alert-student-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(252, 211, 77, 0.1) 100%);
+            border-left: 4px solid var(--student-warning);
+            color: #92400e;
+        }
+        
+        .alert-student-danger {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(252, 165, 165, 0.1) 100%);
+            border-left: 4px solid var(--student-danger);
+            color: #991b1b;
+        }
+        
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .progress-step {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-step-item:not(:last-child)::after {
+                display: none;
+            }
+            
+            .student-main {
+                padding: 1rem 0;
+            }
+        }
+        
+        /* Verification Status Badges */
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #92400e;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-badge.uploaded {
+            background: rgba(59, 130, 246, 0.1);
+            color: #1e40af;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        .status-badge.processing {
+            background: rgba(139, 92, 246, 0.1);
+            color: #6b21a8;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        
+        .status-badge.verified {
+            background: rgba(16, 185, 129, 0.1);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-badge.rejected {
+            background: rgba(239, 68, 68, 0.1);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Student Portal Navigation -->
+    <nav class="navbar navbar-expand-lg student-navbar sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'students:index' %}">
+                <i class="bi bi-mortarboard-fill"></i>
+                Student Portal
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#studentNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="studentNavbar">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated and user.student_profile %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'students:dashboard' %}">
+                                <i class="bi bi-speedometer2"></i> Dashboard
+                            </a>
+                        </li>
+                        {% if user.student_profile.can_upload_id %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'students:upload_id' %}">
+                                <i class="bi bi-upload"></i> Upload ID
+                            </a>
+                        </li>
+                        {% endif %}
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'students:help' %}">
+                            <i class="bi bi-question-circle"></i> Help
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i>
+                                {{ user.get_full_name|default:user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'students:dashboard' %}">
+                                    <i class="bi bi-speedometer2"></i> Dashboard
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'students:logout' %}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'students:login' %}">
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-student-primary ms-2" href="{% url 'students:register' %}">
+                                <i class="bi bi-person-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="student-main">
+        {% if messages %}
+            <div class="container mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-student alert-student-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {% if message.tags == 'success' %}
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                        {% elif message.tags == 'error' %}
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>
+                        {% else %}
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                        {% endif %}
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-top py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <p class="text-muted mb-0">
+                        <strong>MarketHub Student Portal</strong> - Secure student verification for exclusive discounts
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a href="{% url 'students:privacy' %}" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                    <a href="{% url 'students:help' %}" class="text-muted text-decoration-none">Help</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Student Portal JS -->
+    <script src="{% static 'students/js/student-portal.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

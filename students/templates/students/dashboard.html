@@ -1,0 +1,803 @@
+{% extends 'students/base.html' %}
+{% load static %}
+
+{% block title %}Student Dashboard - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-header {
+        background: var(--student-gradient-primary);
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dashboard-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        z-index: 1;
+    }
+    
+    .dashboard-header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .dashboard-header h1 {
+        color: white;
+        margin-bottom: 0.5rem;
+        font-size: 2.25rem;
+    }
+    
+    .dashboard-header .subtitle {
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+    
+    .status-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .status-card {
+        background: white;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: var(--student-shadow);
+        border: 1px solid var(--student-border);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .status-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--student-shadow-lg);
+    }
+    
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: var(--status-color, var(--student-border));
+    }
+    
+    .status-card.pending::before {
+        background: var(--student-warning);
+    }
+    
+    .status-card.uploaded::before {
+        background: var(--student-info);
+    }
+    
+    .status-card.processing::before {
+        background: var(--student-secondary);
+    }
+    
+    .status-card.verified::before {
+        background: var(--student-success);
+    }
+    
+    .status-card.rejected::before {
+        background: var(--student-danger);
+    }
+    
+    .status-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .status-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    
+    .status-card.pending .status-card-icon {
+        background: var(--student-warning);
+    }
+    
+    .status-card.uploaded .status-card-icon {
+        background: var(--student-info);
+    }
+    
+    .status-card.processing .status-card-icon {
+        background: var(--student-secondary);
+    }
+    
+    .status-card.verified .status-card-icon {
+        background: var(--student-success);
+    }
+    
+    .status-card.rejected .status-card-icon {
+        background: var(--student-danger);
+    }
+    
+    .status-card-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--student-text-primary);
+        margin: 0;
+    }
+    
+    .status-card-subtitle {
+        font-size: 0.875rem;
+        color: var(--student-text-secondary);
+        margin: 0;
+    }
+    
+    .status-card-progress {
+        margin-bottom: 1rem;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        background: var(--student-bg-secondary);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 0.5rem;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: var(--student-gradient-primary);
+        border-radius: 8px;
+        transition: width 0.8s ease;
+        position: relative;
+    }
+    
+    .progress-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+    }
+    
+    .progress-text {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--student-text-primary);
+    }
+    
+    .status-card-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+    
+    .btn-card-action {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary-action {
+        background: var(--student-primary);
+        color: white;
+        border: none;
+    }
+    
+    .btn-primary-action:hover {
+        background: var(--student-primary-dark);
+        transform: translateY(-1px);
+        color: white;
+    }
+    
+    .btn-secondary-action {
+        background: transparent;
+        color: var(--student-primary);
+        border: 1px solid var(--student-primary);
+    }
+    
+    .btn-secondary-action:hover {
+        background: var(--student-primary);
+        color: white;
+        transform: translateY(-1px);
+    }
+    
+    .verification-timeline {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+        margin-bottom: 2rem;
+    }
+    
+    .timeline-header {
+        margin-bottom: 2rem;
+    }
+    
+    .timeline-header h2 {
+        margin-bottom: 0.5rem;
+        color: var(--student-text-primary);
+    }
+    
+    .timeline-header p {
+        color: var(--student-text-secondary);
+        margin: 0;
+    }
+    
+    .timeline-step {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .timeline-step:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        left: 20px;
+        top: 40px;
+        width: 2px;
+        height: calc(100% + 1rem);
+        background: var(--student-border);
+        z-index: 1;
+    }
+    
+    .timeline-step.completed:not(:last-child)::after {
+        background: var(--student-success);
+    }
+    
+    .timeline-step.active:not(:last-child)::after {
+        background: linear-gradient(180deg, var(--student-success) 0%, var(--student-border) 100%);
+    }
+    
+    .timeline-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        position: relative;
+        z-index: 2;
+        flex-shrink: 0;
+    }
+    
+    .timeline-step.completed .timeline-icon {
+        background: var(--student-success);
+        color: white;
+    }
+    
+    .timeline-step.active .timeline-icon {
+        background: var(--student-primary);
+        color: white;
+        animation: pulse-gentle 2s infinite;
+    }
+    
+    .timeline-step:not(.completed):not(.active) .timeline-icon {
+        background: var(--student-border);
+        color: var(--student-text-muted);
+    }
+    
+    @keyframes pulse-gentle {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    .timeline-content h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--student-text-primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .timeline-step.completed .timeline-content h3 {
+        color: var(--student-success);
+    }
+    
+    .timeline-step.active .timeline-content h3 {
+        color: var(--student-primary);
+    }
+    
+    .timeline-content p {
+        color: var(--student-text-secondary);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .timeline-content .timestamp {
+        font-size: 0.8rem;
+        color: var(--student-text-muted);
+        font-style: italic;
+        margin-top: 0.5rem;
+    }
+    
+    .recent-activity {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: var(--student-shadow);
+    }
+    
+    .activity-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+    }
+    
+    .activity-item:hover {
+        background: var(--student-bg-secondary);
+    }
+    
+    .activity-item:last-child {
+        margin-bottom: 0;
+    }
+    
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: white;
+        flex-shrink: 0;
+    }
+    
+    .activity-icon.upload {
+        background: var(--student-info);
+    }
+    
+    .activity-icon.verify {
+        background: var(--student-success);
+    }
+    
+    .activity-icon.reject {
+        background: var(--student-danger);
+    }
+    
+    .activity-icon.login {
+        background: var(--student-secondary);
+    }
+    
+    .activity-content {
+        flex: 1;
+    }
+    
+    .activity-content h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--student-text-primary);
+        margin-bottom: 0.25rem;
+    }
+    
+    .activity-content p {
+        font-size: 0.85rem;
+        color: var(--student-text-secondary);
+        margin: 0;
+    }
+    
+    .activity-time {
+        font-size: 0.8rem;
+        color: var(--student-text-muted);
+        text-align: right;
+        flex-shrink: 0;
+    }
+    
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .status-overview {
+            grid-template-columns: 1fr;
+        }
+        
+        .verification-timeline,
+        .recent-activity {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container fade-in-up">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="dashboard-header-content">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="bi bi-mortarboard-fill me-3"></i>Welcome back, {{ student_profile.user.first_name|default:student_profile.user.username }}!</h1>
+                    <p class="subtitle">{{ student_profile.university.name|default:"Your university" }} • {{ student_profile.university_email }}</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="status-badge {{ student_profile.id_verified }}">
+                        {% if student_profile.id_verified == 'verified' %}
+                            <i class="bi bi-check-circle-fill"></i>
+                        {% elif student_profile.id_verified == 'pending' %}
+                            <i class="bi bi-clock-fill"></i>
+                        {% elif student_profile.id_verified == 'uploaded' %}
+                            <i class="bi bi-cloud-upload-fill"></i>
+                        {% elif student_profile.id_verified == 'processing' %}
+                            <i class="bi bi-gear-fill"></i>
+                        {% elif student_profile.id_verified == 'rejected' %}
+                            <i class="bi bi-x-circle-fill"></i>
+                        {% endif %}
+                        {{ student_profile.get_id_verified_display }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Overview -->
+    <div class="status-overview">
+        <!-- Verification Status -->
+        <div class="status-card {{ student_profile.id_verified }}">
+            <div class="status-card-header">
+                <div class="status-card-icon">
+                    {% if student_profile.id_verified == 'verified' %}
+                        <i class="bi bi-shield-check"></i>
+                    {% elif student_profile.id_verified == 'pending' %}
+                        <i class="bi bi-hourglass-split"></i>
+                    {% elif student_profile.id_verified == 'uploaded' %}
+                        <i class="bi bi-cloud-check"></i>
+                    {% elif student_profile.id_verified == 'processing' %}
+                        <i class="bi bi-gear"></i>
+                    {% elif student_profile.id_verified == 'rejected' %}
+                        <i class="bi bi-exclamation-triangle"></i>
+                    {% endif %}
+                </div>
+                <div>
+                    <h3 class="status-card-title">Verification Status</h3>
+                    <p class="status-card-subtitle">{{ student_profile.get_id_verified_display }}</p>
+                </div>
+            </div>
+            
+            <div class="status-card-progress">
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" style="width: {{ progress }}%"></div>
+                </div>
+                <div class="progress-text">{{ progress }}% Complete</div>
+            </div>
+            
+            <div class="status-card-actions">
+                {% if student_profile.id_verified == 'pending' %}
+                    <a href="{% url 'students:upload_id' %}" class="btn-card-action btn-primary-action">
+                        <i class="bi bi-upload"></i>
+                        Upload ID
+                    </a>
+                {% elif student_profile.id_verified == 'rejected' %}
+                    <a href="{% url 'students:upload_id' %}" class="btn-card-action btn-primary-action">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Re-upload
+                    </a>
+                    <button class="btn-card-action btn-secondary-action" onclick="showAppealModal()">
+                        <i class="bi bi-chat-square-text"></i>
+                        Appeal
+                    </button>
+                {% elif student_profile.id_verified == 'verified' %}
+                    <div class="btn-card-action" style="background: rgba(16, 185, 129, 0.1); color: #065f46; border: none;">
+                        <i class="bi bi-check-circle"></i>
+                        Verified ✓
+                    </div>
+                {% else %}
+                    <div class="btn-card-action btn-secondary-action">
+                        <i class="bi bi-info-circle"></i>
+                        In Progress
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Account Status -->
+        <div class="status-card verified">
+            <div class="status-card-header">
+                <div class="status-card-icon">
+                    <i class="bi bi-person-check"></i>
+                </div>
+                <div>
+                    <h3 class="status-card-title">Account Status</h3>
+                    <p class="status-card-subtitle">
+                        {% if student_profile.email_verified %}Active{% else %}Needs Email Verification{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="status-card-progress">
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" style="width: {% if student_profile.email_verified %}100{% else %}50{% endif %}%"></div>
+                </div>
+                <div class="progress-text">
+                    {% if student_profile.email_verified %}Account Active{% else %}Email verification pending{% endif %}
+                </div>
+            </div>
+            
+            <div class="status-card-actions">
+                {% if student_profile.email_verified %}
+                    <div class="btn-card-action" style="background: rgba(16, 185, 129, 0.1); color: #065f46; border: none;">
+                        <i class="bi bi-check-circle"></i>
+                        Active ✓
+                    </div>
+                {% else %}
+                    <button class="btn-card-action btn-primary-action" onclick="resendVerification()">
+                        <i class="bi bi-envelope"></i>
+                        Verify Email
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Benefits Status -->
+        <div class="status-card {% if student_profile.is_verified %}verified{% else %}pending{% endif %}">
+            <div class="status-card-header">
+                <div class="status-card-icon">
+                    <i class="bi bi-gift"></i>
+                </div>
+                <div>
+                    <h3 class="status-card-title">Student Benefits</h3>
+                    <p class="status-card-subtitle">
+                        {% if student_profile.is_verified %}Available{% else %}Pending Verification{% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <div class="status-card-progress">
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" style="width: {% if student_profile.is_verified %}100{% else %}20{% endif %}%"></div>
+                </div>
+                <div class="progress-text">
+                    {% if student_profile.is_verified %}Benefits Active{% else %}Verification required{% endif %}
+                </div>
+            </div>
+            
+            <div class="status-card-actions">
+                {% if student_profile.is_verified %}
+                    <a href="/" class="btn-card-action btn-primary-action">
+                        <i class="bi bi-shop"></i>
+                        Shop Now
+                    </a>
+                {% else %}
+                    <div class="btn-card-action btn-secondary-action">
+                        <i class="bi bi-lock"></i>
+                        Locked
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Verification Timeline -->
+        <div class="col-lg-8">
+            <div class="verification-timeline">
+                <div class="timeline-header">
+                    <h2>Verification Progress</h2>
+                    <p>Track your student verification journey</p>
+                </div>
+                
+                <div class="timeline-step completed">
+                    <div class="timeline-icon">
+                        <i class="bi bi-person-plus"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Account Registration</h3>
+                        <p>Student account created successfully</p>
+                        <div class="timestamp">{{ student_profile.created_at|date:"M j, Y \a\t g:i A" }}</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-step {% if student_profile.email_verified %}completed{% else %}active{% endif %}">
+                    <div class="timeline-icon">
+                        {% if student_profile.email_verified %}
+                            <i class="bi bi-envelope-check"></i>
+                        {% else %}
+                            2
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Email Verification</h3>
+                        <p>{% if student_profile.email_verified %}University email verified{% else %}Verify your university email address{% endif %}</p>
+                        {% if student_profile.email_verified %}
+                            <div class="timestamp">Verified</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="timeline-step {% if student_profile.id_verified == 'uploaded' or student_profile.id_verified == 'processing' or student_profile.id_verified == 'verified' %}completed{% elif student_profile.can_upload_id %}active{% endif %}">
+                    <div class="timeline-icon">
+                        {% if student_profile.id_verified == 'uploaded' or student_profile.id_verified == 'processing' or student_profile.id_verified == 'verified' %}
+                            <i class="bi bi-cloud-upload"></i>
+                        {% else %}
+                            3
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <h3>ID Upload</h3>
+                        <p>
+                            {% if student_profile.id_verified == 'uploaded' or student_profile.id_verified == 'processing' or student_profile.id_verified == 'verified' %}
+                                Student ID uploaded successfully
+                            {% else %}
+                                Upload a photo of your student ID card
+                            {% endif %}
+                        </p>
+                        {% if student_profile.id_image %}
+                            <div class="timestamp">Uploaded {{ student_profile.updated_at|date:"M j, Y" }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="timeline-step {% if student_profile.id_verified == 'processing' %}active{% elif student_profile.id_verified == 'verified' %}completed{% endif %}">
+                    <div class="timeline-icon">
+                        {% if student_profile.id_verified == 'verified' %}
+                            <i class="bi bi-check-circle"></i>
+                        {% elif student_profile.id_verified == 'processing' %}
+                            <i class="bi bi-gear"></i>
+                        {% else %}
+                            4
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Verification Review</h3>
+                        <p>
+                            {% if student_profile.id_verified == 'verified' %}
+                                Your student status has been verified!
+                            {% elif student_profile.id_verified == 'processing' %}
+                                Our team is reviewing your student ID
+                            {% else %}
+                                Pending ID upload
+                            {% endif %}
+                        </p>
+                        {% if student_profile.verified_at %}
+                            <div class="timestamp">{{ student_profile.verified_at|date:"M j, Y \a\t g:i A" }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="timeline-step {% if student_profile.id_verified == 'verified' %}completed{% endif %}">
+                    <div class="timeline-icon">
+                        {% if student_profile.id_verified == 'verified' %}
+                            <i class="bi bi-gift"></i>
+                        {% else %}
+                            5
+                        {% endif %}
+                    </div>
+                    <div class="timeline-content">
+                        <h3>Benefits Activated</h3>
+                        <p>
+                            {% if student_profile.id_verified == 'verified' %}
+                                Enjoy exclusive student discounts and offers
+                            {% else %}
+                                Access to student discounts and exclusive deals
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="col-lg-4">
+            <div class="recent-activity">
+                <h2 style="margin-bottom: 1.5rem;">Recent Activity</h2>
+                
+                {% if verification_logs %}
+                    {% for log in verification_logs %}
+                        <div class="activity-item">
+                            <div class="activity-icon {{ log.action }}">
+                                {% if log.action == 'upload' %}
+                                    <i class="bi bi-cloud-upload"></i>
+                                {% elif log.action == 'manual_verify' %}
+                                    <i class="bi bi-check-circle"></i>
+                                {% elif log.action == 'manual_reject' %}
+                                    <i class="bi bi-x-circle"></i>
+                                {% elif log.action == 'login' %}
+                                    <i class="bi bi-box-arrow-in-right"></i>
+                                {% elif log.action == 'register' %}
+                                    <i class="bi bi-person-plus"></i>
+                                {% else %}
+                                    <i class="bi bi-activity"></i>
+                                {% endif %}
+                            </div>
+                            <div class="activity-content">
+                                <h4>{{ log.get_action_display }}</h4>
+                                <p>{{ log.result|capfirst }}</p>
+                            </div>
+                            <div class="activity-time">
+                                {{ log.created_at|timesince }} ago
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-activity" style="font-size: 2rem; opacity: 0.3;"></i>
+                        <p>No recent activity</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate progress bars
+    const progressBars = document.querySelectorAll('.progress-fill');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 500);
+    });
+    
+    // Auto-refresh verification status every 30 seconds
+    setInterval(checkVerificationStatus, 30000);
+});
+
+function checkVerificationStatus() {
+    fetch('{% url "students:verification_status" %}')
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== '{{ student_profile.id_verified }}') {
+                // Status changed, refresh the page
+                window.location.reload();
+            }
+        })
+        .catch(error => console.log('Status check failed:', error));
+}
+
+function showAppealModal() {
+    alert('Appeal functionality will be available soon. Please contact support if you need assistance.');
+}
+
+function resendVerification() {
+    alert('Email verification resend functionality will be available soon.');
+}
+</script>
+{% endblock %}

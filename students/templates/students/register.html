@@ -1,0 +1,601 @@
+{% extends 'students/base.html' %}
+{% load static %}
+
+{% block title %}Student Registration - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registration-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+    }
+    
+    .registration-card {
+        box-shadow: var(--student-shadow-lg);
+        border: none;
+        border-radius: 20px;
+        overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .registration-header {
+        background: var(--student-gradient-primary);
+        color: white;
+        text-align: center;
+        padding: 3rem 2rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .registration-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+    
+    .registration-header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .registration-header p {
+        opacity: 0.9;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .registration-body {
+        padding: 3rem;
+        background: white;
+    }
+    
+    .form-floating {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-floating .form-control {
+        border: 2px solid var(--student-border);
+        border-radius: 12px;
+        padding: 1rem 0.75rem;
+        height: auto;
+        transition: all 0.3s ease;
+    }
+    
+    .form-floating .form-control:focus {
+        border-color: var(--student-primary);
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .form-floating label {
+        color: var(--student-text-secondary);
+        font-weight: 500;
+    }
+    
+    .form-floating .form-control:focus ~ label,
+    .form-floating .form-control:not(:placeholder-shown) ~ label {
+        color: var(--student-primary);
+        font-weight: 600;
+    }
+    
+    .form-check {
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: var(--student-bg-secondary);
+        border-radius: 12px;
+        border: 1px solid var(--student-border);
+    }
+    
+    .form-check-input:checked {
+        background-color: var(--student-primary);
+        border-color: var(--student-primary);
+    }
+    
+    .form-check-label {
+        font-weight: 500;
+        color: var(--student-text-primary);
+        margin-left: 0.5rem;
+    }
+    
+    .btn-register {
+        background: var(--student-gradient-primary);
+        border: none;
+        color: white;
+        font-weight: 700;
+        padding: 1rem 3rem;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--student-shadow-purple);
+        color: white;
+    }
+    
+    .btn-register:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    
+    .university-selector {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+    
+    .university-search {
+        border: 2px solid var(--student-border);
+        border-radius: 12px;
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    
+    .university-search:focus {
+        border-color: var(--student-primary);
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(99, 102, 241, 0.15);
+        transform: translateY(-2px);
+    }
+    
+    .university-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--student-primary);
+        font-size: 1.2rem;
+        z-index: 3;
+    }
+    
+    .university-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid var(--student-border);
+        border-top: none;
+        border-radius: 0 0 12px 12px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 10;
+        display: none;
+    }
+    
+    .university-option {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--student-border);
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .university-option:hover {
+        background: var(--student-bg-secondary);
+        color: var(--student-primary);
+    }
+    
+    .university-option:last-child {
+        border-bottom: none;
+    }
+    
+    .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+    
+    .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--student-border);
+        overflow: hidden;
+        margin-top: 0.25rem;
+    }
+    
+    .strength-fill {
+        height: 100%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+    
+    .strength-weak .strength-fill {
+        width: 25%;
+        background: var(--student-danger);
+    }
+    
+    .strength-fair .strength-fill {
+        width: 50%;
+        background: var(--student-warning);
+    }
+    
+    .strength-good .strength-fill {
+        width: 75%;
+        background: var(--student-info);
+    }
+    
+    .strength-strong .strength-fill {
+        width: 100%;
+        background: var(--student-success);
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: var(--student-text-secondary);
+        margin-top: 0.25rem;
+    }
+    
+    .already-registered {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--student-border);
+    }
+    
+    .already-registered a {
+        color: var(--student-primary);
+        text-decoration: none;
+        font-weight: 600;
+    }
+    
+    .already-registered a:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .registration-body {
+            padding: 2rem 1.5rem;
+        }
+        
+        .registration-header {
+            padding: 2rem 1.5rem 1.5rem;
+        }
+        
+        .registration-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container registration-container">
+    <div class="card registration-card">
+        <div class="registration-header">
+            <h1><i class="bi bi-mortarboard-fill me-3"></i>Join as a Student</h1>
+            <p>Get verified for exclusive student discounts and offers</p>
+        </div>
+        
+        <div class="registration-body">
+            <form method="post" id="registrationForm" novalidate>
+                {% csrf_token %}
+                
+                <!-- Personal Information -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.first_name }}
+                            <label for="{{ form.first_name.id_for_label }}">First Name *</label>
+                            {% if form.first_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.first_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.last_name }}
+                            <label for="{{ form.last_name.id_for_label }}">Last Name *</label>
+                            {% if form.last_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.last_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Username -->
+                <div class="form-floating">
+                    {{ form.username }}
+                    <label for="{{ form.username.id_for_label }}">Username *</label>
+                    <div class="help-text">Choose a unique username for your account</div>
+                    {% if form.username.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.username.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Email Addresses -->
+                <div class="form-floating">
+                    {{ form.email }}
+                    <label for="{{ form.email.id_for_label }}">Personal Email *</label>
+                    <div class="help-text">Your personal email address (different from university email)</div>
+                    {% if form.email.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.email.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- University Selection -->
+                <div class="university-selector">
+                    <i class="bi bi-building university-icon"></i>
+                    <select class="form-control university-search" name="university" id="{{ form.university.id_for_label }}" required>
+                        <option value="">Select your university...</option>
+                        {% for university in universities %}
+                            <option value="{{ university.id }}" data-domain="{{ university.domain }}">
+                                {{ university.name }} ({{ university.country }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                    {% if form.university.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.university.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- University Email -->
+                <div class="form-floating">
+                    {{ form.university_email }}
+                    <label for="{{ form.university_email.id_for_label }}">University Email *</label>
+                    <div class="help-text">Your official university email address (must match selected university domain)</div>
+                    {% if form.university_email.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.university_email.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Optional Academic Information -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.degree_program }}
+                            <label for="{{ form.degree_program.id_for_label }}">Degree Program</label>
+                            <div class="help-text">e.g., Computer Science, Business Administration</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            {{ form.expected_graduation_year }}
+                            <label for="{{ form.expected_graduation_year.id_for_label }}">Graduation Year</label>
+                            <div class="help-text">Expected year of graduation</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Password Fields -->
+                <div class="form-floating">
+                    {{ form.password1 }}
+                    <label for="{{ form.password1.id_for_label }}">Password *</label>
+                    <div class="password-strength" id="passwordStrength" style="display: none;">
+                        <div class="strength-text">Password strength: <span id="strengthText">Weak</span></div>
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthFill"></div>
+                        </div>
+                    </div>
+                    {% if form.password1.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.password1.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-floating">
+                    {{ form.password2 }}
+                    <label for="{{ form.password2.id_for_label }}">Confirm Password *</label>
+                    {% if form.password2.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.password2.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Consent Checkboxes -->
+                <div class="form-check">
+                    {{ form.terms_accepted }}
+                    <label class="form-check-label" for="{{ form.terms_accepted.id_for_label }}">
+                        I accept the <a href="/terms/" target="_blank" class="text-decoration-none">Terms of Service</a> 
+                        and <a href="/privacy/" target="_blank" class="text-decoration-none">Privacy Policy</a> *
+                    </label>
+                    {% if form.terms_accepted.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.terms_accepted.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-check">
+                    {{ form.privacy_consent }}
+                    <label class="form-check-label" for="{{ form.privacy_consent.id_for_label }}">
+                        I consent to the processing of my student ID for verification purposes as described in our 
+                        <a href="{% url 'students:privacy' %}" target="_blank" class="text-decoration-none">Student Privacy Policy</a> *
+                    </label>
+                    {% if form.privacy_consent.errors %}
+                        <div class="invalid-feedback d-block">
+                            {{ form.privacy_consent.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-register" id="submitBtn" disabled>
+                    <i class="bi bi-person-plus me-2"></i>
+                    Create Student Account
+                </button>
+            </form>
+            
+            <div class="already-registered">
+                <p class="text-muted">Already have a student account?</p>
+                <a href="{% url 'students:login' %}">Sign in here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registrationForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const universitySelect = document.getElementById('{{ form.university.id_for_label }}');
+    const universityEmailInput = document.getElementById('{{ form.university_email.id_for_label }}');
+    const password1Input = document.getElementById('{{ form.password1.id_for_label }}');
+    const passwordStrengthDiv = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
+    const strengthFill = document.getElementById('strengthFill');
+    
+    // Email domain validation based on university selection
+    function updateEmailValidation() {
+        const selectedOption = universitySelect.selectedOptions[0];
+        if (selectedOption && selectedOption.dataset.domain) {
+            const domain = selectedOption.dataset.domain;
+            universityEmailInput.placeholder = `example@${domain}`;
+            
+            // Update helper text
+            const helpText = universityEmailInput.parentElement.querySelector('.help-text');
+            if (helpText) {
+                helpText.textContent = `Your official university email address (must end with @${domain})`;
+            }
+        }
+    }
+    
+    // Password strength checker
+    function checkPasswordStrength(password) {
+        if (!password) {
+            passwordStrengthDiv.style.display = 'none';
+            return;
+        }
+        
+        passwordStrengthDiv.style.display = 'block';
+        
+        let strength = 0;
+        let strengthClass = '';
+        let strengthTextContent = '';
+        
+        // Length check
+        if (password.length >= 8) strength += 1;
+        if (password.length >= 12) strength += 1;
+        
+        // Character variety checks
+        if (/[a-z]/.test(password)) strength += 1;
+        if (/[A-Z]/.test(password)) strength += 1;
+        if (/[0-9]/.test(password)) strength += 1;
+        if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+        
+        // Determine strength level
+        if (strength <= 2) {
+            strengthClass = 'strength-weak';
+            strengthTextContent = 'Weak';
+        } else if (strength <= 3) {
+            strengthClass = 'strength-fair';
+            strengthTextContent = 'Fair';
+        } else if (strength <= 4) {
+            strengthClass = 'strength-good';
+            strengthTextContent = 'Good';
+        } else {
+            strengthClass = 'strength-strong';
+            strengthTextContent = 'Strong';
+        }
+        
+        // Update UI
+        passwordStrengthDiv.className = `password-strength ${strengthClass}`;
+        strengthText.textContent = strengthTextContent;
+    }
+    
+    // Form validation
+    function validateForm() {
+        const requiredFields = form.querySelectorAll('input[required], select[required]');
+        const termsChecked = document.getElementById('{{ form.terms_accepted.id_for_label }}').checked;
+        const privacyChecked = document.getElementById('{{ form.privacy_consent.id_for_label }}').checked;
+        
+        let allValid = true;
+        
+        // Check required fields
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                allValid = false;
+            }
+        });
+        
+        // Check checkboxes
+        if (!termsChecked || !privacyChecked) {
+            allValid = false;
+        }
+        
+        // Check password match
+        const password2 = document.getElementById('{{ form.password2.id_for_label }}').value;
+        if (password1Input.value !== password2) {
+            allValid = false;
+        }
+        
+        submitBtn.disabled = !allValid;
+    }
+    
+    // Event listeners
+    universitySelect.addEventListener('change', updateEmailValidation);
+    
+    password1Input.addEventListener('input', function() {
+        checkPasswordStrength(this.value);
+        validateForm();
+    });
+    
+    // Validate form on input changes
+    form.addEventListener('input', validateForm);
+    form.addEventListener('change', validateForm);
+    
+    // Real-time email domain validation
+    universityEmailInput.addEventListener('input', function() {
+        const selectedOption = universitySelect.selectedOptions[0];
+        if (selectedOption && selectedOption.dataset.domain) {
+            const domain = selectedOption.dataset.domain;
+            const email = this.value;
+            
+            if (email && !email.toLowerCase().endsWith(`@${domain.toLowerCase()}`)) {
+                this.setCustomValidity(`Email must end with @${domain}`);
+            } else {
+                this.setCustomValidity('');
+            }
+        }
+        validateForm();
+    });
+    
+    // Initialize validation
+    validateForm();
+    
+    // Form submission handling
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i> Creating Account...';
+    });
+});
+</script>
+{% endblock %}
