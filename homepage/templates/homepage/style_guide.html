@@ -1,0 +1,613 @@
+{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}MarketHub Style Guide - Modern Components{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <h1 class="display-3 fw-black text-primary mb-3">
+                    <i class="bi bi-palette me-3"></i>
+                    MarketHub Style Guide
+                </h1>
+                <p class="lead text-secondary">
+                    Showcasing our modern design system with enhanced buttons, cards, and effects
+                </p>
+            </div>
+            
+            <!-- Modern Button Showcase -->
+            <section class="mb-5">
+                <h2 class="h3 mb-4">🚀 Modern Button System</h2>
+                
+                <!-- Button Variants -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Button Variants</h4>
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            <button class="btn-modern btn-primary">
+                                <i class="bi bi-star-fill"></i>
+                                Primary Button
+                            </button>
+                            <button class="btn-modern btn-secondary">
+                                <i class="bi bi-info-circle"></i>
+                                Secondary Button
+                            </button>
+                            <button class="btn-modern btn-success">
+                                <i class="bi bi-check-circle"></i>
+                                Success Button
+                            </button>
+                            <button class="btn-modern btn-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Warning Button
+                            </button>
+                            <button class="btn-modern btn-danger">
+                                <i class="bi bi-x-circle"></i>
+                                Danger Button
+                            </button>
+                            <button class="btn-modern btn-glass">
+                                <i class="bi bi-droplet"></i>
+                                Glass Button
+                            </button>
+                        </div>
+                        
+                        <!-- Outline Variants -->
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            <button class="btn-modern btn-outline-primary">
+                                <i class="bi bi-heart"></i>
+                                Outline Primary
+                            </button>
+                            <button class="btn-modern btn-outline-secondary">
+                                <i class="bi bi-bookmark"></i>
+                                Outline Secondary
+                            </button>
+                            <button class="btn-modern btn-link">
+                                <i class="bi bi-link-45deg"></i>
+                                Link Button
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Button Sizes -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Button Sizes</h4>
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                            <button class="btn-modern btn-primary btn-sm">
+                                <i class="bi bi-plus"></i>
+                                Small Button
+                            </button>
+                            <button class="btn-modern btn-primary">
+                                <i class="bi bi-star"></i>
+                                Default Button
+                            </button>
+                            <button class="btn-modern btn-primary btn-lg">
+                                <i class="bi bi-rocket"></i>
+                                Large Button
+                            </button>
+                            <button class="btn-modern btn-primary btn-xl">
+                                <i class="bi bi-lightning"></i>
+                                Extra Large Button
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Special Buttons -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Special Button Types</h4>
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                            <button class="btn-modern btn-primary btn-icon">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                            <button class="btn-modern btn-primary btn-pill">
+                                <i class="bi bi-download"></i>
+                                Pill Button
+                            </button>
+                            <button class="btn-modern btn-primary btn-pulse">
+                                <i class="bi bi-bell"></i>
+                                Pulsing CTA
+                            </button>
+                            <button class="btn-modern btn-primary is-loading">
+                                Loading...
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Button Group -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Button Groups</h4>
+                        <div class="btn-group-modern mb-3">
+                            <button class="btn-modern btn-outline-primary">
+                                <i class="bi bi-list"></i>
+                                List View
+                            </button>
+                            <button class="btn-modern btn-primary">
+                                <i class="bi bi-grid"></i>
+                                Grid View
+                            </button>
+                            <button class="btn-modern btn-outline-primary">
+                                <i class="bi bi-kanban"></i>
+                                Kanban
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Modern Cards Showcase -->
+            <section class="mb-5">
+                <h2 class="h3 mb-4">🎨 Modern Card System</h2>
+                
+                <!-- Product Cards -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Product Cards</h4>
+                    </div>
+                </div>
+                
+                <div class="cards-grid grid-3 mb-4">
+                    <!-- Modern Product Card 1 -->
+                    <div class="card-modern card-product animate-fade-in-up">
+                        <div class="card-image-container">
+                            <img src="{% static 'images/sample-product-1.jpg' %}" alt="Product" class="card-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="card-image-placeholder" style="display: none;">
+                                <i class="bi bi-image"></i>
+                            </div>
+                            
+                            <!-- Card Overlay -->
+                            <div class="card-overlay">
+                                <button class="overlay-btn" title="Quick View">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="overlay-btn" title="Add to Favorites">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                                <button class="overlay-btn" title="Share">
+                                    <i class="bi bi-share"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Category Badge -->
+                            <div class="card-badge">
+                                <span class="badge">Electronics</span>
+                            </div>
+                            
+                            <!-- Favorite Button -->
+                            <div class="card-favorite">
+                                <button class="favorite-btn">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h3 class="card-title">MacBook Pro 16" M2</h3>
+                            
+                            <div class="card-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-half star"></i>
+                                </div>
+                                <span class="rating-count">(42 reviews)</span>
+                            </div>
+                            
+                            <p class="card-description">
+                                Supercharged by M2 Pro and M2 Max, MacBook Pro takes power and speed to the next level. 
+                                Whether you're working on a professional project or your personal passion.
+                            </p>
+                            
+                            <div class="card-price-section">
+                                <div class="price-container">
+                                    <span class="current-price">R34,999</span>
+                                    <span class="original-price">R39,999</span>
+                                    <span class="discount-badge">12% OFF</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-modern btn-primary btn-add-cart">
+                                    <i class="bi bi-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                                <button class="btn-modern btn-outline-primary btn-view-details">
+                                    <i class="bi bi-eye"></i>
+                                    View
+                                </button>
+                            </div>
+                            
+                            <div class="card-meta">
+                                <div class="card-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>Cape Town Central</span>
+                                </div>
+                                <div class="card-date">
+                                    <i class="bi bi-clock"></i>
+                                    <span>2 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Glass Card Variant -->
+                    <div class="card-modern card-product card-glass animate-fade-in-up delay-100">
+                        <div class="card-image-container">
+                            <div class="card-image-placeholder">
+                                <i class="bi bi-camera"></i>
+                            </div>
+                            
+                            <div class="card-badge">
+                                <span class="badge">Photography</span>
+                            </div>
+                            
+                            <div class="card-favorite">
+                                <button class="favorite-btn is-favorited">
+                                    <i class="bi bi-heart-fill"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h3 class="card-title">Canon EOS R6 Mark II</h3>
+                            
+                            <div class="card-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                </div>
+                                <span class="rating-count">(18 reviews)</span>
+                            </div>
+                            
+                            <p class="card-description">
+                                Professional full-frame mirrorless camera with exceptional image quality and 
+                                advanced video capabilities for creators and professionals.
+                            </p>
+                            
+                            <div class="card-price-section">
+                                <div class="price-container">
+                                    <span class="current-price">R28,500</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-modern btn-primary btn-add-cart">
+                                    <i class="bi bi-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                                <button class="btn-modern btn-outline-primary btn-view-details">
+                                    <i class="bi bi-eye"></i>
+                                    View
+                                </button>
+                            </div>
+                            
+                            <div class="card-meta">
+                                <div class="card-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>Stellenbosch</span>
+                                </div>
+                                <div class="card-date">
+                                    <i class="bi bi-clock"></i>
+                                    <span>1 week ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Standard Product Card -->
+                    <div class="card-modern card-product animate-fade-in-up delay-200">
+                        <div class="card-image-container">
+                            <div class="card-image-placeholder">
+                                <i class="bi bi-phone"></i>
+                            </div>
+                            
+                            <div class="card-badge">
+                                <span class="badge">Mobile</span>
+                            </div>
+                            
+                            <div class="card-favorite">
+                                <button class="favorite-btn">
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h3 class="card-title">iPhone 15 Pro Max</h3>
+                            
+                            <div class="card-rating">
+                                <div class="rating-stars">
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star-fill star"></i>
+                                    <i class="bi bi-star star-empty"></i>
+                                </div>
+                                <span class="rating-count">(89 reviews)</span>
+                            </div>
+                            
+                            <p class="card-description">
+                                The ultimate iPhone experience with titanium design, advanced cameras, and the 
+                                powerful A17 Pro chip for professional workflows.
+                            </p>
+                            
+                            <div class="card-price-section">
+                                <div class="price-container">
+                                    <span class="current-price">R21,999</span>
+                                    <span class="original-price">R24,999</span>
+                                    <span class="discount-badge">12% OFF</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-actions">
+                                <button class="btn-modern btn-primary btn-add-cart">
+                                    <i class="bi bi-cart-plus"></i>
+                                    Add to Cart
+                                </button>
+                                <button class="btn-modern btn-outline-primary btn-view-details">
+                                    <i class="bi bi-eye"></i>
+                                    View
+                                </button>
+                            </div>
+                            
+                            <div class="card-meta">
+                                <div class="card-location">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <span>Sandton</span>
+                                </div>
+                                <div class="card-date">
+                                    <i class="bi bi-clock"></i>
+                                    <span>3 days ago</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature Cards -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Feature Cards</h4>
+                    </div>
+                </div>
+                
+                <div class="cards-grid grid-3 mb-4">
+                    <div class="card-modern card-feature animate-scale-in">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h3 class="feature-title">Secure Payments</h3>
+                        <p class="feature-description">
+                            Your transactions are protected with bank-level security and encryption.
+                        </p>
+                    </div>
+                    
+                    <div class="card-modern card-feature animate-scale-in delay-100">
+                        <div class="feature-icon">
+                            <i class="bi bi-truck"></i>
+                        </div>
+                        <h3 class="feature-title">Fast Delivery</h3>
+                        <p class="feature-description">
+                            Get your items delivered quickly with our reliable shipping partners.
+                        </p>
+                    </div>
+                    
+                    <div class="card-modern card-feature animate-scale-in delay-200">
+                        <div class="feature-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <h3 class="feature-title">24/7 Support</h3>
+                        <p class="feature-description">
+                            Our customer support team is always ready to help you with any questions.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Statistics Cards</h4>
+                    </div>
+                </div>
+                
+                <div class="cards-grid grid-4 mb-4">
+                    <div class="card-modern card-stat animate-bounce-in">
+                        <div class="stat-value">12.5K</div>
+                        <div class="stat-label">Active Users</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i>
+                            <span>+12.5%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern card-stat animate-bounce-in delay-100">
+                        <div class="stat-value">R2.8M</div>
+                        <div class="stat-label">Revenue</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i>
+                            <span>+8.2%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern card-stat animate-bounce-in delay-200">
+                        <div class="stat-value">3.2K</div>
+                        <div class="stat-label">Orders</div>
+                        <div class="stat-change negative">
+                            <i class="bi bi-arrow-down"></i>
+                            <span>-2.1%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern card-stat animate-bounce-in delay-300">
+                        <div class="stat-value">98.5%</div>
+                        <div class="stat-label">Satisfaction</div>
+                        <div class="stat-change positive">
+                            <i class="bi bi-arrow-up"></i>
+                            <span>+0.8%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Testimonial Card -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h4 class="h5 mb-3">Testimonial Card</h4>
+                    </div>
+                </div>
+                
+                <div class="row mb-4">
+                    <div class="col-lg-8 mx-auto">
+                        <div class="card-modern card-testimonial animate-fade-in-up">
+                            <div class="testimonial-content">
+                                MarketHub has completely transformed how I shop for second-hand items. 
+                                The quality is exceptional, and the customer service is outstanding. 
+                                I've found amazing deals and made some great purchases!
+                            </div>
+                            <div class="testimonial-author">
+                                <img src="{% static 'images/avatar-placeholder.jpg' %}" alt="Sarah Johnson" class="author-avatar" onerror="this.style.display='none';">
+                                <div class="author-info">
+                                    <div class="author-name">Sarah Johnson</div>
+                                    <div class="author-title">Verified Customer</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Animation Showcase -->
+            <section class="mb-5">
+                <h2 class="h3 mb-4">✨ Animation Effects</h2>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        <h4 class="h5 mb-3">Animation Classes</h4>
+                        <div class="d-flex flex-wrap gap-3 mb-3">
+                            <button class="btn-modern btn-outline-primary" onclick="triggerAnimation('fade-in-up')">
+                                <i class="bi bi-arrow-up"></i>
+                                Fade In Up
+                            </button>
+                            <button class="btn-modern btn-outline-primary" onclick="triggerAnimation('slide-in-left')">
+                                <i class="bi bi-arrow-left"></i>
+                                Slide In Left
+                            </button>
+                            <button class="btn-modern btn-outline-primary" onclick="triggerAnimation('scale-in')">
+                                <i class="bi bi-zoom-in"></i>
+                                Scale In
+                            </button>
+                            <button class="btn-modern btn-outline-primary" onclick="triggerAnimation('bounce-in')">
+                                <i class="bi bi-bounce"></i>
+                                Bounce In
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card-modern" id="animation-demo">
+                            <div class="card-body text-center p-5">
+                                <i class="bi bi-star-fill text-primary fs-1 mb-3 animate-gentle-float"></i>
+                                <h4>Animation Demo</h4>
+                                <p class="text-secondary">Click the buttons to see different animations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Utility Classes -->
+            <section class="mb-5">
+                <h2 class="h3 mb-4">🛠️ Utility Classes</h2>
+                
+                <div class="row">
+                    <div class="col-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Class</th>
+                                        <th>Description</th>
+                                        <th>Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>.btn-modern</code></td>
+                                        <td>Base modern button class</td>
+                                        <td><button class="btn-modern btn-primary btn-sm">Example</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.btn-glass</code></td>
+                                        <td>Glassmorphism button effect</td>
+                                        <td><button class="btn-modern btn-glass btn-sm">Glass Effect</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.card-modern</code></td>
+                                        <td>Base modern card class</td>
+                                        <td><div class="card-modern p-3 d-inline-block">Card Example</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.animate-fade-in-up</code></td>
+                                        <td>Fade in animation from bottom</td>
+                                        <td><span class="badge bg-primary animate-fade-in-up">Animated Badge</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>.animate-pulse-ring</code></td>
+                                        <td>Pulsing ring effect</td>
+                                        <td><button class="btn-modern btn-primary btn-sm animate-pulse-ring">Pulsing</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- Demo JavaScript for Animation Triggers -->
+<script>
+function triggerAnimation(animationClass) {
+    const demo = document.getElementById('animation-demo');
+    // Remove any existing animation classes
+    demo.classList.remove('animate-fade-in-up', 'animate-slide-in-left', 'animate-scale-in', 'animate-bounce-in');
+    
+    // Force reflow to reset animation
+    void demo.offsetWidth;
+    
+    // Add the new animation class
+    demo.classList.add('animate-' + animationClass);
+    
+    // Remove the animation class after it completes to allow re-triggering
+    setTimeout(() => {
+        demo.classList.remove('animate-' + animationClass);
+    }, 600);
+}
+
+// Add interactive hover effects to favorites
+document.querySelectorAll('.favorite-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        this.classList.toggle('is-favorited');
+        const icon = this.querySelector('i');
+        if (this.classList.contains('is-favorited')) {
+            icon.classList.remove('bi-heart');
+            icon.classList.add('bi-heart-fill');
+        } else {
+            icon.classList.remove('bi-heart-fill');
+            icon.classList.add('bi-heart');
+        }
+    });
+});
+</script>
+{% endblock %}

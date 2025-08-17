@@ -21,7 +21,7 @@ from django.utils import timezone
 from rest_framework.test import APIClient
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from django_axes.models import AccessAttempt
+# from django_axes.models import AccessAttempt
 from django_axes.helpers import get_client_ip_address
 
 from tests.factories import UserFactory, AdminUserFactory

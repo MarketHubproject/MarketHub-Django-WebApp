@@ -1,3 +1,7 @@
+"""
+Fresh Django settings for markethub project.
+"""
+
 from pathlib import Path
 import os
 
@@ -6,7 +10,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-2!q%^8-0tdl57)##4u_dq!%g8bx#n590f=m(#_%2=%@463+1om'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*']
@@ -32,13 +35,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'homepage.middleware.PaymentSecurityMiddleware',
-    'homepage.middleware.PaymentValidationMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'axes.middleware.AxesMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -66,15 +68,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'markethub.wsgi.application'
 
-# Database - SQLite for development
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-print(f"[NEW SETTINGS.PY] DATABASES configured: {DATABASES}")
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -98,24 +98,20 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Additional directories for static files
 STATICFILES_DIRS = [
     BASE_DIR / 'homepage' / 'static',
 ]
 
-# Whitenoise configuration for static files
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Authentication
 LOGIN_URL = '/login/'
@@ -148,10 +144,10 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': '/api/',
 }
 
-# Email Configuration - Console backend for development
+# Email backend
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Cache Configuration - Local memory cache for development
+# Cache
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
@@ -159,68 +155,78 @@ CACHES = {
     }
 }
 
-# CSRF Protection for development - Relaxed settings
+# CSRF and security settings
 CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
 CSRF_USE_SESSIONS = False
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_NAME = 'csrftoken'
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
+CSRF_FAILURE_VIEW = 'django.views.csrf.csrf_failure'
 
-# Session settings for development
 SESSION_COOKIE_SECURE = False
 SESSION_COOKIE_SAMESITE = 'Lax'
 
-# Content Security Policy (CSP) - Relaxed for development
-CSP_DEFAULT_SRC = ("'self'",)
-CSP_SCRIPT_SRC = (
-    "'self'",
-    "'unsafe-inline'",
-    "'unsafe-eval'",
-    "https://js.stripe.com",
-    "https://cdn.jsdelivr.net",
-    "https://cdnjs.cloudflare.com",
-)
-CSP_STYLE_SRC = (
-    "'self'",
-    "'unsafe-inline'",
-    "https://cdn.jsdelivr.net",
-    "https://cdnjs.cloudflare.com",
-    "https://fonts.googleapis.com",
-)
+# Content Security Policy - updated to new format
+CONTENT_SECURITY_POLICY = {
+    'DIRECTIVES': {
+        'default-src': ("'self'",),
+        'script-src': (
+            "'self'",
+            "'unsafe-inline'",
+            "'unsafe-eval'",
+            'https://js.stripe.com',
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com'
+        ),
+        'style-src': (
+            "'self'",
+            "'unsafe-inline'",
+            'https://cdn.jsdelivr.net',
+            'https://cdnjs.cloudflare.com',
+            'https://fonts.googleapis.com'
+        )
+    }
+}
 
-# Django-Axes (Brute Force Protection)
+# Django-Axes
 AXES_FAILURE_LIMIT = 5
-AXES_COOLOFF_TIME = 1  # 1 hour
+AXES_COOLOFF_TIME = 1
 AXES_RESET_ON_SUCCESS = True
 AXES_ENABLE_ADMIN = True
 AXES_VERBOSE = True
 AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
 
-# Authentication backend for axes
+# Stripe Payment Configuration (Demo keys - replace with real keys in production)
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51234567890abcdef'  # Demo publishable key
+STRIPE_SECRET_KEY = 'sk_test_51234567890abcdef'      # Demo secret key
+STRIPE_WEBHOOK_SECRET = 'whsec_1234567890abcdef'     # Demo webhook secret
+
+# Payment Configuration
+PAYMENT_CURRENCY = 'ZAR'
+PAYMENT_DECIMAL_PLACES = 2
+
+# Authentication backends
 AUTHENTICATION_BACKENDS = [
     'axes.backends.AxesBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# Stripe Payment Configuration
-PAYMENT_ENV = os.environ.get('PAYMENT_ENV', 'test')
+# Stripe configuration
+PAYMENT_ENV = 'test'
+STRIPE_PUBLISHABLE_KEY_TEST = ''
+STRIPE_SECRET_KEY_TEST = ''
+STRIPE_WEBHOOK_SECRET_TEST = ''
 
-# Stripe API Keys - Load from environment variables
-STRIPE_PUBLISHABLE_KEY = os.environ.get('STRIPE_PUBLIC_KEY', 'pk_test_51XXX')
-STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', 'sk_test_51XXX')
-STRIPE_WEBHOOK_SECRET = os.environ.get('STRIPE_WEBHOOK_SECRET', 'whsec_XXX')
-
-# Stripe Configuration Validation
-if PAYMENT_ENV == 'live' and (not STRIPE_SECRET_KEY or STRIPE_SECRET_KEY.startswith('sk_test_')):
-    print("[WARNING] Production environment detected but using test Stripe keys!")
-    
-if not STRIPE_SECRET_KEY or STRIPE_SECRET_KEY == 'sk_test_51XXX':
-    print("[WARNING] Stripe secret key not configured. Payment processing will not work.")
+STRIPE_PUBLISHABLE_KEY = STRIPE_PUBLISHABLE_KEY_TEST
+STRIPE_SECRET_KEY = STRIPE_SECRET_KEY_TEST
+STRIPE_WEBHOOK_SECRET = STRIPE_WEBHOOK_SECRET_TEST
 
 # API Configuration
 API_BASE_URL = 'http://127.0.0.1:8000/api/'
 
-# Environment indicator
+# Environment
 ENVIRONMENT_NAME = 'DEVELOPMENT'
 
-print("[NEW SETTINGS.PY] Settings file loading completed!")
+print(f"Fresh settings loaded! DEBUG={DEBUG}, DATABASES={DATABASES}")

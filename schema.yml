@@ -1,0 +1,592 @@
+openapi: 3.0.3
+info:
+  title: MarketHub API
+  version: 1.0.0
+  description: A premium Django e-commerce platform with comprehensive REST API
+  contact:
+    name: MarketHub Support
+    email: support@markethub.com
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+paths:
+  /api/:
+    get:
+      operationId: root_retrieve
+      description: 'GET: API endpoints overview'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/products/:
+    get:
+      operationId: products_list
+      description: |-
+        GET: List all products with pagination and filtering
+        POST: Create a new product (authenticated users only)
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProductList'
+          description: ''
+    post:
+      operationId: products_create
+      description: |-
+        GET: List all products with pagination and filtering
+        POST: Create a new product (authenticated users only)
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreateUpdate'
+          description: ''
+  /api/products/{id}/:
+    get:
+      operationId: products_retrieve
+      description: |-
+        GET: Retrieve a specific product
+        PUT/PATCH: Update a product (authenticated users only)
+        DELETE: Delete a product (authenticated users only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+          description: ''
+    put:
+      operationId: products_update
+      description: |-
+        GET: Retrieve a specific product
+        PUT/PATCH: Update a product (authenticated users only)
+        DELETE: Delete a product (authenticated users only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductCreateUpdateRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreateUpdate'
+          description: ''
+    patch:
+      operationId: products_partial_update
+      description: |-
+        GET: Retrieve a specific product
+        PUT/PATCH: Update a product (authenticated users only)
+        DELETE: Delete a product (authenticated users only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductCreateUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductCreateUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductCreateUpdateRequest'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreateUpdate'
+          description: ''
+    delete:
+      operationId: products_destroy
+      description: |-
+        GET: Retrieve a specific product
+        PUT/PATCH: Update a product (authenticated users only)
+        DELETE: Delete a product (authenticated users only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - products
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/categories/:
+    get:
+      operationId: categories_retrieve
+      description: 'GET: List all available product categories'
+      tags:
+      - categories
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/cart/:
+    get:
+      operationId: cart_retrieve
+      description: 'GET: Retrieve user''s cart'
+      tags:
+      - cart
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+          description: ''
+  /api/cart/add/{product_id}/:
+    post:
+      operationId: cart_add_create
+      description: 'POST: Add a product to user''s cart'
+      parameters:
+      - in: path
+        name: product_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cart
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/cart/item/{item_id}/:
+    put:
+      operationId: cart_item_update
+      description: |-
+        PUT: Update cart item quantity
+        DELETE: Remove cart item
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cart
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+    delete:
+      operationId: cart_item_destroy
+      description: |-
+        PUT: Update cart item quantity
+        DELETE: Remove cart item
+      parameters:
+      - in: path
+        name: item_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - cart
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/profile/:
+    get:
+      operationId: profile_retrieve
+      description: 'GET: Retrieve user profile information'
+      tags:
+      - profile
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/login/:
+    post:
+      operationId: login_create
+      description: 'POST: Authenticate user and return token'
+      tags:
+      - login
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/logout/:
+    post:
+      operationId: logout_create
+      description: 'POST: Logout user and delete token'
+      tags:
+      - logout
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    Cart:
+      type: object
+      description: Serializer for Cart model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          allOf:
+          - $ref: '#/components/schemas/User'
+          readOnly: true
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+          readOnly: true
+        total_price:
+          type: string
+          readOnly: true
+        total_items:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - items
+      - total_items
+      - total_price
+      - updated_at
+      - user
+    CartItem:
+      type: object
+      description: Serializer for CartItem model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        product:
+          allOf:
+          - $ref: '#/components/schemas/Product'
+          readOnly: true
+        quantity:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        total_price:
+          type: string
+          readOnly: true
+        added_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - added_at
+      - id
+      - product
+      - total_price
+    CategoryEnum:
+      enum:
+      - electronics
+      - clothing
+      - books
+      - furniture
+      - other
+      type: string
+      description: |-
+        * `electronics` - Electronics
+        * `clothing` - Clothing
+        * `books` - Books
+        * `furniture` - Furniture
+        * `other` - Other
+    PaginatedProductList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    PatchedProductCreateUpdateRequest:
+      type: object
+      description: Serializer for creating and updating products
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          minLength: 1
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Price in South African Rands (R)
+        image:
+          type: string
+          format: binary
+          nullable: true
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+    Product:
+      type: object
+      description: Serializer for Product model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Price in South African Rands (R)
+        image:
+          type: string
+          format: uri
+          nullable: true
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        category_display:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category_display
+      - created_at
+      - description
+      - id
+      - name
+      - price
+    ProductCreateUpdate:
+      type: object
+      description: Serializer for creating and updating products
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Price in South African Rands (R)
+        image:
+          type: string
+          format: uri
+          nullable: true
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+      required:
+      - description
+      - name
+      - price
+    ProductCreateUpdateRequest:
+      type: object
+      description: Serializer for creating and updating products
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          minLength: 1
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          description: Price in South African Rands (R)
+        image:
+          type: string
+          format: binary
+          nullable: true
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+      required:
+      - description
+      - name
+      - price
+    User:
+      type: object
+      description: Serializer for User model
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - date_joined
+      - id
+      - username
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
+tags:
+- name: Authentication
+  description: User authentication endpoints
+- name: Products
+  description: Product management operations
+- name: Cart
+  description: Shopping cart functionality
+- name: Orders
+  description: Order processing and management
+- name: Payments
+  description: Payment processing via Stripe
+- name: Categories
+  description: Product category management
+- name: Users
+  description: User profile management
+externalDocs:
+  description: MarketHub Documentation
+  url: https://markethub.com/docs/

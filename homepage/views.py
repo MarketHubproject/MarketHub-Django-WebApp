@@ -4,7 +4,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg, Sum
+from django.db import models
 from django.core.paginator import Paginator
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
@@ -130,17 +131,28 @@ def signup(request):
 
 
 def login_view(request):
+    # Ensure session exists
+    if not request.session.session_key:
+        request.session.save()
+    
+    # Force fresh CSRF token
+    from django.middleware.csrf import get_token
+    csrf_token = get_token(request)
+    print(f"[LOGIN DEBUG] Generated CSRF token: {csrf_token}")
+        
     if request.method == 'POST':
         # Debug CSRF token
         print(f"[LOGIN DEBUG] POST data: {request.POST}")
         print(f"[LOGIN DEBUG] CSRF token from POST: {request.POST.get('csrfmiddlewaretoken')}")
         print(f"[LOGIN DEBUG] CSRF token from COOKIES: {request.COOKIES.get('csrftoken')}")
         print(f"[LOGIN DEBUG] Session key: {request.session.session_key}")
+        print(f"[LOGIN DEBUG] All cookies: {request.COOKIES}")
         
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
-            return redirect('home')
+            next_url = request.GET.get('next', 'home')
+            return redirect(next_url)
         else:
             print(f"[LOGIN DEBUG] Form errors: {form.errors}")
     else:
@@ -463,9 +475,9 @@ def checkout(request):
             # Clear the cart
             cart.items.all().delete()
 
-            # Redirect to order confirmation
-            messages.success(request, f'Order {order.order_number} has been placed successfully!')
-            return redirect('order_confirmation', order_id=order.id)
+            # Redirect to payment page instead of order confirmation
+            messages.success(request, f'Order {order.order_number} created! Please complete payment.')
+            return redirect('checkout_payment', order_id=order.id)
     else:
         form = CheckoutForm(user=request.user)
 
@@ -1450,6 +1462,74 @@ def set_default_payment_method(request, method_id):
     return redirect('payment_methods')
 
 
+@login_required
+def user_profile(request):
+    """Display user profile page"""
+    # Get user's statistics
+    user_orders = Order.objects.filter(user=request.user)
+    user_products = Product.objects.filter(seller=request.user)
+    user_reviews = Review.objects.filter(user=request.user)
+    user_favorites = Favorite.objects.filter(user=request.user)
+    
+    # Calculate some stats
+    total_orders = user_orders.count()
+    total_spent = user_orders.filter(payment_status='paid').aggregate(
+        total=models.Sum('total_amount')
+    )['total'] or 0
+    
+    total_products_sold = user_products.filter(status='sold').count()
+    total_earnings = user_orders.filter(
+        items__product__seller=request.user,
+        payment_status='paid'
+    ).aggregate(
+        total=models.Sum('items__price')
+    )['total'] or 0
+    
+    context = {
+        'user': request.user,
+        'total_orders': total_orders,
+        'total_spent': total_spent,
+        'total_products_sold': total_products_sold,
+        'total_earnings': total_earnings,
+        'total_reviews': user_reviews.count(),
+        'total_favorites': user_favorites.count(),
+        'recent_orders': user_orders.order_by('-created_at')[:5],
+        'recent_products': user_products.order_by('-created_at')[:5],
+    }
+    
+    return render(request, 'homepage/user_profile.html', context)
+
+
+@login_required
+def user_products(request):
+    """Display user's products (for sellers)"""
+    products = Product.objects.filter(seller=request.user).annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).order_by('-created_at')
+    
+    # Filter by status if requested
+    status_filter = request.GET.get('status')
+    if status_filter and status_filter != 'all':
+        products = products.filter(status=status_filter)
+    
+    # Pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products_page = paginator.get_page(page_number)
+    
+    # Get status choices for filter
+    status_choices = Product.STATUS_CHOICES
+    
+    context = {
+        'products': products_page,
+        'status_choices': status_choices,
+        'current_status': status_filter,
+    }
+    
+    return render(request, 'homepage/my_products.html', context)
+
+
 # Product Draft Views
 @login_required
 def save_product_draft(request):
@@ -1606,6 +1686,24 @@ def auto_save_draft(request):
 
 
 def test_icons(request):
-    """Test page for Bootstrap Icons integration"""
+    """Test page for Bootstrap icons"""
     return render(request, 'homepage/test_icons.html')
+
+
+def style_guide(request):
+    """Modern style guide showcasing the new design system"""
+    return render(request, 'homepage/style_guide.html')
+
+
+def csrf_test(request):
+    """Test CSRF functionality"""
+    from django.middleware.csrf import get_token
+    csrf_token = get_token(request)
+    
+    context = {
+        'csrf_token': csrf_token,
+        'session_key': request.session.session_key,
+        'cookies': request.COOKIES,
+    }
+    return render(request, 'homepage/csrf_test.html', context)
 

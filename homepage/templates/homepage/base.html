@@ -2431,40 +2431,60 @@
     <!-- MarketHub Header -->
     <header class="markethub-header bg-white shadow-sm sticky-top">
 
-        <!-- Modern Header with Glassmorphism -->
-        <nav class="navbar navbar-expand-lg navbar-light py-3">
+        <!-- Modern Header with Enhanced Glassmorphism -->
+        <nav class="navbar navbar-expand-lg navbar-light py-3" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.2);">
             <div class="container-fluid">
                 <!-- Enhanced Logo -->
-                <a class="navbar-brand d-flex align-items-center" href="{% url 'home' %}" 
+                <a class="navbar-brand d-flex align-items-center animate-fade-in-up" href="{% url 'home' %}" 
                    style="font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 1.8rem;">
-                    <i class="bi bi-shop-window text-primary-blue me-3" style="font-size: 2.8rem; filter: drop-shadow(0 4px 8px rgba(37,99,235,0.3));"></i>
+                    <i class="bi bi-shop-window text-primary-blue me-3 animate-gentle-float" style="font-size: 2.8rem; filter: drop-shadow(0 4px 8px rgba(37,99,235,0.3));"></i>
                     <div style="line-height: 1;">
                         <span class="fw-ultra-bold text-primary-blue">MarketHub</span>
                         <small class="d-block text-secondary-blue" style="font-size: 0.75rem; letter-spacing: 0.5px;">PREMIUM MARKETPLACE</small>
                     </div>
                 </a>
 
+                <!-- Mobile Menu Toggle -->
+                <button class="navbar-toggler btn-modern btn-glass" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <!-- Centered Navigation Links -->
                 <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
                     <ul class="navbar-nav nav-pills enhanced-nav" style="gap: 0.75rem;">
                         <li class="nav-item">
-                            <a class="nav-link active fw-bold px-4 py-3" href="{% url 'home' %}" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-house-door me-2" style="font-size: 1.3rem;"></i> Home</a>
+                            <a class="nav-link active btn-modern btn-primary" href="{% url 'home' %}">
+                                <i class="bi bi-house-door me-2"></i> Home
+                            </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle fw-bold px-4 py-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;">
-                                <i class="bi bi-grid me-2" style="font-size: 1.3rem;"></i> Categories
+                            <a class="nav-link dropdown-toggle btn-modern btn-secondary" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-grid me-2"></i> Categories
                             </a>
-                            <ul class="dropdown-menu shadow-lg" aria-labelledby="navbarDropdown">
+                            <ul class="dropdown-menu shadow-lg animate-fade-in-up" aria-labelledby="navbarDropdown" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem;">
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-laptop me-2"></i> Electronics</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-gem me-2"></i> Jewelry</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-brush me-2"></i> Art</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-tools me-2"></i> Tools</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-car-front me-2"></i> Automotive</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-primary" href="#"><i class="bi bi-grid-3x3-gap me-2"></i> View All Categories</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-bold px-4 py-3" href="#" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-lightning-charge me-2" style="font-size: 1.3rem;"></i> Daily Deals</a>
+                            <a class="nav-link btn-modern btn-glass" href="#">
+                                <i class="bi bi-lightning-charge me-2"></i> Daily Deals
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link fw-bold px-4 py-3" href="#" style="font-size: 1.2rem; letter-spacing: 0.8px; text-transform: uppercase;"><i class="bi bi-percent me-2" style="font-size: 1.3rem;"></i> Promotions</a>
+                            <a class="nav-link btn-modern btn-glass" href="#">
+                                <i class="bi bi-percent me-2"></i> Promotions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link btn-modern btn-glass" href="{% url 'style_guide' %}">
+                                <i class="bi bi-palette me-2"></i> Style Guide
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -2472,31 +2492,38 @@
                 <!-- User Actions & Cart -->
                 <div class="d-flex align-items-center" style="gap: 1rem;">
                     <!-- Search Toggle -->
-                    <button class="btn btn-outline-secondary rounded-pill" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse">
+                    <button class="btn-modern btn-glass" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapse">
                         <i class="bi bi-search"></i>
                     </button>
 
                     <!-- Cart Icon -->
-                    <a href="{% url 'view_cart' %}" class="btn btn-primary rounded-pill position-relative cart-icon-modern">
+                    <a href="{% url 'view_cart' %}" class="btn-modern btn-primary position-relative">
                         <i class="bi bi-cart3"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-counter">
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger cart-counter animate-gentle-float">
                             {% if user.is_authenticated and user.cart.items.count %}{{ user.cart.items.count }}{% else %}0{% endif %}
                         </span>
                     </a>
                     
                     <!-- Auth Buttons -->
                     {% if not user.is_authenticated %}
-                        <a href="{% url 'login' %}" class="btn btn-outline-secondary rounded-pill">Sign In</a>
-                        <a href="{% url 'signup' %}" class="btn btn-primary rounded-pill">Register</a>
+                        <a href="{% url 'login' %}" class="btn-modern btn-glass">Sign In</a>
+                        <a href="{% url 'signup' %}" class="btn-modern btn-primary">Register</a>
                     {% else %}
                         <!-- User Dropdown -->
                         <div class="dropdown">
-                            <a href="#" class="btn btn-light rounded-pill dropdown-toggle" role="button" data-bs-toggle="dropdown">
+                            <a href="#" class="btn-modern btn-secondary dropdown-toggle" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-circle me-1"></i> {{ user.username }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg">
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg animate-fade-in-up" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 1rem;">
+                                <li><h6 class="dropdown-header">Account</h6></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-box-seam me-2"></i> My Listings</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-heart me-2"></i> Favorites</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-clock-history me-2"></i> Order History</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><h6 class="dropdown-header">Selling</h6></li>
+                                <li><a class="dropdown-item" href="{% url 'create_product' %}"><i class="bi bi-plus-circle me-2"></i> Sell Item</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="bi bi-graph-up me-2"></i> Analytics</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" action="{% url 'logout' %}" class="d-inline w-100">

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketHub Frontend API Integration Tests</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        .test-result {
+            transition: all 0.3s ease;
+        }
+        .test-success {
+            border-left: 4px solid #28a745;
+        }
+        .test-error {
+            border-left: 4px solid #dc3545;
+        }
+        .test-warning {
+            border-left: 4px solid #ffc107;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+        .spinner-small {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-code-slash text-primary me-2"></i>
+                            MarketHub Frontend API Integration Tests
+                        </h1>
+                        <p class="text-muted mb-0">Test all API endpoints and frontend integrations</p>
+                    </div>
+                    <div>
+                        <button id="runAllTests" class="btn btn-primary">
+                            <i class="bi bi-play-fill me-2"></i>Run All Tests
+                        </button>
+                        <button id="clearResults" class="btn btn-outline-secondary ms-2">
+                            <i class="bi bi-trash me-2"></i>Clear
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Test Controls -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-gear-fill me-2"></i>Test Controls
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="runTestSuite('api')">
+                                <i class="bi bi-cloud me-2"></i>API Connectivity
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="runTestSuite('products')">
+                                <i class="bi bi-box me-2"></i>Products API
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="runTestSuite('cart')">
+                                <i class="bi bi-cart me-2"></i>Cart API
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="runTestSuite('auth')">
+                                <i class="bi bi-person-check me-2"></i>Authentication
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm" onclick="runTestSuite('ui')">
+                                <i class="bi bi-palette me-2"></i>UI Integration
+                            </button>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="mb-3">
+                            <label for="apiBaseUrl" class="form-label">API Base URL</label>
+                            <input type="text" class="form-control form-control-sm" id="apiBaseUrl" 
+                                   value="http://localhost:8000/api" placeholder="API Base URL">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="testToken" class="form-label">Auth Token (optional)</label>
+                            <input type="password" class="form-control form-control-sm" id="testToken" 
+                                   placeholder="Token for authenticated tests">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Test Stats -->
+                <div class="card mt-3">
+                    <div class="card-header bg-light">
+                        <h6 class="card-title mb-0">Test Statistics</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="text-success">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <div class="fw-bold" id="successCount">0</div>
+                                    <small>Passed</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-danger">
+                                    <i class="bi bi-x-circle-fill"></i>
+                                    <div class="fw-bold" id="errorCount">0</div>
+                                    <small>Failed</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-warning">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <div class="fw-bold" id="warningCount">0</div>
+                                    <small>Warnings</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Results -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-list-check me-2"></i>Test Results
+                        </h5>
+                        <div id="testProgress" class="d-none">
+                            <div class="spinner-border spinner-small text-primary me-2" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <small class="text-muted">Running tests...</small>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="testResults">
+                            <div class="text-center text-muted py-5">
+                                <i class="bi bi-play-circle display-4 mb-3"></i>
+                                <h5>Ready to run tests</h5>
+                                <p>Click "Run All Tests" to begin testing all API endpoints and integrations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Test Framework -->
+    <script>
+        // Frontend Integration Test Framework
+        class MarketHubTestFramework {
+            constructor() {
+                this.results = [];
+                this.successCount = 0;
+                this.errorCount = 0;
+                this.warningCount = 0;
+            }
+
+            async runTest(testName, testFunction, suite = 'general') {
+                const startTime = Date.now();
+                
+                try {
+                    const result = await testFunction();
+                    const duration = Date.now() - startTime;
+                    
+                    if (result && result.status === 'warning') {
+                        this.addResult(testName, 'warning', result.message, duration, suite, result.details);
+                        this.warningCount++;
+                    } else {
+                        this.addResult(testName, 'success', result?.message || 'Test passed', duration, suite, result?.details);
+                        this.successCount++;
+                    }
+                } catch (error) {
+                    const duration = Date.now() - startTime;
+                    this.addResult(testName, 'error', error.message, duration, suite, { error: error.stack });
+                    this.errorCount++;
+                }
+                
+                this.updateStats();
+            }
+
+            addResult(name, status, message, duration, suite, details = null) {
+                this.results.push({
+                    name,
+                    status,
+                    message,
+                    duration,
+                    suite,
+                    details,
+                    timestamp: new Date().toISOString()
+                });
+                
+                this.displayResult(this.results[this.results.length - 1]);
+            }
+
+            displayResult(result) {
+                const resultsContainer = document.getElementById('testResults');
+                
+                if (this.results.length === 1) {
+                    resultsContainer.innerHTML = '';
+                }
+
+                const resultElement = document.createElement('div');
+                resultElement.className = `card mb-2 test-result test-${result.status}`;
+                
+                const icon = {
+                    success: 'check-circle-fill text-success',
+                    error: 'x-circle-fill text-danger',
+                    warning: 'exclamation-triangle-fill text-warning'
+                }[result.status];
+
+                resultElement.innerHTML = `
+                    <div class="card-body py-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-start">
+                                <i class="bi bi-${icon} me-2 mt-1"></i>
+                                <div>
+                                    <div class="fw-semibold">${result.name}</div>
+                                    <small class="text-muted">${result.message}</small>
+                                    ${result.details ? `<div class="mt-1"><button class="btn btn-link btn-sm p-0" onclick="toggleDetails(this)">Show details</button></div>` : ''}
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <small class="badge bg-light text-dark">${result.suite}</small>
+                                <div><small class="text-muted">${result.duration}ms</small></div>
+                            </div>
+                        </div>
+                        ${result.details ? `
+                            <div class="details d-none mt-2">
+                                <div class="code-block">
+                                    <pre class="mb-0">${JSON.stringify(result.details, null, 2)}</pre>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+
+                resultsContainer.appendChild(resultElement);
+                resultElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            updateStats() {
+                document.getElementById('successCount').textContent = this.successCount;
+                document.getElementById('errorCount').textContent = this.errorCount;
+                document.getElementById('warningCount').textContent = this.warningCount;
+            }
+
+            showProgress(show = true) {
+                const progress = document.getElementById('testProgress');
+                if (show) {
+                    progress.classList.remove('d-none');
+                } else {
+                    progress.classList.add('d-none');
+                }
+            }
+
+            clear() {
+                this.results = [];
+                this.successCount = 0;
+                this.errorCount = 0;
+                this.warningCount = 0;
+                
+                document.getElementById('testResults').innerHTML = `
+                    <div class="text-center text-muted py-5">
+                        <i class="bi bi-play-circle display-4 mb-3"></i>
+                        <h5>Ready to run tests</h5>
+                        <p>Click "Run All Tests" to begin testing all API endpoints and integrations.</p>
+                    </div>
+                `;
+                
+                this.updateStats();
+            }
+        }
+
+        // Initialize test framework
+        const testFramework = new MarketHubTestFramework();
+
+        // Mock API Client for testing
+        class MockMarketHubAPI {
+            constructor() {
+                this.baseURL = document.getElementById('apiBaseUrl').value || 'http://localhost:8000/api';
+                this.token = document.getElementById('testToken').value || null;
+            }
+
+            async request(endpoint, options = {}) {
+                const url = `${this.baseURL}${endpoint}`;
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(this.token && options.auth !== false ? { 'Authorization': `Token ${this.token}` } : {})
+                    },
+                    ...options
+                };
+
+                const response = await fetch(url, config);
+                const data = await response.json().catch(() => null);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${data?.error || data?.message || 'Request failed'}`);
+                }
+
+                return { data, status: response.status, ok: response.ok };
+            }
+
+            // API Methods
+            async getProducts(params = {}) {
+                const queryString = new URLSearchParams(params).toString();
+                const endpoint = `/products/${queryString ? `?${queryString}` : ''}`;
+                return this.request(endpoint, { auth: false });
+            }
+
+            async getProduct(id) {
+                return this.request(`/products/${id}/`, { auth: false });
+            }
+
+            async getCart() {
+                return this.request('/cart/');
+            }
+
+            async addToCart(productId, quantity = 1) {
+                return this.request(`/cart/add/${productId}/`, {
+                    method: 'POST',
+                    body: JSON.stringify({ product_id: productId, quantity })
+                });
+            }
+
+            async getCategories() {
+                return this.request('/categories/', { auth: false });
+            }
+        }
+
+        // Test Suites
+        const testSuites = {
+            async api() {
+                const api = new MockMarketHubAPI();
+
+                await testFramework.runTest('API Base URL Accessibility', async () => {
+                    const response = await fetch(api.baseURL.replace('/api', ''));
+                    if (!response.ok) throw new Error(`Base URL not accessible: ${response.status}`);
+                    return { message: `Base URL accessible (${response.status})` };
+                }, 'api');
+
+                await testFramework.runTest('API Overview Endpoint', async () => {
+                    try {
+                        const result = await api.request('/overview/', { auth: false });
+                        return { message: 'API overview endpoint working', details: result.data };
+                    } catch (error) {
+                        if (error.message.includes('404')) {
+                            return { 
+                                status: 'warning', 
+                                message: 'API overview endpoint not found (not implemented)',
+                                details: { note: 'This is expected if the overview endpoint is not implemented' }
+                            };
+                        }
+                        throw error;
+                    }
+                }, 'api');
+
+                await testFramework.runTest('Product Categories Endpoint', async () => {
+                    const result = await api.getCategories();
+                    const categories = result.data.categories || [];
+                    return { 
+                        message: `Categories endpoint working (${categories.length} categories)`,
+                        details: { categories }
+                    };
+                }, 'api');
+            },
+
+            async products() {
+                const api = new MockMarketHubAPI();
+
+                await testFramework.runTest('Get Products List', async () => {
+                    const result = await api.getProducts();
+                    const products = result.data.results || [];
+                    return { 
+                        message: `Retrieved ${products.length} products`,
+                        details: { count: products.length, sample: products.slice(0, 2) }
+                    };
+                }, 'products');
+
+                await testFramework.runTest('Product Search', async () => {
+                    const result = await api.getProducts({ search: 'test' });
+                    return { 
+                        message: `Search functionality working`,
+                        details: { results: result.data.results?.length || 0 }
+                    };
+                }, 'products');
+
+                await testFramework.runTest('Product Filtering', async () => {
+                    const result = await api.getProducts({ category: 'electronics' });
+                    return { 
+                        message: `Filter functionality working`,
+                        details: { filtered_count: result.data.results?.length || 0 }
+                    };
+                }, 'products');
+
+                await testFramework.runTest('Get Single Product', async () => {
+                    // First get a product list to get an ID
+                    const products = await api.getProducts();
+                    if (!products.data.results || products.data.results.length === 0) {
+                        return { 
+                            status: 'warning', 
+                            message: 'No products available to test single product retrieval',
+                            details: { note: 'Create some products first' }
+                        };
+                    }
+                    
+                    const productId = products.data.results[0].id;
+                    const result = await api.getProduct(productId);
+                    return { 
+                        message: `Retrieved single product successfully`,
+                        details: { product: result.data }
+                    };
+                }, 'products');
+            },
+
+            async cart() {
+                const api = new MockMarketHubAPI();
+
+                if (!api.token) {
+                    await testFramework.runTest('Cart Access (Unauthenticated)', async () => {
+                        try {
+                            await api.getCart();
+                            throw new Error('Cart should not be accessible without authentication');
+                        } catch (error) {
+                            if (error.message.includes('403') || error.message.includes('401')) {
+                                return { message: 'Cart properly protected (authentication required)' };
+                            }
+                            throw error;
+                        }
+                    }, 'cart');
+                    return;
+                }
+
+                await testFramework.runTest('Get Cart', async () => {
+                    const result = await api.getCart();
+                    return { 
+                        message: `Cart retrieved successfully`,
+                        details: { cart: result.data }
+                    };
+                }, 'cart');
+
+                await testFramework.runTest('Add to Cart', async () => {
+                    // Get a product to add
+                    const products = await api.getProducts();
+                    if (!products.data.results || products.data.results.length === 0) {
+                        return { 
+                            status: 'warning', 
+                            message: 'No products available to test add to cart',
+                            details: { note: 'Create some products first' }
+                        };
+                    }
+                    
+                    const productId = products.data.results[0].id;
+                    const result = await api.addToCart(productId);
+                    return { 
+                        message: `Successfully added product to cart`,
+                        details: { result: result.data }
+                    };
+                }, 'cart');
+            },
+
+            async auth() {
+                await testFramework.runTest('Token Authentication Check', async () => {
+                    const token = document.getElementById('testToken').value;
+                    if (!token) {
+                        return { 
+                            status: 'warning', 
+                            message: 'No auth token provided for authentication tests',
+                            details: { note: 'Enter a valid token to test authenticated endpoints' }
+                        };
+                    }
+                    
+                    // Test token validity with a protected endpoint
+                    const api = new MockMarketHubAPI();
+                    try {
+                        await api.getCart();
+                        return { message: 'Authentication token is valid' };
+                    } catch (error) {
+                        if (error.message.includes('401') || error.message.includes('403')) {
+                            throw new Error('Authentication token is invalid');
+                        }
+                        throw error;
+                    }
+                }, 'auth');
+            },
+
+            async ui() {
+                await testFramework.runTest('Bootstrap CSS Loading', async () => {
+                    const bootstrapElement = document.querySelector('.btn');
+                    const styles = window.getComputedStyle(bootstrapElement);
+                    if (styles.borderRadius) {
+                        return { message: 'Bootstrap CSS loaded successfully' };
+                    }
+                    throw new Error('Bootstrap CSS not loaded properly');
+                }, 'ui');
+
+                await testFramework.runTest('Bootstrap Icons Loading', async () => {
+                    const iconElement = document.querySelector('.bi');
+                    if (iconElement) {
+                        return { message: 'Bootstrap Icons loaded successfully' };
+                    }
+                    throw new Error('Bootstrap Icons not loaded');
+                }, 'ui');
+
+                await testFramework.runTest('DOM Ready State', async () => {
+                    if (document.readyState === 'complete') {
+                        return { message: 'DOM fully loaded and ready' };
+                    }
+                    return { 
+                        status: 'warning', 
+                        message: `DOM state: ${document.readyState}`,
+                        details: { readyState: document.readyState }
+                    };
+                }, 'ui');
+
+                await testFramework.runTest('Test Framework Initialization', async () => {
+                    if (typeof testFramework !== 'undefined' && testFramework.runTest) {
+                        return { message: 'Test framework initialized successfully' };
+                    }
+                    throw new Error('Test framework not properly initialized');
+                }, 'ui');
+            }
+        };
+
+        // Test Runner Functions
+        async function runTestSuite(suiteName) {
+            if (!testSuites[suiteName]) {
+                console.error(`Test suite '${suiteName}' not found`);
+                return;
+            }
+
+            testFramework.showProgress(true);
+            
+            try {
+                await testSuites[suiteName]();
+            } catch (error) {
+                console.error(`Error running ${suiteName} test suite:`, error);
+            } finally {
+                testFramework.showProgress(false);
+            }
+        }
+
+        async function runAllTests() {
+            testFramework.clear();
+            testFramework.showProgress(true);
+
+            const suiteNames = Object.keys(testSuites);
+            
+            for (const suiteName of suiteNames) {
+                try {
+                    await testSuites[suiteName]();
+                } catch (error) {
+                    console.error(`Error running ${suiteName} test suite:`, error);
+                }
+            }
+            
+            testFramework.showProgress(false);
+            
+            // Show summary
+            const total = testFramework.successCount + testFramework.errorCount + testFramework.warningCount;
+            console.log(`Test Summary: ${testFramework.successCount}/${total} passed, ${testFramework.errorCount} failed, ${testFramework.warningCount} warnings`);
+        }
+
+        function clearResults() {
+            testFramework.clear();
+        }
+
+        function toggleDetails(button) {
+            const details = button.closest('.card-body').querySelector('.details');
+            if (details) {
+                details.classList.toggle('d-none');
+                button.textContent = details.classList.contains('d-none') ? 'Show details' : 'Hide details';
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('runAllTests').addEventListener('click', runAllTests);
+        document.getElementById('clearResults').addEventListener('click', clearResults);
+
+        // Update API base URL when changed
+        document.getElementById('apiBaseUrl').addEventListener('change', function() {
+            console.log('API Base URL updated to:', this.value);
+        });
+
+        // Auto-run basic tests when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Frontend Integration Test Framework loaded');
+            
+            // Auto-run UI tests after a short delay
+            setTimeout(() => {
+                runTestSuite('ui');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

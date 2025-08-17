@@ -1,6 +1,14 @@
-// MarketHub Main Stylesheet
+// MarketHub Main Stylesheet - Modern Design System
 // Import variables first using modern @use syntax
 @use 'markethub_variables' as *;
+// Import modern design tokens and enhanced variables
+@import 'markethub_modern_variables';
+// Import modern effects and utility mixins
+@import 'effects';
+// Import modern button system
+@import 'modern_buttons';
+// Import modern card system
+@import 'modern_cards';
 // Import icon utilities
 @import 'icons';
 

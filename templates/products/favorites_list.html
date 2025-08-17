@@ -1,0 +1,108 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}My Favorites - MarketHub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header mb-4">
+                <h1>My Favorites</h1>
+                <p class="text-muted">Products you've saved for later</p>
+            </div>
+        </div>
+    </div>
+
+    {% if favorites %}
+        <div class="row">
+            {% for favorite in favorites %}
+                <div class="col-md-4 col-sm-6 mb-4">
+                    <div class="card product-card h-100">
+                        {% if favorite.product.image %}
+                            <img src="{{ favorite.product.image.url }}" class="card-img-top" alt="{{ favorite.product.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ favorite.product.name }}</h5>
+                            <p class="card-text text-muted small">{{ favorite.product.description|truncatewords:15 }}</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h5 text-success mb-0">${{ favorite.product.price }}</span>
+                                    <small class="text-muted">{{ favorite.product.location|title }}</small>
+                                </div>
+                                
+                                <div class="d-flex gap-2">
+                                    <a href="{% url 'product_detail' pk=favorite.product.pk %}" class="btn btn-primary flex-fill">
+                                        View Details
+                                    </a>
+                                    <button class="btn btn-outline-danger" onclick="removeFavorite({{ favorite.product.id }}, this)" title="Remove from favorites">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-person"></i> {{ favorite.product.seller.username }}
+                                    </small>
+                                    <small class="text-muted">
+                                        Added {{ favorite.created_at|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-heart display-1 text-muted mb-3"></i>
+                    <h3 class="text-muted">No favorites yet</h3>
+                    <p class="text-muted">Start browsing products and add them to your favorites!</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-primary">Browse Products</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function removeFavorite(productId, button) {
+    if (confirm('Remove this item from your favorites?')) {
+        fetch(`/products/toggle-favorite/${productId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remove the product card from the page
+                const card = button.closest('.col-md-4');
+                card.remove();
+                
+                // Check if there are no more favorites
+                const remainingCards = document.querySelectorAll('.product-card');
+                if (remainingCards.length === 0) {
+                    location.reload(); // Reload to show "no favorites" message
+                }
+            } else {
+                alert('Error removing favorite. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error removing favorite. Please try again.');
+        });
+    }
+}
+</script>
+{% endblock %}

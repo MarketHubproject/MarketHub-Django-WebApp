@@ -122,7 +122,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Stripe with CSRF-safe method
-    const stripe = Stripe('{{ settings.STRIPE_PUBLISHABLE_KEY }}');
+    const stripe = Stripe('{{ stripe_public_key }}');
     const elements = stripe.elements();
     
     // Create an instance of the card Element
@@ -193,31 +193,37 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
         
         try {
-            // Create payment intent
-            const response = await fetch(`/api/stripe/create-payment-intent/{{ order.id }}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                }
+            // Create payment intent using API client
+            const orderData = {
+                order_id: {{ order.id }},
+                amount: {{ order.total_amount }},
+                currency: 'zar'
+            };
+            
+            const intentResponse = await MarketHubAPI.createPaymentIntent(orderData);
+            const data = intentResponse.data;
+            
+            if (!data.client_secret) {
+                throw new Error(data.error || 'Failed to create payment intent');
+            }
+            
+            // Create payment method first
+            const {error: pmError, paymentMethod} = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+                billing_details: {
+                    name: '{{ order.first_name }} {{ order.last_name }}',
+                    email: '{{ order.email }}',
+                },
             });
             
-            const data = await response.json();
-            
-            if (!data.success) {
-                throw new Error(data.error || 'Failed to create payment intent');
+            if (pmError) {
+                throw new Error(pmError.message);
             }
             
             // Confirm payment with Stripe
             const result = await stripe.confirmCardPayment(data.client_secret, {
-                payment_method: {
-                    card: cardElement,
-                    billing_details: {
-                        name: '{{ order.get_full_name }}',
-                        email: '{{ order.email }}',
-                    },
-                },
-                setup_future_usage: document.getElementById('save_payment_method').checked ? 'off_session' : undefined
+                payment_method: paymentMethod.id
             });
             
             if (result.error) {
@@ -233,26 +239,23 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 // Payment succeeded
                 if (result.paymentIntent.status === 'succeeded') {
-                    // Confirm payment with our backend
-                    const confirmResponse = await fetch('/api/stripe/confirm-payment/', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                        },
-                        body: JSON.stringify({
-                            payment_intent_id: result.paymentIntent.id
-                        })
-                    });
-                    
-                    const confirmData = await confirmResponse.json();
-                    
-                    if (confirmData.success) {
-                        // Redirect to success page
-                        window.location.href = confirmData.redirect_url;
-                    } else {
-                        throw new Error(confirmData.error || 'Payment confirmation failed');
+                    // Save payment method if requested
+                    const saveMethod = document.getElementById('save_payment_method').checked;
+                    if (saveMethod) {
+                        try {
+                            await MarketHubAPI.savePaymentMethod(paymentMethod.id);
+                        } catch (saveError) {
+                            console.warn('Failed to save payment method:', saveError);
+                        }
                     }
+                    
+                    // Show success message and redirect
+                    submitButton.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Payment Successful!';
+                    submitButton.className = 'btn btn-success btn-lg rounded-pill px-4';
+                    
+                    setTimeout(() => {
+                        window.location.href = `/order-confirmation/${data.payment_intent_id || result.paymentIntent.id}/`;
+                    }, 2000);
                 }
             }
         } catch (error) {

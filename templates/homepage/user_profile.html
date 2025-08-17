@@ -1,0 +1,215 @@
+{% extends 'homepage/base.html' %}
+
+{% block title %}User Profile - MarketHub{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="page-header mb-4">
+                <h1>My Profile</h1>
+                <p class="text-muted">Account overview and statistics</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- User Information -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2rem;">
+                            {{ user.username|first|upper }}
+                        </div>
+                    </div>
+                    <h5 class="card-title">{{ user.username }}</h5>
+                    <p class="text-muted">{{ user.email }}</p>
+                    <small class="text-muted">Member since {{ user.date_joined|date:"M Y" }}</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="col-md-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">Account Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <div class="h3 text-primary">{{ total_orders }}</div>
+                                <div class="text-muted">Orders</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <div class="h3 text-success">${{ total_spent|floatformat:2 }}</div>
+                                <div class="text-muted">Total Spent</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <div class="h3 text-info">{{ total_favorites }}</div>
+                                <div class="text-muted">Favorites</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="stat-item">
+                                <div class="h3 text-warning">{{ total_reviews }}</div>
+                                <div class="text-muted">Reviews</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seller Statistics (if user has products) -->
+    {% if total_products_sold > 0 or total_earnings > 0 %}
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Seller Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="h3 text-success">{{ total_products_sold }}</div>
+                                <div class="text-muted">Products Sold</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="stat-item">
+                                <div class="h3 text-primary">${{ total_earnings|floatformat:2 }}</div>
+                                <div class="text-muted">Total Earnings</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <!-- Recent Orders -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Orders</h5>
+                    <a href="{% url 'my_orders' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_orders %}
+                        <div class="list-group list-group-flush">
+                            {% for order in recent_orders %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Order #{{ order.order_number }}</h6>
+                                            <p class="mb-1 text-muted small">${{ order.total_amount }}</p>
+                                            <small class="text-muted">{{ order.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                        <span class="badge 
+                                            {% if order.status == 'delivered' %}bg-success
+                                            {% elif order.status == 'processing' %}bg-primary
+                                            {% elif order.status == 'cancelled' %}bg-danger
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ order.get_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No orders yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Products -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Products</h5>
+                    <a href="{% url 'my_products' %}" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    {% if recent_products %}
+                        <div class="list-group list-group-flush">
+                            {% for product in recent_products %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">{{ product.name|truncatechars:30 }}</h6>
+                                            <p class="mb-1 text-muted small">${{ product.price }}</p>
+                                            <small class="text-muted">{{ product.created_at|date:"M d, Y" }}</small>
+                                        </div>
+                                        <span class="badge 
+                                            {% if product.status == 'available' %}bg-success
+                                            {% elif product.status == 'sold' %}bg-primary
+                                            {% elif product.status == 'pending' %}bg-warning
+                                            {% else %}bg-secondary{% endif %}">
+                                            {{ product.get_status_display }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No products yet</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-2">
+                            <a href="{% url 'create_product' %}" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle"></i> List New Product
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{% url 'favorites' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-heart"></i> View Favorites
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{% url 'my_orders' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-box-seam"></i> My Orders
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-2">
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-search"></i> Browse Products
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-item {
+    padding: 1rem;
+}
+</style>
+{% endblock %}

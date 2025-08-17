@@ -23,6 +23,7 @@ django-csp==3.8
 django-secure==1.0.2
 django-axes==6.4.0
 bleach==6.1.0
+django-ratelimit==4.1.0
 
 # Database
 psycopg2-binary==2.9.10

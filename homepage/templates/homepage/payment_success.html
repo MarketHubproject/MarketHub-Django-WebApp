@@ -1,0 +1,461 @@
+{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}Payment Successful - MarketHub{% endblock %}
+
+{% block extra_head %}
+<style>
+    .success-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+    
+    .success-header {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+    
+    .success-icon {
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: successPulse 2s ease-in-out infinite;
+    }
+    
+    .checkmark {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 3px solid white;
+        position: relative;
+        animation: checkmark 0.8s ease-in-out;
+    }
+    
+    .checkmark:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 30%;
+        width: 12px;
+        height: 6px;
+        border: 3px solid white;
+        border-top: none;
+        border-right: none;
+        transform: translate(-50%, -80%) rotate(-45deg);
+        animation: checkmarkDraw 0.5s ease-in-out 0.3s forwards;
+        opacity: 0;
+    }
+    
+    .celebration-confetti {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+    }
+    
+    .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #007bff;
+        animation: confettiFall 3s ease-out forwards;
+    }
+    
+    .confetti-piece:nth-child(2n) { background: #28a745; }
+    .confetti-piece:nth-child(3n) { background: #ffc107; }
+    .confetti-piece:nth-child(4n) { background: #dc3545; }
+    .confetti-piece:nth-child(5n) { background: #6f42c1; }
+    
+    .order-summary-box {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .next-steps {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .action-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .action-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        border-color: #007bff;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .action-card-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .social-share {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    .social-share-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .social-btn {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: transform 0.2s ease;
+    }
+    
+    .social-btn:hover {
+        transform: scale(1.1);
+        text-decoration: none;
+        color: white;
+    }
+    
+    .facebook { background: #3b5998; }
+    .twitter { background: #1da1f2; }
+    .whatsapp { background: #25d366; }
+    .email { background: #6c757d; }
+    
+    @keyframes successPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+    
+    @keyframes checkmark {
+        0% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes checkmarkDraw {
+        to { opacity: 1; }
+    }
+    
+    @keyframes confettiFall {
+        0% {
+            transform: translateY(-100vh) rotate(0deg);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(100vh) rotate(360deg);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="success-container">
+                <!-- Celebration Confetti -->
+                <div class="celebration-confetti" id="confetti-container"></div>
+                
+                <!-- Success Header -->
+                <div class="success-header">
+                    <div class="success-icon">
+                        <div class="checkmark"></div>
+                    </div>
+                    <h1 class="display-4 mb-3">Payment Successful!</h1>
+                    <p class="lead mb-4">🎉 Congratulations! Your payment has been processed successfully.</p>
+                    <p class="mb-0">Thank you for choosing MarketHub. We're excited to fulfill your order!</p>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="p-4">
+                    {% if order %}
+                    <div class="order-summary-box">
+                        <h4 class="mb-3">
+                            <i class="bi bi-receipt text-primary me-2"></i>
+                            Order Summary
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <strong>Order Number:</strong><br>
+                                    <span class="text-primary">#{{ order.id|stringformat:"06d" }}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Order Date:</strong><br>
+                                    {{ order.created_at|date:"F d, Y \a\t g:i A" }}
+                                </div>
+                                <div>
+                                    <strong>Items:</strong><br>
+                                    {{ order.items.count }} item{{ order.items.count|pluralize }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <strong>Total Paid:</strong><br>
+                                    <span class="h4 text-success">R{{ order.total_amount }}</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong>Payment Method:</strong><br>
+                                    <i class="bi bi-credit-card me-1"></i>
+                                    Credit Card
+                                </div>
+                                <div>
+                                    <strong>Status:</strong><br>
+                                    <span class="badge bg-success">Confirmed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Next Steps -->
+                    <div class="next-steps">
+                        <h5 class="mb-3">
+                            <i class="bi bi-clock-history text-primary me-2"></i>
+                            What Happens Next?
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="step-number bg-primary text-white rounded-circle mx-auto mb-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">1</div>
+                                <strong>Confirmation Email</strong>
+                                <p class="small text-muted mb-0">You'll receive an order confirmation within 5 minutes</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="step-number bg-warning text-white rounded-circle mx-auto mb-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">2</div>
+                                <strong>Order Processing</strong>
+                                <p class="small text-muted mb-0">We'll prepare your items for shipment (1-2 business days)</p>
+                            </div>
+                            <div class="col-md-4 text-center mb-3">
+                                <div class="step-number bg-success text-white rounded-circle mx-auto mb-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">3</div>
+                                <strong>Shipping & Delivery</strong>
+                                <p class="small text-muted mb-0">Track your package and receive it in 3-5 business days</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Cards -->
+                    <div class="action-cards">
+                        {% if order %}
+                        <a href="{% url 'order_confirmation' order.id %}" class="action-card">
+                            <div class="action-card-icon">
+                                <i class="bi bi-file-text"></i>
+                            </div>
+                            <h6>View Order Details</h6>
+                            <p class="small text-muted mb-0">See complete order information and tracking</p>
+                        </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'home' %}" class="action-card">
+                            <div class="action-card-icon">
+                                <i class="bi bi-house"></i>
+                            </div>
+                            <h6>Continue Shopping</h6>
+                            <p class="small text-muted mb-0">Discover more amazing products</p>
+                        </a>
+                        
+                        <a href="{% url 'user_orders' %}" class="action-card">
+                            <div class="action-card-icon">
+                                <i class="bi bi-list-ul"></i>
+                            </div>
+                            <h6>Order History</h6>
+                            <p class="small text-muted mb-0">View all your previous orders</p>
+                        </a>
+                        
+                        <a href="mailto:support@markethub.com" class="action-card">
+                            <div class="action-card-icon">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <h6>Need Help?</h6>
+                            <p class="small text-muted mb-0">Contact our customer support team</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Social Share -->
+                    <div class="social-share">
+                        <h6>Spread the Love!</h6>
+                        <p class="small text-muted mb-0">Share your MarketHub experience with friends and family</p>
+                        <div class="social-share-buttons">
+                            <a href="#" class="social-btn facebook" title="Share on Facebook">
+                                <i class="bi bi-facebook"></i>
+                            </a>
+                            <a href="#" class="social-btn twitter" title="Share on Twitter">
+                                <i class="bi bi-twitter"></i>
+                            </a>
+                            <a href="#" class="social-btn whatsapp" title="Share on WhatsApp">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                            <a href="mailto:?subject=Great shopping experience at MarketHub!" class="social-btn email" title="Share via Email">
+                                <i class="bi bi-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Support Information -->
+                    <div class="alert alert-info">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-info-circle me-3 mt-1"></i>
+                            <div>
+                                <strong>Need assistance?</strong><br>
+                                Our customer support team is here to help! Contact us at 
+                                <a href="mailto:support@markethub.com">support@markethub.com</a> or 
+                                call <a href="tel:+27123456789">+27 12 345 6789</a>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Create confetti animation
+    createConfetti();
+    
+    // Play success sound if available
+    if (window.AudioContext || window.webkitAudioContext) {
+        playSuccessSound();
+    }
+    
+    // Update social share links
+    updateSocialLinks();
+    
+    // Track success event for analytics
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'payment_success', {
+            event_category: 'ecommerce',
+            event_label: 'payment_completed',
+            {% if order %}
+            value: {{ order.total_amount }},
+            currency: 'ZAR',
+            transaction_id: '{{ order.id }}'
+            {% endif %}
+        });
+    }
+    
+    console.log('Payment success page loaded');
+});
+
+function createConfetti() {
+    const container = document.getElementById('confetti-container');
+    const colors = ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1'];
+    
+    // Create 50 confetti pieces
+    for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-piece';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 3 + 's';
+            confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            
+            container.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                confetti.remove();
+            }, 5000);
+        }, i * 100);
+    }
+}
+
+function playSuccessSound() {
+    try {
+        // Create a simple success sound using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(1000, audioContext.currentTime + 0.1);
+        oscillator.frequency.setValueAtTime(1200, audioContext.currentTime + 0.2);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+    } catch (error) {
+        console.log('Could not play success sound:', error);
+    }
+}
+
+function updateSocialLinks() {
+    const url = window.location.href;
+    const text = "I just had a great shopping experience at MarketHub!";
+    
+    // Update social share links
+    document.querySelector('.facebook').href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+    document.querySelector('.twitter').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    document.querySelector('.whatsapp').href = `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`;
+}
+
+// Auto-redirect to order details after 10 seconds if order exists
+{% if order %}
+setTimeout(function() {
+    if (confirm('Would you like to view your order details?')) {
+        window.location.href = '{% url "order_confirmation" order.id %}';
+    }
+}, 10000);
+{% endif %}
+
+// Add celebration class to body for any additional styling
+document.body.classList.add('celebration-mode');
+</script>
+{% endblock %}

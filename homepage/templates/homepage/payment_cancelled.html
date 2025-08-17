@@ -1,0 +1,520 @@
+{% extends "homepage/base.html" %}
+{% load static %}
+
+{% block title %}Payment Cancelled - MarketHub{% endblock %}
+
+{% block extra_head %}
+<style>
+    .cancelled-container {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin: 2rem 0;
+    }
+    
+    .cancelled-header {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+    
+    .cancelled-icon {
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        animation: pulseGently 3s ease-in-out infinite;
+    }
+    
+    .x-mark {
+        width: 50px;
+        height: 50px;
+        position: relative;
+        animation: xMarkAppear 0.8s ease-in-out;
+    }
+    
+    .x-mark:before,
+    .x-mark:after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 3px;
+        background: white;
+        border-radius: 2px;
+        transform-origin: center;
+    }
+    
+    .x-mark:before {
+        transform: translate(-50%, -50%) rotate(45deg);
+        animation: xLine1 0.4s ease-in-out 0.4s forwards;
+        opacity: 0;
+    }
+    
+    .x-mark:after {
+        transform: translate(-50%, -50%) rotate(-45deg);
+        animation: xLine2 0.4s ease-in-out 0.6s forwards;
+        opacity: 0;
+    }
+    
+    .info-box {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .help-section {
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+    
+    .action-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+    
+    .action-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .action-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        border-color: #007bff;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .action-card-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+    
+    .action-card-icon.primary {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    }
+    
+    .action-card-icon.success {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    }
+    
+    .action-card-icon.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    }
+    
+    .action-card-icon.secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    }
+    
+    .reasons-list {
+        background: white;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+    }
+    
+    .reason-item {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .reason-item:last-child {
+        border-bottom: none;
+    }
+    
+    .reason-icon {
+        width: 40px;
+        height: 40px;
+        background: #f8f9fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: #6c757d;
+    }
+    
+    .cart-reminder {
+        background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+        text-align: center;
+    }
+    
+    .contact-support {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 2rem;
+        margin: 2rem 0;
+    }
+    
+    @keyframes pulseGently {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+    }
+    
+    @keyframes xMarkAppear {
+        0% { transform: scale(0); opacity: 0; }
+        50% { transform: scale(1.1); opacity: 1; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes xLine1 {
+        to { opacity: 1; }
+    }
+    
+    @keyframes xLine2 {
+        to { opacity: 1; }
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.6s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="cancelled-container fade-in">
+                <!-- Cancelled Header -->
+                <div class="cancelled-header">
+                    <div class="cancelled-icon">
+                        <div class="x-mark"></div>
+                    </div>
+                    <h1 class="display-5 mb-3">Payment Cancelled</h1>
+                    <p class="lead mb-4">Your payment has been cancelled and no charges were made to your account.</p>
+                    <p class="mb-0">Don't worry - your items are still saved in your cart!</p>
+                </div>
+                
+                <!-- Information Section -->
+                <div class="p-4">
+                    <div class="info-box">
+                        <h4 class="mb-3">
+                            <i class="bi bi-info-circle text-primary me-2"></i>
+                            What Happened?
+                        </h4>
+                        <p class="mb-3">Your payment was cancelled before completion. This can happen for several reasons:</p>
+                        
+                        <div class="reasons-list">
+                            <div class="reason-item">
+                                <div class="reason-icon">
+                                    <i class="bi bi-person-x"></i>
+                                </div>
+                                <div>
+                                    <strong>You cancelled the payment</strong>
+                                    <p class="mb-0 small text-muted">You decided to cancel the payment process</p>
+                                </div>
+                            </div>
+                            
+                            <div class="reason-item">
+                                <div class="reason-icon">
+                                    <i class="bi bi-wifi-off"></i>
+                                </div>
+                                <div>
+                                    <strong>Connection issue</strong>
+                                    <p class="mb-0 small text-muted">A network problem interrupted the payment</p>
+                                </div>
+                            </div>
+                            
+                            <div class="reason-item">
+                                <div class="reason-icon">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+                                <div>
+                                    <strong>Session timeout</strong>
+                                    <p class="mb-0 small text-muted">The payment session expired due to inactivity</p>
+                                </div>
+                            </div>
+                            
+                            <div class="reason-item">
+                                <div class="reason-icon">
+                                    <i class="bi bi-shield-x"></i>
+                                </div>
+                                <div>
+                                    <strong>Security check</strong>
+                                    <p class="mb-0 small text-muted">Additional verification was required</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cart Reminder -->
+                    <div class="cart-reminder">
+                        <h5 class="mb-3">
+                            <i class="bi bi-cart-check text-primary me-2"></i>
+                            Your Items Are Safe
+                        </h5>
+                        <p class="mb-3">Good news! All your selected items are still saved in your cart and ready for checkout whenever you're ready.</p>
+                        <div class="d-flex justify-content-center">
+                            <a href="{% url 'cart' %}" class="btn btn-primary btn-lg me-3">
+                                <i class="bi bi-cart me-2"></i>
+                                View Cart
+                            </a>
+                            <a href="{% url 'checkout' %}" class="btn btn-success btn-lg">
+                                <i class="bi bi-arrow-right me-2"></i>
+                                Try Again
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Help Section -->
+                    <div class="help-section">
+                        <h5 class="mb-3">
+                            <i class="bi bi-lightbulb text-warning me-2"></i>
+                            Having Trouble with Payments?
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Try These Solutions:</h6>
+                                <ul class="mb-3">
+                                    <li>Check your internet connection</li>
+                                    <li>Ensure your card details are correct</li>
+                                    <li>Try a different payment method</li>
+                                    <li>Clear your browser cache and cookies</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Alternative Payment Options:</h6>
+                                <ul class="mb-3">
+                                    <li>Credit or Debit Card</li>
+                                    <li>PayPal (if available)</li>
+                                    <li>Bank Transfer</li>
+                                    <li>Mobile Payment Apps</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Cards -->
+                    <div class="action-cards">
+                        <a href="{% url 'checkout' %}" class="action-card">
+                            <div class="action-card-icon success">
+                                <i class="bi bi-credit-card"></i>
+                            </div>
+                            <h6>Try Payment Again</h6>
+                            <p class="small text-muted mb-0">Complete your purchase with secure payment</p>
+                        </a>
+                        
+                        <a href="{% url 'cart' %}" class="action-card">
+                            <div class="action-card-icon primary">
+                                <i class="bi bi-cart"></i>
+                            </div>
+                            <h6>Review Cart</h6>
+                            <p class="small text-muted mb-0">Check your items before checkout</p>
+                        </a>
+                        
+                        <a href="{% url 'home' %}" class="action-card">
+                            <div class="action-card-icon secondary">
+                                <i class="bi bi-house"></i>
+                            </div>
+                            <h6>Continue Shopping</h6>
+                            <p class="small text-muted mb-0">Browse more products</p>
+                        </a>
+                        
+                        <a href="{% url 'saved_payment_methods' %}" class="action-card">
+                            <div class="action-card-icon warning">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <h6>Payment Methods</h6>
+                            <p class="small text-muted mb-0">Manage your saved payment options</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Contact Support -->
+                    <div class="contact-support">
+                        <div class="row align-items-center">
+                            <div class="col-md-2 text-center">
+                                <div class="support-icon">
+                                    <i class="bi bi-headset display-4 text-primary"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="mb-2">Need Help?</h5>
+                                <p class="mb-3">If you continue to experience payment issues, our customer support team is here to help you complete your purchase.</p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="mailto:support@markethub.com" class="btn btn-outline-primary">
+                                        <i class="bi bi-envelope me-2"></i>
+                                        Email Support
+                                    </a>
+                                    <a href="tel:+27123456789" class="btn btn-outline-primary">
+                                        <i class="bi bi-telephone me-2"></i>
+                                        Call Us
+                                    </a>
+                                    <button class="btn btn-outline-primary" onclick="openLiveChat()">
+                                        <i class="bi bi-chat-dots me-2"></i>
+                                        Live Chat
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Security Notice -->
+                    <div class="alert alert-success d-flex align-items-center">
+                        <i class="bi bi-shield-check me-3"></i>
+                        <div>
+                            <strong>Your Security is Our Priority</strong><br>
+                            No payment information was processed or stored during this cancelled transaction. Your financial data remains completely secure.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Track cancellation event for analytics
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'payment_cancelled', {
+            event_category: 'ecommerce',
+            event_label: 'payment_process_cancelled',
+            value: 0
+        });
+    }
+    
+    // Add fade-in effect to action cards
+    const actionCards = document.querySelectorAll('.action-card');
+    actionCards.forEach((card, index) => {
+        setTimeout(() => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
+        }, 500);
+    });
+    
+    // Auto-suggest cart review after 5 seconds
+    setTimeout(() => {
+        showCartSuggestion();
+    }, 5000);
+    
+    console.log('Payment cancelled page loaded');
+});
+
+function showCartSuggestion() {
+    // Create a subtle notification suggesting to review cart
+    const suggestion = document.createElement('div');
+    suggestion.className = 'alert alert-info alert-dismissible fade show position-fixed';
+    suggestion.style.top = '20px';
+    suggestion.style.right = '20px';
+    suggestion.style.zIndex = '9999';
+    suggestion.style.maxWidth = '350px';
+    suggestion.innerHTML = `
+        <i class="bi bi-cart me-2"></i>
+        <strong>Don't lose your items!</strong><br>
+        <small>Your cart is waiting for you. Review your items before they sell out.</small>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(suggestion);
+    
+    // Add click handler to go to cart
+    suggestion.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('btn-close')) {
+            window.location.href = '{% url "cart" %}';
+        }
+    });
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (suggestion.parentNode) {
+            suggestion.parentNode.removeChild(suggestion);
+        }
+    }, 10000);
+}
+
+function openLiveChat() {
+    // In a real implementation, this would open your live chat widget
+    // For now, we'll show a modal or redirect to contact form
+    alert('Live chat feature coming soon! Please use email or phone support for immediate assistance.');
+}
+
+// Handle browser back button
+window.addEventListener('popstate', function() {
+    // Suggest going to cart when user tries to go back
+    if (confirm('Would you like to review your cart items before leaving?')) {
+        window.location.href = '{% url "cart" %}';
+    }
+});
+
+// Encourage retry after a delay
+setTimeout(() => {
+    const retryBanner = document.createElement('div');
+    retryBanner.className = 'alert alert-warning alert-dismissible fade show position-fixed';
+    retryBanner.style.bottom = '20px';
+    retryBanner.style.left = '20px';
+    retryBanner.style.right = '20px';
+    retryBanner.style.zIndex = '9998';
+    retryBanner.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <i class="bi bi-clock me-2"></i>
+                <strong>Ready to try again?</strong> 
+                <span>Complete your purchase with just a few clicks!</span>
+            </div>
+            <div>
+                <a href="{% url 'checkout' %}" class="btn btn-success btn-sm me-2">Try Again</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(retryBanner);
+    
+    // Auto-remove after 15 seconds
+    setTimeout(() => {
+        if (retryBanner.parentNode) {
+            retryBanner.parentNode.removeChild(retryBanner);
+        }
+    }, 15000);
+}, 30000); // Show after 30 seconds
+</script>
+{% endblock %}

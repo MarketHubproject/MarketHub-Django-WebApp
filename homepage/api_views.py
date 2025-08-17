@@ -5,16 +5,24 @@ from rest_framework.authtoken.models import Token
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import Product, Cart, CartItem
+from django.db.models import Q
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiResponse, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
+from .models import Product, Cart, CartItem, Order, OrderItem, Review, Favorite
 from .serializers import (
     ProductSerializer, CartSerializer, CartItemSerializer,
-    UserSerializer, ProductCreateUpdateSerializer
+    UserSerializer, ProductCreateUpdateSerializer, LoginSerializer,
+    TokenResponseSerializer, MessageResponseSerializer, ErrorResponseSerializer,
+    CategoriesResponseSerializer, CartItemUpdateSerializer, CartItemResponseSerializer,
+    OrderSerializer, OrderCreateSerializer, OrderItemSerializer,
+    ReviewSerializer, ReviewCreateUpdateSerializer,
+    FavoriteSerializer, FavoriteToggleSerializer, FavoriteToggleResponseSerializer
 )
 
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
     """
-    GET: List all products with pagination and filtering
+    GET: List all products with pagination, filtering, searching, and ordering
     POST: Create a new product (authenticated users only)
     """
     queryset = Product.objects.all().order_by('-created_at')
@@ -26,34 +34,103 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         return ProductSerializer
 
     def get_queryset(self):
-        queryset = Product.objects.all().order_by('-created_at')
+        queryset = Product.objects.all()
 
         # Filter by category
         category = self.request.query_params.get('category', None)
         if category:
             queryset = queryset.filter(category=category)
 
-        # Search by name
+        # Price filtering
+        min_price = self.request.query_params.get('min_price', None)
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        
+        max_price = self.request.query_params.get('max_price', None)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        # Search by name and description
         search = self.request.query_params.get('search', None)
         if search:
-            queryset = queryset.filter(name__icontains=search)
+            queryset = queryset.filter(
+                Q(name__icontains=search) | Q(description__icontains=search)
+            )
+
+        # Ordering
+        ordering = self.request.query_params.get('ordering', '-created_at')
+        if ordering:
+            # Allow ordering by price, name, created_at
+            valid_orderings = ['price', '-price', 'name', '-name', 'created_at', '-created_at']
+            if ordering in valid_orderings:
+                queryset = queryset.order_by(ordering)
+            else:
+                queryset = queryset.order_by('-created_at')
+        else:
+            queryset = queryset.order_by('-created_at')
 
         return queryset
+
+    def perform_create(self, serializer):
+        # Set the seller to the current user when creating a product
+        serializer.save(seller=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        # Use the create/update serializer for input validation
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        
+        # Return the created product using the full ProductSerializer
+        product = serializer.instance
+        output_serializer = ProductSerializer(product)
+        headers = self.get_success_headers(output_serializer.data)
+        return Response(output_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow owners of an object to edit it.
+    """
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Write permissions are only allowed to the owner of the product.
+        return obj.seller == request.user
 
 
 class ProductDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     """
     GET: Retrieve a specific product
-    PUT/PATCH: Update a product (authenticated users only)
-    DELETE: Delete a product (authenticated users only)
+    PUT/PATCH: Update a product (owner only)
+    DELETE: Delete a product (owner only)
     """
     queryset = Product.objects.all()
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
             return ProductCreateUpdateSerializer
         return ProductSerializer
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        # Return the updated product using the full ProductSerializer
+        output_serializer = ProductSerializer(instance)
+        return Response(output_serializer.data)
 
 
 class CartAPIView(generics.RetrieveAPIView):
@@ -68,6 +145,14 @@ class CartAPIView(generics.RetrieveAPIView):
         return cart
 
 
+@extend_schema(
+    methods=['POST'],
+    responses={
+        201: CartItemResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    description="Add a product to user's cart"
+)
 @api_view(['POST'])
 @permission_classes([permissions.IsAuthenticated])
 def add_to_cart_api(request, product_id):
@@ -242,3 +327,267 @@ def api_overview(request):
     }
 
     return Response(api_urls)
+
+
+# ===== ORDER API VIEWS =====
+
+class OrderListCreateAPIView(generics.ListCreateAPIView):
+    """
+    GET: List user's orders
+    POST: Create order from cart
+    """
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user).order_by('-created_at')
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return OrderCreateSerializer
+        return OrderSerializer
+
+    def perform_create(self, serializer):
+        # Get user's cart
+        try:
+            cart = Cart.objects.get(user=self.request.user)
+            if not cart.items.exists():
+                raise ValueError('Cart is empty')
+        except Cart.DoesNotExist:
+            raise ValueError('Cart is empty')
+
+        # Create the order
+        order = serializer.save(
+            user=self.request.user,
+            subtotal=cart.get_total_price(),
+            shipping_cost=0,  # Free shipping
+            tax_amount=0,     # No tax
+            total_amount=cart.get_total_price()
+        )
+
+        # Create order items from cart items
+        for cart_item in cart.items.all():
+            OrderItem.objects.create(
+                order=order,
+                product=cart_item.product,
+                quantity=cart_item.quantity,
+                price=cart_item.product.price
+            )
+
+        # Clear the cart
+        cart.items.all().delete()
+
+    def create(self, request, *args, **kwargs):
+        try:
+            # Use the create serializer for input validation
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            
+            # Return the created order using the full OrderSerializer
+            order = serializer.instance
+            output_serializer = OrderSerializer(order)
+            headers = self.get_success_headers(output_serializer.data)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except ValueError as e:
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class OrderDetailAPIView(generics.RetrieveAPIView):
+    """
+    GET: Retrieve a specific order
+    """
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
+
+# ===== REVIEW API VIEWS =====
+
+class ReviewListCreateAPIView(generics.ListCreateAPIView):
+    """
+    GET: List reviews (optionally filtered by product)
+    POST: Create a review
+    """
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        queryset = Review.objects.all().order_by('-created_at')
+        
+        # Filter by product if specified
+        product_id = self.request.query_params.get('product', None)
+        if product_id:
+            queryset = queryset.filter(product_id=product_id)
+        
+        # Filter by user if specified (for user's own reviews)
+        user_id = self.request.query_params.get('user', None)
+        if user_id:
+            queryset = queryset.filter(user_id=user_id)
+            
+        return queryset
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ReviewCreateUpdateSerializer
+        return ReviewSerializer
+
+    def perform_create(self, serializer):
+        product_id = serializer.validated_data['product_id']
+        product = get_object_or_404(Product, id=product_id)
+        
+        # Additional validation
+        if product.seller == self.request.user:
+            raise ValueError('You cannot review your own product')
+            
+        if Review.objects.filter(user=self.request.user, product=product).exists():
+            raise ValueError('You have already reviewed this product')
+            
+        serializer.save(user=self.request.user, product=product)
+
+    def create(self, request, *args, **kwargs):
+        try:
+            # Use the create/update serializer for input validation
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            
+            # Return the created review using the full ReviewSerializer
+            review = serializer.instance
+            output_serializer = ReviewSerializer(review)
+            headers = self.get_success_headers(output_serializer.data)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except ValueError as e:
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class ReviewDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET: Retrieve a specific review
+    PUT/PATCH: Update review (owner only)
+    DELETE: Delete review (owner only)
+    """
+    serializer_class = ReviewSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return Review.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return ReviewCreateUpdateSerializer
+        return ReviewSerializer
+
+    def update(self, request, *args, **kwargs):
+        review = self.get_object()
+        if review.user != request.user:
+            return Response(
+                {'error': 'You can only update your own reviews'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        review = self.get_object()
+        if review.user != request.user:
+            return Response(
+                {'error': 'You can only delete your own reviews'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
+        return super().destroy(request, *args, **kwargs)
+
+
+# ===== FAVORITE API VIEWS =====
+
+class FavoriteListAPIView(generics.ListCreateAPIView):
+    """
+    GET: List user's favorite products
+    POST: Add product to favorites
+    """
+    serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user).order_by('-added_at')
+    
+    def perform_create(self, serializer):
+        product_id = serializer.validated_data['product_id']
+        product = get_object_or_404(Product, id=product_id)
+        # Check if already favorited
+        if Favorite.objects.filter(user=self.request.user, product=product).exists():
+            raise ValueError('Product is already in your favorites')
+        serializer.save(user=self.request.user, product=product)
+    
+    def create(self, request, *args, **kwargs):
+        try:
+            return super().create(request, *args, **kwargs)
+        except ValueError as e:
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+class FavoriteDetailAPIView(generics.RetrieveDestroyAPIView):
+    """
+    GET: Retrieve a specific favorite
+    DELETE: Remove product from favorites
+    """
+    serializer_class = FavoriteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Favorite.objects.filter(user=self.request.user)
+
+
+@extend_schema(
+    methods=['POST'],
+    request=FavoriteToggleSerializer,
+    responses={
+        200: FavoriteToggleResponseSerializer,
+        404: ErrorResponseSerializer,
+    },
+    description="Toggle favorite status for a product"
+)
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def toggle_favorite_api(request):
+    """
+    POST: Toggle favorite status for a product
+    """
+    serializer = FavoriteToggleSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    
+    product_id = serializer.validated_data['product_id']
+    product = get_object_or_404(Product, id=product_id)
+    
+    favorite, created = Favorite.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+    
+    if not created:
+        favorite.delete()
+        is_favorited = False
+        message = f'{product.name} removed from favorites'
+    else:
+        is_favorited = True
+        message = f'{product.name} added to favorites'
+    
+    # Get updated favorites count
+    favorites_count = product.homepage_favorited_by.count()
+    
+    return Response({
+        'success': True,
+        'is_favorited': is_favorited,
+        'favorites_count': favorites_count,
+        'message': message
+    }, status=status.HTTP_200_OK)

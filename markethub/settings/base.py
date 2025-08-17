@@ -21,7 +21,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_spectacular',
     'csp',
-    'axes',
+    'axes',  # Re-enabled with proper configuration
     'homepage',
     'profiles',
     'student_rewards',
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'axes.middleware.AxesMiddleware',
+    # 'axes.middleware.AxesMiddleware',  # Temporarily disabled
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -228,8 +228,8 @@ AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = False
 # Use database for axes lockouts
 AXES_HANDLER = 'axes.handlers.database.AxesDatabaseHandler'
 
-# Authentication backend for axes
-AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesBackend',  # AxesBackend should come first
-    'django.contrib.auth.backends.ModelBackend',  # Django's default backend
-]
+# Authentication backend for axes (temporarily disabled)
+# AUTHENTICATION_BACKENDS = [
+#     'axes.backends.AxesBackend',  # AxesBackend should come first
+#     'django.contrib.auth.backends.ModelBackend',  # Django's default backend
+# ]

@@ -18,10 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 from homepage.health import health_check, health_detailed, readiness_check, liveness_check
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
 urlpatterns = [
+    # Favicon
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.svg', permanent=True)),
+    
     # Health check endpoints (for load balancers and monitoring)
     path('health/', health_check, name='health_check'),
     path('health/detailed/', health_detailed, name='health_detailed'),
@@ -33,8 +37,9 @@ urlpatterns = [
     path('docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('docs/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
     
-    # Application URLs
-    path('', include('homepage.urls')),      # ← new line for home, signup, login, etc.
+    # Application URLs  
+    path('', include('homepage.urls')),      # Homepage URLs (non-namespaced)
+    path('homepage/', include('homepage.namespace_urls')),  # Homepage URLs (namespaced)
     # path('products/', include('products.urls')),  # Consolidated into homepage
     path('admin/', admin.site.urls),
     path('api/', include('homepage.api_urls')),  # API endpoints
