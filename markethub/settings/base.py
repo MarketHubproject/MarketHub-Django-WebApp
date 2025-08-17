@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'homepage',
     'profiles',
     'student_rewards',
+    'students',  # Student verification system
 ]
 
 MIDDLEWARE = [

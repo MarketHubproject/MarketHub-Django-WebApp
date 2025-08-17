@@ -41,6 +41,7 @@ urlpatterns = [
     path('', include('homepage.urls')),      # Homepage URLs (non-namespaced)
     path('homepage/', include('homepage.namespace_urls')),  # Homepage URLs (namespaced)
     # path('products/', include('products.urls')),  # Consolidated into homepage
+    path('student/', include('students.urls')),  # Student verification system
     path('admin/', admin.site.urls),
     path('api/', include('homepage.api_urls')),  # API endpoints
 ]
