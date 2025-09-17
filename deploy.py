@@ -50,17 +50,22 @@ class Deployer:
         """Run shell command with logging"""
         self.log(f"Running: {command}")
         try:
+            # Split command into list for safer execution
+            if isinstance(command, str):
+                command_list = command.split()
+            else:
+                command_list = command
+                
             if capture_output:
                 result = subprocess.run(
-                    command,
-                    shell=True,
+                    command_list,
                     check=check,
                     capture_output=True,
                     text=True
                 )
                 return result
             else:
-                subprocess.run(command, shell=True, check=check)
+                subprocess.run(command_list, check=check)
         except subprocess.CalledProcessError as e:
             self.log(f"Command failed: {command}", 'ERROR')
             self.log(f"Error: {e}", 'ERROR')

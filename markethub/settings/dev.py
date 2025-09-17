@@ -12,7 +12,7 @@ DEBUG = True
 print(f"[DEV SETTINGS] DEBUG set to: {DEBUG}")  # Debug output
 
 # Set ALLOWED_HOSTS explicitly for development
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 print(f"[DEV SETTINGS] ALLOWED_HOSTS set to: {ALLOWED_HOSTS}")  # Debug output
 
 # Force DEBUG to True and ensure it overrides any other setting

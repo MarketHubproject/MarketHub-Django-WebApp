@@ -1,13 +1,14 @@
 # MarketHub Django E-Commerce Platform Requirements
 
 # Core Django and Database
-Django==5.2.5
+Django==5.2.6
 asgiref==3.9.1
 sqlparse==0.5.3
 tzdata==2025.2
 
 # Django REST Framework for API
 djangorestframework==3.16.1
+djangorestframework-simplejwt==5.5.1  # JWT authentication with security fixes
 
 # Image processing for product photos
 Pillow==11.3.0
@@ -27,6 +28,7 @@ django-ratelimit==4.1.0
 
 # Database
 psycopg2-binary==2.9.10
+dj-database-url==2.3.0
 
 # Testing and Coverage
 pytest==8.3.4
@@ -63,13 +65,13 @@ drf-spectacular==0.27.2
 
 # Development and deployment tools
 flake8==7.0.0
-black==24.3.0
+black==24.8.0
 isort==5.13.2
 safety==3.0.1
 bandit==1.7.5
-gevent==23.9.1  # For gunicorn async workers
+# gevent==23.9.1  # For gunicorn async workers - disabled due to Python 3.13 compatibility issues
 
 # Monitoring and system utilities
 psutil==5.9.6  # System monitoring
-aiohttp==3.9.1  # Async HTTP client for load testing
-requests==2.31.0  # HTTP client
+aiohttp==3.12.14  # Async HTTP client for load testing
+requests==2.32.4  # HTTP client

@@ -14,7 +14,7 @@ def test_api_overview():
     """Test API overview endpoint"""
     print("🔍 Testing API Overview...")
     try:
-        response = requests.get(f"{BASE_URL}/")
+        response = requests.get(f"{BASE_URL}/", timeout=30)
         if response.status_code == 200:
             data = response.json()
             print("✅ API Overview successful")
@@ -35,7 +35,7 @@ def test_products_list():
     """Test products list endpoint"""
     print("📦 Testing Products List...")
     try:
-        response = requests.get(f"{BASE_URL}/products/")
+        response = requests.get(f"{BASE_URL}/products/", timeout=30)
         if response.status_code == 200:
             data = response.json()
             print(f"✅ Products List successful")
@@ -58,7 +58,7 @@ def test_categories():
     """Test categories endpoint"""
     print("📂 Testing Categories...")
     try:
-        response = requests.get(f"{BASE_URL}/categories/")
+        response = requests.get(f"{BASE_URL}/categories/", timeout=30)
         if response.status_code == 200:
             data = response.json()
             print("✅ Categories successful")
@@ -81,7 +81,7 @@ def test_authentication():
         response = requests.post(f"{BASE_URL}/login/", json={
             "username": "testuser",
             "password": "wrongpassword"
-        })
+        }, timeout=30)
 
         if response.status_code == 401:
             print("✅ Authentication rejection working (expected for invalid credentials)")
@@ -90,7 +90,7 @@ def test_authentication():
         response = requests.post(f"{BASE_URL}/login/", json={
             "username": "admin",
             "password": "admin123"
-        })
+        }, timeout=30)
 
         if response.status_code == 200:
             data = response.json()
@@ -121,7 +121,7 @@ def test_cart_endpoints(token=None):
 
     try:
         # Test cart view
-        response = requests.get(f"{BASE_URL}/cart/", headers=headers)
+        response = requests.get(f"{BASE_URL}/cart/", headers=headers, timeout=30)
         if response.status_code == 200:
             data = response.json()
             print("✅ Cart view successful")

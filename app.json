@@ -1,0 +1,69 @@
+{
+  "name": "MarketHub Django WebApp",
+  "description": "A modern Django e-commerce platform with comprehensive REST API",
+  "repository": "https://github.com/your-username/MarketHub-Django-WebApp",
+  "logo": "https://via.placeholder.com/256x256.png?text=MarketHub",
+  "keywords": ["django", "e-commerce", "marketplace", "api", "webapp"],
+  "success_url": "/",
+  "env": {
+    "SECRET_KEY": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "generator": "secret"
+    },
+    "DEBUG": {
+      "description": "Enable/disable debug mode",
+      "value": "False",
+      "required": false
+    },
+    "DJANGO_SETTINGS_MODULE": {
+      "description": "Django settings module to use",
+      "value": "markethub.settings.heroku",
+      "required": true
+    },
+    "ALLOWED_HOSTS": {
+      "description": "Comma-separated list of allowed hosts",
+      "value": "localhost,127.0.0.1",
+      "required": false
+    },
+    "STRIPE_PUBLISHABLE_KEY_LIVE": {
+      "description": "Stripe publishable key (use test keys for now)",
+      "value": "pk_test_placeholder",
+      "required": false
+    },
+    "STRIPE_SECRET_KEY_LIVE": {
+      "description": "Stripe secret key (use test keys for now)",
+      "value": "sk_test_placeholder",
+      "required": false
+    },
+    "STRIPE_WEBHOOK_SECRET_LIVE": {
+      "description": "Stripe webhook secret",
+      "value": "whsec_placeholder",
+      "required": false
+    },
+    "PAYMENT_ENV": {
+      "description": "Payment environment (test or live)",
+      "value": "test",
+      "required": false
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0",
+      "options": {
+        "version": "16"
+      }
+    }
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  },
+  "stack": "heroku-24"
+}

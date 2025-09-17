@@ -194,8 +194,8 @@ class AutomatedRebranding:
             return False
 
     def _get_file_checksum(self, content: str) -> str:
-        """Generate MD5 checksum of file content."""
-        return hashlib.md5(content.encode('utf-8')).hexdigest()
+        """Generate SHA256 checksum of file content."""
+        return hashlib.sha256(content.encode('utf-8')).hexdigest()
 
     def _should_skip_directory(self, dir_path: str) -> bool:
         """Check if directory should be skipped."""

@@ -25,16 +25,21 @@ def run_command(command):
     """Run shell command and return result"""
     log(f"Running: {command}")
     try:
+        # Split command into list for safer execution
+        if isinstance(command, str):
+            command_list = command.split()
+        else:
+            command_list = command
+            
         result = subprocess.run(
-            command,
-            shell=True,
+            command_list,
             check=True,
             capture_output=True,
             text=True
         )
         return result
     except subprocess.CalledProcessError as e:
-        log(f"Command failed: {command}", 'ERROR')
+        log(f"Command failed: {' '.join(command_list) if isinstance(command_list, list) else command}", 'ERROR')
         log(f"Error: {e}", 'ERROR')
         return None
 

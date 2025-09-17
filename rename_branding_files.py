@@ -51,9 +51,15 @@ class BrandingFileRenamer:
     def run_git_command(self, command):
         """Execute a git command and return the result"""
         try:
-            result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=self.root_dir)
+            # Split command into list for safer execution
+            if isinstance(command, str):
+                command_list = command.split()
+            else:
+                command_list = command
+                
+            result = subprocess.run(command_list, capture_output=True, text=True, cwd=self.root_dir)
             if result.returncode != 0:
-                print(f"Git command failed: {command}")
+                print(f"Git command failed: {' '.join(command_list)}")
                 print(f"Error: {result.stderr}")
                 return False
             return True
