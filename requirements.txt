@@ -1,0 +1,39 @@
+# MarketHub Production Requirements for Heroku
+# Core Django
+Django==5.2.6
+asgiref==3.9.1
+sqlparse==0.5.3
+tzdata==2025.2
+
+# Django REST Framework
+djangorestframework==3.16.1
+djangorestframework-simplejwt==5.5.1
+
+# Essential Production Dependencies
+Pillow==11.3.0
+python-decouple==3.8
+stripe==11.6.0
+
+# Security
+django-csp==3.8
+django-axes==6.4.0
+bleach==6.1.0
+django-ratelimit==4.1.0
+
+# Database
+psycopg2-binary==2.9.10
+dj-database-url==2.3.0
+
+# Production Server & Static Files
+gunicorn==21.2.0
+whitenoise==6.5.0
+django-cors-headers==4.2.0
+
+# API Documentation
+drf-spectacular==0.27.2
+
+# HTTP client
+requests==2.32.4
+
+# Essential utilities
+psutil==5.9.6
