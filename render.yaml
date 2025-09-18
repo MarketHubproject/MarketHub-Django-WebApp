@@ -1,0 +1,67 @@
+services:
+  # Web service for Django app
+  - type: web
+    name: markethub-web
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn markethub.wsgi:application"
+    
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DJANGO_SETTINGS_MODULE
+        value: markethub.settings.heroku
+      - key: WEB_CONCURRENCY
+        value: 4
+      
+      # Database configuration (will be set via Render dashboard)
+      - key: DATABASE_URL
+        fromDatabase:
+          name: markethub-db
+          property: connectionString
+      
+      # Security settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      
+      # Static files
+      - key: STATIC_URL
+        value: "/static/"
+      - key: STATIC_ROOT
+        value: "./staticfiles"
+      
+      # Email settings (configure as needed)
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.console.EmailBackend"
+      
+      # Stripe settings (set in Render dashboard)
+      - key: STRIPE_PUBLISHABLE_KEY
+        value: ""  # Set this in Render dashboard
+      - key: STRIPE_SECRET_KEY
+        value: ""  # Set this in Render dashboard
+      
+      # Redis settings (if using Redis)
+      - key: REDIS_URL
+        fromService:
+          name: markethub-redis
+          type: redis
+          property: connectionString
+
+  # PostgreSQL database
+  - type: pserv
+    name: markethub-db
+    env: postgresql
+    plan: free  # Change to 'starter' for production
+    databaseName: markethub
+    databaseUser: markethub_user
+
+  # Redis cache (optional but recommended)
+  - type: redis
+    name: markethub-redis
+    plan: free  # Change to 'starter' for production
+    maxmemoryPolicy: allkeys-lru
