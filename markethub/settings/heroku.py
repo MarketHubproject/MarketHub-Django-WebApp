@@ -163,10 +163,7 @@ if 'REST_FRAMEWORK' in locals():
         ],
     })
 
-# Heroku-specific middleware configuration
-MIDDLEWARE += [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-]
+# Heroku-specific middleware configuration - Whitenoise already included in base
 
 print(f"[HEROKU SETTINGS] DEBUG: {DEBUG}")
 print(f"[HEROKU SETTINGS] Database: {DATABASES['default']['ENGINE']}")
