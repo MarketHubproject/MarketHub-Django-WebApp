@@ -1,7 +1,14 @@
 #!/bin/bash
 # Start script for MarketHub on Render
 
+set -e  # Exit on any error
+
 echo "🚀 Starting MarketHub Django WebApp..."
+
+# Check if python and gunicorn are available
+echo "🔍 Checking Python and Gunicorn..."
+python --version
+python -c "import gunicorn; print(f'Gunicorn {gunicorn.__version__} is available')"
 
 # Set default port if not provided
 PORT=${PORT:-10000}

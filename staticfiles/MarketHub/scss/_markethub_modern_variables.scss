@@ -1,0 +1,339 @@
+// ============================================================================
+// MarketHub Modern Design System - Variables & Design Tokens
+// ============================================================================
+
+// Modern Color Palette - Blue-Focused Premium Theme
+$MarketHub-colors: (
+  // Primary Blues - Core Brand Colors
+  primary-50:   #eff6ff,
+  primary-100:  #dbeafe,
+  primary-200:  #bfdbfe,
+  primary-300:  #93c5fd,
+  primary-400:  #60a5fa,
+  primary-500:  #3b82f6, // Main primary
+  primary-600:  #2563eb, // Primary hover
+  primary-700:  #1d4ed8,
+  primary-800:  #1e40af,
+  primary-900:  #1e3a8a,
+  primary-950:  #172554,
+  
+  // Secondary - Complementary Purples/Indigos  
+  secondary-50:  #f8fafc,
+  secondary-100: #f1f5f9,
+  secondary-200: #e2e8f0,
+  secondary-300: #cbd5e1,
+  secondary-400: #94a3b8,
+  secondary-500: #64748b,
+  secondary-600: #475569,
+  secondary-700: #334155,
+  secondary-800: #1e293b,
+  secondary-900: #0f172a,
+  
+  // Accent Colors
+  accent-cyan:    #06b6d4,
+  accent-teal:    #14b8a6,
+  accent-emerald: #10b981,
+  accent-purple:  #8b5cf6,
+  accent-pink:    #ec4899,
+  
+  // Semantic Colors
+  success-400: #4ade80,
+  success-500: #22c55e,
+  success-600: #16a34a,
+  
+  warning-400: #facc15,
+  warning-500: #eab308,
+  warning-600: #ca8a04,
+  
+  danger-400:  #f87171,
+  danger-500:  #ef4444,
+  danger-600:  #dc2626,
+  
+  // Neutral Grays
+  neutral-50:   #f9fafb,
+  neutral-100:  #f3f4f6,
+  neutral-200:  #e5e7eb,
+  neutral-300:  #d1d5db,
+  neutral-400:  #9ca3af,
+  neutral-500:  #6b7280,
+  neutral-600:  #4b5563,
+  neutral-700:  #374151,
+  neutral-800:  #1f2937,
+  neutral-900:  #111827,
+  neutral-950:  #030712,
+  
+  // Special Glass/Overlay Colors
+  glass-white:   rgba(255, 255, 255, 0.1),
+  glass-blue:    rgba(59, 130, 246, 0.1),
+  glass-dark:    rgba(15, 23, 42, 0.1),
+  overlay-dark:  rgba(0, 0, 0, 0.4),
+  overlay-blue:  rgba(37, 99, 235, 0.2),
+);
+
+// Extract Key Colors for Direct Use
+$MarketHub-primary:           map-get($MarketHub-colors, primary-500);
+$MarketHub-primary-hover:     map-get($MarketHub-colors, primary-600);
+$MarketHub-primary-light:     map-get($MarketHub-colors, primary-100);
+$MarketHub-primary-dark:      map-get($MarketHub-colors, primary-700);
+
+$MarketHub-secondary:         map-get($MarketHub-colors, secondary-600);
+$MarketHub-secondary-light:   map-get($MarketHub-colors, secondary-200);
+$MarketHub-secondary-dark:    map-get($MarketHub-colors, secondary-800);
+
+$MarketHub-success:           map-get($MarketHub-colors, success-500);
+$MarketHub-warning:           map-get($MarketHub-colors, warning-500);
+$MarketHub-danger:            map-get($MarketHub-colors, danger-500);
+
+$MarketHub-neutral-50:        map-get($MarketHub-colors, neutral-50);
+$MarketHub-neutral-900:       map-get($MarketHub-colors, neutral-900);
+
+// Gradient Definitions
+$MarketHub-gradients: (
+  primary:     linear-gradient(135deg, #{$MarketHub-primary-dark} 0%, #{$MarketHub-primary} 50%, #{$MarketHub-primary-hover} 100%),
+  secondary:   linear-gradient(135deg, #{$MarketHub-secondary-dark} 0%, #{$MarketHub-secondary} 50%, #{$MarketHub-secondary-light} 100%),
+  success:     linear-gradient(135deg, #{map-get($MarketHub-colors, success-600)} 0%, #{$MarketHub-success} 100%),
+  warning:     linear-gradient(135deg, #{map-get($MarketHub-colors, warning-600)} 0%, #{$MarketHub-warning} 100%),
+  danger:      linear-gradient(135deg, #{map-get($MarketHub-colors, danger-600)} 0%, #{$MarketHub-danger} 100%),
+  glass:       linear-gradient(135deg, #{map-get($MarketHub-colors, glass-white)} 0%, #{map-get($MarketHub-colors, glass-blue)} 100%),
+  hero-bg:     linear-gradient(135deg, #{$MarketHub-neutral-50} 0%, #{map-get($MarketHub-colors, primary-50)} 25%, #{$MarketHub-neutral-50} 50%, #{map-get($MarketHub-colors, primary-100)} 75%, #{$MarketHub-neutral-50} 100%),
+  card-hover:  linear-gradient(135deg, #{$MarketHub-primary} 0%, transparent 100%),
+);
+
+// Border Radius Scale
+$MarketHub-radius: (
+  none: 0,
+  sm:   0.375rem,   // 6px
+  md:   0.5rem,     // 8px  
+  lg:   0.75rem,    // 12px
+  xl:   1rem,       // 16px
+  2xl:  1.25rem,    // 20px
+  3xl:  1.5rem,     // 24px
+  4xl:  2rem,       // 32px
+  full: 9999px,
+);
+
+// Shadow Scale - Modern Depth System
+$MarketHub-shadows: (
+  none:      none,
+  sm:        (0 1px 2px 0 rgba(0, 0, 0, 0.05)),
+  md:        (0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)),
+  lg:        (0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)),
+  xl:        (0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)),
+  2xl:       (0 25px 50px -12px rgba(0, 0, 0, 0.25)),
+  
+  // Special Blue-themed Shadows  
+  blue-sm:   (0 2px 4px 0 rgba(37, 99, 235, 0.1)),
+  blue-md:   (0 4px 6px -1px rgba(37, 99, 235, 0.15), 0 2px 4px -1px rgba(37, 99, 235, 0.1)),
+  blue-lg:   (0 10px 15px -3px rgba(37, 99, 235, 0.2), 0 4px 6px -2px rgba(37, 99, 235, 0.1)),
+  blue-xl:   (0 20px 25px -5px rgba(37, 99, 235, 0.25), 0 10px 10px -5px rgba(37, 99, 235, 0.1)),
+  
+  // Inner shadows for glass effects
+  inner:     (inset 0 2px 4px 0 rgba(0, 0, 0, 0.06)),
+  inner-lg:  (inset 0 4px 6px -1px rgba(0, 0, 0, 0.1))
+);
+
+// Typography Scale - Fluid Typography with clamp()
+$MarketHub-font-sizes: (
+  xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem),    // 12-14px
+  sm:   clamp(0.875rem, 0.8rem + 0.375vw, 1rem),      // 14-16px
+  base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem),        // 16-18px
+  lg:   clamp(1.125rem, 1rem + 0.625vw, 1.25rem),     // 18-20px
+  xl:   clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem),      // 20-24px
+  2xl:  clamp(1.5rem, 1.3rem + 1vw, 2rem),            // 24-32px
+  3xl:  clamp(1.875rem, 1.6rem + 1.375vw, 2.5rem),    // 30-40px
+  4xl:  clamp(2.25rem, 1.9rem + 1.75vw, 3rem),        // 36-48px
+  5xl:  clamp(3rem, 2.4rem + 3vw, 4rem),              // 48-64px
+  6xl:  clamp(3.75rem, 3rem + 3.75vw, 5rem),          // 60-80px
+);
+
+// Font Families
+$MarketHub-font-primary:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$MarketHub-font-secondary: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+$MarketHub-font-mono:      'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+
+// Font Weights  
+$MarketHub-font-weights: (
+  thin:       100,
+  extralight: 200,
+  light:      300,
+  regular:    400,
+  medium:     500,
+  semibold:   600,
+  bold:       700,
+  extrabold:  800,
+  black:      900,
+);
+
+// Line Heights
+$MarketHub-line-heights: (
+  none:     1,
+  tight:    1.25,
+  snug:     1.375,
+  normal:   1.5,
+  relaxed:  1.625,
+  loose:    2,
+);
+
+// Letter Spacing
+$MarketHub-letter-spacing: (
+  tighter:  -0.05em,
+  tight:    -0.025em,
+  normal:   0,
+  wide:     0.025em,
+  wider:    0.05em,
+  widest:   0.1em,
+);
+
+// Spacing Scale - Consistent with Tailwind approach
+$MarketHub-spacing: (
+  0:   0,
+  1:   0.25rem,   // 4px
+  2:   0.5rem,    // 8px
+  3:   0.75rem,   // 12px
+  4:   1rem,      // 16px
+  5:   1.25rem,   // 20px
+  6:   1.5rem,    // 24px
+  7:   1.75rem,   // 28px
+  8:   2rem,      // 32px
+  9:   2.25rem,   // 36px
+  10:  2.5rem,    // 40px
+  11:  2.75rem,   // 44px
+  12:  3rem,      // 48px
+  14:  3.5rem,    // 56px
+  16:  4rem,      // 64px
+  18:  4.5rem,    // 72px
+  20:  5rem,      // 80px
+  24:  6rem,      // 96px
+  28:  7rem,      // 112px
+  32:  8rem,      // 128px
+  36:  9rem,      // 144px
+  40:  10rem,     // 160px
+  44:  11rem,     // 176px
+  48:  12rem,     // 192px
+  52:  13rem,     // 208px
+  56:  14rem,     // 224px
+  60:  15rem,     // 240px
+  64:  16rem,     // 256px
+  72:  18rem,     // 288px
+  80:  20rem,     // 320px
+  96:  24rem,     // 384px
+);
+
+// Animation Duration & Easing
+$MarketHub-durations: (
+  fast:     150ms,
+  normal:   250ms,
+  slow:     350ms,
+  slower:   500ms,
+  slowest:  1000ms,
+);
+
+$MarketHub-easings: (
+  linear:     linear,
+  ease:       ease,
+  ease-in:    ease-in,
+  ease-out:   ease-out,
+  ease-in-out: ease-in-out,
+  bounce:     cubic-bezier(0.68, -0.55, 0.265, 1.55),
+  swoosh:     cubic-bezier(0.4, 0, 0.2, 1),
+  spring:     cubic-bezier(0.175, 0.885, 0.32, 1.275),
+  snap:       cubic-bezier(0.25, 0.46, 0.45, 0.94),
+);
+
+// Z-index Scale
+$MarketHub-z-index: (
+  hide:        -1,
+  auto:        auto,
+  base:        0,
+  docked:      10,
+  dropdown:    1000,
+  sticky:      1020,
+  banner:      1030,  
+  overlay:     1040,
+  modal:       1050,
+  popover:     1060,
+  skipLink:    1070,
+  toast:       1080,
+  tooltip:     1090,
+);
+
+// Breakpoints
+$MarketHub-breakpoints: (
+  xs:   0,
+  sm:   576px,
+  md:   768px,
+  lg:   992px,
+  xl:   1200px,
+  2xl:  1400px,
+);
+
+// Component-specific Variables
+$MarketHub-header-height:      4rem;
+$MarketHub-footer-height:      8rem;
+$MarketHub-sidebar-width:      16rem;
+$MarketHub-container-padding:  map-get($MarketHub-spacing, 4);
+$MarketHub-card-padding:       map-get($MarketHub-spacing, 6);
+$MarketHub-button-height:      2.75rem;
+
+// Glass/Backdrop Effects
+$MarketHub-glass-blur:         10px;
+$MarketHub-glass-saturation:   180%;
+$MarketHub-glass-opacity:      0.1;
+
+// Export some commonly-used computed values
+$MarketHub-text-primary:       map-get($MarketHub-colors, neutral-900);
+$MarketHub-text-secondary:     map-get($MarketHub-colors, neutral-600);
+$MarketHub-text-muted:         map-get($MarketHub-colors, neutral-500);
+$MarketHub-bg-primary:         map-get($MarketHub-colors, neutral-50);
+$MarketHub-bg-secondary:       #ffffff;
+$MarketHub-border-color:       map-get($MarketHub-colors, neutral-200);
+
+// Legacy compatibility - map old variables to new system
+$MarketHub-space-2: map-get($MarketHub-spacing, 2);
+$MarketHub-space-3: map-get($MarketHub-spacing, 3);
+$MarketHub-space-4: map-get($MarketHub-spacing, 4);
+$MarketHub-space-6: map-get($MarketHub-spacing, 6);
+$MarketHub-space-8: map-get($MarketHub-spacing, 8);
+
+$MarketHub-radius-sm: map-get($MarketHub-radius, sm);
+$MarketHub-radius-md: map-get($MarketHub-radius, md);
+$MarketHub-radius-lg: map-get($MarketHub-radius, lg);
+$MarketHub-radius-xl: map-get($MarketHub-radius, xl);
+$MarketHub-radius-full: map-get($MarketHub-radius, full);
+
+$MarketHub-shadow-sm: map-get($MarketHub-shadows, sm);
+$MarketHub-shadow-md: map-get($MarketHub-shadows, md);
+$MarketHub-shadow-lg: map-get($MarketHub-shadows, lg);
+$MarketHub-shadow-xl: map-get($MarketHub-shadows, xl);
+
+$MarketHub-font-xs: map-get($MarketHub-font-sizes, xs);
+$MarketHub-font-sm: map-get($MarketHub-font-sizes, sm);
+$MarketHub-font-base: map-get($MarketHub-font-sizes, base);
+$MarketHub-font-lg: map-get($MarketHub-font-sizes, lg);
+$MarketHub-font-xl: map-get($MarketHub-font-sizes, xl);
+$MarketHub-font-2xl: map-get($MarketHub-font-sizes, 2xl);
+$MarketHub-font-3xl: map-get($MarketHub-font-sizes, 3xl);
+$MarketHub-font-4xl: map-get($MarketHub-font-sizes, 4xl);
+$MarketHub-font-5xl: map-get($MarketHub-font-sizes, 5xl);
+
+$MarketHub-weight-regular: map-get($MarketHub-font-weights, regular);
+$MarketHub-weight-medium: map-get($MarketHub-font-weights, medium);
+$MarketHub-weight-semibold: map-get($MarketHub-font-weights, semibold);
+$MarketHub-weight-bold: map-get($MarketHub-font-weights, bold);
+
+$MarketHub-leading-tight: map-get($MarketHub-line-heights, tight);
+$MarketHub-leading-normal: map-get($MarketHub-line-heights, normal);
+$MarketHub-leading-relaxed: map-get($MarketHub-line-heights, relaxed);
+
+$MarketHub-transition-fast: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, swoosh);
+$MarketHub-transition-normal: all map-get($MarketHub-durations, normal) map-get($MarketHub-easings, swoosh);
+$MarketHub-transition-colors: color map-get($MarketHub-durations, fast) map-get($MarketHub-easings, ease-out), background-color map-get($MarketHub-durations, fast) map-get($MarketHub-easings, ease-out), border-color map-get($MarketHub-durations, fast) map-get($MarketHub-easings, ease-out);
+$MarketHub-transition-transform: transform map-get($MarketHub-durations, normal) map-get($MarketHub-easings, bounce);
+
+$MarketHub-z-dropdown: map-get($MarketHub-z-index, dropdown);
+$MarketHub-z-fixed: map-get($MarketHub-z-index, sticky);
+$MarketHub-z-modal: map-get($MarketHub-z-index, modal);
+
+// Header-specific glass background
+$MarketHub-header-bg: rgba(255, 255, 255, 0.95);
+$MarketHub-header-border: rgba(map-get($MarketHub-colors, neutral-200), 0.5);

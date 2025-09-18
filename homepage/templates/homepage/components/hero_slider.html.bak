@@ -1,0 +1,508 @@
+{% load static %}
+
+<!-- Hero Banner Slider Section -->
+{% if hero_slides %}
+<section class="hero-banner-section position-relative overflow-hidden">
+    <!-- Swiper Container -->
+    <div class="swiper hero-swiper">
+        <div class="swiper-wrapper">
+            {% for slide in hero_slides %}
+            <div class="swiper-slide">
+                <div class="hero-slide position-relative d-flex align-items-center min-vh-75">
+                    <!-- Background Image -->
+                    <div class="hero-background position-absolute top-0 start-0 w-100 h-100">
+                        {% if slide.image %}
+                            <img src="{{ slide.image.url }}" alt="{{ slide.title }}" class="hero-bg-image w-100 h-100 object-cover">
+                        {% else %}
+                            <div class="hero-bg-placeholder w-100 h-100 bg-primary"></div>
+                        {% endif %}
+                        <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"></div>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="container position-relative z-2">
+                        <div class="row align-items-center min-vh-75">
+                            <div class="col-lg-6 col-xl-5">
+                                <div class="hero-content text-white">
+                                    <!-- Badge -->
+                                    <div class="hero-badge d-inline-block mb-4">
+                                        <span class="badge bg-primary bg-opacity-90 px-4 py-2 fs-6 fw-bold text-uppercase letter-spacing-1">
+                                            <i class="bi bi-star-fill me-2"></i>Featured
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Title -->
+                                    <h1 class="hero-title display-3 fw-bold mb-4 lh-1">
+                                        {{ slide.title }}
+                                    </h1>
+                                    
+                                    <!-- Subtitle -->
+                                    {% if slide.subtitle %}
+                                    <p class="hero-subtitle fs-4 mb-5 text-white-75 lh-base">
+                                        {{ slide.subtitle }}
+                                    </p>
+                                    {% endif %}
+                                    
+                                    <!-- Call to Action -->
+                                    {% if slide.cta_text and slide.cta_url %}
+                                    <div class="hero-actions">
+                                        <a href="{{ slide.cta_url }}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 shadow-lg">
+                                            <i class="bi bi-arrow-right-circle me-2"></i>{{ slide.cta_text }}
+                                        </a>
+                                        <a href="{% url 'product_list' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 ms-3">
+                                            <i class="bi bi-collection me-2"></i>Browse All
+                                        </a>
+                                    </div>
+                                    {% else %}
+                                    <div class="hero-actions">
+                                        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 shadow-lg">
+                                            <i class="bi bi-shop me-2"></i>Shop Now
+                                        </a>
+                                        {% if user.is_authenticated %}
+                                        <a href="{% url 'create_product' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 ms-3">
+                                            <i class="bi bi-plus-circle me-2"></i>Sell Now
+                                        </a>
+                                        {% else %}
+                                        <a href="{% url 'signup' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 ms-3">
+                                            <i class="bi bi-person-plus me-2"></i>Join Us
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Decorative Elements -->
+                            <div class="col-lg-6 col-xl-7 d-none d-lg-block">
+                                <div class="hero-decoration position-relative">
+                                    <!-- Floating Cards -->
+                                    <div class="floating-element floating-card-1 position-absolute">
+                                        <div class="card bg-white bg-opacity-90 shadow-lg border-0 p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-success text-white me-3">
+                                                    <i class="bi bi-check-circle-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark">Verified Products</div>
+                                                    <small class="text-muted">100% Authentic</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="floating-element floating-card-2 position-absolute">
+                                        <div class="card bg-white bg-opacity-90 shadow-lg border-0 p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-primary text-white me-3">
+                                                    <i class="bi bi-lightning-fill"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark">Fast Delivery</div>
+                                                    <small class="text-muted">24-48 Hours</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="floating-element floating-card-3 position-absolute">
+                                        <div class="card bg-white bg-opacity-90 shadow-lg border-0 p-3">
+                                            <div class="d-flex align-items-center">
+                                                <div class="icon-circle bg-warning text-white me-3">
+                                                    <i class="bi bi-shield-check"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="fw-bold text-dark">Secure Payment</div>
+                                                    <small class="text-muted">SSL Protected</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Navigation -->
+        {% if hero_slides|length > 1 %}
+        <div class="swiper-button-next hero-nav-btn"></div>
+        <div class="swiper-button-prev hero-nav-btn"></div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination hero-pagination position-absolute"></div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Hero Slider Styles -->
+<style>
+/* Hero Banner Styles */
+.hero-banner-section {
+    height: 85vh;
+    min-height: 600px;
+}
+
+.hero-swiper {
+    height: 100%;
+}
+
+.hero-slide {
+    height: 100%;
+}
+
+.hero-bg-image {
+    object-fit: cover;
+    filter: brightness(0.7);
+    transition: transform 8s ease-in-out;
+}
+
+.hero-bg-placeholder {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #0056b3 100%);
+    transition: transform 8s ease-in-out;
+}
+
+.hero-swiper .swiper-slide-active .hero-bg-image,
+.hero-swiper .swiper-slide-active .hero-bg-placeholder {
+    transform: scale(1.05);
+}
+
+.hero-overlay {
+    background: linear-gradient(135deg, 
+        rgba(0, 123, 255, 0.4) 0%, 
+        rgba(255, 215, 0, 0.3) 50%, 
+        rgba(0, 123, 255, 0.5) 100%
+    );
+}
+
+.hero-content {
+    animation: heroContentFadeIn 1s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.swiper-slide-active .hero-content {
+    animation-delay: 0.3s;
+}
+
+@keyframes heroContentFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-title {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.text-white-75 {
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.letter-spacing-1 {
+    letter-spacing: 1px;
+}
+
+.hero-badge {
+    animation: heroBadgeFloat 2s ease-in-out infinite alternate;
+}
+
+@keyframes heroBadgeFloat {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-5px); }
+}
+
+/* Hero Actions */
+.hero-actions .btn {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.hero-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Store Lite Themed Buttons */
+.btn-primary {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.btn-primary:hover {
+    background: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Floating Elements */
+.floating-element {
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-card-1 {
+    top: 20%;
+    right: 15%;
+    animation-delay: 0s;
+}
+
+.floating-card-2 {
+    top: 45%;
+    right: 25%;
+    animation-delay: 2s;
+}
+
+.floating-card-3 {
+    top: 70%;
+    right: 10%;
+    animation-delay: 4s;
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+        opacity: 0.9;
+    }
+    33% { 
+        transform: translateY(-15px) rotate(1deg); 
+        opacity: 1;
+    }
+    66% { 
+        transform: translateY(-8px) rotate(-1deg); 
+        opacity: 0.95;
+    }
+}
+
+.icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Swiper Navigation */
+.hero-nav-btn {
+    width: 50px !important;
+    height: 50px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 50% !important;
+    color: white !important;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+.hero-nav-btn::after {
+    font-size: 16px !important;
+    font-weight: 900;
+}
+
+/* Swiper Pagination */
+.hero-pagination {
+    bottom: 30px !important;
+    text-align: center;
+}
+
+.hero-pagination .swiper-pagination-bullet {
+    width: 12px !important;
+    height: 12px !important;
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    opacity: 1 !important;
+    transition: all 0.3s ease;
+    margin: 0 6px !important;
+}
+
+.hero-pagination .swiper-pagination-bullet-active {
+    background: white !important;
+    border-color: white;
+    transform: scale(1.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-banner-section {
+        height: 70vh;
+        min-height: 500px;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .hero-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-actions .btn.ms-3 {
+        margin-left: 0 !important;
+    }
+    
+    .floating-element {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-actions .btn {
+        padding: 0.75rem 2rem !important;
+        font-size: 0.9rem;
+    }
+    
+    .hero-badge .badge {
+        font-size: 0.7rem !important;
+        padding: 0.5rem 1rem !important;
+    }
+}
+</style>
+
+<!-- Swiper JS CDN and Initialization -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const heroSwiper = new Swiper('.hero-swiper', {
+        // Basic parameters
+        direction: 'horizontal',
+        loop: true,
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        speed: 800,
+        effect: 'fade',
+        fadeEffect: {
+            crossFade: true
+        },
+        
+        // Navigation arrows
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        
+        // Pagination
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: false,
+        },
+        
+        // Keyboard control
+        keyboard: {
+            enabled: true,
+            onlyInViewport: true,
+        },
+        
+        // Touch events
+        touchRatio: 1,
+        threshold: 10,
+        
+        // Accessibility
+        a11y: {
+            prevSlideMessage: 'Previous slide',
+            nextSlideMessage: 'Next slide',
+        },
+        
+        // Events
+        on: {
+            init: function() {
+                console.log('Hero slider initialized');
+            },
+            slideChange: function() {
+                // Add custom animation effects here if needed
+                const activeSlide = this.slides[this.activeIndex];
+                const content = activeSlide.querySelector('.hero-content');
+                if (content) {
+                    content.style.opacity = '0';
+                    content.style.transform = 'translateY(30px)';
+                    setTimeout(() => {
+                        content.style.transition = 'all 1s ease-out';
+                        content.style.opacity = '1';
+                        content.style.transform = 'translateY(0)';
+                    }, 200);
+                }
+            }
+        }
+    });
+    
+    // Pause autoplay on hover
+    const heroSection = document.querySelector('.hero-banner-section');
+    if (heroSection) {
+        heroSection.addEventListener('mouseenter', () => {
+            heroSwiper.autoplay.stop();
+        });
+        
+        heroSection.addEventListener('mouseleave', () => {
+            heroSwiper.autoplay.start();
+        });
+    }
+});
+</script>
+{% else %}
+<!-- Default hero section when no slides are available -->
+<section class="hero-banner-section position-relative overflow-hidden bg-primary">
+    <div class="container">
+        <div class="row align-items-center min-vh-75 py-5">
+            <div class="col-lg-6">
+                <div class="hero-content text-white">
+                    <div class="hero-badge d-inline-block mb-4">
+                        <span class="badge bg-light text-primary px-4 py-2 fs-6 fw-bold text-uppercase letter-spacing-1">
+                                <i class="bi bi-shop me-2"></i>MarketHub
+                        </span>
+                    </div>
+                    
+                    <h1 class="hero-title display-3 fw-bold mb-4 lh-1">
+                        Welcome to Your Marketplace
+                    </h1>
+                    
+                    <p class="hero-subtitle fs-4 mb-5 text-white-75 lh-base">
+                        Discover amazing products from trusted sellers. Shop with confidence in our secure marketplace.
+                    </p>
+                    
+                    <div class="hero-actions">
+                        <a href="{% url 'product_list' %}" class="btn btn-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 shadow-lg">
+                            <i class="bi bi-shop me-2"></i>Shop Now
+                        </a>
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'create_product' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 ms-3">
+                            <i class="bi bi-plus-circle me-2"></i>Sell Now
+                        </a>
+                        {% else %}
+                        <a href="{% url 'signup' %}" class="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase letter-spacing-1 ms-3">
+                            <i class="bi bi-person-plus me-2"></i>Join Us
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}

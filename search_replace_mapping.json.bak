@@ -1,0 +1,308 @@
+{
+  "description": "Comprehensive search-and-replace mapping for Store Lite to MarketHub rebranding",
+  "metadata": {
+    "created": "2025-01-09",
+    "purpose": "Script-friendly JSON mapping for automated find-replace operations",
+    "source_project": "Store Lite",
+    "target_project": "MarketHub",
+    "version": "1.0"
+  },
+  "text_mappings": {
+    "basic_variations": {
+      "store lite": "markethub",
+      "Store Lite": "MarketHub",
+      "STORE LITE": "MARKETHUB",
+      "Store lite": "MarketHub",
+      "store Lite": "marketHub",
+      "STORE lite": "MARKETHUB",
+      "store LITE": "marketHUB"
+    },
+    "hyphenated_variations": {
+      "store-lite": "markethub",
+      "Store-Lite": "MarketHub",
+      "STORE-LITE": "MARKETHUB",
+      "Store-lite": "MarketHub",
+      "store-Lite": "marketHub",
+      "STORE-lite": "MARKETHUB",
+      "store-LITE": "marketHUB"
+    },
+    "underscore_variations": {
+      "store_lite": "markethub",
+      "Store_Lite": "MarketHub",
+      "STORE_LITE": "MARKETHUB",
+      "Store_lite": "MarketHub",
+      "store_Lite": "marketHub",
+      "STORE_lite": "MARKETHUB",
+      "store_LITE": "marketHUB"
+    },
+    "concatenated_variations": {
+      "storelite": "markethub",
+      "StoreLite": "MarketHub",
+      "STORELITE": "MARKETHUB",
+      "Storelite": "MarketHub",
+      "storeLite": "marketHub",
+      "STORELite": "MARKETHub",
+      "storeLITE": "marketHUB"
+    },
+    "wrapped_variations": {
+      "_storelite_": "_markethub_",
+      "_StoreLite_": "_MarketHub_",
+      "_STORELITE_": "_MARKETHUB_",
+      "_store_lite_": "_markethub_",
+      "_Store_Lite_": "_MarketHub_",
+      "_STORE_LITE_": "_MARKETHUB_",
+      "-storelite-": "-markethub-",
+      "-StoreLite-": "-MarketHub-",
+      "-STORELITE-": "-MARKETHUB-",
+      "-store-lite-": "-markethub-",
+      "-Store-Lite-": "-MarketHub-",
+      "-STORE-LITE-": "-MARKETHUB-"
+    },
+    "file_extensions": {
+      "storelite.scss": "markethub.scss",
+      "StoreLite.scss": "MarketHub.scss",
+      "store-lite.scss": "markethub.scss",
+      "Store-Lite.scss": "MarketHub.scss",
+      "storelite.css": "markethub.css",
+      "StoreLite.css": "MarketHub.css",
+      "store-lite.css": "markethub.css",
+      "Store-Lite.css": "MarketHub.css",
+      "storelite.js": "markethub.js",
+      "StoreLite.js": "MarketHub.js",
+      "store-lite.js": "markethub.js",
+      "Store-Lite.js": "MarketHub.js"
+    },
+    "team_references": {
+      "Store Lite Team": "MarketHub Team",
+      "store lite team": "markethub team",
+      "STORE LITE TEAM": "MARKETHUB TEAM"
+    },
+    "theme_references": {
+      "store-lite-theme": "markethub-theme",
+      "Store-Lite-Theme": "MarketHub-Theme",
+      "STORE-LITE-THEME": "MARKETHUB-THEME",
+      "store lite theme": "markethub theme",
+      "Store Lite Theme": "MarketHub Theme",
+      "STORE LITE THEME": "MARKETHUB THEME"
+    },
+    "directory_paths": {
+      "/store-lite/": "/markethub/",
+      "/Store-Lite/": "/MarketHub/",
+      "/STORE-LITE/": "/MARKETHUB/",
+      "\\store-lite\\": "\\markethub\\",
+      "\\Store-Lite\\": "\\MarketHub\\",
+      "\\STORE-LITE\\": "\\MARKETHUB\\",
+      "/storelite/": "/markethub/",
+      "/StoreLite/": "/MarketHub/",
+      "/STORELITE/": "/MARKETHUB\\",
+      "\\storelite\\": "\\markethub\\",
+      "\\StoreLite\\": "\\MarketHub\\",
+      "\\STORELITE\\": "\\MARKETHUB\\"
+    },
+    "css_class_variations": {
+      ".store-lite": ".markethub",
+      ".Store-Lite": ".MarketHub",
+      ".STORE-LITE": ".MARKETHUB",
+      ".storelite": ".markethub",
+      ".StoreLite": ".MarketHub",
+      ".STORELITE": ".MARKETHUB",
+      ".store_lite": ".markethub",
+      ".Store_Lite": ".MarketHub",
+      ".STORE_LITE": ".MARKETHUB"
+    },
+    "id_variations": {
+      "#store-lite": "#markethub",
+      "#Store-Lite": "#MarketHub",
+      "#STORE-LITE": "#MARKETHUB",
+      "#storelite": "#markethub",
+      "#StoreLite": "#MarketHub",
+      "#STORELITE": "#MARKETHUB",
+      "#store_lite": "#markethub",
+      "#Store_Lite": "#MarketHub",
+      "#STORE_LITE": "#MARKETHUB"
+    },
+    "variable_names": {
+      "store_lite_": "markethub_",
+      "Store_Lite_": "MarketHub_",
+      "STORE_LITE_": "MARKETHUB_",
+      "store-lite-": "markethub-",
+      "Store-Lite-": "MarketHub-",
+      "STORE-LITE-": "MARKETHUB-",
+      "storeLite": "marketHub",
+      "StoreLite": "MarketHub",
+      "STORELITE": "MARKETHUB"
+    }
+  },
+  "regex_patterns": {
+    "word_boundary_patterns": [
+      {
+        "pattern": "\\b[Ss]tore[ _-]?[Ll]ite\\b",
+        "replacement": "MarketHub",
+        "description": "Matches Store Lite with optional separators, case insensitive start"
+      },
+      {
+        "pattern": "\\b[Ss][Tt][Oo][Rr][Ee][ _-]?[Ll][Ii][Tt][Ee]\\b",
+        "replacement": "MarketHub",
+        "description": "Case insensitive Store Lite with optional separators"
+      },
+      {
+        "pattern": "\\bSTORE[ _-]?LITE\\b",
+        "replacement": "MARKETHUB",
+        "description": "All caps Store Lite with optional separators"
+      },
+      {
+        "pattern": "\\bstore[ _-]?lite\\b",
+        "replacement": "markethub",
+        "description": "All lowercase store lite with optional separators"
+      }
+    ],
+    "camelcase_patterns": [
+      {
+        "pattern": "\\bstoreLite\\b",
+        "replacement": "marketHub",
+        "description": "CamelCase starting with lowercase"
+      },
+      {
+        "pattern": "\\bStoreLite\\b",
+        "replacement": "MarketHub", 
+        "description": "PascalCase StoreLite"
+      }
+    ],
+    "file_path_patterns": [
+      {
+        "pattern": "([/\\\\]|^)store[_-]?lite([/\\\\]|\\.)",
+        "replacement": "$1markethub$2",
+        "description": "File paths containing store lite"
+      },
+      {
+        "pattern": "([/\\\\]|^)Store[_-]?Lite([/\\\\]|\\.)",
+        "replacement": "$1MarketHub$2",
+        "description": "File paths containing Store Lite"
+      },
+      {
+        "pattern": "([/\\\\]|^)STORE[_-]?LITE([/\\\\]|\\.)",
+        "replacement": "$1MARKETHUB$2",
+        "description": "File paths containing STORE LITE"
+      }
+    ],
+    "css_scss_patterns": [
+      {
+        "pattern": "\\$store[_-]?lite[_-]",
+        "replacement": "$markethub-",
+        "description": "SCSS variables starting with store lite"
+      },
+      {
+        "pattern": "\\$Store[_-]?Lite[_-]",
+        "replacement": "$MarketHub-",
+        "description": "SCSS variables starting with Store Lite"
+      },
+      {
+        "pattern": "\\$STORE[_-]?LITE[_-]",
+        "replacement": "$MARKETHUB-",
+        "description": "SCSS variables starting with STORE LITE"
+      },
+      {
+        "pattern": "--store[_-]?lite[_-]",
+        "replacement": "--markethub-",
+        "description": "CSS custom properties with store lite"
+      },
+      {
+        "pattern": "--Store[_-]?Lite[_-]",
+        "replacement": "--MarketHub-",
+        "description": "CSS custom properties with Store Lite"
+      }
+    ],
+    "html_attribute_patterns": [
+      {
+        "pattern": "class=[\"']([^\"']*?)store[_-]?lite([^\"']*?)[\"']",
+        "replacement": "class=\"$1markethub$2\"",
+        "description": "HTML class attributes containing store lite"
+      },
+      {
+        "pattern": "id=[\"']([^\"']*?)store[_-]?lite([^\"']*?)[\"']",
+        "replacement": "id=\"$1markethub$2\"",
+        "description": "HTML id attributes containing store lite"
+      }
+    ],
+    "javascript_patterns": [
+      {
+        "pattern": "\\bstore[_-]?lite([A-Z])",
+        "replacement": "markethub$1",
+        "description": "JavaScript camelCase variables starting with storeLite"
+      },
+      {
+        "pattern": "\\bStore[_-]?Lite([A-Z])",
+        "replacement": "MarketHub$1",  
+        "description": "JavaScript PascalCase variables starting with StoreLite"
+      }
+    ]
+  },
+  "special_cases": {
+    "file_names": {
+      "Store_Lite_Design_Reference.md": "MarketHub_Design_Reference.md",
+      "Store_Lite_Color_Palette.md": "MarketHub_Color_Palette.md",
+      "STORE_LITE_THEME.md": "MARKETHUB_THEME.md",
+      "_storelite_variables.scss": "_markethub_variables.scss",
+      "store-lite.scss": "markethub.scss",
+      "store-lite.css": "markethub.css",
+      "store-lite.js": "markethub.js"
+    },
+    "package_json": {
+      "\"name\": \"store-lite-theme\"": "\"name\": \"markethub-theme\"",
+      "\"author\": \"Store Lite Team\"": "\"author\": \"MarketHub Team\"",
+      "\"store-lite\"": "\"markethub\""
+    },
+    "url_slugs": {
+      "/store-lite/": "/markethub/",
+      "/Store-Lite/": "/MarketHub/",
+      "?store-lite": "?markethub",
+      "&store-lite": "&markethub",
+      "#store-lite": "#markethub"
+    },
+    "database_fields": {
+      "store_lite_": "markethub_",
+      "Store_Lite_": "MarketHub_",
+      "STORE_LITE_": "MARKETHUB_"
+    }
+  },
+  "context_specific": {
+    "titles_and_headings": {
+      "Store Lite Design Reference": "MarketHub Design Reference",
+      "Store Lite Color Palette": "MarketHub Color Palette", 
+      "Store Lite Theme": "MarketHub Theme",
+      "STORE LITE THEME": "MARKETHUB THEME",
+      "# Store Lite": "# MarketHub",
+      "## Store Lite": "## MarketHub",
+      "### Store Lite": "### MarketHub"
+    },
+    "comments": {
+      "/* Store Lite": "/* MarketHub",
+      "// Store Lite": "// MarketHub",
+      "<!-- Store Lite": "<!-- MarketHub",
+      "# Store Lite": "# MarketHub"
+    },
+    "meta_tags": {
+      "content=\"Store Lite\"": "content=\"MarketHub\"",
+      "content=\"store lite\"": "content=\"markethub\"",
+      "content=\"STORE LITE\"": "content=\"MARKETHUB\""
+    }
+  },
+  "usage_instructions": {
+    "regex_flags": "gi",
+    "recommended_order": [
+      "1. Apply special_cases first (exact matches)",
+      "2. Apply context_specific mappings",
+      "3. Apply regex_patterns with word boundaries",
+      "4. Apply text_mappings for remaining cases",
+      "5. Manual review of results"
+    ],
+    "cautions": [
+      "Always backup files before applying changes",
+      "Test regex patterns on sample data first",
+      "Review file renames carefully",
+      "Check for broken links after URL changes",
+      "Validate CSS/SCSS after variable renames",
+      "Update import statements and references"
+    ]
+  }
+}

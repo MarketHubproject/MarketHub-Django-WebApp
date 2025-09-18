@@ -1,0 +1,8 @@
+[SECURITY] 2025-08-17 20:03:00,353 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 20:03:04,088 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 20:05:00,455 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 20:18:36,011 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 20:18:40,232 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 20:38:30,308 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 21:24:47,569 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/
+[SECURITY] 2025-08-17 21:25:43,738 WARNING log: Forbidden (CSRF token from POST incorrect.): /login/

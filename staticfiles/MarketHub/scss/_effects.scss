@@ -1,0 +1,400 @@
+// ============================================================================
+// MarketHub Modern Effects & Utility Mixins
+// ============================================================================
+
+// Modern Gradient Background Mixin
+@mixin gradient-bg($from, $to, $angle: 135deg) {
+  background: linear-gradient($angle, $from 0%, $to 100%);
+}
+
+// Enhanced Gradient with Multiple Stops
+@mixin gradient-bg-multi($stops...) {
+  background: linear-gradient(135deg, $stops);
+}
+
+// Glassmorphism Effect Mixin
+@mixin glass($blur: $MarketHub-glass-blur, $opacity: $MarketHub-glass-opacity, $saturation: $MarketHub-glass-saturation) {
+  background: rgba(255, 255, 255, $opacity);
+  backdrop-filter: blur($blur) saturate($saturation);
+  -webkit-backdrop-filter: blur($blur) saturate($saturation);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  
+  // Subtle inner glow
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.2) 0%, 
+      transparent 50%, 
+      rgba(255, 255, 255, 0.1) 100%);
+    border-radius: inherit;
+    z-index: -1;
+  }
+}
+
+// Glass variant with colored tint
+@mixin glass-tinted($color, $opacity: 0.1, $blur: $MarketHub-glass-blur) {
+  background: rgba($color, $opacity);
+  backdrop-filter: blur($blur) saturate(180%);
+  -webkit-backdrop-filter: blur($blur) saturate(180%);
+  border: 1px solid rgba($color, 0.2);
+}
+
+// Modern Hover Lift Effect
+@mixin hover-lift($scale: 1.03, $shadow: map-get($MarketHub-shadows, lg), $duration: map-get($MarketHub-durations, normal)) {
+  transition: transform $duration map-get($MarketHub-easings, bounce), box-shadow $duration map-get($MarketHub-easings, ease-out);
+  
+  &:hover {
+    transform: translateY(-4px) scale($scale);
+    box-shadow: $shadow;
+  }
+}
+
+// Button Hover Effect with Subtle Scale
+@mixin hover-button($scale: 1.02, $lift: -2px) {
+  transition: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, swoosh);
+  
+  &:hover {
+    transform: translateY($lift) scale($scale);
+  }
+  
+  &:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: map-get($MarketHub-durations, fast);
+  }
+}
+
+// Modern Loading State Mixin
+@mixin loading-state($bg-color: rgba(255, 255, 255, 0.8)) {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.7;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: loading-spin 0.8s linear infinite;
+  }
+}
+
+// Text Gradient Mixin
+@mixin text-gradient($gradient) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Focus Ring for Accessibility
+@mixin focus-ring($color: $MarketHub-primary, $width: 3px, $offset: 2px) {
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 $offset rgba($color, 0.1), 0 0 0 ($offset + $width) rgba($color, 0.4);
+  }
+}
+
+// Modern Border Animation
+@mixin animated-border($color: $MarketHub-primary, $width: 2px) {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, $color, transparent);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+// Backdrop Support Detection
+@mixin backdrop-support($fallback-bg) {
+  background: $fallback-bg;
+  
+  @supports (backdrop-filter: blur(1px)) {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
+
+// Modern Card Shadow Stack
+@mixin card-shadow-stack($base-shadow: map-get($MarketHub-shadows, md), $hover-shadow: map-get($MarketHub-shadows, xl)) {
+  box-shadow: $base-shadow;
+  transition: box-shadow map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+  
+  &:hover {
+    box-shadow: $hover-shadow;
+  }
+}
+
+// Animated Underline
+@mixin animated-underline($color: currentColor, $height: 2px) {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: $height;
+    background: $color;
+    transition: width map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+  }
+  
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+// Smooth Scrolling Container
+@mixin smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+// ============================================================================
+// KEYFRAME ANIMATIONS
+// ============================================================================
+
+// Loading Spinner
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Micro Wiggle Animation
+@keyframes micro-wiggle {
+  0%, 100% { 
+    transform: rotate(0deg); 
+  }
+  25% { 
+    transform: rotate(-2deg); 
+  }
+  75% { 
+    transform: rotate(2deg); 
+  }
+}
+
+// Pulse Ring Animation (for notifications, badges)
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    transform: scale(1);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    transform: scale(1);
+  }
+}
+
+// Gentle Float Animation
+@keyframes gentle-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg); 
+  }
+  50% { 
+    transform: translateY(-6px) rotate(1deg); 
+  }
+}
+
+// Fade In Up Animation
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Slide In from Left
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Scale In Animation
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Bounce In Animation
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Shimmer Loading Effect
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+// Heartbeat Animation (for likes, favorites)
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.3);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.3);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+// ============================================================================
+// UTILITY ANIMATION CLASSES
+// ============================================================================
+
+// Apply animation utility classes
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s map-get($MarketHub-easings, ease-out);
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.5s map-get($MarketHub-easings, ease-out);
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s map-get($MarketHub-easings, bounce);
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.6s map-get($MarketHub-easings, bounce);
+}
+
+.animate-gentle-float {
+  animation: gentle-float 3s ease-in-out infinite;
+}
+
+.animate-micro-wiggle {
+  animation: micro-wiggle 0.5s map-get($MarketHub-easings, ease-in-out);
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+// Animation Control Classes
+.pause-animation {
+  animation-play-state: paused;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+// ============================================================================
+// RESPONSIVE ANIMATION CONTROLS
+// ============================================================================
+
+// Respect user's motion preferences
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// Disable heavy animations on mobile for performance
+@media (max-width: map-get($MarketHub-breakpoints, md)) {
+  .animate-gentle-float,
+  .animate-pulse-ring {
+    animation: none;
+  }
+  
+  // Reduce hover effects on touch devices
+  @media (hover: none) {
+    .hover-lift,
+    .card:hover {
+      transform: none;
+    }
+  }
+}

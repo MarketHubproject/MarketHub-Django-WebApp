@@ -4,8 +4,8 @@ services:
     name: markethub-web
     env: python
     plan: free
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "python -m gunicorn markethub.wsgi:application --bind 0.0.0.0:$PORT"
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "python -m gunicorn markethub.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
     
     envVars:
       - key: PYTHON_VERSION

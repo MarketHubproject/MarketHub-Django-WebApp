@@ -1,0 +1,38 @@
+services:
+  # Web service for Django app
+  - type: web
+    name: markethub-web
+    env: python
+    plan: free
+    buildCommand: "pip install --upgrade pip && pip install -r requirements.txt"
+    startCommand: "python -m gunicorn markethub.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120"
+    
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: DJANGO_SETTINGS_MODULE
+        value: markethub.settings.heroku
+      - key: WEB_CONCURRENCY
+        value: 2
+      
+      # Security settings
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: False
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      
+      # Static files
+      - key: STATIC_URL
+        value: "/static/"
+      - key: STATIC_ROOT
+        value: "./staticfiles"
+      
+      # Email settings
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.console.EmailBackend"
+      
+      # Payment environment
+      - key: PAYMENT_ENV
+        value: "test"

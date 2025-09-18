@@ -1,0 +1,24 @@
+{
+  "name": "store-lite-theme",
+  "version": "1.0.0",
+  "description": "Store Lite theme build tools for MarketHub Django WebApp",
+  "scripts": {
+    "build": "sass homepage/static/MarketHub/scss/store-lite.scss homepage/static/MarketHub/css/store-lite.css --style=compressed --source-map",
+    "build-dev": "sass homepage/static/MarketHub/scss/store-lite.scss homepage/static/MarketHub/css/store-lite.css --style=expanded --source-map",
+    "watch": "sass homepage/static/MarketHub/scss/store-lite.scss homepage/static/MarketHub/css/store-lite.css --watch --style=expanded --source-map",
+    "clean": "rimraf homepage/static/MarketHub/css/*.css*"
+  },
+  "devDependencies": {
+    "sass": "^1.77.8",
+    "rimraf": "^5.0.5"
+  },
+  "keywords": [
+    "scss",
+    "css",
+    "store-lite",
+    "django",
+    "bootstrap"
+  ],
+  "author": "Store Lite Team",
+  "license": "MIT"
+}

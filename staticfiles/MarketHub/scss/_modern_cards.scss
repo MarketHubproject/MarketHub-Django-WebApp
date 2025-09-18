@@ -1,0 +1,545 @@
+// ============================================================================
+// MarketHub Modern Card System
+// ============================================================================
+
+// Base Modern Card
+.card-modern {
+  background: white;
+  border-radius: map-get($MarketHub-radius, 2xl);
+  box-shadow: map-get($MarketHub-shadows, md);
+  border: 1px solid map-get($MarketHub-colors, neutral-200);
+  position: relative;
+  overflow: hidden;
+  transition: all map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+  
+  // Gradient top border effect
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: map-get($MarketHub-gradients, primary);
+    opacity: 0;
+    transition: opacity map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+  }
+  
+  // Hover Effects
+  &:hover {
+    @include hover-lift(1.02, map-get($MarketHub-shadows, xl));
+    border-color: map-get($MarketHub-colors, primary-200);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+// Glass Card Variant
+.card-modern.card-glass {
+  @include glass(12px, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: map-get($MarketHub-shadows, lg), map-get($MarketHub-shadows, inner);
+  
+  &:hover {
+    @include glass(15px, 0.2);
+    box-shadow: map-get($MarketHub-shadows, xl), map-get($MarketHub-shadows, inner-lg);
+  }
+}
+
+// Product Card - Enhanced Version
+.card-modern.card-product {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  
+  .card-image-container {
+    position: relative;
+    overflow: hidden;
+    height: 280px;
+    background: map-get($MarketHub-colors, neutral-50);
+    border-radius: map-get($MarketHub-radius, 2xl) map-get($MarketHub-radius, 2xl) 0 0;
+    
+    .card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform map-get($MarketHub-durations, slower) map-get($MarketHub-easings, ease-out);
+    }
+    
+    .card-image-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: map-get($MarketHub-gradients, hero-bg);
+      font-size: map-get($MarketHub-font-sizes, 4xl);
+      color: map-get($MarketHub-colors, neutral-400);
+    }
+    
+    // Image hover zoom
+    &:hover .card-image {
+      transform: scale(1.08);
+    }
+    
+    // Overlay with quick actions
+    .card-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: map-get($MarketHub-spacing, 3);
+      opacity: 0;
+      transition: opacity map-get($MarketHub-durations, normal) map-get($MarketHub-easings, ease-out);
+      
+      .overlay-btn {
+        @include glass(8px, 0.3);
+        border: none;
+        border-radius: map-get($MarketHub-radius, lg);
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: map-get($MarketHub-font-sizes, lg);
+        cursor: pointer;
+        transition: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, bounce);
+        
+        &:hover {
+          transform: scale(1.1);
+          @include glass(10px, 0.4);
+        }
+        
+        // Micro-wiggle animation on hover
+        &:hover .bi {
+          animation: micro-wiggle 0.5s ease-in-out;
+        }
+      }
+    }
+    
+    &:hover .card-overlay {
+      opacity: 1;
+    }
+    
+    // Category/Status Badge
+    .card-badge {
+      position: absolute;
+      top: map-get($MarketHub-spacing, 4);
+      right: map-get($MarketHub-spacing, 4);
+      z-index: 2;
+      
+      .badge {
+        @include glass(8px, 0.9);
+        color: map-get($MarketHub-colors, neutral-900) !important;
+        font-weight: map-get($MarketHub-font-weights, semibold);
+        padding: map-get($MarketHub-spacing, 2) map-get($MarketHub-spacing, 4);
+        border-radius: map-get($MarketHub-radius, full);
+        font-size: map-get($MarketHub-font-sizes, xs);
+        text-transform: uppercase;
+        letter-spacing: map-get($MarketHub-letter-spacing, wide);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+    }
+    
+    // Favorite/Heart Icon
+    .card-favorite {
+      position: absolute;
+      top: map-get($MarketHub-spacing, 4);
+      left: map-get($MarketHub-spacing, 4);
+      z-index: 2;
+      
+      .favorite-btn {
+        @include glass(6px, 0.2);
+        border: none;
+        border-radius: map-get($MarketHub-radius, lg);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: map-get($MarketHub-font-sizes, lg);
+        cursor: pointer;
+        transition: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, ease-out);
+        
+        &:hover {
+          @include glass(8px, 0.3);
+          transform: scale(1.05);
+        }
+        
+        &.is-favorited {
+          color: map-get($MarketHub-colors, danger-500);
+          animation: heartbeat 1.2s ease-in-out;
+        }
+      }
+    }
+  }
+  
+  .card-body {
+    padding: map-get($MarketHub-spacing, 6);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: map-get($MarketHub-spacing, 3);
+    
+    .card-title {
+      font-family: $MarketHub-font-secondary;
+      font-size: map-get($MarketHub-font-sizes, xl);
+      font-weight: map-get($MarketHub-font-weights, bold);
+      color: map-get($MarketHub-colors, neutral-900);
+      line-height: map-get($MarketHub-line-heights, tight);
+      margin: 0;
+      
+      // Truncate long titles
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .card-rating {
+      display: flex;
+      align-items: center;
+      gap: map-get($MarketHub-spacing, 2);
+      
+      .rating-stars {
+        display: flex;
+        gap: 1px;
+        
+        .star {
+          color: map-get($MarketHub-colors, warning-500);
+          font-size: map-get($MarketHub-font-sizes, sm);
+        }
+        
+        .star-empty {
+          color: map-get($MarketHub-colors, neutral-300);
+        }
+      }
+      
+      .rating-count {
+        font-size: map-get($MarketHub-font-sizes, sm);
+        color: map-get($MarketHub-colors, neutral-500);
+        font-weight: map-get($MarketHub-font-weights, medium);
+      }
+    }
+    
+    .card-description {
+      font-size: map-get($MarketHub-font-sizes, sm);
+      line-height: map-get($MarketHub-line-heights, relaxed);
+      color: map-get($MarketHub-colors, neutral-600);
+      flex: 1;
+      
+      // Truncate long descriptions
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .card-price-section {
+      .price-container {
+        display: flex;
+        align-items: baseline;
+        gap: map-get($MarketHub-spacing, 3);
+        margin-bottom: map-get($MarketHub-spacing, 3);
+        
+        .current-price {
+          font-size: map-get($MarketHub-font-sizes, 2xl);
+          font-weight: map-get($MarketHub-font-weights, black);
+          color: map-get($MarketHub-colors, primary-600);
+        }
+        
+        .original-price {
+          font-size: map-get($MarketHub-font-sizes, lg);
+          font-weight: map-get($MarketHub-font-weights, medium);
+          color: map-get($MarketHub-colors, neutral-500);
+          text-decoration: line-through;
+        }
+        
+        .discount-badge {
+          background: map-get($MarketHub-colors, success-500);
+          color: white;
+          font-size: map-get($MarketHub-font-sizes, xs);
+          font-weight: map-get($MarketHub-font-weights, bold);
+          padding: map-get($MarketHub-spacing, 1) map-get($MarketHub-spacing, 2);
+          border-radius: map-get($MarketHub-radius, md);
+          text-transform: uppercase;
+          letter-spacing: map-get($MarketHub-letter-spacing, wide);
+        }
+      }
+    }
+    
+    .card-actions {
+      display: flex;
+      gap: map-get($MarketHub-spacing, 3);
+      margin-top: auto;
+      
+      .btn-add-cart {
+        flex: 2;
+      }
+      
+      .btn-view-details {
+        flex: 1;
+      }
+    }
+    
+    // Tags/Metadata
+    .card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: map-get($MarketHub-spacing, 3);
+      border-top: 1px solid map-get($MarketHub-colors, neutral-200);
+      font-size: map-get($MarketHub-font-sizes, xs);
+      color: map-get($MarketHub-colors, neutral-500);
+      
+      .card-location,
+      .card-date {
+        display: flex;
+        align-items: center;
+        gap: map-get($MarketHub-spacing, 1);
+        
+        .bi {
+          font-size: 0.9em;
+        }
+      }
+    }
+  }
+}
+
+// Feature Card for showcase sections
+.card-modern.card-feature {
+  text-align: center;
+  padding: map-get($MarketHub-spacing, 8) map-get($MarketHub-spacing, 6);
+  
+  .feature-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: map-get($MarketHub-radius, 2xl);
+    background: map-get($MarketHub-gradients, primary);
+    color: white;
+    font-size: map-get($MarketHub-font-sizes, 3xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto map-get($MarketHub-spacing, 6);
+    transition: all map-get($MarketHub-durations, normal) map-get($MarketHub-easings, bounce);
+  }
+  
+  &:hover .feature-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: map-get($MarketHub-shadows, xl);
+  }
+  
+  .feature-title {
+    font-size: map-get($MarketHub-font-sizes, xl);
+    font-weight: map-get($MarketHub-font-weights, bold);
+    color: map-get($MarketHub-colors, neutral-900);
+    margin-bottom: map-get($MarketHub-spacing, 4);
+  }
+  
+  .feature-description {
+    font-size: map-get($MarketHub-font-sizes, sm);
+    line-height: map-get($MarketHub-line-heights, relaxed);
+    color: map-get($MarketHub-colors, neutral-600);
+  }
+}
+
+// Testimonial Card
+.card-modern.card-testimonial {
+  position: relative;
+  padding: map-get($MarketHub-spacing, 8);
+  
+  // Quote icon
+  &::before {
+    content: '"';
+    position: absolute;
+    top: map-get($MarketHub-spacing, 4);
+    left: map-get($MarketHub-spacing, 6);
+    font-size: map-get($MarketHub-font-sizes, 6xl);
+    color: map-get($MarketHub-colors, primary-200);
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  
+  .testimonial-content {
+    font-size: map-get($MarketHub-font-sizes, lg);
+    line-height: map-get($MarketHub-line-heights, relaxed);
+    color: map-get($MarketHub-colors, neutral-700);
+    font-style: italic;
+    margin-bottom: map-get($MarketHub-spacing, 6);
+    padding-left: map-get($MarketHub-spacing, 8);
+  }
+  
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: map-get($MarketHub-spacing, 4);
+    
+    .author-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: map-get($MarketHub-radius, full);
+      object-fit: cover;
+      border: 2px solid map-get($MarketHub-colors, primary-200);
+    }
+    
+    .author-info {
+      .author-name {
+        font-size: map-get($MarketHub-font-sizes, base);
+        font-weight: map-get($MarketHub-font-weights, semibold);
+        color: map-get($MarketHub-colors, neutral-900);
+        margin: 0;
+      }
+      
+      .author-title {
+        font-size: map-get($MarketHub-font-sizes, sm);
+        color: map-get($MarketHub-colors, neutral-500);
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Statistics Card
+.card-modern.card-stat {
+  text-align: center;
+  padding: map-get($MarketHub-spacing, 8) map-get($MarketHub-spacing, 6);
+  
+  .stat-value {
+    font-size: map-get($MarketHub-font-sizes, 4xl);
+    font-weight: map-get($MarketHub-font-weights, black);
+    @include text-gradient(map-get($MarketHub-gradients, primary));
+    margin-bottom: map-get($MarketHub-spacing, 2);
+    line-height: 1;
+  }
+  
+  .stat-label {
+    font-size: map-get($MarketHub-font-sizes, base);
+    font-weight: map-get($MarketHub-font-weights, semibold);
+    color: map-get($MarketHub-colors, neutral-600);
+    text-transform: uppercase;
+    letter-spacing: map-get($MarketHub-letter-spacing, wide);
+  }
+  
+  .stat-change {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: map-get($MarketHub-spacing, 1);
+    margin-top: map-get($MarketHub-spacing, 3);
+    font-size: map-get($MarketHub-font-sizes, sm);
+    font-weight: map-get($MarketHub-font-weights, medium);
+    
+    &.positive {
+      color: map-get($MarketHub-colors, success-600);
+    }
+    
+    &.negative {
+      color: map-get($MarketHub-colors, danger-600);
+    }
+  }
+}
+
+// Card Grid Layout System
+.cards-grid {
+  display: grid;
+  gap: map-get($MarketHub-spacing, 6);
+  
+  // Responsive grid layouts
+  &.grid-1 {
+    grid-template-columns: 1fr;
+  }
+  
+  &.grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+  
+  &.grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  
+  &.grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+  
+  // Masonry-style layout for mixed content
+  &.grid-masonry {
+    column-count: 3;
+    column-gap: map-get($MarketHub-spacing, 6);
+    
+    .card-modern {
+      break-inside: avoid;
+      margin-bottom: map-get($MarketHub-spacing, 6);
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: map-get($MarketHub-breakpoints, lg)) {
+  .cards-grid.grid-masonry {
+    column-count: 2;
+  }
+}
+
+@media (max-width: map-get($MarketHub-breakpoints, md)) {
+  .card-modern.card-product {
+    .card-image-container {
+      height: 220px;
+    }
+    
+    .card-body {
+      padding: map-get($MarketHub-spacing, 4);
+      gap: map-get($MarketHub-spacing, 2);
+    }
+    
+    .card-actions {
+      flex-direction: column;
+      gap: map-get($MarketHub-spacing, 2);
+      
+      .btn-add-cart,
+      .btn-view-details {
+        flex: 1;
+      }
+    }
+  }
+  
+  .cards-grid.grid-masonry {
+    column-count: 1;
+  }
+  
+  .card-modern.card-feature {
+    padding: map-get($MarketHub-spacing, 6) map-get($MarketHub-spacing, 4);
+    
+    .feature-icon {
+      width: 64px;
+      height: 64px;
+      font-size: map-get($MarketHub-font-sizes, 2xl);
+      margin-bottom: map-get($MarketHub-spacing, 4);
+    }
+  }
+}
+
+@media (max-width: map-get($MarketHub-breakpoints, sm)) {
+  .cards-grid {
+    gap: map-get($MarketHub-spacing, 4);
+    
+    &.grid-2,
+    &.grid-3,
+    &.grid-4 {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .card-modern.card-product .card-image-container {
+    height: 200px;
+  }
+}

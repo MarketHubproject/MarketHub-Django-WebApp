@@ -1,0 +1,32 @@
+HEROKU CONFIG VARS - Copy and Paste These Values
+=================================================
+
+Key: DJANGO_SETTINGS_MODULE
+Value: markethub.settings.heroku
+
+Key: SECRET_KEY
+Value: %o+^q7!-7id%g(o1z60fxe5m%163!9!ywt-%rm*5)4cpon1qwx
+
+Key: DEBUG
+Value: False
+
+Key: ALLOWED_HOSTS
+Value: localhost,127.0.0.1
+
+Key: PAYMENT_ENV
+Value: test
+
+Key: STRIPE_PUBLISHABLE_KEY_LIVE
+Value: pk_test_placeholder
+
+Key: STRIPE_SECRET_KEY_LIVE
+Value: sk_test_placeholder
+
+Key: STRIPE_WEBHOOK_SECRET_LIVE
+Value: whsec_placeholder
+
+IMPORTANT NOTES:
+- Copy each Value exactly as shown (no extra spaces)
+- After deployment, update ALLOWED_HOSTS to include your Heroku domain
+- Replace Stripe placeholder keys with real test keys from your Stripe dashboard
+- The SECRET_KEY has been randomly generated for security

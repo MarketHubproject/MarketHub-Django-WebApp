@@ -1,0 +1,164 @@
+// MarketHub Icons Utilities
+// Bootstrap Icons helper mixins for custom pseudo-element icons
+// Use sparingly for badges, lists, and other custom pseudo-element icons
+// to avoid sprinkling unicode literals across the codebase
+
+// =============================================================================
+// BOOTSTRAP ICONS MIXIN
+// =============================================================================
+
+// Main Bootstrap Icons mixin for pseudo-elements
+// Usage: @include bi($name, $size);
+// Example: @include bi("\f123", 1.2rem);
+@mixin bi($name, $size: 1rem) {
+  &::before {
+    content: $name;
+    font-family: "Bootstrap Icons";
+    font-size: $size;
+    font-style: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+// Alternative mixin for ::after pseudo-elements
+@mixin bi-after($name, $size: 1rem) {
+  &::after {
+    content: $name;
+    font-family: "Bootstrap Icons";
+    font-size: $size;
+    font-style: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+// =============================================================================
+// UTILITY MIXINS FOR COMMON ICON PATTERNS
+// =============================================================================
+
+// Badge with icon
+@mixin bi-badge($name, $size: 0.875rem, $spacing: 0.5rem) {
+  @include bi($name, $size);
+  
+  &::before {
+    margin-right: $spacing;
+  }
+}
+
+// List item with icon
+@mixin bi-list-item($name, $size: 1rem, $spacing: 0.75rem) {
+  @include bi($name, $size);
+  
+  &::before {
+    margin-right: $spacing;
+    color: $MarketHub-primary;
+  }
+}
+
+// Button with icon (before text)
+@mixin bi-btn($name, $size: 1rem, $spacing: 0.5rem) {
+  @include bi($name, $size);
+  
+  &::before {
+    margin-right: $spacing;
+    vertical-align: middle;
+  }
+}
+
+// Icon with custom positioning
+@mixin bi-positioned($name, $size: 1rem, $position: relative, $top: 0, $left: 0) {
+  @include bi($name, $size);
+  
+  &::before {
+    position: $position;
+    top: $top;
+    left: $left;
+  }
+}
+
+// =============================================================================
+// COMMON BOOTSTRAP ICON CONSTANTS
+// =============================================================================
+// Define commonly used Bootstrap Icons as variables to avoid magic strings
+// Reference: https://icons.getbootstrap.com/
+
+// Navigation & UI
+$bi-home: "\f426";
+$bi-search: "\f52a";
+$bi-cart: "\f1f6";
+$bi-user: "\f4da";
+$bi-menu: "\f479";
+$bi-close: "\f62a";
+
+// Status & Feedback
+$bi-check: "\f26a";
+$bi-x: "\f62a";
+$bi-exclamation: "\f33a";
+$bi-info: "\f431";
+$bi-warning: "\f33e";
+$bi-success: "\f26a";
+
+// Actions
+$bi-plus: "\f4fe";
+$bi-minus: "\f474";
+$bi-edit: "\f4cb";
+$bi-delete: "\f5de";
+$bi-download: "\f327";
+$bi-upload: "\f552";
+
+// Social & Communication
+$bi-heart: "\f414";
+$bi-star: "\f588";
+$bi-share: "\f52c";
+$bi-comment: "\f27b";
+$bi-mail: "\f465";
+$bi-phone: "\f4fc";
+
+// E-commerce
+$bi-bag: "\f1f0";
+$bi-basket: "\f1f2";
+$bi-credit-card: "\f2f5";
+$bi-cash: "\f22c";
+$bi-tag: "\f5b2";
+
+// =============================================================================
+// EXAMPLE USAGE CLASSES (Optional - remove if not needed)
+// =============================================================================
+
+// Uncomment these classes if you want ready-to-use icon utilities
+
+/*
+// Badge examples
+.badge-new {
+  @include bi-badge($bi-plus, 0.75rem, 0.25rem);
+}
+
+.badge-featured {
+  @include bi-badge($bi-star, 0.75rem, 0.25rem);
+}
+
+// List item examples
+.list-checked {
+  @include bi-list-item($bi-check, 1rem, 0.5rem);
+}
+
+.list-arrow {
+  @include bi-list-item("\f285", 1rem, 0.5rem); // arrow-right
+}
+
+// Button examples
+.btn-with-cart {
+  @include bi-btn($bi-cart, 1rem, 0.5rem);
+}
+
+.btn-with-heart {
+  @include bi-btn($bi-heart, 1rem, 0.5rem);
+}
+*/

@@ -1,0 +1,1083 @@
+{% extends 'homepage/base.html' %}
+{% load static currency_filters %}
+{% block title %}MarketHub - South Africa's Second Hand Marketplace{% endblock %}
+
+{% block content %}
+<!-- Modern Clean Hero Section -->
+<div class="modern-clean-hero bg-white py-5">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <!-- Left Content -->
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <div class="hero-content">
+                    <!-- Hero Badge -->
+                    <div class="hero-badge mb-4">
+                        <span class="badge rounded-pill px-4 py-2" 
+                              style="background: linear-gradient(135deg, #4682B4, #87CEEB); color: white; font-size: 0.9rem;">
+                            🌟 Cape Town's #1 Marketplace
+                        </span>
+                    </div>
+                    
+                    <!-- Main Headline -->
+                    <h1 class="display-3 fw-bold mb-4" style="color: #2c3e50; line-height: 1.2;">
+                        Find Amazing
+                        <span class="d-block" style="color: #4682B4;">Second Hand</span>
+                        <span class="d-block" style="color: #2c3e50;">Treasures</span>
+                    </h1>
+                    
+                    <!-- Subtitle -->
+                    <p class="fs-5 text-muted mb-4" style="line-height: 1.6; max-width: 90%;">
+                        Discover quality pre-owned items at unbeatable prices. Join thousands of happy customers in South Africa's most trusted marketplace.
+                    </p>
+                    
+                    <!-- CTA Buttons -->
+                    <div class="hero-actions d-flex flex-column flex-sm-row gap-3 mb-5">
+                        {% if not user.is_authenticated %}
+                            <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow">
+                                <i class="bi bi-rocket-takeoff-fill me-2"></i>Get Started Free
+                            </a>
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary btn-lg px-5 py-3 rounded-pill fw-bold">
+                                <i class="bi bi-eye me-2"></i>Browse Products
+                            </a>
+                        {% else %}
+                            <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow">
+                                <i class="bi bi-grid me-2"></i>Shop Now
+                            </a>
+                            <a href="{% url 'create_product' %}" class="btn btn-outline-secondary btn-lg px-5 py-3 rounded-pill fw-bold">
+                                <i class="bi bi-plus-circle me-2"></i>Sell Items
+                            </a>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Trust Indicators -->
+                    <div class="trust-indicators d-flex flex-wrap gap-4">
+                        <div class="trust-item d-flex align-items-center text-muted">
+                            <i class="bi bi-shield-check-fill text-success me-2"></i>
+                            <small class="fw-semibold">100% Secure</small>
+                        </div>
+                        <div class="trust-item d-flex align-items-center text-muted">
+                            <i class="bi bi-people-fill text-primary me-2"></i>
+                            <small class="fw-semibold">15K+ Members</small>
+                        </div>
+                        <div class="trust-item d-flex align-items-center text-muted">
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            <small class="fw-semibold">4.9/5 Rating</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Visual -->
+            <div class="col-lg-6">
+                <div class="hero-visual position-relative">
+                    <!-- Main Product Card -->
+                    <div class="hero-product-card position-relative">
+                        <div class="card border-0 shadow-lg" style="border-radius: 2rem; overflow: hidden;">
+                            <div class="card-body p-0">
+                                <div class="row g-0">
+                                    <div class="col-12">
+                                        <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                                             class="img-fluid" alt="Featured Product" 
+                                             style="height: 300px; width: 100%; object-fit: cover;">
+                                    </div>
+                                    <div class="col-12 p-4">
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="badge bg-success rounded-pill px-3 py-2">New Arrival</span>
+                                            <div class="rating">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <h5 class="card-title fw-bold mb-2">Premium Laptop Collection</h5>
+                                        <p class="card-text text-muted mb-3">High-quality second-hand electronics at amazing prices</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="price">
+                                                <span class="h4 fw-bold text-primary mb-0">From R2,500</span>
+                                            </div>
+                                            <a href="{% url 'product_list' %}" class="btn btn-primary btn-sm rounded-pill px-3">
+                                                <i class="bi bi-arrow-right"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Floating Stats -->
+                    <div class="floating-stat position-absolute" style="top: -20px; right: -20px; z-index: 10;">
+                        <div class="card border-0 shadow" style="border-radius: 1rem;">
+                            <div class="card-body p-3 text-center">
+                                <div class="h4 fw-bold text-success mb-0">1000+</div>
+                                <small class="text-muted">Products</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modern Clean Styles -->
+<style>
+/* Hero Section Styles */
+.modern-clean-hero {
+    min-height: 70vh;
+}
+
+.hero-product-card {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+.floating-stat {
+    animation: bounce 3s ease-in-out infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Category Cards */
+.category-card-modern {
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border-radius: 1.5rem;
+    overflow: hidden;
+    position: relative;
+}
+
+.category-card-modern:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.category-card-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: all 0.6s ease;
+    z-index: 1;
+}
+
+.category-card-modern:hover::before {
+    left: 100%;
+}
+
+/* Product Grid Styles */
+.product-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.product-card-modern {
+    background: white;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    border: 2px solid transparent;
+}
+
+.product-card-modern:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border-color: rgba(70, 130, 180, 0.2);
+}
+
+.product-image-modern {
+    height: 250px;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.product-card-modern:hover .product-image-modern {
+    transform: scale(1.1);
+}
+
+.product-info-modern {
+    padding: 1.5rem;
+}
+
+.product-title-modern {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+}
+
+.product-price-modern {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #4682B4;
+    margin-bottom: 1rem;
+}
+
+.product-actions-modern {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-modern {
+    border-radius: 50px;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    text-transform: none;
+    letter-spacing: 0.3px;
+}
+
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Section Headers */
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modern-clean-hero {
+        min-height: 60vh;
+    }
+    
+    .display-3 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .product-grid-modern {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 2rem;
+    }
+}
+</style>
+
+<!-- Modern Categories Section -->
+<div class="container py-5">
+    <div class="section-header">
+        <h2 class="section-title">Shop by Category</h2>
+        <p class="section-subtitle">Discover amazing deals on quality second-hand items across all categories</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=electronics" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-laptop"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Electronics</h5>
+                        <p class="card-text text-muted small mb-0">Phones, Laptops & More</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=fashion" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-bag-heart"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Fashion</h5>
+                        <p class="card-text text-muted small mb-0">Clothing & Accessories</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=home" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-house-heart"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Home & Living</h5>
+                        <p class="card-text text-muted small mb-0">Furniture & Decor</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=books" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-book"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Books</h5>
+                        <p class="card-text text-muted small mb-0">Education & Literature</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=sports" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-trophy"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Sports</h5>
+                        <p class="card-text text-muted small mb-0">Equipment & Gear</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-2 col-md-4 col-6">
+            <a href="?category=automotive" class="category-card-modern text-decoration-none d-block">
+                <div class="card h-100 border-0 text-center">
+                    <div class="card-body p-4">
+                        <div class="category-icon mb-3" style="font-size: 3rem; color: #4682B4;">
+                            <i class="bi bi-car-front"></i>
+                        </div>
+                        <h5 class="card-title fw-bold mb-2" style="color: #2c3e50;">Automotive</h5>
+                        <p class="card-text text-muted small mb-0">Parts & Accessories</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products Section -->
+<div class="container py-5">
+    <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+        <p class="section-subtitle">Handpicked quality items from our trusted sellers</p>
+    </div>
+    
+    <div class="text-center mb-5">
+        {% if user.is_authenticated %}
+        <a href="{% url 'product_list' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow btn-modern">
+            <i class="bi bi-grid me-2"></i>View All Products
+        </a>
+        {% else %}
+        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow btn-modern">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Shop
+            </a>
+            <a href="{% url 'signup' %}" class="btn btn-outline-secondary btn-lg px-5 py-3 rounded-pill fw-bold btn-modern">
+                <i class="bi bi-person-plus me-2"></i>Join Free
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Preview Grid -->
+    {% if products %}
+    <div class="products-grid mb-5">
+        <div class="store-lite-grid">
+            {% for product in products %}
+            <div class="store-lite-product-card" data-product-id="{{ product.id }}">
+                <div class="product-image-container">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="product-image" alt="{{ product.name }}">
+                    {% else %}
+                        <div class="product-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Favorite Button -->
+                    {% if user.is_authenticated %}
+                    <div class="favorite-btn-container position-absolute" style="top: 10px; right: 10px; z-index: 10;">
+                        <button class="btn btn-sm favorite-btn {% if product.id in user_favorites %}favorited{% endif %}" 
+                                onclick="toggleFavorite({{ product.id }}, this)"
+                                style="background: rgba(255, 255, 255, 0.9); border: none; border-radius: 50%; width: 35px; height: 35px; transition: all 0.2s;">
+                            <i class="fas fa-heart" style="color: {% if product.id in user_favorites %}#e74c3c{% else %}#bdc3c7{% endif %};"></i>
+                        </button>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Quick View Overlay -->
+                    <div class="product-overlay">
+                        <button class="btn btn-light btn-sm quick-view-btn" data-product-id="{{ product.id }}">
+                            <i class="fas fa-search-plus me-1"></i>Quick View
+                        </button>
+                    </div>
+                    
+                    <!-- Category Badge -->
+                    <div class="category-badge">
+                        <span class="badge" style="background: linear-gradient(135deg, #4682B4, #87CEEB); color: white;">{{ product.get_category_display }}</span>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h5 class="product-title">{{ product.name }}</h5>
+                    
+                    <!-- Rating Stars -->
+                    <div class="product-rating mb-2">
+                        <div class="rating-stars">
+                            <!-- Static 5-star rating for demo - can be made dynamic later -->
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="far fa-star text-warning"></i>
+                        </div>
+                        <span class="rating-text text-muted">(4.0)</span>
+                    </div>
+                    
+                    <p class="product-description text-muted">{{ product.description|truncatewords:12 }}</p>
+                    
+                    <div class="product-price-section">
+                        <div class="price-container">
+                            <span class="current-price">{{ product.price|rand_format }}</span>
+                            <!-- Optional: Original price for sales
+                            <span class="original-price text-muted text-decoration-line-through">${{ product.price|floatformat:2 }}</span>
+                            -->
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions d-flex gap-2 flex-wrap">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-sm rounded-pill flex-fill add-to-cart-btn fw-bold"
+                               style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
+                                <i class="fas fa-shopping-bag me-1"></i>Add to Cart
+                            </a>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-sky-blue btn-sm rounded-pill view-details-btn"
+                               style="border-color: #4682B4; color: #4682B4;">
+                                <i class="fas fa-eye me-1"></i>View
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-sm rounded-pill flex-fill fw-bold"
+                               style="background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%); border: none; color: #4682B4;">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login to Buy
+                            </a>
+                            <a href="{% url 'product_detail' product.id %}" class="btn btn-outline-sky-blue btn-sm rounded-pill view-details-btn"
+                               style="border-color: #4682B4; color: #4682B4;">
+                                <i class="fas fa-eye me-1"></i>View
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+        <nav aria-label="Products pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if products.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.previous_page_number }}">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in products.paginator.page_range %}
+                    {% if products.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?{% for key, value in request.GET.items %}{% if key != 'page' %}{{ key }}={{ value }}&{% endif %}{% endfor %}page={{ products.next_page_number }}">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% else %}
+    <!-- No Products Found -->
+    <div class="no-products text-center py-5">
+        <div class="mb-4">
+            <i class="fas fa-search text-muted" style="font-size: 4rem;"></i>
+        </div>
+        <h3 class="text-muted mb-3">No products found</h3>
+        <p class="text-muted mb-4">
+            {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
+                Try adjusting your search filters or browse all products.
+            {% else %}
+                No products are currently available.
+            {% endif %}
+        </p>
+        {% if request.GET.search or request.GET.category or request.GET.min_price or request.GET.max_price %}
+            <a href="{% url 'home' %}" class="btn btn-lg rounded-pill px-4 py-3 fw-bold shadow-lg"
+               style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
+                <i class="fas fa-times me-2"></i>Clear All Filters
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Featured Products Carousel Section -->
+{% if products %}
+<div class="featured-products-section mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-4 fw-bold mb-3 text-gradient">Featured Products</h2>
+        <p class="lead text-muted">Discover our handpicked selection of premium items</p>
+    </div>
+    
+    <div id="featuredProductsCarousel" class="carousel slide luxury-carousel" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            {% for product in products|slice:":3" %}
+            <button type="button" data-bs-target="#featuredProductsCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
+                    {% if forloop.first %}class="active"{% endif %} aria-current="{% if forloop.first %}true{% endif %}" 
+                    aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        
+        <div class="carousel-inner">
+            {% for product in products|slice:":3" %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="featured-product-image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="img-fluid rounded-4 shadow-lg" alt="{{ product.name }}">
+                            {% else %}
+                                <div class="placeholder-image d-flex align-items-center justify-content-center rounded-4 shadow-lg">
+                                    <i class="fas fa-image text-muted" style="font-size: 5rem;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="product-badge">
+                                <span class="badge px-3 py-2" style="background: linear-gradient(135deg, #4682B4, #87CEEB); color: white;">Featured</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="featured-product-content">
+                            <div class="product-category mb-3">
+                                <span class="badge bg-light text-dark px-3 py-2">{{ product.get_category_display }}</span>
+                            </div>
+                            <h1 class="featured-product-title mb-4">{{ product.name }}</h1>
+                            <p class="featured-product-description mb-4">{{ product.description|truncatewords:25 }}</p>
+                            <div class="featured-product-price mb-4">
+                                <span class="price-label text-muted">Price</span>
+                                <span class="price-value display-6 fw-bold text-primary ms-2">{{ product.price|rand_format }}</span>
+                            </div>
+                            <div class="featured-product-actions d-flex flex-column flex-md-row gap-3">
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
+                                   style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%); border: none; color: white;">
+                                    <i class="fas fa-eye me-2"></i>View Details
+                                </a>
+                                {% if user.is_authenticated %}
+                                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
+                                   style="background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%); border: none; color: #4682B4;">
+                                    <i class="fas fa-shopping-bag me-2"></i>Add to Cart
+                                </a>
+                                {% else %}
+                                <a href="{% url 'login' %}" class="btn btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg flex-fill"
+                                   style="background: linear-gradient(135deg, #87CEEB 0%, #B0E0E6 100%); border: none; color: #4682B4;">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In to Buy
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <button class="carousel-control-prev" type="button" data-bs-target="#featuredProductsCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#featuredProductsCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+{% endif %}
+
+<!-- Features Section -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4" style="background: linear-gradient(135deg, rgba(70, 130, 180, 0.1), rgba(135, 206, 235, 0.1)); border-radius: 50%;">
+                        <i class="bi bi-search text-sky-blue"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Smart Search</h5>
+                    <p class="text-muted mb-0">Find exactly what you're looking for with our advanced search and filtering system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4" style="background: linear-gradient(135deg, rgba(70, 130, 180, 0.1), rgba(135, 206, 235, 0.1)); border-radius: 50%;">
+                        <i class="bi bi-people text-sky-blue"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">Trusted Community</h5>
+                    <p class="text-muted mb-0">Join thousands of verified buyers and sellers in our secure marketplace community.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="feature-card h-100">
+            <div class="card border-0 h-100 shadow-hover">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-4" style="background: linear-gradient(135deg, rgba(70, 130, 180, 0.1), rgba(135, 206, 235, 0.1)); border-radius: 50%;">
+                        <i class="bi bi-headset text-sky-blue"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">24/7 Support</h5>
+                    <p class="text-muted mb-0">Our dedicated support team is here to help you every step of the way.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Animated Stats Section -->
+<div class="stats-section position-relative rounded-4 p-5 mb-5 overflow-hidden">
+    <div class="stats-bg-pattern"></div>
+    <div class="row text-center g-4 position-relative">
+        <div class="col-md-3">
+            <div class="stat-item animate-stat" data-target="1000">
+                <div class="stat-icon mb-3">
+                    <i class="fas fa-box text-primary"></i>
+                </div>
+                <h3 class="display-6 fw-bold text-sky-blue mb-2 counter">0</h3>
+                <p class="text-muted mb-0 fw-semibold">Products Listed</p>
+                <div class="stat-progress">
+                    <div class="stat-bar stat-bar-1"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item animate-stat" data-target="500">
+                <div class="stat-icon mb-3">
+                    <i class="fas fa-users text-success"></i>
+                </div>
+                <h3 class="display-6 fw-bold text-sky-blue mb-2 counter">0</h3>
+                <p class="text-muted mb-0 fw-semibold">Happy Customers</p>
+                <div class="stat-progress">
+                    <div class="stat-bar stat-bar-2"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item animate-stat" data-target="50">
+                <div class="stat-icon mb-3">
+                    <i class="fas fa-tags text-warning"></i>
+                </div>
+                <h3 class="display-6 fw-bold text-sky-blue mb-2 counter">0</h3>
+                <p class="text-muted mb-0 fw-semibold">Categories</p>
+                <div class="stat-progress">
+                    <div class="stat-bar stat-bar-3"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-item animate-stat">
+                <div class="stat-icon mb-3">
+                    <i class="fas fa-headset text-info"></i>
+                </div>
+                <h3 class="display-6 fw-bold text-sky-blue mb-2">24/7</h3>
+                <p class="text-muted mb-0 fw-semibold">Support Available</p>
+                <div class="stat-progress">
+                    <div class="stat-bar stat-bar-4"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Luxury Testimonials Section -->
+<div class="testimonials-section mb-5">
+    <div class="text-center mb-5">
+        <h2 class="display-4 fw-bold mb-3 text-gradient">What Our Clients Say</h2>
+        <p class="lead text-muted">Discover why thousands of customers trust MarketHub for their luxury shopping needs</p>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-4">
+            <div class="testimonial-card h-100">
+                <div class="card border-0 h-100 shadow-lg">
+                    <div class="card-body p-4 position-relative">
+                        <div class="testimonial-quote mb-3">
+                            <i class="fas fa-quote-left text-primary"></i>
+                        </div>
+                        <p class="testimonial-text mb-4">
+                            "MarketHub has revolutionized my shopping experience. The quality of products and exceptional service is unmatched. I've found unique items that I couldn't find anywhere else."
+                        </p>
+                        <div class="testimonial-author d-flex align-items-center">
+                            <div class="author-avatar me-3">
+                                <div class="avatar-circle">
+                                    <span class="fw-bold">SJ</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Sarah Johnson</h6>
+                                <small class="text-muted">Fashion Enthusiast</small>
+                                <div class="rating mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="testimonial-card h-100">
+                <div class="card border-0 h-100 shadow-lg">
+                    <div class="card-body p-4 position-relative">
+                        <div class="testimonial-quote mb-3">
+                            <i class="fas fa-quote-left text-success"></i>
+                        </div>
+                        <p class="testimonial-text mb-4">
+                            "As a seller, MarketHub provides the perfect platform to reach premium customers. The interface is intuitive and the support team is incredibly responsive. My sales have tripled!"
+                        </p>
+                        <div class="testimonial-author d-flex align-items-center">
+                            <div class="author-avatar me-3">
+                                <div class="avatar-circle bg-success">
+                                    <span class="fw-bold text-white">MC</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Michael Chen</h6>
+                                <small class="text-muted">Premium Seller</small>
+                                <div class="rating mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="testimonial-card h-100">
+                <div class="card border-0 h-100 shadow-lg">
+                    <div class="card-body p-4 position-relative">
+                        <div class="testimonial-quote mb-3">
+                            <i class="fas fa-quote-left text-info"></i>
+                        </div>
+                        <p class="testimonial-text mb-4">
+                            "The security and trust I feel when shopping on MarketHub is incredible. Every transaction is smooth, and the delivery is always on time. This is luxury e-commerce at its finest."
+                        </p>
+                        <div class="testimonial-author d-flex align-items-center">
+                            <div class="author-avatar me-3">
+                                <div class="avatar-circle bg-info">
+                                    <span class="fw-bold text-white">EP</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Emily Parker</h6>
+                                <small class="text-muted">Luxury Collector</small>
+                                <div class="rating mt-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Newsletter Signup Section -->
+{% include 'homepage/components/newsletter_signup.html' %}
+
+<!-- Enhanced CTA Section -->
+{% if not user.is_authenticated %}
+<div class="cta-section rounded-4 p-5 text-white text-center position-relative overflow-hidden shadow-lg"
+     style="background: linear-gradient(135deg, #4682B4 0%, #87CEEB 100%);">
+    <!-- Background Pattern -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 opacity-10">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <i class="bi bi-rocket-takeoff" style="font-size: 15rem;"></i>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center position-relative">
+        <div class="col-lg-10">
+            <div class="mb-4">
+                <span class="badge bg-white bg-opacity-20 rounded-pill px-4 py-3 mb-3" style="backdrop-filter: blur(10px);">
+                    <i class="bi bi-star-fill me-2"></i>Join 10,000+ Sellers
+                </span>
+            </div>
+            <h2 class="display-4 fw-bold mb-4">Ready to Start Your Journey?</h2>
+            <p class="lead mb-5 opacity-90">Join Cape Town's most trusted second-hand marketplace and turn your unused items into cash. It's free, easy, and secure!</p>
+            
+            <div class="d-flex flex-column flex-md-row gap-4 justify-content-center align-items-stretch align-items-md-center">
+                <a href="{% url 'signup' %}" class="btn btn-light btn-xl fw-bold px-5 py-3 rounded-pill shadow-lg flex-fill flex-md-grow-0"
+                   style="backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3);">
+                    <i class="bi bi-rocket-takeoff me-2" style="color: #4682B4;"></i>Create Free Account
+                    <small class="d-block mt-1 text-muted">Start selling in minutes</small>
+                </a>
+                <span class="text-white-50 align-self-center d-none d-md-inline mx-2">or</span>
+                <a href="{% url 'login' %}" class="btn btn-outline-light btn-xl fw-bold px-5 py-3 rounded-pill flex-fill flex-md-grow-0" 
+                   style="border-width: 2px; backdrop-filter: blur(10px);">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                    <small class="d-block mt-1 opacity-90">Already have an account?</small>
+                </a>
+            </div>
+            
+            <!-- Trust indicators -->
+            <div class="row mt-5 text-center">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center justify-content-center text-white-50">
+                        <i class="bi bi-shield-check me-2"></i>
+                        <small>Secure Payments</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center justify-content-center text-white-50">
+                        <i class="bi bi-truck me-2"></i>
+                        <small>Free Local Delivery</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center justify-content-center text-white-50">
+                        <i class="bi bi-people me-2"></i>
+                        <small>Trusted Community</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- JavaScript for Favorites Functionality -->
+<script>
+// Favorite functionality - Fixed and Enhanced
+function toggleFavorite(productId, button) {
+    // Prevent multiple clicks
+    if (button.disabled) return;
+    button.disabled = true;
+    
+    const heartIcon = button.querySelector('i');
+    const originalColor = heartIcon.style.color;
+    
+    // Get CSRF token properly
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCookie('csrftoken');
+    
+    if (!csrfToken) {
+        showToast('Unable to process request. Please refresh the page.', 'error');
+        button.disabled = false;
+        return;
+    }
+    
+    // Show loading state
+    heartIcon.style.color = '#ffc107';
+    button.style.transform = 'scale(1.1)';
+    
+    fetch(`/products/${productId}/toggle-favorite/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': csrfToken,
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            if (data.is_favorited) {
+                heartIcon.style.color = '#e74c3c';
+                button.classList.add('favorited');
+                showToast('Added to favorites!', 'success');
+            } else {
+                heartIcon.style.color = '#bdc3c7';
+                button.classList.remove('favorited');
+                showToast('Removed from favorites!', 'info');
+            }
+            
+            // Animation
+            button.style.transform = 'scale(1.3)';
+            setTimeout(() => {
+                button.style.transform = 'scale(1)';
+            }, 300);
+        } else {
+            throw new Error(data.message || 'Failed to update favorite status');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        
+        // Restore original state
+        heartIcon.style.color = originalColor;
+        button.style.transform = 'scale(1)';
+        
+        // Show appropriate error message
+        if (error.message.includes('401') || error.message.includes('authentication')) {
+            showToast('Please login to add favorites', 'warning');
+        } else {
+            showToast('Unable to update favorites. Please try again.', 'error');
+        }
+    })
+    .finally(() => {
+        button.disabled = false;
+    });
+}
+
+// Enhanced toast notification function
+function showToast(message, type = 'info') {
+    const existingToasts = document.querySelectorAll('.toast-message');
+    existingToasts.forEach(toast => toast.remove());
+    
+    const toast = document.createElement('div');
+    toast.className = 'toast-message';
+    toast.textContent = message;
+    
+    const colors = {
+        'success': '#28a745',
+        'error': '#dc3545',
+        'warning': '#ffc107',
+        'info': '#17a2b8'
+    };
+    
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type] || colors.info};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        z-index: 9999;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideInRight 0.3s ease;
+    `;
+    
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+// Add CSS animations for toast
+if (!document.getElementById('toast-styles')) {
+    const style = document.createElement('style');
+    style.id = 'toast-styles';
+    style.textContent = `
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOutRight {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Enhanced hover effects for favorite buttons
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteButtons = document.querySelectorAll('.favorite-btn');
+    
+    favoriteButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            this.style.background = 'rgba(255, 255, 255, 1)';
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            this.style.background = 'rgba(255, 255, 255, 0.9)';
+            this.style.transform = 'scale(1)';
+        });
+    });
+});
+</script>
+
+<!-- Add CSRF token for AJAX requests -->
+{% csrf_token %}
+
+{% endblock %}

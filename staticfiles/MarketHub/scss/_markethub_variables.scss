@@ -1,0 +1,314 @@
+// MarketHub Variables
+// Modern, clean design system with Google Fonts integration
+
+// =============================================================================
+// GOOGLE FONTS
+// =============================================================================
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap');
+
+// =============================================================================
+// PRIMARY COLOR PALETTE
+// =============================================================================
+$MarketHub-primary: #007BFF;
+$MarketHub-primary-dark: #0056B3;
+$MarketHub-primary-light: #4A9DFF;
+
+$MarketHub-secondary: #6C757D;
+$MarketHub-secondary-dark: #495057;
+$MarketHub-secondary-light: #ADB5BD;
+
+$MarketHub-success: #28A745;
+$MarketHub-warning: #FFC107;
+$MarketHub-danger: #DC3545;
+$MarketHub-info: #17A2B8;
+
+// =============================================================================
+// NEUTRAL COLOR PALETTE
+// =============================================================================
+$MarketHub-white: #FFFFFF;
+$MarketHub-light: #F8F9FA;
+$MarketHub-lighter: #E9ECEF;
+$MarketHub-border: #DEE2E6;
+$MarketHub-muted: #6C757D;
+$MarketHub-dark: #343A40;
+$MarketHub-darker: #212529;
+
+// Text Colors
+$MarketHub-text-primary: #2C3E50;
+$MarketHub-text-secondary: #6C757D;
+$MarketHub-text-muted: #ADB5BD;
+$MarketHub-text-light: rgba(255, 255, 255, 0.9);
+
+// Background Colors
+$MarketHub-bg-primary: #F8F9FA;
+$MarketHub-bg-secondary: #E9ECEF;
+$MarketHub-bg-card: rgba(255, 255, 255, 0.95);
+
+// =============================================================================
+// TYPOGRAPHY
+// =============================================================================
+// Font Families
+$MarketHub-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+$MarketHub-font-secondary: 'Playfair Display', Georgia, serif;
+$MarketHub-font-code: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+
+// Font Weights
+$MarketHub-weight-light: 300;
+$MarketHub-weight-normal: 400;
+$MarketHub-weight-medium: 500;
+$MarketHub-weight-semibold: 600;
+$MarketHub-weight-bold: 700;
+$MarketHub-weight-extrabold: 800;
+
+// Font Sizes
+$MarketHub-font-xs: 0.75rem;    // 12px
+$MarketHub-font-sm: 0.875rem;   // 14px
+$MarketHub-font-base: 1rem;     // 16px
+$MarketHub-font-lg: 1.125rem;   // 18px
+$MarketHub-font-xl: 1.25rem;    // 20px
+$MarketHub-font-2xl: 1.5rem;    // 24px
+$MarketHub-font-3xl: 2rem;      // 32px
+$MarketHub-font-4xl: 2.5rem;    // 40px
+$MarketHub-font-5xl: 3rem;      // 48px
+
+// Line Heights
+$MarketHub-leading-none: 1;
+$MarketHub-leading-tight: 1.25;
+$MarketHub-leading-snug: 1.375;
+$MarketHub-leading-normal: 1.5;
+$MarketHub-leading-relaxed: 1.625;
+$MarketHub-leading-loose: 2;
+
+// =============================================================================
+// SPACING SYSTEM
+// =============================================================================
+$MarketHub-space-0: 0;
+$MarketHub-space-1: 0.25rem;    // 4px
+$MarketHub-space-2: 0.5rem;     // 8px
+$MarketHub-space-3: 0.75rem;    // 12px
+$MarketHub-space-4: 1rem;       // 16px
+$MarketHub-space-5: 1.25rem;    // 20px
+$MarketHub-space-6: 1.5rem;     // 24px
+$MarketHub-space-8: 2rem;       // 32px
+$MarketHub-space-10: 2.5rem;    // 40px
+$MarketHub-space-12: 3rem;      // 48px
+$MarketHub-space-16: 4rem;      // 64px
+$MarketHub-space-20: 5rem;      // 80px
+$MarketHub-space-24: 6rem;      // 96px
+
+// =============================================================================
+// BORDER RADIUS
+// =============================================================================
+$MarketHub-radius-none: 0;
+$MarketHub-radius-sm: 0.375rem;   // 6px
+$MarketHub-radius-default: 0.5rem; // 8px
+$MarketHub-radius-md: 0.75rem;    // 12px
+$MarketHub-radius-lg: 1rem;       // 16px
+$MarketHub-radius-xl: 1.5rem;     // 24px
+$MarketHub-radius-2xl: 2rem;      // 32px
+$MarketHub-radius-full: 9999px;
+
+// =============================================================================
+// SHADOWS
+// =============================================================================
+$MarketHub-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$MarketHub-shadow-default: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+$MarketHub-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+$MarketHub-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+$MarketHub-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04);
+$MarketHub-shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
+
+// Interactive Shadows
+$MarketHub-shadow-hover: 0 8px 25px rgba(0, 123, 255, 0.15);
+$MarketHub-shadow-focus: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+
+// =============================================================================
+// GRADIENTS
+// =============================================================================
+$MarketHub-gradient-primary: linear-gradient(135deg, #{$MarketHub-primary} 0%, #{$MarketHub-primary-dark} 100%);
+$MarketHub-gradient-light: linear-gradient(135deg, #{$MarketHub-light} 0%, #{$MarketHub-lighter} 100%);
+$MarketHub-gradient-hero: linear-gradient(135deg, #{$MarketHub-primary} 0%, #{$MarketHub-primary-light} 100%);
+
+// =============================================================================
+// BREAKPOINTS
+// =============================================================================
+$MarketHub-screen-xs: 0;
+$MarketHub-screen-sm: 576px;
+$MarketHub-screen-md: 768px;
+$MarketHub-screen-lg: 992px;
+$MarketHub-screen-xl: 1200px;
+$MarketHub-screen-xxl: 1400px;
+
+// =============================================================================
+// Z-INDEX SCALE
+// =============================================================================
+$MarketHub-z-dropdown: 1000;
+$MarketHub-z-sticky: 1020;
+$MarketHub-z-fixed: 1030;
+$MarketHub-z-modal-backdrop: 1040;
+$MarketHub-z-modal: 1050;
+$MarketHub-z-popover: 1060;
+$MarketHub-z-tooltip: 1070;
+
+// =============================================================================
+// TRANSITIONS
+// =============================================================================
+$MarketHub-transition-fast: 0.15s ease-in-out;
+$MarketHub-transition-default: 0.3s ease-in-out;
+$MarketHub-transition-slow: 0.5s ease-in-out;
+
+// Specific Transitions
+$MarketHub-transition-colors: color 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+$MarketHub-transition-transform: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$MarketHub-transition-shadow: box-shadow 0.3s ease-in-out;
+
+// =============================================================================
+// BOOTSTRAP VARIABLE OVERRIDES
+// =============================================================================
+// Only override if Bootstrap is used
+
+// Primary Colors
+$primary: $MarketHub-primary !default;
+$secondary: $MarketHub-secondary !default;
+$success: $MarketHub-success !default;
+$info: $MarketHub-info !default;
+$warning: $MarketHub-warning !default;
+$danger: $MarketHub-danger !default;
+$light: $MarketHub-light !default;
+$dark: $MarketHub-dark !default;
+
+// Body
+$body-bg: $MarketHub-bg-primary !default;
+$body-color: $MarketHub-text-primary !default;
+
+// Typography
+$font-family-sans-serif: $MarketHub-font-primary !default;
+$font-family-base: $MarketHub-font-primary !default;
+$font-size-base: $MarketHub-font-base !default;
+$line-height-base: $MarketHub-leading-normal !default;
+
+$headings-font-family: $MarketHub-font-secondary !default;
+$headings-font-weight: $MarketHub-weight-semibold !default;
+$headings-line-height: $MarketHub-leading-tight !default;
+$headings-color: $MarketHub-text-primary !default;
+
+// Border Radius
+$border-radius: $MarketHub-radius-default !default;
+$border-radius-sm: $MarketHub-radius-sm !default;
+$border-radius-lg: $MarketHub-radius-lg !default;
+
+// Shadows
+$box-shadow: $MarketHub-shadow-default !default;
+$box-shadow-sm: $MarketHub-shadow-sm !default;
+$box-shadow-lg: $MarketHub-shadow-lg !default;
+
+// Cards
+$card-bg: $MarketHub-bg-card !default;
+$card-border-radius: $MarketHub-radius-lg !default;
+$card-border-color: rgba($MarketHub-border, 0.5) !default;
+$card-box-shadow: $MarketHub-shadow-md !default;
+
+// Buttons
+$btn-border-radius: $MarketHub-radius-md !default;
+$btn-border-radius-sm: $MarketHub-radius-sm !default;
+$btn-border-radius-lg: $MarketHub-radius-lg !default;
+$btn-font-weight: $MarketHub-weight-semibold !default;
+$btn-box-shadow: $MarketHub-shadow-sm !default;
+$btn-focus-box-shadow: $MarketHub-shadow-focus !default;
+
+// Navigation
+$navbar-brand-font-size: $MarketHub-font-xl !default;
+$navbar-brand-font-weight: $MarketHub-weight-bold !default;
+$nav-link-font-weight: $MarketHub-weight-medium !default;
+
+// Forms
+$input-border-radius: $MarketHub-radius-default !default;
+$input-focus-border-color: $MarketHub-primary !default;
+$input-focus-box-shadow: $MarketHub-shadow-focus !default;
+
+// =============================================================================
+// COMPONENT SPECIFIC VARIABLES
+// =============================================================================
+
+// Header
+$MarketHub-header-bg: rgba(255, 255, 255, 0.95);
+$MarketHub-header-backdrop: blur(10px);
+$MarketHub-header-border: rgba($MarketHub-border, 0.5);
+
+// Product Cards
+$MarketHub-product-card-bg: $MarketHub-white;
+$MarketHub-product-card-radius: $MarketHub-radius-xl;
+$MarketHub-product-card-shadow: $MarketHub-shadow-lg;
+$MarketHub-product-card-hover-shadow: $MarketHub-shadow-2xl;
+$MarketHub-product-image-height: 280px;
+
+// Buttons
+$MarketHub-btn-primary-bg: $MarketHub-gradient-primary;
+$MarketHub-btn-primary-hover-transform: translateY(-2px);
+$MarketHub-btn-primary-hover-shadow: $MarketHub-shadow-hover;
+
+// Footer
+$MarketHub-footer-bg: $MarketHub-gradient-light;
+$MarketHub-footer-border: $MarketHub-border;
+$MarketHub-footer-text: $MarketHub-text-secondary;
+
+// Animations
+$MarketHub-hover-transform: translateY(-8px) scale(1.02);
+$MarketHub-card-hover-transform: translateY(-10px) scale(1.03);
+
+// =============================================================================
+// UTILITY MIXINS
+// =============================================================================
+
+// Backdrop Filter Mixin
+@mixin MarketHub-backdrop-blur($blur: 10px) {
+  backdrop-filter: blur($blur);
+  -webkit-backdrop-filter: blur($blur);
+}
+
+// Gradient Text Mixin
+@mixin MarketHub-gradient-text($gradient: $MarketHub-gradient-primary) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+// Hover Transform Mixin
+@mixin MarketHub-hover-transform($transform: $MarketHub-hover-transform) {
+  transition: transform $MarketHub-transition-default, box-shadow $MarketHub-transition-default;
+  
+  &:hover {
+    transform: $transform;
+  }
+}
+
+// Card Style Mixin
+@mixin MarketHub-card {
+  background: $MarketHub-product-card-bg;
+  border-radius: $MarketHub-product-card-radius;
+  box-shadow: $MarketHub-product-card-shadow;
+  transition: transform $MarketHub-transition-default, box-shadow $MarketHub-transition-default;
+  border: 1px solid rgba($MarketHub-border, 0.1);
+  
+  &:hover {
+    transform: $MarketHub-card-hover-transform;
+    box-shadow: $MarketHub-product-card-hover-shadow;
+  }
+}
+
+// Button Style Mixin
+@mixin MarketHub-btn-primary {
+  background: $MarketHub-btn-primary-bg;
+  border: none;
+  color: white;
+  font-weight: $MarketHub-weight-semibold;
+  border-radius: $MarketHub-radius-lg;
+  transition: transform $MarketHub-transition-default, box-shadow $MarketHub-transition-default;
+  
+  &:hover {
+    background: $MarketHub-btn-primary-bg;
+    transform: $MarketHub-btn-primary-hover-transform;
+    box-shadow: $MarketHub-btn-primary-hover-shadow;
+  }
+}

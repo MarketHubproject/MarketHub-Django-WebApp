@@ -1,0 +1,37 @@
+2025-08-10 20:01:36,136 - INFO - Environment: dev
+2025-08-10 20:01:36,137 - INFO - Deployment ID: 20250810_200136
+2025-08-10 20:01:36,138 - INFO - Dry Run: True
+2025-08-10 20:01:36,138 - INFO - ============================================================
+2025-08-10 20:01:36,139 - INFO - 
+--- Create backup ---
+2025-08-10 20:01:36,236 - INFO - Backing up database...
+2025-08-10 20:01:36,237 - INFO - Running: Database backup
+2025-08-10 20:01:36,237 - INFO - DRY RUN: C:\Program Files\Python313\python.exe manage.py dumpdata --natural-foreign --natural-primary --exclude=contenttypes --exclude=auth.Permission --output=C:\Users\Pardon\MarketHub-Django-WebApp\backups\deployment_20250810_200136\database_backup_20250810_200136.json
+2025-08-10 20:01:36,949 - INFO - 
+--- Pre-deployment checks ---
+2025-08-10 20:01:36,952 - INFO - Running: Deployment readiness check
+2025-08-10 20:01:36,953 - INFO - DRY RUN: C:\Program Files\Python313\python.exe deployment_readiness_checker.py --env dev
+2025-08-10 20:01:36,955 - INFO - 
+--- Run tests ---
+2025-08-10 20:01:37,044 - INFO - 
+--- Collect static files ---
+2025-08-10 20:01:37,048 - INFO - Running: Collect static files
+2025-08-10 20:01:37,048 - INFO - DRY RUN: C:\Program Files\Python313\python.exe manage.py collectstatic --noinput --clear
+2025-08-10 20:01:37,053 - INFO - 
+--- Database migrations ---
+2025-08-10 20:01:37,056 - INFO - Running: Check migrations
+2025-08-10 20:01:37,057 - INFO - DRY RUN: C:\Program Files\Python313\python.exe manage.py showmigrations --plan
+2025-08-10 20:01:37,060 - INFO - 
+--- Restart services ---
+2025-08-10 20:01:37,147 - INFO - Running: Check web service
+2025-08-10 20:01:37,147 - INFO - DRY RUN: C:\Program Files\Python313\python.exe manage.py check --deploy
+2025-08-10 20:01:37,240 - INFO - 
+--- Health checks ---
+2025-08-10 20:01:37,243 - INFO - Running: Health check (attempt 1)
+2025-08-10 20:01:37,243 - INFO - DRY RUN: C:\Program Files\Python313\python.exe manage.py check
+2025-08-10 20:01:37,255 - INFO - 
+============================================================
+2025-08-10 20:01:37,440 - INFO - ============================================================
+2025-08-10 20:01:37,440 - INFO - Deployment ID: 20250810_200136
+2025-08-10 20:01:37,440 - INFO - Completed steps: 5
+2025-08-10 20:01:37,441 - INFO - Environment: dev

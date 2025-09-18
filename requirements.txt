@@ -1,4 +1,4 @@
-# MarketHub Production Requirements for Heroku
+# MarketHub Production Requirements for Render
 # Core Django
 Django==5.2.6
 asgiref==3.9.1
@@ -29,11 +29,30 @@ gunicorn==21.2.0
 whitenoise==6.5.0
 django-cors-headers==4.2.0
 
-# API Documentation
+# API Documentation - pinned with sub-dependencies to avoid loops
 drf-spectacular==0.27.2
+jsonschema==4.23.0
+referencing==0.35.1
+rpds-py==0.20.0
+jsonschema-specifications==2023.12.1
+attrs==23.2.0
 
 # HTTP client
 requests==2.32.4
+certifi==2024.8.30
+charset-normalizer==3.3.2
+idna==3.10
+urllib3==2.2.3
 
 # Essential utilities
 psutil==5.9.6
+
+# Additional stable dependencies
+inflection==0.5.1
+PyYAML==6.0.2
+packaging==24.1
+six==1.16.0
+typing-extensions==4.12.2
+webencodings==0.5.1
+PyJWT==2.9.0
+uritemplate==4.1.1

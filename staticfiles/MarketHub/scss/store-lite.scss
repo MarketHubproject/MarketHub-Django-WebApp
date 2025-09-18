@@ -1,0 +1,734 @@
+// MarketHub Main Stylesheet
+// Import variables first
+@import 'markethub_variables';
+
+// =============================================================================
+// BASE STYLES
+// =============================================================================
+
+// Reset and base typography
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.15;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: $MarketHub-font-primary;
+  font-size: $MarketHub-font-base;
+  font-weight: $MarketHub-weight-normal;
+  line-height: $MarketHub-leading-normal;
+  color: $MarketHub-text-primary;
+  background: linear-gradient(135deg, #{$MarketHub-bg-primary} 0%, #{$MarketHub-bg-secondary} 25%, #{$MarketHub-bg-primary} 50%, #{$MarketHub-border} 75%, #{$MarketHub-bg-primary} 100%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Headings
+h1, h2, h3, h4, h5, h6 {
+  font-family: $MarketHub-font-secondary;
+  font-weight: $MarketHub-weight-semibold;
+  line-height: $MarketHub-leading-tight;
+  color: $MarketHub-text-primary;
+  margin-bottom: $MarketHub-space-4;
+}
+
+h1 { font-size: $MarketHub-font-5xl; }
+h2 { font-size: $MarketHub-font-4xl; }
+h3 { font-size: $MarketHub-font-3xl; }
+h4 { font-size: $MarketHub-font-2xl; }
+h5 { font-size: $MarketHub-font-xl; }
+h6 { font-size: $MarketHub-font-lg; }
+
+// Paragraphs and text
+p {
+  font-size: $MarketHub-font-base;
+  line-height: $MarketHub-leading-relaxed;
+  color: $MarketHub-text-secondary;
+  margin-bottom: $MarketHub-space-4;
+}
+
+a {
+  color: $MarketHub-primary;
+  text-decoration: none;
+  transition: $MarketHub-transition-colors;
+
+  &:hover {
+    color: $MarketHub-primary-dark;
+    text-decoration: underline;
+  }
+}
+
+// =============================================================================
+// HEADER STYLES
+// =============================================================================
+
+.MarketHub-header {
+  position: sticky;
+  top: 0;
+  z-index: $MarketHub-z-fixed;
+  background: $MarketHub-header-bg;
+  @include MarketHub-backdrop-blur();
+  border-bottom: 1px solid $MarketHub-header-border;
+  box-shadow: $MarketHub-shadow-md;
+
+  .navbar {
+    background: transparent !important;
+    border: none;
+    padding: $MarketHub-space-3 0;
+
+    .navbar-brand {
+      font-family: $MarketHub-font-primary !important;
+      font-weight: $MarketHub-weight-bold !important;
+      font-size: $MarketHub-font-xl !important;
+      color: $MarketHub-text-primary !important;
+      transition: $MarketHub-transition-colors;
+
+      &:hover {
+        color: $MarketHub-primary !important;
+      }
+
+      i {
+        margin-right: $MarketHub-space-2;
+        color: $MarketHub-primary;
+      }
+    }
+
+    .nav-link {
+      color: $MarketHub-text-primary !important;
+      font-weight: $MarketHub-weight-medium;
+      font-size: $MarketHub-font-sm;
+      padding: $MarketHub-space-2 $MarketHub-space-4;
+      transition: $MarketHub-transition-colors;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        width: 0;
+        height: 2px;
+        background: $MarketHub-primary;
+        transition: $MarketHub-transition-default;
+        transform: translateX(-50%);
+      }
+
+      &:hover,
+      &.active {
+        color: $MarketHub-primary !important;
+
+        &::after {
+          width: 60%;
+        }
+      }
+    }
+  }
+
+  .search-toggle,
+  .user-toggle {
+    color: $MarketHub-text-secondary !important;
+    font-size: $MarketHub-font-lg;
+    border: none !important;
+    background: none !important;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
+
+    &:hover {
+      color: $MarketHub-primary !important;
+      transform: scale(1.1);
+    }
+  }
+
+  .cart-icon-link {
+    position: relative;
+    color: $MarketHub-text-secondary !important;
+    font-size: $MarketHub-font-lg;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
+
+    &:hover {
+      color: $MarketHub-primary !important;
+      transform: scale(1.1);
+      text-decoration: none;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: $MarketHub-primary;
+      color: white;
+      font-size: $MarketHub-font-xs;
+      font-weight: $MarketHub-weight-bold;
+      padding: 2px 6px;
+      border-radius: $MarketHub-radius-full;
+      min-width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: pulse 2s infinite;
+    }
+  }
+
+  .search-form-container {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 320px;
+    background: white;
+    border: 1px solid $MarketHub-border;
+    border-radius: $MarketHub-radius-lg;
+    box-shadow: $MarketHub-shadow-lg;
+    padding: $MarketHub-space-4;
+    margin-top: $MarketHub-space-2;
+
+    .search-input {
+      border: 1px solid $MarketHub-border;
+      border-radius: $MarketHub-radius-default 0 0 $MarketHub-radius-default;
+      padding: $MarketHub-space-2 $MarketHub-space-3;
+      font-size: $MarketHub-font-sm;
+
+      &:focus {
+        border-color: $MarketHub-primary;
+        box-shadow: $MarketHub-shadow-focus;
+        outline: none;
+      }
+    }
+  }
+}
+
+// =============================================================================
+// CARD STYLES
+// =============================================================================
+
+.card {
+  @include MarketHub-card;
+  border: 1px solid rgba($MarketHub-border, 0.2);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: $MarketHub-gradient-primary;
+    transition: $MarketHub-transition-slow;
+  }
+
+  &:hover::before {
+    left: 0;
+  }
+}
+
+// =============================================================================
+// BUTTON STYLES
+// =============================================================================
+
+.btn {
+  font-family: $MarketHub-font-primary;
+  font-weight: $MarketHub-weight-semibold;
+  font-size: $MarketHub-font-sm;
+  letter-spacing: 0.025em;
+  border-radius: $MarketHub-radius-lg;
+  padding: $MarketHub-space-3 $MarketHub-space-6;
+  transition: $MarketHub-transition-transform, $MarketHub-transition-shadow, $MarketHub-transition-colors;
+  position: relative;
+  overflow: hidden;
+  text-transform: none;
+  border: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: $MarketHub-transition-slow;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    
+    &::before {
+      left: 100%;
+    }
+  }
+
+  &-primary {
+    @include MarketHub-btn-primary;
+  }
+
+  &-outline-primary {
+    background: transparent;
+    border: 2px solid $MarketHub-primary;
+    color: $MarketHub-primary;
+
+    &:hover {
+      background: $MarketHub-primary;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: $MarketHub-shadow-hover;
+    }
+  }
+
+  &.rounded-pill {
+    border-radius: $MarketHub-radius-full !important;
+    padding: $MarketHub-space-4 $MarketHub-space-8;
+  }
+
+  &-sm {
+    font-size: $MarketHub-font-xs;
+    padding: $MarketHub-space-2 $MarketHub-space-4;
+  }
+
+  &-lg {
+    font-size: $MarketHub-font-base;
+    padding: $MarketHub-space-4 $MarketHub-space-10;
+  }
+}
+
+// =============================================================================
+// PRODUCT CARD STYLES
+// =============================================================================
+
+.MarketHub-product-card {
+  @include MarketHub-card;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .product-image-container {
+    position: relative;
+    overflow: hidden;
+    height: $MarketHub-product-image-height;
+    background: $MarketHub-bg-primary;
+    border-radius: $MarketHub-radius-lg $MarketHub-radius-lg 0 0;
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: $MarketHub-transition-transform, $MarketHub-transition-slow;
+    }
+
+    .product-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: $MarketHub-gradient-light;
+      font-size: $MarketHub-font-5xl;
+      color: $MarketHub-text-muted;
+    }
+  }
+
+  &:hover .product-image {
+    transform: scale(1.1);
+  }
+
+  .product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: $MarketHub-transition-default;
+
+    .quick-view-btn {
+      background: white;
+      border: none;
+      border-radius: $MarketHub-radius-full;
+      padding: $MarketHub-space-3 $MarketHub-space-6;
+      font-weight: $MarketHub-weight-semibold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: $MarketHub-font-sm;
+      transition: $MarketHub-transition-transform, $MarketHub-transition-shadow;
+      box-shadow: $MarketHub-shadow-lg;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: $MarketHub-shadow-xl;
+      }
+    }
+  }
+
+  &:hover .product-overlay {
+    opacity: 1;
+  }
+
+  .category-badge {
+    position: absolute;
+    top: $MarketHub-space-4;
+    right: $MarketHub-space-4;
+    z-index: 2;
+
+    .badge {
+      background: rgba(255, 255, 255, 0.95) !important;
+      color: $MarketHub-text-primary !important;
+      font-weight: $MarketHub-weight-semibold;
+      padding: $MarketHub-space-2 $MarketHub-space-4;
+      border-radius: $MarketHub-radius-full;
+      font-size: $MarketHub-font-xs;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      @include MarketHub-backdrop-blur();
+    }
+  }
+
+  .product-info {
+    padding: $MarketHub-space-6;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    .product-title {
+      font-size: $MarketHub-font-xl;
+      font-weight: $MarketHub-weight-bold;
+      color: $MarketHub-text-primary;
+      margin-bottom: $MarketHub-space-3;
+      line-height: $MarketHub-leading-tight;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: $MarketHub-space-2;
+      margin-bottom: $MarketHub-space-3;
+
+      .rating-stars {
+        display: flex;
+        gap: 2px;
+
+        i {
+          font-size: $MarketHub-font-sm;
+        }
+      }
+
+      .rating-text {
+        font-size: $MarketHub-font-sm;
+        font-weight: $MarketHub-weight-medium;
+      }
+    }
+
+    .product-description {
+      font-size: $MarketHub-font-sm;
+      line-height: $MarketHub-leading-relaxed;
+      color: $MarketHub-text-secondary;
+      margin-bottom: $MarketHub-space-4;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-price-section {
+      margin-bottom: $MarketHub-space-6;
+
+      .price-container {
+        display: flex;
+        align-items: center;
+        gap: $MarketHub-space-3;
+
+        .current-price {
+          font-size: $MarketHub-font-2xl;
+          font-weight: $MarketHub-weight-bold;
+          color: $MarketHub-danger;
+        }
+
+        .original-price {
+          font-size: $MarketHub-font-lg;
+          font-weight: $MarketHub-weight-medium;
+          color: $MarketHub-text-muted;
+          text-decoration: line-through;
+        }
+      }
+    }
+
+    .product-actions {
+      display: flex;
+      gap: $MarketHub-space-3;
+
+      .add-to-cart-btn {
+        flex: 2;
+        @include MarketHub-btn-primary;
+        padding: $MarketHub-space-3 $MarketHub-space-4;
+        font-weight: $MarketHub-weight-semibold;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: $MarketHub-font-sm;
+      }
+
+      .view-details-btn {
+        flex: 1;
+        border: 1px solid $MarketHub-border;
+        background: white;
+        color: $MarketHub-text-primary;
+        border-radius: $MarketHub-radius-lg;
+        font-weight: $MarketHub-weight-semibold;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: $MarketHub-font-sm;
+        transition: $MarketHub-transition-colors, $MarketHub-transition-transform, $MarketHub-transition-shadow;
+        padding: $MarketHub-space-3 $MarketHub-space-4;
+
+        &:hover {
+          background: $MarketHub-bg-primary;
+          transform: translateY(-2px);
+          box-shadow: $MarketHub-shadow-md;
+        }
+      }
+    }
+  }
+}
+
+// =============================================================================
+// PRODUCT GRID
+// =============================================================================
+
+.MarketHub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $MarketHub-space-8;
+  margin-bottom: $MarketHub-space-8;
+}
+
+// =============================================================================
+// FOOTER STYLES
+// =============================================================================
+
+.MarketHub-footer {
+  background: $MarketHub-footer-bg;
+  border-top: 1px solid $MarketHub-footer-border;
+  color: $MarketHub-text-primary;
+  margin-top: $MarketHub-space-16;
+
+  .footer-section-title {
+    font-family: $MarketHub-font-secondary;
+    font-weight: $MarketHub-weight-semibold;
+    font-size: $MarketHub-font-lg;
+    color: $MarketHub-text-primary;
+    margin-bottom: $MarketHub-space-4;
+  }
+
+  .footer-text {
+    color: $MarketHub-footer-text;
+    font-size: $MarketHub-font-sm;
+    line-height: $MarketHub-leading-relaxed;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: $MarketHub-space-2;
+    }
+  }
+
+  .footer-link {
+    color: $MarketHub-footer-text;
+    text-decoration: none;
+    font-size: $MarketHub-font-sm;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: $MarketHub-primary;
+      transform: translateX(3px);
+      text-decoration: none;
+    }
+  }
+
+  .social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: white;
+    color: $MarketHub-text-secondary;
+    border-radius: $MarketHub-radius-full;
+    text-decoration: none;
+    transition: $MarketHub-transition-colors, $MarketHub-transition-transform, $MarketHub-transition-shadow;
+    box-shadow: $MarketHub-shadow-sm;
+
+    &:hover {
+      background: $MarketHub-primary;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: $MarketHub-shadow-hover;
+      text-decoration: none;
+    }
+  }
+
+  .footer-bottom {
+    border-top: 1px solid $MarketHub-footer-border;
+    background: rgba(255, 255, 255, 0.7);
+
+    .footer-bottom-text {
+      color: $MarketHub-text-muted;
+      font-size: $MarketHub-font-sm;
+    }
+  }
+}
+
+// =============================================================================
+// UTILITY CLASSES
+// =============================================================================
+
+.text-gradient {
+  @include MarketHub-gradient-text();
+}
+
+.shadow-hover {
+  transition: $MarketHub-transition-shadow;
+
+  &:hover {
+    box-shadow: $MarketHub-shadow-xl !important;
+  }
+}
+
+// Animation classes
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0% { 
+    box-shadow: 0 0 0 0 rgba($MarketHub-primary, 0.7); 
+  }
+  70% { 
+    box-shadow: 0 0 0 10px rgba($MarketHub-primary, 0); 
+  }
+  100% { 
+    box-shadow: 0 0 0 0 rgba($MarketHub-primary, 0); 
+  }
+}
+
+// =============================================================================
+// RESPONSIVE DESIGN
+// =============================================================================
+
+@media (max-width: #{$MarketHub-screen-xl}) {
+  .MarketHub-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: $MarketHub-space-6;
+  }
+}
+
+@media (max-width: #{$MarketHub-screen-md}) {
+  body {
+    background-attachment: scroll;
+  }
+
+  .MarketHub-header {
+    .search-form-container {
+      position: relative;
+      min-width: auto;
+      width: 100%;
+      margin-top: $MarketHub-space-4;
+    }
+
+    .navbar-actions {
+      margin-top: $MarketHub-space-4;
+    }
+
+    .condensed-menu {
+      margin-bottom: $MarketHub-space-4;
+    }
+  }
+
+  .MarketHub-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: $MarketHub-space-4;
+  }
+
+  .MarketHub-product-card {
+    border-radius: $MarketHub-radius-lg;
+
+    .product-image-container {
+      height: 200px;
+    }
+
+    .product-info {
+      padding: $MarketHub-space-4;
+
+      .product-title {
+        font-size: $MarketHub-font-lg;
+      }
+
+      .current-price {
+        font-size: $MarketHub-font-xl;
+      }
+
+      .product-actions {
+        flex-direction: column;
+        gap: $MarketHub-space-2;
+
+        .add-to-cart-btn,
+        .view-details-btn {
+          flex: 1;
+          padding: $MarketHub-space-2 $MarketHub-space-3;
+          font-size: $MarketHub-font-xs;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: #{$MarketHub-screen-sm}) {
+  .MarketHub-grid {
+    grid-template-columns: 1fr;
+    gap: $MarketHub-space-4;
+  }
+
+  .MarketHub-product-card {
+    .product-image-container {
+      height: 250px;
+    }
+
+    .product-actions {
+      gap: $MarketHub-space-3;
+    }
+  }
+
+  h1 { font-size: $MarketHub-font-4xl; }
+  h2 { font-size: $MarketHub-font-3xl; }
+  h3 { font-size: $MarketHub-font-2xl; }
+}

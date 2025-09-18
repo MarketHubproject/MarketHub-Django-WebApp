@@ -1,0 +1,450 @@
+/* MarketHub Enhanced Theme - Better Visibility & Colors */
+
+:root {
+    /* Primary Brand Colors */
+    --primary-blue: #2563eb;
+    --primary-blue-dark: #1d4ed8;
+    --primary-blue-light: #3b82f6;
+    
+    /* Success Colors */
+    --success-green: #10b981;
+    --success-green-dark: #059669;
+    --success-green-light: #34d399;
+    
+    /* Text Colors - Enhanced Contrast */
+    --text-primary: #1f2937;
+    --text-secondary: #4b5563;
+    --text-muted: #6b7280;
+    --text-light: #9ca3af;
+    --text-white: #ffffff;
+    
+    /* Background Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-accent: #f3f4f6;
+    --bg-dark: #111827;
+    
+    /* Price Colors */
+    --price-color: #dc2626;
+    --price-color-dark: #b91c1c;
+    --discount-color: #16a34a;
+    
+    /* Border Colors */
+    --border-light: #e5e7eb;
+    --border-medium: #d1d5db;
+    --border-dark: #9ca3af;
+    
+    /* Shadow Definitions */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Enhanced Text Colors for Better Visibility */
+body {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-secondary) !important;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* Improved Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+h1 { font-size: 2.5rem; color: var(--text-primary) !important; }
+h2 { font-size: 2rem; color: var(--text-primary) !important; }
+h3 { font-size: 1.75rem; color: var(--text-primary) !important; }
+h4 { font-size: 1.5rem; color: var(--text-primary) !important; }
+h5 { font-size: 1.25rem; color: var(--text-primary) !important; }
+h6 { font-size: 1.125rem; color: var(--text-primary) !important; }
+
+/* Enhanced Paragraph Text */
+p {
+    color: var(--text-secondary) !important;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.lead {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+}
+
+/* Enhanced Price Display */
+.product-price, .price, .current-price {
+    color: var(--price-color) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.original-price {
+    color: var(--text-muted) !important;
+    text-decoration: line-through;
+    font-weight: 500;
+}
+
+.discount-percentage {
+    background: var(--discount-color) !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+/* Enhanced Card Styling */
+.card {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-light) !important;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-4px);
+}
+
+.card-title {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.card-text {
+    color: var(--text-secondary) !important;
+    line-height: 1.6;
+}
+
+/* Enhanced Product Cards */
+.MarketHub-product-card .product-title {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    font-size: 1.25rem;
+    line-height: 1.4;
+    margin-bottom: 0.75rem;
+}
+
+.MarketHub-product-card .product-description {
+    color: var(--text-secondary) !important;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Enhanced Button Styling */
+.btn {
+    font-weight: 600;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    text-transform: none;
+    letter-spacing: 0.025em;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%) !important;
+    color: var(--text-white) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-blue-dark) 0%, var(--primary-blue) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-green) 0%, var(--success-green-dark) 100%) !important;
+    color: var(--text-white) !important;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, var(--success-green-dark) 0%, var(--success-green) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-outline-primary {
+    border: 2px solid var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
+    background: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background: var(--primary-blue) !important;
+    color: var(--text-white) !important;
+    transform: translateY(-2px);
+}
+
+/* Enhanced Navigation */
+.navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar-brand {
+    color: var(--text-primary) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-blue) !important;
+}
+
+/* Enhanced Form Elements */
+.form-control {
+    border: 2px solid var(--border-light) !important;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-primary) !important;
+    background: var(--bg-primary) !important;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-blue) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1) !important;
+    outline: none !important;
+}
+
+.form-label {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Enhanced Cart Styling */
+.cart-item {
+    background: var(--bg-primary) !important;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.cart-item h6 {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.cart-item .text-muted {
+    color: var(--text-muted) !important;
+}
+
+.cart-badge {
+    background: var(--primary-blue) !important;
+    color: var(--text-white) !important;
+    font-weight: 700;
+    border-radius: 50px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Enhanced Price Display in Cart */
+.price-total h5 {
+    color: var(--price-color) !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.price-total small {
+    color: var(--text-muted) !important;
+    font-size: 0.875rem;
+}
+
+/* Enhanced Alert Styling */
+.alert {
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    border: none;
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: var(--success-green-dark) !important;
+    border-left: 4px solid var(--success-green);
+}
+
+.alert-danger {
+    background: rgba(220, 38, 38, 0.1) !important;
+    color: #b91c1c !important;
+    border-left: 4px solid #dc2626;
+}
+
+.alert-warning {
+    background: rgba(245, 158, 11, 0.1) !important;
+    color: #b45309 !important;
+    border-left: 4px solid #f59e0b;
+}
+
+.alert-info {
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: var(--primary-blue-dark) !important;
+    border-left: 4px solid var(--primary-blue);
+}
+
+/* Enhanced Badge Styling */
+.badge {
+    font-weight: 600;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge.bg-success {
+    background: var(--success-green) !important;
+    color: var(--text-white) !important;
+}
+
+.badge.bg-primary {
+    background: var(--primary-blue) !important;
+    color: var(--text-white) !important;
+}
+
+/* Enhanced Table Styling */
+.table {
+    background: var(--bg-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.table th {
+    background: var(--bg-accent) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600;
+    border-bottom: 2px solid var(--border-medium);
+}
+
+.table td {
+    color: var(--text-secondary) !important;
+    vertical-align: middle;
+}
+
+/* Enhanced Footer */
+.footer {
+    background: var(--bg-primary) !important;
+    color: var(--text-secondary) !important;
+    border-top: 1px solid var(--border-light);
+}
+
+.footer h5, .footer h6 {
+    color: var(--text-primary) !important;
+    font-weight: 600;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .product-price, .price, .current-price {
+        font-size: 1.25rem;
+    }
+    
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn {
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Loading States */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.spinner-border {
+    color: var(--primary-blue) !important;
+}
+
+/* Enhanced Animations */
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scale-hover {
+    transition: transform 0.3s ease;
+}
+
+.scale-hover:hover {
+    transform: scale(1.05);
+}
+
+/* Enhanced Search Results */
+.search-result-item {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-light);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-result-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Quantity Controls Enhancement */
+.quantity-form .input-group {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 2px solid var(--border-light);
+}
+
+.quantity-form .btn {
+    border: none !important;
+    background: var(--bg-accent) !important;
+    color: var(--text-primary) !important;
+    padding: 0.5rem;
+}
+
+.quantity-form .btn:hover {
+    background: var(--primary-blue) !important;
+    color: var(--text-white) !important;
+}
+
+.quantity-form .form-control {
+    border: none !important;
+    background: var(--bg-primary) !important;
+    text-align: center;
+    font-weight: 600;
+}

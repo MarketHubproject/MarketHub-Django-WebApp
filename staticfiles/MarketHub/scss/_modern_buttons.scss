@@ -1,0 +1,477 @@
+// ============================================================================
+// MarketHub Modern Button System
+// ============================================================================
+
+// Base Modern Button Reset & Foundation
+.btn-modern {
+  // Reset & Base Properties
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: map-get($MarketHub-spacing, 2);
+  
+  // Typography
+  font-family: $MarketHub-font-primary;
+  font-size: map-get($MarketHub-font-sizes, sm);
+  font-weight: map-get($MarketHub-font-weights, semibold);
+  line-height: 1;
+  text-decoration: none;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: map-get($MarketHub-letter-spacing, wide);
+  
+  // Layout & Sizing
+  min-height: $MarketHub-button-height;
+  padding: map-get($MarketHub-spacing, 3) map-get($MarketHub-spacing, 6);
+  border: 1px solid transparent;
+  border-radius: map-get($MarketHub-radius, xl);
+  
+  // Interaction States
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  transition: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, swoosh);
+  
+  // Base Hover & Focus States  
+  @include focus-ring();
+  @include hover-button(1.02, -2px);
+  
+  // Disabled State
+  &:disabled,
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    pointer-events: none;
+  }
+  
+  // Icon Styling
+  .bi {
+    font-size: 1.1em;
+    flex-shrink: 0;
+  }
+  
+  // Loading State
+  &.is-loading {
+    @include loading-state();
+  }
+}
+
+// ============================================================================
+// BUTTON VARIANTS
+// ============================================================================
+
+// Primary Button - Main CTA
+.btn-modern.btn-primary {
+  @include gradient-bg(map-get($MarketHub-colors, primary-600), map-get($MarketHub-colors, primary-500));
+  color: white;
+  border: none;
+  box-shadow: map-get($MarketHub-shadows, blue-sm);
+  
+  &:hover {
+    @include gradient-bg(map-get($MarketHub-colors, primary-700), map-get($MarketHub-colors, primary-600));
+    box-shadow: map-get($MarketHub-shadows, blue-lg);
+    color: white;
+  }
+  
+  &:active {
+    @include gradient-bg(map-get($MarketHub-colors, primary-800), map-get($MarketHub-colors, primary-700));
+    box-shadow: map-get($MarketHub-shadows, blue-md);
+  }
+}
+
+// Secondary Button - Supporting Actions
+.btn-modern.btn-secondary {
+  background: map-get($MarketHub-colors, neutral-100);
+  color: map-get($MarketHub-colors, neutral-900);
+  border: 1px solid map-get($MarketHub-colors, neutral-200);
+  box-shadow: map-get($MarketHub-shadows, sm);
+  
+  &:hover {
+    background: white;
+    border-color: map-get($MarketHub-colors, neutral-300);
+    box-shadow: map-get($MarketHub-shadows, md);
+    color: map-get($MarketHub-colors, neutral-900);
+  }
+  
+  &:active {
+    background: map-get($MarketHub-colors, neutral-50);
+    box-shadow: map-get($MarketHub-shadows, sm);
+  }
+}
+
+// Success Button - Positive Actions
+.btn-modern.btn-success {
+  @include gradient-bg(map-get($MarketHub-colors, success-600), map-get($MarketHub-colors, success-500));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.15);
+  
+  &:hover {
+    @include gradient-bg(darken(map-get($MarketHub-colors, success-600), 5%), map-get($MarketHub-colors, success-600));
+    box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.25);
+    color: white;
+  }
+}
+
+// Warning Button - Caution Actions
+.btn-modern.btn-warning {
+  @include gradient-bg(map-get($MarketHub-colors, warning-600), map-get($MarketHub-colors, warning-500));
+  color: map-get($MarketHub-colors, neutral-900);
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(234, 179, 8, 0.15);
+  
+  &:hover {
+    @include gradient-bg(darken(map-get($MarketHub-colors, warning-600), 5%), map-get($MarketHub-colors, warning-600));
+    box-shadow: 0 10px 15px -3px rgba(234, 179, 8, 0.25);
+    color: map-get($MarketHub-colors, neutral-900);
+  }
+}
+
+// Danger Button - Destructive Actions  
+.btn-modern.btn-danger {
+  @include gradient-bg(map-get($MarketHub-colors, danger-600), map-get($MarketHub-colors, danger-500));
+  color: white;
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.15);
+  
+  &:hover {
+    @include gradient-bg(darken(map-get($MarketHub-colors, danger-600), 5%), map-get($MarketHub-colors, danger-600));
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.25);
+    color: white;
+  }
+}
+
+// Glass Button - Modern Glassmorphism Effect
+.btn-modern.btn-glass {
+  @include glass(10px, 0.15);
+  color: map-get($MarketHub-colors, neutral-900);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: map-get($MarketHub-shadows, sm);
+  
+  &:hover {
+    @include glass(15px, 0.2);
+    box-shadow: map-get($MarketHub-shadows, lg);
+    color: map-get($MarketHub-colors, neutral-900);
+  }
+}
+
+// Ghost/Outline Variants
+.btn-modern.btn-outline-primary {
+  background: transparent;
+  color: $MarketHub-primary;
+  border: 2px solid $MarketHub-primary;
+  
+  &:hover {
+    background: $MarketHub-primary;
+    color: white;
+    border-color: $MarketHub-primary;
+    box-shadow: map-get($MarketHub-shadows, blue-md);
+  }
+}
+
+.btn-modern.btn-outline-secondary {
+  background: transparent;
+  color: map-get($MarketHub-colors, neutral-600);
+  border: 2px solid map-get($MarketHub-colors, neutral-300);
+  
+  &:hover {
+    background: map-get($MarketHub-colors, neutral-600);
+    color: white;
+    border-color: map-get($MarketHub-colors, neutral-600);
+    box-shadow: map-get($MarketHub-shadows, md);
+  }
+}
+
+// ============================================================================
+// SIZE VARIANTS
+// ============================================================================
+
+// Small Size
+.btn-modern.btn-sm {
+  min-height: 2.25rem;
+  padding: map-get($MarketHub-spacing, 2) map-get($MarketHub-spacing, 4);
+  font-size: map-get($MarketHub-font-sizes, xs);
+  border-radius: map-get($MarketHub-radius, lg);
+  gap: map-get($MarketHub-spacing, 1);
+  
+  .bi {
+    font-size: 1em;
+  }
+}
+
+// Large Size
+.btn-modern.btn-lg {
+  min-height: 3.25rem;
+  padding: map-get($MarketHub-spacing, 4) map-get($MarketHub-spacing, 8);
+  font-size: map-get($MarketHub-font-sizes, lg);
+  border-radius: map-get($MarketHub-radius, 2xl);
+  gap: map-get($MarketHub-spacing, 3);
+  
+  .bi {
+    font-size: 1.2em;
+  }
+}
+
+// Extra Large Size
+.btn-modern.btn-xl {
+  min-height: 3.75rem;
+  padding: map-get($MarketHub-spacing, 5) map-get($MarketHub-spacing, 10);
+  font-size: map-get($MarketHub-font-sizes, xl);
+  border-radius: map-get($MarketHub-radius, 2xl);
+  gap: map-get($MarketHub-spacing, 4);
+  font-weight: map-get($MarketHub-font-weights, bold);
+  
+  .bi {
+    font-size: 1.3em;
+  }
+}
+
+// Block Width
+.btn-modern.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+// ============================================================================
+// SPECIAL BUTTON TYPES
+// ============================================================================
+
+// Icon-Only Button
+.btn-modern.btn-icon {
+  aspect-ratio: 1;
+  padding: 0;
+  width: $MarketHub-button-height;
+  height: $MarketHub-button-height;
+  border-radius: map-get($MarketHub-radius, lg);
+  
+  &.btn-sm {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  
+  &.btn-lg {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+  
+  .bi {
+    margin: 0;
+  }
+}
+
+// Pill/Rounded Button
+.btn-modern.btn-pill {
+  border-radius: map-get($MarketHub-radius, full);
+  padding-left: map-get($MarketHub-spacing, 8);
+  padding-right: map-get($MarketHub-spacing, 8);
+}
+
+// Floating Action Button
+.btn-modern.btn-fab {
+  position: fixed;
+  bottom: map-get($MarketHub-spacing, 6);
+  right: map-get($MarketHub-spacing, 6);
+  z-index: map-get($MarketHub-z-index, docked);
+  
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  padding: 0;
+  
+  box-shadow: map-get($MarketHub-shadows, xl);
+  
+  &:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: map-get($MarketHub-shadows, 2xl);
+  }
+}
+
+// Link-style Button (no background, minimal styling)
+.btn-modern.btn-link {
+  background: none;
+  border: none;
+  color: $MarketHub-primary;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  min-height: auto;
+  padding: map-get($MarketHub-spacing, 1) map-get($MarketHub-spacing, 2);
+  
+  &:hover {
+    color: $MarketHub-primary-dark;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// ============================================================================
+// SPECIAL STATES & FEATURES
+// ============================================================================
+
+// Button with Loading Spinner Override
+.btn-modern.is-loading {
+  color: transparent;
+  
+  &::after {
+    border-color: rgba(255, 255, 255, 0.3);
+    border-top-color: currentColor;
+    
+    // Ensure spinner is visible on dark buttons
+    .btn-primary &,
+    .btn-success &,
+    .btn-danger & {
+      border-color: rgba(255, 255, 255, 0.3);
+      border-top-color: rgba(255, 255, 255, 0.8);
+    }
+  }
+}
+
+// Pulsing CTA Button for High Priority Actions
+.btn-modern.btn-pulse {
+  animation: pulse-ring 2s infinite;
+  
+  &:hover {
+    animation: none;
+  }
+}
+
+// Button Group Support
+.btn-group-modern {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  
+  .btn-modern {
+    border-radius: 0;
+    
+    &:first-child {
+      border-top-left-radius: map-get($MarketHub-radius, xl);
+      border-bottom-left-radius: map-get($MarketHub-radius, xl);
+    }
+    
+    &:last-child {
+      border-top-right-radius: map-get($MarketHub-radius, xl);
+      border-bottom-right-radius: map-get($MarketHub-radius, xl);
+    }
+    
+    &:only-child {
+      border-radius: map-get($MarketHub-radius, xl);
+    }
+  }
+}
+
+// ============================================================================
+// RESPONSIVE BEHAVIOR
+// ============================================================================
+
+// Mobile Optimizations
+@media (max-width: map-get($MarketHub-breakpoints, md)) {
+  .btn-modern {
+    // Increase touch targets on mobile
+    min-height: 3rem;
+    padding: map-get($MarketHub-spacing, 3) map-get($MarketHub-spacing, 6);
+    
+    &.btn-sm {
+      min-height: 2.5rem;
+    }
+    
+    &.btn-lg {
+      min-height: 3.5rem;
+      font-size: map-get($MarketHub-font-sizes, base);
+    }
+  }
+  
+  // Stack buttons vertically in mobile button groups
+  .btn-group-modern {
+    flex-direction: column;
+    width: 100%;
+    
+    .btn-modern {
+      width: 100%;
+      border-radius: 0;
+      
+      &:first-child {
+        border-radius: map-get($MarketHub-radius, xl) map-get($MarketHub-radius, xl) 0 0;
+      }
+      
+      &:last-child {
+        border-radius: 0 0 map-get($MarketHub-radius, xl) map-get($MarketHub-radius, xl);
+      }
+    }
+  }
+}
+
+// High-contrast mode support
+@media (prefers-contrast: high) {
+  .btn-modern {
+    border-width: 2px;
+    font-weight: map-get($MarketHub-font-weights, bold);
+    
+    &.btn-glass {
+      background: white;
+      border-color: black;
+    }
+  }
+}
+
+// ============================================================================  
+// UTILITY CLASSES
+// ============================================================================
+
+// Quick utility for adding space between buttons
+.btn-space {
+  margin-right: map-get($MarketHub-spacing, 3);
+  
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
+// Center button
+.btn-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// Full-width button on mobile only
+.btn-mobile-block {
+  @media (max-width: map-get($MarketHub-breakpoints, sm)) {
+    display: flex;
+    width: 100%;
+  }
+}
+
+// ============================================================================
+// LEGACY BOOTSTRAP COMPATIBILITY
+// ============================================================================
+
+// Map existing Bootstrap button classes to new system for easy migration
+.btn-primary:not(.btn-modern) {
+  @extend .btn-modern, .btn-primary;
+}
+
+.btn-secondary:not(.btn-modern) {
+  @extend .btn-modern, .btn-secondary;
+}
+
+.btn-success:not(.btn-modern) {
+  @extend .btn-modern, .btn-success;
+}
+
+.btn-warning:not(.btn-modern) {
+  @extend .btn-modern, .btn-warning;
+}
+
+.btn-danger:not(.btn-modern) {
+  @extend .btn-modern, .btn-danger;
+}
+
+// Override default Bootstrap button styles where needed
+.btn:not(.btn-modern) {
+  // Add subtle improvements to existing buttons
+  transition: all map-get($MarketHub-durations, fast) map-get($MarketHub-easings, ease-out);
+  
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
