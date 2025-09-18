@@ -5,7 +5,7 @@ services:
     env: python
     plan: free
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "gunicorn markethub.wsgi:application"
+    startCommand: "python -m gunicorn markethub.wsgi:application --bind 0.0.0.0:$PORT"
     
     envVars:
       - key: PYTHON_VERSION
