@@ -1,0 +1,2 @@
+web: bash python-launcher.sh -m gunicorn markethub.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --timeout 120 --keep-alive 2 --max-requests 1000
+release: bash python-launcher.sh manage.py collectstatic --noinput && bash python-launcher.sh manage.py migrate --noinput
