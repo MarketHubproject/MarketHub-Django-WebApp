@@ -1,0 +1,1 @@
+# Homepage Django app
