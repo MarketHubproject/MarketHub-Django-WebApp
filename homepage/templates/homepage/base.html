@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MarketHub - Premium E-commerce{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .price-tag {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: var(--accent-color);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 60px 0;
+        }
+        
+        .category-card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: scale(1.05);
+        }
+        
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'homepage:home' %}">
+                <i class="fas fa-store"></i> MarketHub
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'homepage:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'homepage:product_list' %}">Products</a>
+                    </li>
+                </ul>
+                
+                <!-- Search Bar -->
+                <form class="d-flex me-3" method="GET" action="{% url 'homepage:product_list' %}">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Search products..." 
+                           value="{{ search_query|default:'' }}">
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <!-- User Menu -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" href="{% url 'homepage:cart_detail' %}">
+                                <i class="fas fa-shopping-cart"></i> Cart
+                                <span class="badge badge-pill badge-danger cart-badge" id="cart-count">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Profile</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-list"></i> Orders</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">
+                                <i class="fas fa-sign-in-alt"></i> Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'homepage:register' %}">
+                                <i class="fas fa-user-plus"></i> Register
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="fas fa-store"></i> MarketHub</h5>
+                    <p>Your trusted online marketplace for quality products at great prices.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'homepage:home' %}" class="text-light">Home</a></li>
+                        <li><a href="{% url 'homepage:product_list' %}" class="text-light">Products</a></li>
+                        <li><a href="#" class="text-light">About</a></li>
+                        <li><a href="#" class="text-light">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact Info</h5>
+                    <p><i class="fas fa-envelope"></i> support@markethub.com</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                    <div>
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="text-center">
+                <p>&copy; 2025 MarketHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Update cart count on page load
+        $(document).ready(function() {
+            {% if user.is_authenticated %}
+                updateCartCount();
+            {% endif %}
+        });
+        
+        function updateCartCount() {
+            $.ajax({
+                url: '{% url "homepage:get_cart_count" %}',
+                method: 'GET',
+                success: function(response) {
+                    if (response.success) {
+                        $('#cart-count').text(response.count);
+                        if (response.count > 0) {
+                            $('#cart-count').show();
+                        } else {
+                            $('#cart-count').hide();
+                        }
+                    }
+                },
+                error: function() {
+                    console.log('Error updating cart count');
+                }
+            });
+        }
+        
+        // Add to cart function
+        function addToCart(productId, quantity = 1) {
+            {% if user.is_authenticated %}
+                $.ajax({
+                    url: '{% url "homepage:add_to_cart" %}',
+                    method: 'POST',
+                    data: {
+                        'product_id': productId,
+                        'quantity': quantity,
+                        'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            updateCartCount();
+                            // Show success message
+                            showAlert('success', response.message);
+                        } else {
+                            showAlert('danger', response.error);
+                        }
+                    },
+                    error: function() {
+                        showAlert('danger', 'Error adding item to cart');
+                    }
+                });
+            {% else %}
+                window.location.href = '{% url "login" %}';
+            {% endif %}
+        }
+        
+        function showAlert(type, message) {
+            const alert = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+            $('.container').first().prepend(alert);
+            
+            // Auto dismiss after 3 seconds
+            setTimeout(function() {
+                $('.alert').first().alert('close');
+            }, 3000);
+        }
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
