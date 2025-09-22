@@ -11,7 +11,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Hosts configuration for Render
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='.onrender.com').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='markethub-app.onrender.com,.onrender.com,localhost,127.0.0.1').split(',')
 
 # Application definition
 INSTALLED_APPS = [
