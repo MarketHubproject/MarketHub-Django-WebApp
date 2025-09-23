@@ -325,8 +325,11 @@ def setup_admin(request):
     Setup admin user via web endpoint (for free tier)
     """
     from django.contrib.auth.models import User
+    from django.core.management import call_command
     
     try:
+        # First, run database migrations
+        call_command('migrate', verbosity=0)
         if User.objects.filter(is_superuser=True).exists():
             return HttpResponse("Admin user already exists!")
         

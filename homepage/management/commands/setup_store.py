@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from homepage.models import Category, Product, ProductImage
 from django.utils.text import slugify
+from django.core.management import call_command
 
 
 class Command(BaseCommand):
@@ -20,11 +21,28 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        # Always run migrations first
+        self.run_migrations()
+        
         if options['create_superuser']:
             self.create_superuser()
         
         if options['add_sample_data']:
             self.add_sample_data()
+
+    def run_migrations(self):
+        """Run database migrations"""
+        try:
+            self.stdout.write('Running database migrations...')
+            call_command('migrate', verbosity=0)
+            self.stdout.write(
+                self.style.SUCCESS('Database migrations completed successfully')
+            )
+        except Exception as e:
+            self.stdout.write(
+                self.style.ERROR(f'Error running migrations: {str(e)}')
+            )
+            raise
 
     def create_superuser(self):
         """Create a superuser if one doesn't exist"""
