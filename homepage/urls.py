@@ -23,6 +23,7 @@ urlpatterns = [
     # User registration
     path('register/', views.register, name='register'),
     
-    # Health check
+    # Setup and Health check
+    path('setup/', views.setup_admin, name='setup_admin'),
     path('health/', views.health_check, name='health_check'),
 ]

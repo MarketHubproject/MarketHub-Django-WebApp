@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'csp',
     'axes',
-    'homepage',
+    'homepage.apps.HomepageConfig',
     'profiles',
     'student_rewards',
 ]

@@ -320,6 +320,82 @@ def health_check(request):
     return HttpResponse("OK")
 
 
+def setup_admin(request):
+    """
+    Setup admin user via web endpoint (for free tier)
+    """
+    from django.contrib.auth.models import User
+    
+    try:
+        if User.objects.filter(is_superuser=True).exists():
+            return HttpResponse("Admin user already exists!")
+        
+        User.objects.create_superuser(
+            username='admin',
+            email='admin@markethub.com',
+            password='markethub123',
+            first_name='Admin',
+            last_name='User'
+        )
+        
+        # Also add sample data
+        from .models import Category, Product
+        
+        # Create categories if they don't exist
+        categories_data = [
+            {'name': 'Electronics', 'slug': 'electronics', 'description': 'Latest gadgets and electronic devices'},
+            {'name': 'Clothing', 'slug': 'clothing', 'description': 'Fashion and apparel for all occasions'},
+            {'name': 'Home & Garden', 'slug': 'home-garden', 'description': 'Everything for your home and garden'},
+        ]
+        
+        for cat_data in categories_data:
+            Category.objects.get_or_create(
+                slug=cat_data['slug'],
+                defaults=cat_data
+            )
+        
+        # Create a few sample products
+        electronics = Category.objects.get(slug='electronics')
+        clothing = Category.objects.get(slug='clothing')
+        
+        sample_products = [
+            {
+                'name': 'Wireless Bluetooth Headphones',
+                'slug': 'wireless-bluetooth-headphones',
+                'description': 'Premium quality wireless headphones with noise cancellation.',
+                'price': 89.99,
+                'compare_at_price': 129.99,
+                'sku': 'WBH001',
+                'stock_quantity': 50,
+                'category': electronics,
+                'status': 'active',
+                'featured': True
+            },
+            {
+                'name': 'Comfortable Cotton T-Shirt',
+                'slug': 'comfortable-cotton-tshirt',
+                'description': '100% premium cotton t-shirt in multiple colors.',
+                'price': 24.99,
+                'sku': 'CCT003',
+                'stock_quantity': 100,
+                'category': clothing,
+                'status': 'active',
+                'featured': True
+            }
+        ]
+        
+        for product_data in sample_products:
+            Product.objects.get_or_create(
+                slug=product_data['slug'],
+                defaults=product_data
+            )
+        
+        return HttpResponse("✅ Setup completed!<br>Admin user: admin/markethub123<br>Sample data added.<br><br><a href='/admin/'>Go to Admin</a> | <a href='/'>Go to Store</a>")
+        
+    except Exception as e:
+        return HttpResponse(f"Error during setup: {str(e)}")
+
+
 # AJAX endpoint to get cart count for navbar
 @login_required
 def get_cart_count(request):
