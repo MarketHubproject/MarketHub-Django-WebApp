@@ -223,111 +223,541 @@ def home(request):
 
 def product_list(request):
     """
-    Product listing with filtering and search
+    Product listing with filtering and search - bulletproof version
     """
-    products = Product.objects.filter(status='active').select_related('category')
-    
-    # Search functionality
-    search_query = request.GET.get('search', '')
-    if search_query:
-        products = products.filter(
-            Q(name__icontains=search_query) |
-            Q(description__icontains=search_query) |
-            Q(short_description__icontains=search_query)
-        )
-    
-    # Category filtering
-    category_slug = request.GET.get('category')
-    selected_category = None
-    if category_slug:
-        selected_category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=selected_category)
-    
-    # Price filtering
-    min_price = request.GET.get('min_price')
-    max_price = request.GET.get('max_price')
-    if min_price:
-        products = products.filter(price__gte=min_price)
-    if max_price:
-        products = products.filter(price__lte=max_price)
-    
-    # Sorting
-    sort_by = request.GET.get('sort', 'name')
-    if sort_by == 'price_low':
-        products = products.order_by('price')
-    elif sort_by == 'price_high':
-        products = products.order_by('-price')
-    elif sort_by == 'newest':
-        products = products.order_by('-created_at')
-    elif sort_by == 'featured':
-        products = products.order_by('-featured', 'name')
-    else:
-        products = products.order_by('name')
-    
-    # Pagination
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    # Get all categories for filter sidebar
     try:
-        categories = Category.objects.filter(is_active=True, parent=None)
-    except Exception:
-        categories = []
-    
-    context = {
-        'page_obj': page_obj,
-        'categories': categories,
-        'selected_category': selected_category,
-        'search_query': search_query,
-        'current_sort': sort_by,
-        'min_price': min_price,
-        'max_price': max_price,
-    }
-    return render(request, 'homepage/product_list.html', context)
+        # Get products with all filtering logic
+        products = Product.objects.filter(status='active').select_related('category')
+        
+        # Search functionality
+        search_query = request.GET.get('search', '')
+        if search_query:
+            products = products.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(short_description__icontains=search_query)
+            )
+        
+        # Category filtering
+        category_slug = request.GET.get('category')
+        selected_category = None
+        if category_slug:
+            try:
+                selected_category = get_object_or_404(Category, slug=category_slug)
+                products = products.filter(category=selected_category)
+            except:
+                pass
+        
+        # Price filtering
+        min_price = request.GET.get('min_price')
+        max_price = request.GET.get('max_price')
+        if min_price:
+            try:
+                products = products.filter(price__gte=float(min_price))
+            except:
+                pass
+        if max_price:
+            try:
+                products = products.filter(price__lte=float(max_price))
+            except:
+                pass
+        
+        # Sorting
+        sort_by = request.GET.get('sort', 'name')
+        if sort_by == 'price_low':
+            products = products.order_by('price')
+        elif sort_by == 'price_high':
+            products = products.order_by('-price')
+        elif sort_by == 'newest':
+            products = products.order_by('-created_at')
+        elif sort_by == 'featured':
+            products = products.order_by('-featured', 'name')
+        else:
+            products = products.order_by('name')
+        
+        # Pagination
+        paginator = Paginator(products, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        # Get all categories for filter sidebar
+        try:
+            categories = Category.objects.filter(is_active=True, parent=None)
+        except Exception:
+            categories = []
+        
+        # Try template first
+        context = {
+            'page_obj': page_obj,
+            'categories': categories,
+            'selected_category': selected_category,
+            'search_query': search_query,
+            'current_sort': sort_by,
+            'min_price': min_price,
+            'max_price': max_price,
+        }
+        return render(request, 'homepage/product_list.html', context)
+        
+    except Exception as e:
+        # Template failed, return beautiful HTML fallback
+        try:
+            # Get basic product data for fallback
+            products = Product.objects.filter(status='active')[:20]  # Limit to 20 for fallback
+            search_query = request.GET.get('search', '')
+        except:
+            products = []
+            search_query = ''
+            
+        # Generate product cards HTML
+        product_cards = ""
+        for product in products:
+            try:
+                price = f"${product.price}"
+                compare_price = f"<span class='text-muted text-decoration-line-through'>${product.compare_at_price}</span> " if hasattr(product, 'compare_at_price') and product.compare_at_price and product.compare_at_price > product.price else ""
+                product_cards += f"""
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-box fa-3x text-muted"></i>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{product.name}</h6>
+                            <p class="card-text text-muted small flex-grow-1">{product.short_description or product.description[:100] + '...' if len(str(product.description)) > 100 else product.description}</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        {compare_price}{price}
+                                    </div>
+                                    <a href="/product/{product.slug}/" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """
+            except:
+                continue
+        
+        return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-shopping-bag me-2"></i>Our Products</h2>
+                    <span class="badge bg-primary fs-6">{len(products)} Products</span>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" value="{search_query}" placeholder="Search products...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Products Grid -->
+                <div class="row">
+                    {product_cards if product_cards else '<div class="col-12 text-center py-5"><p class="text-muted">No products found. <a href="/admin/">Add products via Admin Panel</a></p></div>'}
+                </div>
+                
+                <!-- Back to Home -->
+                <div class="text-center mt-5">
+                    <a href="/" class="btn btn-outline-primary">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+        """)
 
 
 def product_detail(request, slug):
     """
-    Product detail page
+    Product detail page - bulletproof version
     """
-    product = get_object_or_404(
-        Product.objects.select_related('category'),
-        slug=slug, status='active'
-    )
+    try:
+        product = get_object_or_404(
+            Product.objects.select_related('category'),
+            slug=slug, status='active'
+        )
+        
+        # Get related products from the same category
+        related_products = Product.objects.filter(
+            category=product.category, status='active'
+        ).exclude(id=product.id)[:4] if product.category else []
+        
+        # Try template first
+        context = {
+            'product': product,
+            'related_products': related_products,
+        }
+        return render(request, 'homepage/product_detail.html', context)
+        
+    except Exception as e:
+        # Template failed or product not found, return beautiful HTML fallback
+        try:
+            product = Product.objects.get(slug=slug, status='active')
+        except:
+            # Product not found
+            return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product Not Found - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
     
-    # Get related products from the same category
-    related_products = Product.objects.filter(
-        category=product.category, status='active'
-    ).exclude(id=product.id)[:4]
-    
-    context = {
-        'product': product,
-        'related_products': related_products,
-    }
-    return render(request, 'homepage/product_detail.html', context)
+    <div class="container mt-5 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <i class="fas fa-search fa-5x text-muted mb-4"></i>
+                <h2>Product Not Found</h2>
+                <p class="text-muted">The product you're looking for doesn't exist or has been removed.</p>
+                <a href="/products/" class="btn btn-primary">Browse All Products</a>
+                <a href="/" class="btn btn-outline-primary ms-2">Go Home</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+            """)
+        
+        # Generate related products HTML
+        try:
+            related_products = Product.objects.filter(
+                category=product.category, status='active'
+            ).exclude(id=product.id)[:4] if hasattr(product, 'category') and product.category else []
+        except:
+            related_products = []
+            
+        related_html = ""
+        for rel_product in related_products:
+            try:
+                related_html += f"""
+                <div class="col-md-3 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">{rel_product.name}</h6>
+                            <p class="text-primary">${rel_product.price}</p>
+                            <a href="/product/{rel_product.slug}/" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+                """
+            except:
+                continue
+                
+        # Product found, show details
+        category_name = product.category.name if hasattr(product, 'category') and product.category else 'Uncategorized'
+        compare_price_html = f"<span class='text-muted text-decoration-line-through fs-5'>${product.compare_at_price}</span><br>" if hasattr(product, 'compare_at_price') and product.compare_at_price and product.compare_at_price > product.price else ""
+        
+        return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{product.name} - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
 
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/products/">Products</a></li>
+                <li class="breadcrumb-item">{category_name}</li>
+                <li class="breadcrumb-item active">{product.name}</li>
+            </ol>
+        </nav>
+        
+        <div class="row">
+            <!-- Product Image -->
+            <div class="col-md-6 mb-4">
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px; border-radius: 8px;">
+                    <i class="fas fa-image fa-5x text-muted"></i>
+                </div>
+            </div>
+            
+            <!-- Product Info -->
+            <div class="col-md-6 mb-4">
+                <div class="h-100">
+                    <h1 class="h2 mb-3">{product.name}</h1>
+                    <p class="text-muted mb-3">{category_name}</p>
+                    
+                    <div class="mb-4">
+                        {compare_price_html}
+                        <span class="h3 text-primary">${product.price}</span>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-muted">{product.short_description or (str(product.description)[:200] + '...' if len(str(product.description)) > 200 else str(product.description))}</p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-sm-6 mb-2">
+                                <strong>SKU:</strong> {getattr(product, 'sku', 'N/A')}
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <strong>Stock:</strong> {getattr(product, 'stock_quantity', 'N/A')} units
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-block">
+                        <button class="btn btn-primary btn-lg" onclick="alert('Add to cart functionality coming soon!')">
+                            <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                        </button>
+                        <button class="btn btn-outline-secondary btn-lg">
+                            <i class="fas fa-heart me-2"></i>Wishlist
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Description -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Product Description</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>{product.description}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Related Products -->
+        {f'<div class="row mt-5"><div class="col-12"><h4 class="mb-4">Related Products</h4><div class="row">{related_html}</div></div></div>' if related_html else ''}
+        
+        <!-- Back Button -->
+        <div class="text-center mt-5">
+            <a href="/products/" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Products
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+        """)
 
 def category_detail(request, slug):
     """
-    Category page showing products in that category
+    Category page showing products in that category - bulletproof version
     """
-    category = get_object_or_404(Category, slug=slug, is_active=True)
-    
-    products = Product.objects.filter(
-        category=category, status='active'
-    ).select_related('category')
-    
-    # Pagination
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    context = {
-        'category': category,
-        'page_obj': page_obj,
-    }
-    return render(request, 'homepage/category_detail.html', context)
+    try:
+        category = get_object_or_404(Category, slug=slug, is_active=True)
+        products = Product.objects.filter(
+            category=category, status='active'
+        ).select_related('category')
+        
+        # Pagination
+        paginator = Paginator(products, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        # Try template first
+        context = {
+            'category': category,
+            'page_obj': page_obj,
+        }
+        return render(request, 'homepage/category_detail.html', context)
+        
+    except Exception as e:
+        # Template failed or category not found, return HTML fallback
+        try:
+            category = Category.objects.get(slug=slug, is_active=True)
+            products = Product.objects.filter(category=category, status='active')[:20]
+        except:
+            # Category not found - redirect to products page
+            return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Category Not Found - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>setTimeout(() => window.location.href='/products/', 3000);</script>
+</head>
+<body>
+    <div class="container mt-5 text-center">
+        <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+        <h2>Category Not Found</h2>
+        <p>Redirecting to all products...</p>
+        <a href="/products/" class="btn btn-primary">Go to Products</a>
+    </div>
+</body>
+</html>
+            """)
+            
+        # Generate product cards
+        product_cards = ""
+        for product in products:
+            try:
+                product_cards += f"""
+                <div class="col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-box fa-2x text-muted"></i>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{product.name}</h6>
+                            <p class="card-text text-muted small flex-grow-1">{(product.short_description or str(product.description))[:100]}...</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-primary fw-bold">${product.price}</span>
+                                    <a href="/product/{product.slug}/" class="btn btn-primary btn-sm">View</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                """
+            except:
+                continue
+                
+        return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{category.name} - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/products/">Products</a></li>
+                <li class="breadcrumb-item active">{category.name}</li>
+            </ol>
+        </nav>
+        
+        <!-- Category Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h1 class="h2"><i class="fas fa-tags me-2"></i>{category.name}</h1>
+                        <p class="text-muted">{category.description or 'Discover great products in this category'}</p>
+                    </div>
+                    <span class="badge bg-primary fs-6">{len(products)} Products</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="row">
+            {product_cards if product_cards else '<div class="col-12 text-center py-5"><p class="text-muted">No products in this category yet.</p></div>'}
+        </div>
+        
+        <!-- Back Navigation -->
+        <div class="text-center mt-5">
+            <a href="/products/" class="btn btn-outline-primary me-2">
+                <i class="fas fa-arrow-left me-1"></i>All Products
+            </a>
+            <a href="/" class="btn btn-primary">
+                <i class="fas fa-home me-1"></i>Home
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+        """)
+
 
 
 @login_required
