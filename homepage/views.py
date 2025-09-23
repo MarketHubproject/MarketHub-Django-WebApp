@@ -18,29 +18,45 @@ from decimal import Decimal
 
 def home(request):
     """
-    Home page with featured products
+    Home page - minimal debug version
     """
-    try:
-        featured_products = Product.objects.filter(
-            status='active', featured=True
-        ).select_related('category')[:8]
-    except Exception as e:
-        # Handle case where database tables might not exist yet
-        featured_products = []
-    
-    try:
-        categories = Category.objects.filter(
-            is_active=True, parent=None
-        ).annotate(product_count=Count('products'))[:6]
-    except Exception as e:
-        # Handle case where database tables might not exist yet
-        categories = []
-    
-    context = {
-        'featured_products': featured_products,
-        'categories': categories,
-    }
-    return render(request, 'homepage/home.html', context)
+    # Return basic HTML without template to debug issues
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MarketHub - Debug</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 text-center">
+                    <h1 class="display-4 text-primary mb-4">🎉 MarketHub is Working!</h1>
+                    <p class="lead mb-4">Your Django app is successfully deployed and running.</p>
+                    <div class="d-grid gap-2 d-md-block">
+                        <a href="/setup/" class="btn btn-success btn-lg">Run Setup</a>
+                        <a href="/admin/" class="btn btn-primary btn-lg">Admin Panel</a>
+                        <a href="/debug/" class="btn btn-info btn-lg">Debug Info</a>
+                    </div>
+                    <hr class="my-5">
+                    <div class="alert alert-info">
+                        <h5>Next Steps:</h5>
+                        <ol class="text-start">
+                            <li>Click "Run Setup" to initialize the database and create admin user</li>
+                            <li>Use "Admin Panel" to add products and categories</li>
+                            <li>Check "Debug Info" for system status</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HttpResponse(html_content)
 
 
 def product_list(request):
@@ -331,29 +347,129 @@ def health_check(request):
     return HttpResponse("OK")
 
 
+def debug_info(request):
+    """
+    Debug information endpoint
+    """
+    import sys
+    import django
+    from django.db import connection
+    import traceback
+    
+    debug_data = []
+    
+    try:
+        # Django version
+        debug_data.append(f"🐍 Python version: {sys.version}")
+        debug_data.append(f"🎯 Django version: {django.get_version()}")
+        
+        # Database connection test
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+                debug_data.append("✅ Database connection: OK")
+        except Exception as e:
+            debug_data.append(f"❌ Database connection: {str(e)}")
+        
+        # Check tables
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+                tables = [row[0] for row in cursor.fetchall()]
+                debug_data.append(f"📋 Database tables ({len(tables)}): {', '.join(tables[:10])}{'...' if len(tables) > 10 else ''}")
+        except Exception as e:
+            debug_data.append(f"❌ Error checking tables: {str(e)}")
+        
+        # Check models
+        try:
+            from django.contrib.auth.models import User
+            user_count = User.objects.count()
+            admin_count = User.objects.filter(is_superuser=True).count()
+            debug_data.append(f"👥 Users: {user_count} total, {admin_count} admins")
+        except Exception as e:
+            debug_data.append(f"❌ Error checking users: {str(e)}")
+        
+        try:
+            from .models import Category, Product
+            cat_count = Category.objects.count()
+            prod_count = Product.objects.count()
+            debug_data.append(f"📦 Content: {cat_count} categories, {prod_count} products")
+        except Exception as e:
+            debug_data.append(f"❌ Error checking content: {str(e)}")
+        
+        # Environment info
+        import os
+        debug_data.append(f"🌍 Environment: {'Production' if os.environ.get('DATABASE_URL') else 'Development'}")
+        
+    except Exception as e:
+        debug_data.append(f"❌ Debug error: {str(e)}")
+        debug_data.append(f"Stack trace: {traceback.format_exc()}")
+    
+    debug_output = "<br>".join(debug_data)
+    
+    return HttpResponse(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>MarketHub Debug Info</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container mt-4">
+            <h2>🔍 MarketHub Debug Information</h2>
+            <div class="alert alert-info">
+                {debug_output}
+            </div>
+            <div class="mt-4">
+                <a href='/' class="btn btn-primary">Back to Home</a>
+                <a href='/setup/' class="btn btn-success">Run Setup</a>
+                <a href='/admin/' class="btn btn-secondary">Admin Panel</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    """)
+
+
 def setup_admin(request):
     """
     Setup admin user via web endpoint (for free tier)
     """
     from django.contrib.auth.models import User
     from django.core.management import call_command
+    import traceback
+    
+    debug_info = []
     
     try:
+        debug_info.append("🔧 Starting setup process...")
+        
         # First, run database migrations
+        debug_info.append("📊 Running database migrations...")
         call_command('migrate', verbosity=0)
+        debug_info.append("✅ Database migrations completed successfully")
+        
+        # Check database connection
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            debug_info.append("✅ Database connection successful")
         
         # Check if admin user exists
         admin_exists = False
+        admin_count = 0
         try:
-            admin_exists = User.objects.filter(is_superuser=True).exists()
-        except Exception:
-            # Database might still be setting up
-            pass
+            admin_count = User.objects.filter(is_superuser=True).count()
+            admin_exists = admin_count > 0
+            debug_info.append(f"👤 Found {admin_count} admin user(s)")
+        except Exception as e:
+            debug_info.append(f"⚠️ Error checking admin users: {str(e)}")
         
         if admin_exists:
             message = "✅ Admin user already exists!<br>"
         else:
             # Create admin user
+            debug_info.append("👤 Creating admin user...")
             User.objects.create_superuser(
                 username='admin',
                 email='admin@markethub.com',
@@ -362,12 +478,72 @@ def setup_admin(request):
                 last_name='User'
             )
             message = "✅ Admin user created: admin/markethub123<br>"
+            debug_info.append("✅ Admin user created successfully")
         
-        # Skip sample data creation for now and just return success
-        return HttpResponse(f"{message}Database migrations completed!<br><br><a href='/admin/'>Go to Admin</a> | <a href='/'>Go to Store</a>")
+        # Check models
+        try:
+            from .models import Category, Product
+            cat_count = Category.objects.count()
+            prod_count = Product.objects.count()
+            debug_info.append(f"📦 Found {cat_count} categories and {prod_count} products")
+        except Exception as e:
+            debug_info.append(f"⚠️ Error checking models: {str(e)}")
+        
+        debug_output = "<br>".join(debug_info)
+        
+        return HttpResponse(f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Setup Complete</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-4">
+                <h2>🎉 Setup Complete!</h2>
+                {message}
+                <div class="alert alert-info mt-4">
+                    <h5>Debug Information:</h5>
+                    {debug_output}
+                </div>
+                <div class="mt-4">
+                    <a href='/admin/' class="btn btn-primary">Go to Admin Panel</a>
+                    <a href='/' class="btn btn-secondary">Go to Store</a>
+                    <a href='/debug/' class="btn btn-info">View Debug Info</a>
+                </div>
+            </div>
+        </body>
+        </html>
+        """)
         
     except Exception as e:
-        return HttpResponse(f"Error during setup: {str(e)}")
+        error_trace = traceback.format_exc()
+        return HttpResponse(f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Setup Error</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        </head>
+        <body>
+            <div class="container mt-4">
+                <h2>❌ Setup Error</h2>
+                <div class="alert alert-danger">
+                    <h5>Error:</h5>
+                    <p>{str(e)}</p>
+                    <details>
+                        <summary>Full Error Details</summary>
+                        <pre>{error_trace}</pre>
+                    </details>
+                </div>
+                <div class="alert alert-info">
+                    <h5>Debug Information:</h5>
+                    {'<br>'.join(debug_info)}
+                </div>
+            </div>
+        </body>
+        </html>
+        """)
 
 
 # AJAX endpoint to get cart count for navbar

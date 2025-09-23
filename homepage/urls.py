@@ -26,4 +26,5 @@ urlpatterns = [
     # Setup and Health check
     path('setup/', views.setup_admin, name='setup_admin'),
     path('health/', views.health_check, name='health_check'),
+    path('debug/', views.debug_info, name='debug_info'),
 ]
