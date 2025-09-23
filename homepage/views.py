@@ -18,45 +18,29 @@ from decimal import Decimal
 
 def home(request):
     """
-    Home page - minimal debug version
+    Home page with featured products
     """
-    # Return basic HTML without template to debug issues
-    html_content = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>MarketHub - Debug</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8 text-center">
-                    <h1 class="display-4 text-primary mb-4">🎉 MarketHub is Working!</h1>
-                    <p class="lead mb-4">Your Django app is successfully deployed and running.</p>
-                    <div class="d-grid gap-2 d-md-block">
-                        <a href="/setup/" class="btn btn-success btn-lg">Run Setup</a>
-                        <a href="/admin/" class="btn btn-primary btn-lg">Admin Panel</a>
-                        <a href="/debug/" class="btn btn-info btn-lg">Debug Info</a>
-                    </div>
-                    <hr class="my-5">
-                    <div class="alert alert-info">
-                        <h5>Next Steps:</h5>
-                        <ol class="text-start">
-                            <li>Click "Run Setup" to initialize the database and create admin user</li>
-                            <li>Use "Admin Panel" to add products and categories</li>
-                            <li>Check "Debug Info" for system status</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-    return HttpResponse(html_content)
+    try:
+        featured_products = Product.objects.filter(
+            status='active', featured=True
+        ).select_related('category')[:8]
+    except Exception as e:
+        # Handle case where database tables might not exist yet
+        featured_products = []
+    
+    try:
+        categories = Category.objects.filter(
+            is_active=True, parent=None
+        ).annotate(product_count=Count('products'))[:6]
+    except Exception as e:
+        # Handle case where database tables might not exist yet
+        categories = []
+    
+    context = {
+        'featured_products': featured_products,
+        'categories': categories,
+    }
+    return render(request, 'homepage/home.html', context)
 
 
 def product_list(request):
