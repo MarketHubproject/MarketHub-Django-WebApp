@@ -1298,6 +1298,84 @@ def simple_debug(request):
     return HttpResponse(response_text, content_type="text/plain")
 
 
+def fix_database(request):
+    """
+    Direct database schema fix - specifically for the slug column issue
+    """
+    from django.db import connection
+    import traceback
+    
+    results = []
+    
+    try:
+        results.append("🔧 Starting database schema fix...")
+        
+        with connection.cursor() as cursor:
+            # Check if the slug column exists
+            cursor.execute("PRAGMA table_info(homepage_product);")
+            columns = [row[1] for row in cursor.fetchall()]
+            results.append(f"📋 Current columns: {', '.join(columns)}")
+            
+            if 'slug' not in columns:
+                results.append("⚠️ Slug column missing - adding it now...")
+                
+                # Add the slug column
+                cursor.execute("ALTER TABLE homepage_product ADD COLUMN slug VARCHAR(255) DEFAULT '';")
+                results.append("✅ Added slug column")
+                
+                # Update existing products with slugs
+                cursor.execute("SELECT id, name FROM homepage_product;")
+                products = cursor.fetchall()
+                
+                for product_id, product_name in products:
+                    # Create a simple slug from the product name
+                    import re
+                    slug = re.sub(r'[^a-zA-Z0-9]+', '-', product_name.lower()).strip('-')
+                    cursor.execute("UPDATE homepage_product SET slug = ? WHERE id = ?;", [slug, product_id])
+                
+                results.append(f"✅ Updated slugs for {len(products)} products")
+            else:
+                results.append("✅ Slug column already exists")
+            
+            # Test the fix
+            cursor.execute("SELECT COUNT(*) FROM homepage_product WHERE slug IS NOT NULL;")
+            count = cursor.fetchone()[0]
+            results.append(f"✅ Database fix complete - {count} products have slugs")
+            
+    except Exception as e:
+        results.append(f"❌ Error: {str(e)}")
+        results.append(f"Stack trace: {traceback.format_exc()}")
+    
+    results_html = "<br>".join(results)
+    
+    return HttpResponse(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Database Fix - MarketHub</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <meta http-equiv="refresh" content="10;url=/products/">
+    </head>
+    <body>
+        <div class="container mt-4">
+            <h2>🔧 Database Schema Fix</h2>
+            <div class="alert alert-info">
+                {results_html}
+            </div>
+            <div class="alert alert-success mt-4">
+                <p><strong>Automatic redirect:</strong> You'll be redirected to the products page in 10 seconds to test the fix.</p>
+            </div>
+            <div class="mt-4">
+                <a href="/products/" class="btn btn-primary">Test Products Page</a>
+                <a href="/" class="btn btn-secondary">Go Home</a>
+                <a href="/admin/" class="btn btn-success">Admin Panel</a>
+            </div>
+        </div>
+    </body>
+    </html>
+    """)
+
+
 def setup_admin(request):
     """
     Setup admin user via web endpoint (for free tier)

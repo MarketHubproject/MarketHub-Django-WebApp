@@ -33,4 +33,5 @@ urlpatterns = [
     path('test-basic/', views.test_basic, name='test_basic'),
     path('products-no-db/', views.products_no_db, name='products_no_db'),
     path('products-hybrid/', views.products_hybrid, name='products_hybrid'),
+    path('fix-database/', views.fix_database, name='fix_database'),
 ]
