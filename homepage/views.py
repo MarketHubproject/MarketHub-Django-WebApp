@@ -1311,10 +1311,31 @@ def setup_admin(request):
     try:
         debug_info.append("🔧 Starting setup process...")
         
-        # First, run database migrations
+        # First, run database migrations with force
         debug_info.append("📊 Running database migrations...")
-        call_command('migrate', verbosity=0)
-        debug_info.append("✅ Database migrations completed successfully")
+        try:
+            call_command('migrate', verbosity=0, interactive=False)
+            debug_info.append("✅ Database migrations completed successfully")
+        except Exception as migrate_error:
+            debug_info.append(f"⚠️ Migration issue: {str(migrate_error)}")
+            # Try to run migrations with fake-initial flag
+            try:
+                call_command('migrate', '--fake-initial', verbosity=0, interactive=False)
+                debug_info.append("✅ Database migrations completed with fake-initial")
+            except Exception as fake_error:
+                debug_info.append(f"❌ Migration failed: {str(fake_error)}")
+                # Try to create missing columns manually
+                try:
+                    from django.db import connection
+                    with connection.cursor() as cursor:
+                        # Add slug column if missing
+                        cursor.execute("""
+                        ALTER TABLE homepage_product 
+                        ADD COLUMN slug VARCHAR(255) DEFAULT '';
+                        """)
+                        debug_info.append("✅ Added missing slug column")
+                except Exception as manual_error:
+                    debug_info.append(f"⚠️ Manual column addition failed: {str(manual_error)}")
         
         # Check database connection
         from django.db import connection
