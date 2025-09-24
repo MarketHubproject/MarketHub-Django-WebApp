@@ -27,4 +27,6 @@ urlpatterns = [
     path('setup/', views.setup_admin, name='setup_admin'),
     path('health/', views.health_check, name='health_check'),
     path('debug/', views.debug_info, name='debug_info'),
+    path('simple-debug/', views.simple_debug, name='simple_debug'),
+    path('simple-products/', views.simple_products, name='simple_products'),
 ]

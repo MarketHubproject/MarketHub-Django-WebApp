@@ -225,122 +225,69 @@ def product_list(request):
     """
     Product listing with filtering and search - bulletproof version
     """
+    # ALWAYS go to fallback first for debugging production issues
+    # Remove this try block once we identify the issue
+    
+    # Get basic product data for fallback
     try:
-        # Get products with all filtering logic
-        products = Product.objects.filter(status='active').select_related('category')
-        
-        # Search functionality
+        products = Product.objects.filter(status='active')[:20]  # Limit to 20 for fallback  
         search_query = request.GET.get('search', '')
-        if search_query:
-            products = products.filter(
-                Q(name__icontains=search_query) |
-                Q(description__icontains=search_query) |
-                Q(short_description__icontains=search_query)
-            )
+    except Exception as db_error:
+        products = []
+        search_query = ''
         
-        # Category filtering
-        category_slug = request.GET.get('category')
-        selected_category = None
-        if category_slug:
-            try:
-                selected_category = get_object_or_404(Category, slug=category_slug)
-                products = products.filter(category=selected_category)
-            except:
-                pass
+        # Return error page if database is completely broken
+        return HttpResponse(f"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Database Error - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Database Error</h2>
+        <p>Error: {str(db_error)}</p>
+        <a href="/" class="btn btn-primary">Go Home</a>
+        <a href="/setup/" class="btn btn-success">Run Setup</a>
+    </div>
+</body>
+</html>
+        """)
         
-        # Price filtering
-        min_price = request.GET.get('min_price')
-        max_price = request.GET.get('max_price')
-        if min_price:
-            try:
-                products = products.filter(price__gte=float(min_price))
-            except:
-                pass
-        if max_price:
-            try:
-                products = products.filter(price__lte=float(max_price))
-            except:
-                pass
-        
-        # Sorting
-        sort_by = request.GET.get('sort', 'name')
-        if sort_by == 'price_low':
-            products = products.order_by('price')
-        elif sort_by == 'price_high':
-            products = products.order_by('-price')
-        elif sort_by == 'newest':
-            products = products.order_by('-created_at')
-        elif sort_by == 'featured':
-            products = products.order_by('-featured', 'name')
-        else:
-            products = products.order_by('name')
-        
-        # Pagination
-        paginator = Paginator(products, 12)
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
-        
-        # Get all categories for filter sidebar
+    # Generate product cards HTML
+    product_cards = ""
+    for product in products:
         try:
-            categories = Category.objects.filter(is_active=True, parent=None)
-        except Exception:
-            categories = []
-        
-        # Try template first
-        context = {
-            'page_obj': page_obj,
-            'categories': categories,
-            'selected_category': selected_category,
-            'search_query': search_query,
-            'current_sort': sort_by,
-            'min_price': min_price,
-            'max_price': max_price,
-        }
-        return render(request, 'homepage/product_list.html', context)
-        
-    except Exception as e:
-        # Template failed, return beautiful HTML fallback
-        try:
-            # Get basic product data for fallback
-            products = Product.objects.filter(status='active')[:20]  # Limit to 20 for fallback
-            search_query = request.GET.get('search', '')
-        except:
-            products = []
-            search_query = ''
-            
-        # Generate product cards HTML
-        product_cards = ""
-        for product in products:
-            try:
-                price = f"${product.price}"
-                compare_price = f"<span class='text-muted text-decoration-line-through'>${product.compare_at_price}</span> " if hasattr(product, 'compare_at_price') and product.compare_at_price and product.compare_at_price > product.price else ""
-                product_cards += f"""
-                <div class="col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
-                            <i class="fas fa-box fa-3x text-muted"></i>
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <h6 class="card-title">{product.name}</h6>
-                            <p class="card-text text-muted small flex-grow-1">{product.short_description or product.description[:100] + '...' if len(str(product.description)) > 100 else product.description}</p>
-                            <div class="mt-auto">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        {compare_price}{price}
-                                    </div>
-                                    <a href="/product/{product.slug}/" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
+            price = f"${product.price}"
+            compare_price = f"<span class='text-muted text-decoration-line-through'>${product.compare_at_price}</span> " if hasattr(product, 'compare_at_price') and product.compare_at_price and product.compare_at_price > product.price else ""
+            product_cards += f"""
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-box fa-3x text-muted"></i>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{product.name}</h6>
+                        <p class="card-text text-muted small flex-grow-1">{product.short_description or product.description[:100] + '...' if len(str(product.description)) > 100 else product.description}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    {compare_price}{price}
                                 </div>
+                                <a href="/product/{product.slug}/" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
                             </div>
                         </div>
                     </div>
                 </div>
-                """
-            except:
-                continue
-        
-        return HttpResponse(f"""
+            </div>
+            """
+        except:
+            continue
+    
+    return HttpResponse(f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -405,7 +352,7 @@ def product_list(request):
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-        """)
+    """)
 
 
 def product_detail(request, slug):
@@ -1021,6 +968,76 @@ def debug_info(request):
     </body>
     </html>
     """)
+
+
+def simple_products(request):
+    """
+    Ultra-simple product list that bypasses all template logic
+    """
+    try:
+        from .models import Product
+        products = Product.objects.filter(status='active')[:10]
+        
+        html = "<h1>Simple Products List</h1><ul>"
+        for product in products:
+            html += f"<li>{product.name} - ${product.price}</li>"
+        html += "</ul>"
+        html += '<p><a href="/">Back to Home</a></p>'
+        
+        return HttpResponse(html)
+    except Exception as e:
+        return HttpResponse(f"Error: {str(e)}")
+
+
+def simple_debug(request):
+    """
+    Simple debug endpoint that returns plain text - for debugging production issues
+    """
+    import sys
+    import django
+    import traceback
+    from django.db import connection
+    
+    debug_lines = []
+    
+    try:
+        debug_lines.append(f"Python: {sys.version}")
+        debug_lines.append(f"Django: {django.get_version()}")
+        debug_lines.append(f"Request path: {request.path}")
+        debug_lines.append(f"Request method: {request.method}")
+        
+        # Test database
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT COUNT(*) FROM django_migrations")
+                result = cursor.fetchone()
+                debug_lines.append(f"Database OK - {result[0]} migrations")
+        except Exception as e:
+            debug_lines.append(f"Database ERROR: {str(e)}")
+        
+        # Test models
+        try:
+            from .models import Product, Category
+            product_count = Product.objects.count()
+            category_count = Category.objects.count()
+            debug_lines.append(f"Models OK - {product_count} products, {category_count} categories")
+        except Exception as e:
+            debug_lines.append(f"Models ERROR: {str(e)}")
+            
+        # Test template loading
+        try:
+            from django.template.loader import get_template
+            template = get_template('homepage/product_list.html')
+            debug_lines.append("Template loading OK")
+        except Exception as e:
+            debug_lines.append(f"Template ERROR: {str(e)}")
+            
+    except Exception as e:
+        debug_lines.append(f"CRITICAL ERROR: {str(e)}")
+        debug_lines.append(f"Traceback: {traceback.format_exc()}")
+    
+    response_text = "\n".join(debug_lines)
+    return HttpResponse(response_text, content_type="text/plain")
 
 
 def setup_admin(request):
