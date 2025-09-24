@@ -970,6 +970,162 @@ def debug_info(request):
     """)
 
 
+def products_hybrid(request):
+    """
+    Hybrid products page - tries database first, falls back to samples if DB fails
+    """
+    # Try to get real products from database
+    products = []
+    db_error = None
+    db_success = False
+    
+    try:
+        from .models import Product
+        products = list(Product.objects.filter(status='active')[:20])
+        db_success = True
+        product_source = "database"
+    except Exception as e:
+        db_error = str(e)
+        product_source = "samples"
+        # Create sample products as fallback
+        class SampleProduct:
+            def __init__(self, name, price, description, slug):
+                self.name = name
+                self.price = price
+                self.description = description
+                self.slug = slug
+                self.short_description = description
+        
+        products = [
+            SampleProduct("Premium Laptop", "899.99", "High-performance laptop for professionals", "premium-laptop"),
+            SampleProduct("Wireless Headphones", "199.99", "Noise-canceling wireless headphones", "wireless-headphones"),
+            SampleProduct("Smart Watch", "299.99", "Feature-rich smartwatch with health tracking", "smart-watch"),
+            SampleProduct("Gaming Mouse", "79.99", "High-precision gaming mouse with RGB lighting", "gaming-mouse"),
+            SampleProduct("4K Webcam", "149.99", "Ultra HD webcam for video calls and streaming", "4k-webcam"),
+            SampleProduct("Mechanical Keyboard", "129.99", "Cherry MX switches mechanical keyboard", "mechanical-keyboard"),
+        ]
+    
+    search_query = request.GET.get('search', '')
+    
+    # Generate product cards HTML
+    product_cards = ""
+    for product in products:
+        try:
+            price = f"${product.price}"
+            description = getattr(product, 'short_description', '') or str(getattr(product, 'description', ''))[:100]
+            if len(description) > 100:
+                description = description[:100] + "..."
+                
+            # Handle database products vs sample products
+            if db_success and hasattr(product, 'slug'):
+                product_link = f"/product/{product.slug}/"
+            else:
+                product_link = "#"  # No link for sample products
+            
+            product_cards += f"""
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-box fa-3x text-muted"></i>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h6 class="card-title">{product.name}</h6>
+                        <p class="card-text text-muted small flex-grow-1">{description}</p>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-primary fw-bold">{price}</span>
+                                {'<a href="' + product_link + '" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> View</a>' if product_link != '#' else '<button class="btn btn-secondary btn-sm" disabled>Sample</button>'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            """
+        except Exception:
+            continue
+    
+    # Status message
+    if db_success:
+        status_message = f'<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Showing {len(products)} products from database</div>'
+    else:
+        status_message = f'<div class="alert alert-warning"><i class="fas fa-exclamation-triangle me-2"></i>Database unavailable - showing sample products<br><small>Error: {db_error}</small></div>'
+    
+    return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-shopping-bag me-2"></i>Our Products</h2>
+                    <span class="badge bg-primary fs-6">{len(products)} Products</span>
+                </div>
+                
+                {status_message}
+                
+                <!-- Search Bar -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="search" value="{search_query}" placeholder="Search products...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Products Grid -->
+                <div class="row">
+                    {product_cards if product_cards else '<div class="col-12 text-center py-5"><p class="text-muted">No products available.</p></div>'}
+                </div>
+                
+                <!-- Navigation -->
+                <div class="text-center mt-5">
+                    <a href="/" class="btn btn-outline-primary me-2">
+                        <i class="fas fa-home me-2"></i>Back to Home
+                    </a>
+                    <a href="/admin/" class="btn btn-success me-2">
+                        <i class="fas fa-cog me-2"></i>Admin Panel
+                    </a>
+                    <a href="/simple-debug/" class="btn btn-info">
+                        <i class="fas fa-bug me-2"></i>Debug Info
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+    """)
+
+
 def products_no_db(request):
     """
     Products page that doesn't touch database at all - for isolating DB issues
