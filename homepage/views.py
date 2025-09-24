@@ -18,7 +18,7 @@ from decimal import Decimal
 
 def home(request):
     """
-    Home page with featured products - robust version with template fallback
+    Home page with featured products - professional template version
     """
     try:
         # Get featured products
@@ -26,6 +26,12 @@ def home(request):
             featured_products = Product.objects.filter(
                 status='active', featured=True
             ).select_related('category')[:8]
+            
+            # If no featured products, get any active products
+            if not featured_products:
+                featured_products = Product.objects.filter(
+                    status='active'
+                ).select_related('category')[:8]
         except Exception:
             featured_products = []
         
@@ -41,6 +47,7 @@ def home(request):
         context = {
             'featured_products': featured_products,
             'categories': categories,
+            'page_title': 'Welcome to MarketHub',
         }
         return render(request, 'homepage/home.html', context)
         
@@ -1124,6 +1131,82 @@ def products_hybrid(request):
 </body>
 </html>
     """)
+
+
+def product_list_professional(request):
+    """
+    Professional product listing view with filtering, search, and pagination
+    """
+    try:
+        # Base queryset
+        products = Product.objects.filter(status='active').select_related('category')
+        
+        # Search functionality
+        search_query = request.GET.get('search', '')
+        if search_query:
+            products = products.filter(
+                Q(name__icontains=search_query) |
+                Q(description__icontains=search_query) |
+                Q(short_description__icontains=search_query)
+            )
+        
+        # Category filtering
+        category_id = request.GET.get('category')
+        category = None
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id, is_active=True)
+                products = products.filter(category=category)
+            except Category.DoesNotExist:
+                pass
+        
+        # Price filtering
+        min_price = request.GET.get('min_price')
+        max_price = request.GET.get('max_price')
+        if min_price:
+            try:
+                products = products.filter(price__gte=float(min_price))
+            except ValueError:
+                pass
+        if max_price:
+            try:
+                products = products.filter(price__lte=float(max_price))
+            except ValueError:
+                pass
+        
+        # Sorting
+        sort_by = request.GET.get('sort', '')
+        if sort_by in ['name', '-name', 'price', '-price', '-created_at']:
+            products = products.order_by(sort_by)
+        else:
+            products = products.order_by('-created_at', 'name')
+        
+        # Get categories for sidebar
+        categories = Category.objects.filter(
+            is_active=True, parent=None
+        ).annotate(
+            product_count=Count('products', filter=Q(products__status='active'))
+        ).filter(product_count__gt=0)[:10]
+        
+        # Pagination
+        paginator = Paginator(products, 12)  # Show 12 products per page
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        context = {
+            'products': page_obj,
+            'page_obj': page_obj,
+            'categories': categories,
+            'category': category,
+            'search_query': search_query,
+            'page_title': f'{category.name} Products' if category else 'All Products',
+        }
+        
+        return render(request, 'homepage/product_list.html', context)
+        
+    except Exception as e:
+        # Fallback to the existing bulletproof version
+        return product_list(request)
 
 
 def products_no_db(request):

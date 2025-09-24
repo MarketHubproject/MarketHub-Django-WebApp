@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load homepage_filters %}
+
+{% block title %}Products - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .product-image {
+        height: 200px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 8px 8px 0 0;
+    }
+    .sale-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+    .price-original {
+        text-decoration: line-through;
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+    .filter-sidebar {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="fas fa-shopping-bag text-primary me-2"></i>
+                        {% if category %}{{ category.name }}{% else %}All Products{% endif %}
+                    </h1>
+                    {% if category %}
+                        <p class="text-muted mb-0">{{ category.description|default:"Discover great products in this category" }}</p>
+                    {% else %}
+                        <p class="text-muted mb-0">Discover our amazing collection of products</p>
+                    {% endif %}
+                </div>
+                <span class="badge bg-primary fs-6">{{ products.count }} Products</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="filter-sidebar">
+                <!-- Search -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-search me-2"></i>Search
+                    </h6>
+                    <form method="get">
+                        <div class="input-group">
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="search" 
+                                   value="{{ request.GET.search }}" 
+                                   placeholder="Search products...">
+                            <button class="btn btn-outline-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        {% if request.GET.category %}
+                            <input type="hidden" name="category" value="{{ request.GET.category }}">
+                        {% endif %}
+                        {% if request.GET.sort %}
+                            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                        {% endif %}
+                    </form>
+                </div>
+
+                <!-- Categories -->
+                {% if categories %}
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-tags me-2"></i>Categories
+                    </h6>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'homepage:product_list' %}" 
+                           class="list-group-item list-group-item-action border-0 px-0 {% if not category %}active{% endif %}">
+                            All Products
+                        </a>
+                        {% for cat in categories %}
+                        <a href="?category={{ cat.id }}" 
+                           class="list-group-item list-group-item-action border-0 px-0 {% if category.id == cat.id %}active{% endif %}">
+                            {{ cat.name }}
+                            <span class="badge bg-secondary ms-auto">{{ cat.product_count }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Price Range -->
+                <div class="mb-4">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-dollar-sign me-2"></i>Price Range
+                    </h6>
+                    <form method="get">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <input type="number" 
+                                       class="form-control" 
+                                       name="min_price" 
+                                       value="{{ request.GET.min_price }}" 
+                                       placeholder="Min">
+                            </div>
+                            <div class="col-6">
+                                <input type="number" 
+                                       class="form-control" 
+                                       name="max_price" 
+                                       value="{{ request.GET.max_price }}" 
+                                       placeholder="Max">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary btn-sm mt-2 w-100">
+                            Apply Filter
+                        </button>
+                        {% for field, value in request.GET.items %}
+                            {% if field != 'min_price' and field != 'max_price' %}
+                            <input type="hidden" name="{{ field }}" value="{{ value }}">
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            <!-- Sort Options -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        {% if page_obj %}
+                            Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ page_obj.paginator.count }} results
+                        {% else %}
+                            Showing {{ products.count }} results
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <form method="get" class="d-flex justify-content-md-end">
+                        <select name="sort" class="form-select" style="width: auto;" onchange="this.form.submit()">
+                            <option value="">Sort by...</option>
+                            <option value="name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name A-Z</option>
+                            <option value="-name" {% if request.GET.sort == '-name' %}selected{% endif %}>Name Z-A</option>
+                            <option value="price" {% if request.GET.sort == 'price' %}selected{% endif %}>Price Low-High</option>
+                            <option value="-price" {% if request.GET.sort == '-price' %}selected{% endif %}>Price High-Low</option>
+                            <option value="-created_at" {% if request.GET.sort == '-created_at' %}selected{% endif %}>Newest First</option>
+                        </select>
+                        {% for field, value in request.GET.items %}
+                            {% if field != 'sort' %}
+                            <input type="hidden" name="{{ field }}" value="{{ value }}">
+                            {% endif %}
+                        {% endfor %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            {% if products %}
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-6 col-xl-4 mb-4">
+                    <div class="card product-card h-100 border-0 shadow-sm">
+                        {% if product.compare_at_price and product.compare_at_price > product.price %}
+                        <span class="badge bg-danger sale-badge">
+                            SAVE {{ product.compare_at_price|subtract:product.price|currency }}
+                        </span>
+                        {% endif %}
+                        
+                        <div class="product-image d-flex align-items-center justify-content-center">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" 
+                                     class="img-fluid" 
+                                     alt="{{ product.name }}" 
+                                     style="max-height: 180px; object-fit: cover;">
+                            {% else %}
+                                <div class="text-center text-muted">
+                                    <i class="fas fa-image fa-3x mb-2"></i>
+                                    <p class="small">No Image</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title">{{ product.name }}</h6>
+                            
+                            {% if product.category %}
+                            <p class="text-muted small mb-2">
+                                <i class="fas fa-tag me-1"></i>{{ product.category.name }}
+                            </p>
+                            {% endif %}
+                            
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ product.short_description|default:product.description|truncatewords:15 }}
+                            </p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div>
+                                        {% if product.compare_at_price and product.compare_at_price > product.price %}
+                                        <span class="price-original">${{ product.compare_at_price }}</span><br>
+                                        {% endif %}
+                                        <span class="h6 text-primary mb-0">${{ product.price }}</span>
+                                    </div>
+                                    {% if product.stock_quantity %}
+                                    <small class="text-success">
+                                        <i class="fas fa-check-circle me-1"></i>In Stock
+                                    </small>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'homepage:product_detail' product.slug %}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View Details
+                                    </a>
+                                    {% if user.is_authenticated %}
+                                    <button class="btn btn-primary btn-sm add-to-cart-btn" 
+                                            data-product-id="{{ product.id }}"
+                                            data-product-name="{{ product.name }}">
+                                        <i class="fas fa-cart-plus me-1"></i>Add to Cart
+                                    </button>
+                                    {% else %}
+                                    <a href="{% url 'login' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-sign-in-alt me-1"></i>Login to Purchase
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj and page_obj.has_other_pages %}
+            <nav aria-label="Products pagination" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <!-- No Products Found -->
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h4>No Products Found</h4>
+                    <p class="text-muted">
+                        {% if request.GET.search %}
+                            No products match your search for "{{ request.GET.search }}".
+                        {% else %}
+                            No products are available at the moment.
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    {% if request.GET %}
+                    <a href="{% url 'homepage:product_list' %}" class="btn btn-primary me-2">
+                        <i class="fas fa-undo me-1"></i>Clear Filters
+                    </a>
+                    {% endif %}
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:homepage_product_add' %}" class="btn btn-success">
+                        <i class="fas fa-plus me-1"></i>Add Products
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Add to cart functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+    
+    addToCartBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const productId = this.dataset.productId;
+            const productName = this.dataset.productName;
+            const originalText = this.innerHTML;
+            
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Adding...';
+            this.disabled = true;
+            
+            // Make AJAX request
+            fetch('{% url "homepage:add_to_cart" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: `product_id=${productId}&quantity=1`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success state
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Added!';
+                    this.classList.replace('btn-primary', 'btn-success');
+                    
+                    // Update cart badge
+                    updateCartBadge(data.cart_total_items);
+                    
+                    // Show success message
+                    showAlert('success', data.message || `${productName} added to cart!`);
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.classList.replace('btn-success', 'btn-primary');
+                        this.disabled = false;
+                    }, 2000);
+                } else {
+                    throw new Error(data.error || 'Failed to add to cart');
+                }
+            })
+            .catch(error => {
+                // Show error state
+                this.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i>Error';
+                this.classList.replace('btn-primary', 'btn-danger');
+                
+                showAlert('error', error.message || 'Failed to add item to cart');
+                
+                // Reset button after 3 seconds
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.replace('btn-danger', 'btn-primary');
+                    this.disabled = false;
+                }, 3000);
+            });
+        });
+    });
+});
+
+function updateCartBadge(count) {
+    const badge = document.querySelector('.cart-badge');
+    if (badge) {
+        badge.textContent = count;
+        if (count > 0) {
+            badge.style.display = 'inline';
+        }
+    }
+}
+
+function showAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+    
+    const alertHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at top of container
+    const container = document.querySelector('.container');
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = alertHTML;
+    container.insertBefore(alertDiv.firstElementChild, container.firstElementChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}
