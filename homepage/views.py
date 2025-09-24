@@ -970,6 +970,108 @@ def debug_info(request):
     """)
 
 
+def products_no_db(request):
+    """
+    Products page that doesn't touch database at all - for isolating DB issues
+    """
+    return HttpResponse(f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - MarketHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-store me-2"></i>MarketHub
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/products/">Products</a>
+                <a class="nav-link" href="/admin/">Admin</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <h4><i class="fas fa-info-circle me-2"></i>Products Page (No Database)</h4>
+                    <p>This is a test version of the products page that doesn't access the database.</p>
+                    <p>If you see this page, the routing and basic functionality work!</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-box fa-3x text-primary mb-3"></i>
+                                <h5>Sample Product 1</h5>
+                                <p class="text-muted">This is a sample product for testing.</p>
+                                <span class="h5 text-primary">$29.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-gift fa-3x text-success mb-3"></i>
+                                <h5>Sample Product 2</h5>
+                                <p class="text-muted">Another sample product for testing.</p>
+                                <span class="h5 text-success">$39.99</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                                <h5>Sample Product 3</h5>
+                                <p class="text-muted">A third sample product for testing.</p>
+                                <span class="h5 text-warning">$49.99</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <a href="/" class="btn btn-primary me-2">Back to Home</a>
+                    <a href="/admin/" class="btn btn-success me-2">Admin Panel</a>
+                    <a href="/products-full/" class="btn btn-warning">Try Full Products Page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+    """)
+
+
+def test_basic(request):
+    """
+    Absolute minimal test endpoint - just returns basic HTML
+    """
+    return HttpResponse("""
+    <html>
+    <head><title>Basic Test - MarketHub</title></head>
+    <body>
+        <h1>Basic Test Works!</h1>
+        <p>If you see this, the basic routing is working.</p>
+        <p><a href="/">Back to Home</a></p>
+    </body>
+    </html>
+    """)
+
+
 def simple_products(request):
     """
     Ultra-simple product list that bypasses all template logic
