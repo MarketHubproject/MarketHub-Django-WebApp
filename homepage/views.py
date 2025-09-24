@@ -1446,14 +1446,41 @@ def setup_admin(request):
             message = "✅ Admin user created: admin/markethub123<br>"
             debug_info.append("✅ Admin user created successfully")
         
-        # Check models
+        # Check models and fix schema if needed
         try:
             from .models import Category, Product
             cat_count = Category.objects.count()
             prod_count = Product.objects.count()
             debug_info.append(f"📦 Found {cat_count} categories and {prod_count} products")
-        except Exception as e:
-            debug_info.append(f"⚠️ Error checking models: {str(e)}")
+        except Exception as model_error:
+            debug_info.append(f"⚠️ Error checking models: {str(model_error)}")
+            
+            # Try to fix the slug column issue
+            if "no such column: homepage_product.slug" in str(model_error):
+                debug_info.append("🔧 Detected missing slug column - attempting fix...")
+                try:
+                    with connection.cursor() as cursor:
+                        cursor.execute("ALTER TABLE homepage_product ADD COLUMN slug VARCHAR(255) DEFAULT '';")
+                        debug_info.append("✅ Added missing slug column")
+                        
+                        # Update existing products with slugs
+                        cursor.execute("SELECT id, name FROM homepage_product;")
+                        products = cursor.fetchall()
+                        
+                        import re
+                        for product_id, product_name in products:
+                            slug = re.sub(r'[^a-zA-Z0-9]+', '-', product_name.lower()).strip('-')
+                            cursor.execute("UPDATE homepage_product SET slug = ? WHERE id = ?;", [slug, product_id])
+                        
+                        debug_info.append(f"✅ Updated slugs for {len(products)} existing products")
+                        
+                        # Test the fix
+                        from .models import Product
+                        test_count = Product.objects.count()
+                        debug_info.append(f"✅ Schema fix successful - can now access {test_count} products")
+                        
+                except Exception as fix_error:
+                    debug_info.append(f"❌ Schema fix failed: {str(fix_error)}")
         
         debug_output = "<br>".join(debug_info)
         
