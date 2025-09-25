@@ -385,25 +385,39 @@ def product_list(request):
 
 def product_detail(request, slug):
     """
-    Product detail page - bulletproof version
+    Product detail page - professional template with fallback
     """
     try:
         product = get_object_or_404(
-            Product.objects.select_related('category'),
+            Product.objects.select_related('category').prefetch_related('images'),
             slug=slug, status='active'
         )
         
         # Get related products from the same category
-        related_products = Product.objects.filter(
-            category=product.category, status='active'
-        ).exclude(id=product.id)[:4] if product.category else []
+        related_products = []
+        try:
+            if product.category:
+                related_products = Product.objects.filter(
+                    category=product.category, status='active'
+                ).exclude(id=product.id).prefetch_related('images')[:4]
+        except Exception:
+            related_products = []
         
-        # Try template first
+        # Try professional template first
         context = {
             'product': product,
             'related_products': related_products,
+            'page_title': product.name,
         }
-        return render(request, 'homepage/product_detail.html', context)
+        
+        try:
+            return render(request, 'homepage/product_detail.html', context)
+        except Exception as template_error:
+            # Log the error for debugging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Template error in product_detail: {str(template_error)}")
+            # Fall through to existing fallback
         
     except Exception as e:
         # Template failed or product not found, return beautiful HTML fallback

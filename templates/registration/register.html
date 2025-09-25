@@ -1,0 +1,335 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 480px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background: white;
+    }
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .auth-header .logo {
+        color: var(--bs-primary);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .form-floating > .form-control:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+    .password-strength {
+        margin-top: 0.5rem;
+    }
+    .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #e9ecef;
+        overflow: hidden;
+        margin-bottom: 0.25rem;
+    }
+    .strength-fill {
+        height: 100%;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+    .strength-weak { background: #dc3545; }
+    .strength-fair { background: #fd7e14; }
+    .strength-good { background: #ffc107; }
+    .strength-strong { background: #198754; }
+    .terms-text {
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-store"></i>
+            </div>
+            <h2 class="h4 fw-bold">Create Account</h2>
+            <p class="text-muted mb-0">Join MarketHub and start shopping</p>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" class="auth-form" id="registrationForm">
+            {% csrf_token %}
+            
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" 
+                               class="form-control" 
+                               id="id_first_name" 
+                               name="first_name" 
+                               placeholder="First Name"
+                               value="{{ form.first_name.value|default:'' }}">
+                        <label for="id_first_name">
+                            <i class="fas fa-user me-2"></i>First Name
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input type="text" 
+                               class="form-control" 
+                               id="id_last_name" 
+                               name="last_name" 
+                               placeholder="Last Name"
+                               value="{{ form.last_name.value|default:'' }}">
+                        <label for="id_last_name">
+                            <i class="fas fa-user me-2"></i>Last Name
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="text" 
+                       class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                       id="id_username" 
+                       name="username" 
+                       placeholder="Username"
+                       value="{{ form.username.value|default:'' }}"
+                       required>
+                <label for="id_username">
+                    <i class="fas fa-at me-2"></i>Username
+                </label>
+                {% if form.username.errors %}
+                <div class="invalid-feedback">
+                    {{ form.username.errors.0 }}
+                </div>
+                {% endif %}
+                <div class="form-text">
+                    <small>Letters, digits and @/./+/-/_ only.</small>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="email" 
+                       class="form-control" 
+                       id="id_email" 
+                       name="email" 
+                       placeholder="Email"
+                       value="{{ form.email.value|default:'' }}">
+                <label for="id_email">
+                    <i class="fas fa-envelope me-2"></i>Email Address
+                </label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" 
+                       class="form-control {% if form.password1.errors %}is-invalid{% endif %}" 
+                       id="id_password1" 
+                       name="password1" 
+                       placeholder="Password"
+                       required>
+                <label for="id_password1">
+                    <i class="fas fa-lock me-2"></i>Password
+                </label>
+                {% if form.password1.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.password1.errors %}
+                    {{ error }}<br>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <small class="text-muted" id="strengthText">Choose a strong password</small>
+                </div>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="password" 
+                       class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                       id="id_password2" 
+                       name="password2" 
+                       placeholder="Confirm Password"
+                       required>
+                <label for="id_password2">
+                    <i class="fas fa-lock me-2"></i>Confirm Password
+                </label>
+                {% if form.password2.errors %}
+                <div class="invalid-feedback">
+                    {{ form.password2.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label terms-text" for="terms">
+                    I agree to the <a href="#" class="text-decoration-none">Terms of Service</a> 
+                    and <a href="#" class="text-decoration-none">Privacy Policy</a>
+                </label>
+            </div>
+
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="newsletter">
+                <label class="form-check-label terms-text" for="newsletter">
+                    Subscribe to our newsletter for deals and updates
+                </label>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i>Create Account
+                </button>
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+
+        <div class="text-center">
+            <p class="small text-muted mb-0">
+                Already have an account? 
+                <a href="{% url 'login' %}" class="text-decoration-none">Sign in here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.getElementById('id_password1');
+    const confirmPasswordInput = document.getElementById('id_password2');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+
+    // Password strength checker
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+        const strength = checkPasswordStrength(password);
+        
+        // Update strength bar
+        strengthFill.style.width = strength.percentage + '%';
+        strengthFill.className = 'strength-fill strength-' + strength.level;
+        strengthText.textContent = strength.text;
+    });
+
+    // Password confirmation checker
+    confirmPasswordInput.addEventListener('input', function() {
+        const password = passwordInput.value;
+        const confirm = this.value;
+        
+        if (confirm && password !== confirm) {
+            this.setCustomValidity("Passwords don't match");
+            this.classList.add('is-invalid');
+        } else {
+            this.setCustomValidity('');
+            this.classList.remove('is-invalid');
+        }
+    });
+
+    // Add focus effects
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.form-floating').style.transform = 'translateY(-1px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.form-floating').style.transform = 'translateY(0)';
+        });
+    });
+
+    // Form submission
+    document.getElementById('registrationForm').addEventListener('submit', function(e) {
+        const terms = document.getElementById('terms');
+        if (!terms.checked) {
+            e.preventDefault();
+            showAlert('error', 'Please accept the Terms of Service to continue.');
+            return false;
+        }
+    });
+});
+
+function checkPasswordStrength(password) {
+    let score = 0;
+    const checks = {
+        length: password.length >= 8,
+        lowercase: /[a-z]/.test(password),
+        uppercase: /[A-Z]/.test(password),
+        numbers: /\d/.test(password),
+        special: /[^A-Za-z0-9]/.test(password)
+    };
+
+    // Calculate score
+    score += checks.length ? 20 : 0;
+    score += checks.lowercase ? 20 : 0;
+    score += checks.uppercase ? 20 : 0;
+    score += checks.numbers ? 20 : 0;
+    score += checks.special ? 20 : 0;
+
+    // Determine strength level
+    if (score < 40) {
+        return { level: 'weak', percentage: 25, text: 'Weak password' };
+    } else if (score < 60) {
+        return { level: 'fair', percentage: 50, text: 'Fair password' };
+    } else if (score < 80) {
+        return { level: 'good', percentage: 75, text: 'Good password' };
+    } else {
+        return { level: 'strong', percentage: 100, text: 'Strong password' };
+    }
+}
+
+function showAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'error' ? 'alert-danger' : 'alert-info';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 
+                type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+    
+    const alertHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at top of auth container
+    const container = document.querySelector('.auth-container');
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = alertHTML;
+    container.insertBefore(alertDiv.firstElementChild, container.firstElementChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}

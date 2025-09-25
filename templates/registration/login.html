@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        max-width: 400px;
+        margin: 3rem auto;
+        padding: 2rem;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background: white;
+    }
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .auth-header .logo {
+        color: var(--bs-primary);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .form-floating > .form-control:focus {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+    }
+    .divider {
+        position: relative;
+        text-align: center;
+        margin: 1.5rem 0;
+    }
+    .divider::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: #dee2e6;
+    }
+    .divider span {
+        background: white;
+        padding: 0 1rem;
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+    .social-login {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .social-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        text-decoration: none;
+        color: #495057;
+        font-size: 0.875rem;
+        transition: all 0.2s ease;
+    }
+    .social-btn:hover {
+        border-color: var(--bs-primary);
+        color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fas fa-store"></i>
+            </div>
+            <h2 class="h4 fw-bold">Welcome Back</h2>
+            <p class="text-muted mb-0">Sign in to your MarketHub account</p>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            <div class="form-floating mb-3">
+                <input type="text" 
+                       class="form-control" 
+                       id="id_username" 
+                       name="username" 
+                       placeholder="Username"
+                       value="{{ form.username.value|default:'' }}"
+                       required>
+                <label for="id_username">
+                    <i class="fas fa-user me-2"></i>Username
+                </label>
+                {% if form.username.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.username.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="password" 
+                       class="form-control" 
+                       id="id_password" 
+                       name="password" 
+                       placeholder="Password"
+                       required>
+                <label for="id_password">
+                    <i class="fas fa-lock me-2"></i>Password
+                </label>
+                {% if form.password.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.password.errors.0 }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label small" for="remember">
+                        Remember me
+                    </label>
+                </div>
+                <a href="#" class="small text-decoration-none">Forgot password?</a>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                </button>
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </form>
+
+        <!-- Social Login Placeholder -->
+        <div class="divider">
+            <span>or continue with</span>
+        </div>
+
+        <div class="social-login mb-4">
+            <a href="#" class="social-btn">
+                <i class="fab fa-google"></i>
+                <span>Google</span>
+            </a>
+            <a href="#" class="social-btn">
+                <i class="fab fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+        </div>
+
+        <div class="text-center">
+            <p class="small text-muted mb-0">
+                Don't have an account? 
+                <a href="{% url 'homepage:register' %}" class="text-decoration-none">Sign up here</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add focus effects
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.form-floating').style.transform = 'translateY(-2px)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.form-floating').style.transform = 'translateY(0)';
+        });
+    });
+
+    // Handle social login placeholders
+    const socialBtns = document.querySelectorAll('.social-btn');
+    socialBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showAlert('info', 'Social login coming soon!');
+        });
+    });
+});
+
+function showAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'error' ? 'alert-danger' : 'alert-info';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 
+                type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+    
+    const alertHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at top of auth container
+    const container = document.querySelector('.auth-container');
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = alertHTML;
+    container.insertBefore(alertDiv.firstElementChild, container.firstElementChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}
