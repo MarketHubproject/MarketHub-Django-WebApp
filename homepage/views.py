@@ -18,10 +18,11 @@ from decimal import Decimal
 
 def home(request):
     """
-    Home page with featured products - professional template version
+    Home page with featured products - professional template version with fallback
     """
     try:
-        # Get featured products
+        # Get featured products safely
+        featured_products = []
         try:
             featured_products = Product.objects.filter(
                 status='active', featured=True
@@ -32,16 +33,30 @@ def home(request):
                 featured_products = Product.objects.filter(
                     status='active'
                 ).select_related('category')[:8]
-        except Exception:
+        except Exception as e:
+            # Log the error but continue
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Error fetching featured products: {str(e)}")
             featured_products = []
         
-        # Get categories
+        # Get categories safely
+        categories = []
         try:
+            from django.db.models import Count
             categories = Category.objects.filter(
                 is_active=True, parent=None
             ).annotate(product_count=Count('products'))[:6]
-        except Exception:
-            categories = []
+        except Exception as e:
+            # Log the error but continue
+            import logging
+            logger = logging.getLogger(__name__) 
+            logger.error(f"Error fetching categories: {str(e)}")
+            try:
+                # Fallback without annotation
+                categories = Category.objects.filter(is_active=True, parent=None)[:6]
+            except Exception:
+                categories = []
         
         # Try to render template
         context = {
@@ -49,7 +64,13 @@ def home(request):
             'categories': categories,
             'page_title': 'Welcome to MarketHub',
         }
-        return render(request, 'homepage/home.html', context)
+        
+        # Try rendering the professional template
+        try:
+            return render(request, 'homepage/home.html', context)
+        except Exception as template_error:
+            # If template fails, fall back to the existing home view fallback
+            pass
         
     except Exception as template_error:
         # Template failed, return beautiful HTML fallback
@@ -1135,10 +1156,14 @@ def products_hybrid(request):
 
 def product_list_professional(request):
     """
-    Professional product listing view with filtering, search, and pagination
+    Professional product listing view with filtering, search, and pagination - with error handling
     """
     try:
-        # Base queryset
+        # Import here to avoid circular imports
+        from django.core.paginator import Paginator
+        from django.db.models import Q, Count
+        
+        # Base queryset with safe field access
         products = Product.objects.filter(status='active').select_related('category')
         
         # Search functionality
@@ -1157,7 +1182,7 @@ def product_list_professional(request):
             try:
                 category = Category.objects.get(id=category_id, is_active=True)
                 products = products.filter(category=category)
-            except Category.DoesNotExist:
+            except (Category.DoesNotExist, ValueError):
                 pass
         
         # Price filtering
@@ -1166,36 +1191,49 @@ def product_list_professional(request):
         if min_price:
             try:
                 products = products.filter(price__gte=float(min_price))
-            except ValueError:
+            except (ValueError, TypeError):
                 pass
         if max_price:
             try:
                 products = products.filter(price__lte=float(max_price))
-            except ValueError:
+            except (ValueError, TypeError):
                 pass
         
-        # Sorting
+        # Sorting - safer approach
         sort_by = request.GET.get('sort', '')
-        if sort_by in ['name', '-name', 'price', '-price', '-created_at']:
-            products = products.order_by(sort_by)
+        valid_sorts = ['name', '-name', 'price', '-price', '-created_at', 'created_at']
+        if sort_by in valid_sorts:
+            try:
+                products = products.order_by(sort_by)
+            except Exception:
+                products = products.order_by('-id', 'name')  # Fallback to safe ordering
         else:
-            products = products.order_by('-created_at', 'name')
+            products = products.order_by('-id', 'name')  # Use id instead of created_at as fallback
         
-        # Get categories for sidebar
-        categories = Category.objects.filter(
-            is_active=True, parent=None
-        ).annotate(
-            product_count=Count('products', filter=Q(products__status='active'))
-        ).filter(product_count__gt=0)[:10]
+        # Get categories for sidebar - with error handling
+        categories = []
+        try:
+            categories = Category.objects.filter(
+                is_active=True, parent=None
+            ).annotate(
+                product_count=Count('products', filter=Q(products__status='active'))
+            ).filter(product_count__gt=0)[:10]
+        except Exception:
+            # If annotation fails, just get basic categories
+            categories = Category.objects.filter(is_active=True, parent=None)[:10]
         
         # Pagination
-        paginator = Paginator(products, 12)  # Show 12 products per page
-        page_number = request.GET.get('page')
-        page_obj = paginator.get_page(page_number)
+        try:
+            paginator = Paginator(products, 12)  # Show 12 products per page
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+        except Exception:
+            # If pagination fails, just use the first 12 products
+            page_obj = products[:12]
         
         context = {
             'products': page_obj,
-            'page_obj': page_obj,
+            'page_obj': page_obj if hasattr(page_obj, 'has_other_pages') else None,
             'categories': categories,
             'category': category,
             'search_query': search_query,
@@ -1205,6 +1243,11 @@ def product_list_professional(request):
         return render(request, 'homepage/product_list.html', context)
         
     except Exception as e:
+        # Log the error for debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error in product_list_professional: {str(e)}")
+        
         # Fallback to the existing bulletproof version
         return product_list(request)
 
@@ -1306,6 +1349,119 @@ def test_basic(request):
         <h1>Basic Test Works!</h1>
         <p>If you see this, the basic routing is working.</p>
         <p><a href="/">Back to Home</a></p>
+    </body>
+    </html>
+    """)
+
+
+def diagnose_500_error(request):
+    """
+    Diagnostic view to help identify 500 error causes
+    """
+    import traceback
+    import sys
+    from django.template.loader import get_template
+    from django.db import connection
+    
+    diagnostics = []
+    
+    try:
+        diagnostics.append("🔍 STARTING DIAGNOSTICS")
+        
+        # Test 1: Basic Django functionality
+        diagnostics.append(f"✅ Django version: {sys.version}")
+        
+        # Test 2: Database connection
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+                diagnostics.append("✅ Database connection: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Database connection: {str(e)}")
+            
+        # Test 3: Models import
+        try:
+            from .models import Product, Category
+            diagnostics.append("✅ Models import: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Models import: {str(e)}")
+            
+        # Test 4: Template loading
+        try:
+            template = get_template('base.html')
+            diagnostics.append("✅ Base template: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Base template: {str(e)}")
+            
+        try:
+            template = get_template('homepage/home.html')
+            diagnostics.append("✅ Home template: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Home template: {str(e)}")
+            
+        try:
+            template = get_template('homepage/product_list.html')
+            diagnostics.append("✅ Product list template: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Product list template: {str(e)}")
+            
+        # Test 5: Template filters
+        try:
+            from .templatetags.homepage_filters import lookup, subtract, currency
+            diagnostics.append("✅ Template filters: OK")
+        except Exception as e:
+            diagnostics.append(f"❌ Template filters: {str(e)}")
+            
+        # Test 6: Database queries
+        try:
+            product_count = Product.objects.count()
+            category_count = Category.objects.count()
+            diagnostics.append(f"✅ Database queries: {product_count} products, {category_count} categories")
+        except Exception as e:
+            diagnostics.append(f"❌ Database queries: {str(e)}")
+            
+        # Test 7: Professional view test
+        try:
+            from django.test import RequestFactory
+            factory = RequestFactory()
+            test_request = factory.get('/products/')
+            response = product_list_professional(test_request)
+            diagnostics.append(f"✅ Professional view test: Status {getattr(response, 'status_code', 'Unknown')}")
+        except Exception as e:
+            diagnostics.append(f"❌ Professional view test: {str(e)}")
+            diagnostics.append(f"   Full traceback: {traceback.format_exc()}")
+            
+    except Exception as main_error:
+        diagnostics.append(f"❌ CRITICAL ERROR: {str(main_error)}")
+        diagnostics.append(f"   Full traceback: {traceback.format_exc()}")
+    
+    diagnostics_html = "<br>".join(diagnostics)
+    
+    return HttpResponse(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>500 Error Diagnostics - MarketHub</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .diagnostic {{ font-family: monospace; font-size: 14px; }}
+        </style>
+    </head>
+    <body>
+        <div class="container mt-4">
+            <h2>🔧 500 Error Diagnostics</h2>
+            <div class="alert alert-info">
+                <div class="diagnostic">
+                    {diagnostics_html}
+                </div>
+            </div>
+            <div class="mt-4">
+                <a href='/products-hybrid/' class="btn btn-warning">Try Hybrid Products</a>
+                <a href='/products-no-db/' class="btn btn-info">Try No-DB Products</a>
+                <a href='/test-basic/' class="btn btn-secondary">Basic Test</a>
+                <a href='/' class="btn btn-primary">Home</a>
+            </div>
+        </div>
     </body>
     </html>
     """)

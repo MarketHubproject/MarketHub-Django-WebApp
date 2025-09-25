@@ -6,7 +6,8 @@ app_name = 'homepage'
 urlpatterns = [
     # Main pages
     path('', views.home, name='home'),
-    path('products/', views.product_list_professional, name='product_list'),  # Professional template version
+    path('products/', views.products_hybrid, name='product_list'),  # Hybrid fallback - safe version
+    path('products-professional/', views.product_list_professional, name='product_list_professional'),  # Professional template version
     path('products-hybrid/', views.products_hybrid, name='products_hybrid'),  # Hybrid fallback
     path('products-full/', views.product_list, name='product_list_full'),  # Full version
     path('product/<slug:slug>/', views.product_detail, name='product_detail'),
@@ -35,4 +36,5 @@ urlpatterns = [
     path('products-no-db/', views.products_no_db, name='products_no_db'),
     path('products-hybrid/', views.products_hybrid, name='products_hybrid'),
     path('fix-database/', views.fix_database, name='fix_database'),
+    path('diagnose-500/', views.diagnose_500_error, name='diagnose_500_error'),
 ]
