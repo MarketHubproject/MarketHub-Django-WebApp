@@ -1,0 +1,516 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load homepage_filters %}
+
+{% block title %}Shopping Cart - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-item {
+        border: none;
+        border-bottom: 1px solid #dee2e6;
+        padding: 1.5rem 0;
+        transition: background-color 0.2s ease;
+    }
+    .cart-item:hover {
+        background: rgba(0,0,0,0.02);
+    }
+    .cart-item:last-child {
+        border-bottom: none;
+    }
+    .item-image {
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        object-fit: cover;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+    .quantity-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .quantity-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #dee2e6;
+        background: white;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .quantity-btn:hover {
+        border-color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.1);
+        color: var(--bs-primary);
+    }
+    .quantity-input {
+        width: 60px;
+        text-align: center;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        padding: 0.25rem;
+    }
+    .cart-summary {
+        background: linear-gradient(135deg, #fff, #f8f9fa);
+        border: 1px solid #dee2e6;
+        border-radius: 15px;
+        padding: 2rem;
+        position: sticky;
+        top: 2rem;
+    }
+    .summary-row {
+        display: flex;
+        justify-content: between;
+        align-items: center;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+    .summary-row:last-child {
+        border-bottom: none;
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--bs-primary);
+    }
+    .empty-cart {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    .continue-shopping {
+        color: var(--bs-primary);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .continue-shopping:hover {
+        color: var(--bs-primary);
+        text-decoration: underline;
+    }
+    .remove-btn {
+        color: #dc3545;
+        border: none;
+        background: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+    .remove-btn:hover {
+        color: #b02a37;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="fas fa-shopping-cart text-primary me-2"></i>Shopping Cart
+                    </h1>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0">
+                            <li class="breadcrumb-item"><a href="{% url 'homepage:home' %}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'homepage:product_list' %}">Products</a></li>
+                            <li class="breadcrumb-item active">Cart</li>
+                        </ol>
+                    </nav>
+                </div>
+                {% if cart_items %}
+                <span class="badge bg-primary fs-6">{{ cart_items|length }} Items</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if cart_items %}
+    <div class="row">
+        <!-- Cart Items -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>Cart Items
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% for item in cart_items %}
+                    <div class="cart-item px-3" data-item-id="{{ item.id }}">
+                        <div class="row align-items-center">
+                            <!-- Product Image -->
+                            <div class="col-md-2 mb-3 mb-md-0">
+                                {% if item.product.images.first %}
+                                    <img src="{{ item.product.images.first.image.url }}" 
+                                         alt="{{ item.product.name }}" 
+                                         class="item-image img-fluid">
+                                {% else %}
+                                    <div class="item-image d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-image fa-2x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h6 class="mb-1">
+                                    <a href="{% url 'homepage:product_detail' item.product.slug %}" 
+                                       class="text-decoration-none text-dark">
+                                        {{ item.product.name }}
+                                    </a>
+                                </h6>
+                                {% if item.product.category %}
+                                <p class="text-muted small mb-1">
+                                    <i class="fas fa-tag me-1"></i>{{ item.product.category.name }}
+                                </p>
+                                {% endif %}
+                                {% if item.product.sku %}
+                                <p class="text-muted small mb-0">SKU: {{ item.product.sku }}</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Price -->
+                            <div class="col-md-2 mb-3 mb-md-0">
+                                {% if item.product.is_on_sale %}
+                                <p class="mb-0">
+                                    <span class="fw-bold text-primary">${{ item.product.price }}</span><br>
+                                    <small class="text-muted text-decoration-line-through">${{ item.product.compare_at_price }}</small>
+                                </p>
+                                {% else %}
+                                <p class="fw-bold text-primary mb-0">${{ item.product.price }}</p>
+                                {% endif %}
+                            </div>
+
+                            <!-- Quantity Controls -->
+                            <div class="col-md-2 mb-3 mb-md-0">
+                                <div class="quantity-controls">
+                                    <button type="button" 
+                                            class="quantity-btn decrease-qty" 
+                                            data-item-id="{{ item.id }}"
+                                            data-current-qty="{{ item.quantity }}">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" 
+                                           class="quantity-input" 
+                                           value="{{ item.quantity }}" 
+                                           min="1" 
+                                           data-item-id="{{ item.id }}"
+                                           readonly>
+                                    <button type="button" 
+                                            class="quantity-btn increase-qty" 
+                                            data-item-id="{{ item.id }}"
+                                            data-current-qty="{{ item.quantity }}">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Item Total & Remove -->
+                            <div class="col-md-2 text-end">
+                                <p class="fw-bold mb-2 item-total">${{ item.total_price }}</p>
+                                <button type="button" 
+                                        class="remove-btn" 
+                                        data-item-id="{{ item.id }}"
+                                        title="Remove item">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Continue Shopping -->
+            <div class="mt-3">
+                <a href="{% url 'homepage:product_list' %}" class="continue-shopping">
+                    <i class="fas fa-arrow-left me-2"></i>Continue Shopping
+                </a>
+            </div>
+        </div>
+
+        <!-- Cart Summary -->
+        <div class="col-lg-4">
+            <div class="cart-summary">
+                <h5 class="mb-4">
+                    <i class="fas fa-calculator me-2"></i>Order Summary
+                </h5>
+                
+                <div class="summary-row">
+                    <span>Subtotal ({{ cart_items|length }} items)</span>
+                    <span class="cart-subtotal">${{ cart.total_price }}</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span class="text-success">Free</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>Calculated at checkout</span>
+                </div>
+                
+                <div class="summary-row">
+                    <span>Total</span>
+                    <span class="cart-total">${{ cart.total_price }}</span>
+                </div>
+
+                <div class="d-grid gap-3 mt-4">
+                    <a href="{% url 'homepage:checkout' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-credit-card me-2"></i>Proceed to Checkout
+                    </a>
+                    <button class="btn btn-outline-secondary" onclick="saveForLater()">
+                        <i class="fas fa-bookmark me-2"></i>Save for Later
+                    </button>
+                </div>
+
+                <!-- Security Features -->
+                <div class="mt-4 text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-3 text-muted small">
+                        <div>
+                            <i class="fas fa-lock"></i>
+                            <span>Secure Checkout</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-shipping-fast"></i>
+                            <span>Free Shipping</span>
+                        </div>
+                        <div>
+                            <i class="fas fa-undo"></i>
+                            <span>Easy Returns</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty Cart -->
+    <div class="empty-cart">
+        <div class="mb-4">
+            <i class="fas fa-shopping-cart fa-5x text-muted"></i>
+        </div>
+        <h3 class="mb-3">Your cart is empty</h3>
+        <p class="text-muted mb-4">
+            Looks like you haven't added any items to your cart yet.<br>
+            Browse our products and find something you like!
+        </p>
+        <div class="d-grid gap-2 d-md-block">
+            <a href="{% url 'homepage:product_list' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+            </a>
+            <a href="{% url 'homepage:home' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-home me-2"></i>Go Home
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Quantity controls
+    document.querySelectorAll('.increase-qty, .decrease-qty').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const itemId = this.dataset.itemId;
+            const isIncrease = this.classList.contains('increase-qty');
+            const quantityInput = document.querySelector(`input[data-item-id="${itemId}"]`);
+            const currentQty = parseInt(quantityInput.value);
+            const newQty = isIncrease ? currentQty + 1 : Math.max(1, currentQty - 1);
+            
+            updateCartItem(itemId, newQty);
+        });
+    });
+
+    // Remove buttons
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const itemId = this.dataset.itemId;
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                removeCartItem(itemId);
+            }
+        });
+    });
+
+    // Quantity input direct change
+    document.querySelectorAll('.quantity-input').forEach(input => {
+        input.addEventListener('change', function() {
+            const itemId = this.dataset.itemId;
+            const newQty = Math.max(1, parseInt(this.value) || 1);
+            this.value = newQty; // Ensure valid value
+            updateCartItem(itemId, newQty);
+        });
+    });
+});
+
+function updateCartItem(itemId, quantity) {
+    const formData = new FormData();
+    formData.append('item_id', itemId);
+    formData.append('quantity', quantity);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    // Show loading state
+    const quantityInput = document.querySelector(`input[data-item-id="${itemId}"]`);
+    const originalValue = quantityInput.value;
+    quantityInput.disabled = true;
+
+    fetch('{% url "homepage:update_cart_item" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update quantity input
+            quantityInput.value = quantity;
+            
+            // Update item total
+            const itemTotal = document.querySelector(`.cart-item[data-item-id="${itemId}"] .item-total`);
+            itemTotal.textContent = '$' + data.item_total;
+            
+            // Update cart totals
+            document.querySelector('.cart-subtotal').textContent = '$' + data.cart_total_price;
+            document.querySelector('.cart-total').textContent = '$' + data.cart_total_price;
+            
+            // Update cart badge
+            updateCartBadge(data.cart_total_items);
+            
+            showAlert('success', 'Cart updated successfully');
+            
+            if (data.action === 'removed') {
+                // Item was removed (quantity was 0)
+                const cartItem = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+                cartItem.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    cartItem.remove();
+                    checkEmptyCart();
+                }, 300);
+            }
+        } else {
+            throw new Error(data.error || 'Failed to update cart');
+        }
+    })
+    .catch(error => {
+        // Revert on error
+        quantityInput.value = originalValue;
+        showAlert('error', error.message || 'Failed to update cart item');
+    })
+    .finally(() => {
+        quantityInput.disabled = false;
+    });
+}
+
+function removeCartItem(itemId) {
+    const formData = new FormData();
+    formData.append('item_id', itemId);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+
+    fetch('{% url "homepage:remove_from_cart" %}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Remove item with animation
+            const cartItem = document.querySelector(`.cart-item[data-item-id="${itemId}"]`);
+            cartItem.style.animation = 'slideOut 0.3s ease';
+            
+            setTimeout(() => {
+                cartItem.remove();
+                
+                // Update cart totals
+                document.querySelector('.cart-subtotal').textContent = '$' + data.cart_total_price;
+                document.querySelector('.cart-total').textContent = '$' + data.cart_total_price;
+                
+                // Update cart badge
+                updateCartBadge(data.cart_total_items);
+                
+                checkEmptyCart();
+                showAlert('success', data.message);
+            }, 300);
+        } else {
+            throw new Error(data.error || 'Failed to remove item');
+        }
+    })
+    .catch(error => {
+        showAlert('error', error.message || 'Failed to remove item from cart');
+    });
+}
+
+function checkEmptyCart() {
+    const cartItems = document.querySelectorAll('.cart-item');
+    if (cartItems.length === 0) {
+        // Redirect to cart page to show empty state
+        window.location.reload();
+    }
+}
+
+function saveForLater() {
+    showAlert('info', 'Save for Later functionality coming soon!');
+}
+
+function updateCartBadge(count) {
+    const badge = document.querySelector('.cart-badge');
+    if (badge) {
+        badge.textContent = count;
+        if (count > 0) {
+            badge.style.display = 'inline';
+        } else {
+            badge.style.display = 'none';
+        }
+    }
+}
+
+function showAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'error' ? 'alert-danger' : 'alert-info';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 
+                type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+    
+    const alertHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at top of container
+    const container = document.querySelector('.container');
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = alertHTML;
+    container.insertBefore(alertDiv.firstElementChild, container.firstElementChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-20px); }
+    }
+    @keyframes slideOut {
+        from { opacity: 1; transform: translateX(0); }
+        to { opacity: 0; transform: translateX(-100%); }
+    }
+`;
+document.head.appendChild(style);
+</script>
+
+{% csrf_token %}
+{% endblock %}
