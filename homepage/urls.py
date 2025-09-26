@@ -23,6 +23,10 @@ urlpatterns = [
     # Checkout
     path('checkout/', views.checkout, name='checkout'),
     
+    # Customer Dashboard
+    path('dashboard/', views.customer_dashboard, name='customer_dashboard'),
+    path('my-account/', views.customer_dashboard, name='my_account'),
+    
     # User registration
     path('register/', views.register, name='register'),
     

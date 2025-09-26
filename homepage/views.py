@@ -1792,6 +1792,58 @@ def setup_admin(request):
         """)
 
 
+@login_required
+def customer_dashboard(request):
+    """
+    Customer dashboard with orders, profile, and account management
+    """
+    try:
+        # Get user's orders
+        orders = Order.objects.filter(user=request.user).select_related(
+            'shipping_address'
+        ).prefetch_related('items').order_by('-created_at')
+        
+        recent_orders = orders[:5]  # Last 5 orders for dashboard
+        
+        # Get user's addresses
+        addresses = request.user.addresses.all().order_by('-is_default', '-created_at')
+        
+        # Calculate stats
+        total_orders = orders.count()
+        pending_orders = orders.filter(status__in=['pending', 'confirmed', 'processing']).count()
+        total_spent = sum(order.total_amount for order in orders if order.payment_status == 'paid')
+        wishlist_items = 0  # Placeholder for wishlist feature
+        
+        context = {
+            'orders': orders,
+            'recent_orders': recent_orders,
+            'addresses': addresses,
+            'total_orders': total_orders,
+            'pending_orders': pending_orders,
+            'total_spent': total_spent,
+            'wishlist_items': wishlist_items,
+        }
+        
+        return render(request, 'homepage/customer_dashboard.html', context)
+        
+    except Exception as e:
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error in customer_dashboard: {str(e)}")
+        
+        # Fallback with minimal context
+        context = {
+            'orders': [],
+            'recent_orders': [],
+            'addresses': [],
+            'total_orders': 0,
+            'pending_orders': 0,
+            'total_spent': 0,
+            'wishlist_items': 0,
+        }
+        return render(request, 'homepage/customer_dashboard.html', context)
+
+
 # AJAX endpoint to get cart count for navbar
 @login_required
 def get_cart_count(request):

@@ -1,0 +1,680 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load homepage_filters %}
+
+{% block title %}Checkout - MarketHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-step {
+        border-radius: 15px;
+        background: white;
+        border: 1px solid #dee2e6;
+        transition: all 0.3s ease;
+    }
+    .checkout-step.active {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .step-number {
+        width: 32px;
+        height: 32px;
+        background: var(--bs-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+    .step-number.completed {
+        background: var(--bs-success);
+    }
+    .address-card {
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .address-card:hover {
+        border-color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.05);
+    }
+    .address-card.selected {
+        border-color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .payment-method {
+        border: 2px solid #dee2e6;
+        border-radius: 12px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .payment-method:hover {
+        border-color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.05);
+    }
+    .payment-method.selected {
+        border-color: var(--bs-primary);
+        background: rgba(var(--bs-primary-rgb), 0.1);
+    }
+    .order-summary {
+        background: linear-gradient(135deg, #fff, #f8f9fa);
+        border: 1px solid #dee2e6;
+        border-radius: 15px;
+        position: sticky;
+        top: 2rem;
+    }
+    .security-badges {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .security-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(var(--bs-success-rgb), 0.1);
+        border: 1px solid rgba(var(--bs-success-rgb), 0.2);
+        border-radius: 20px;
+        font-size: 0.875rem;
+        color: var(--bs-success);
+    }
+    .progress-bar-custom {
+        height: 4px;
+        background: #e9ecef;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--bs-primary), var(--bs-info));
+        border-radius: 2px;
+        transition: width 0.5s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4 mb-5">
+    <!-- Progress Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="progress-bar-custom mb-3">
+                <div class="progress-fill" style="width: 60%" id="checkoutProgress"></div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="step-number completed">1</div>
+                    <span class="fw-medium">Cart</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="step-number" id="step2">2</div>
+                    <span class="fw-medium">Checkout</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="step-number" id="step3">3</div>
+                    <span class="fw-medium">Confirmation</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h2 mb-1">
+                <i class="fas fa-credit-card text-primary me-2"></i>Secure Checkout
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'homepage:home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'homepage:cart_detail' %}">Cart</a></li>
+                    <li class="breadcrumb-item active">Checkout</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Checkout Form -->
+        <div class="col-lg-8">
+            <form id="checkoutForm" method="post">
+                {% csrf_token %}
+                
+                <!-- Step 1: Shipping Address -->
+                <div class="checkout-step p-4 mb-4 active" id="shippingStep">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="step-number me-3">1</div>
+                        <h4 class="mb-0">Shipping Address</h4>
+                    </div>
+
+                    {% if addresses %}
+                    <div class="row mb-3">
+                        {% for address in addresses %}
+                        <div class="col-md-6 mb-3">
+                            <div class="address-card" data-address-id="{{ address.id }}">
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="radio" 
+                                           name="shipping_address" 
+                                           id="address{{ address.id }}"
+                                           value="{{ address.id }}"
+                                           {% if address.is_default %}checked{% endif %}>
+                                    <label class="form-check-label w-100" for="address{{ address.id }}">
+                                        <div class="fw-bold">{{ address.full_name }}</div>
+                                        {% if address.company %}
+                                        <div class="text-muted small">{{ address.company }}</div>
+                                        {% endif %}
+                                        <div class="text-muted small">
+                                            {{ address.address_line_1 }}<br>
+                                            {% if address.address_line_2 %}{{ address.address_line_2 }}<br>{% endif %}
+                                            {{ address.city }}, {{ address.state_province }} {{ address.postal_code }}
+                                        </div>
+                                        {% if address.phone %}
+                                        <div class="text-muted small">
+                                            <i class="fas fa-phone me-1"></i>{{ address.phone }}
+                                        </div>
+                                        {% endif %}
+                                        {% if address.is_default %}
+                                        <span class="badge bg-primary small mt-1">Default</span>
+                                        {% endif %}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                            <i class="fas fa-plus me-2"></i>Add New Address
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                            Continue to Payment <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Payment Method -->
+                <div class="checkout-step p-4 mb-4" id="paymentStep">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="step-number me-3">2</div>
+                        <h4 class="mb-0">Payment Method</h4>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="payment-method selected" data-method="card">
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="radio" 
+                                           name="payment_method" 
+                                           id="paymentCard"
+                                           value="card" 
+                                           checked>
+                                    <label class="form-check-label w-100" for="paymentCard">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-credit-card fa-2x text-primary me-3"></i>
+                                            <div>
+                                                <div class="fw-bold">Credit/Debit Card</div>
+                                                <div class="text-muted small">Visa, Mastercard, American Express</div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="payment-method" data-method="paypal">
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="radio" 
+                                           name="payment_method" 
+                                           id="paymentPaypal"
+                                           value="paypal">
+                                    <label class="form-check-label w-100" for="paymentPaypal">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fab fa-paypal fa-2x text-info me-3"></i>
+                                            <div>
+                                                <div class="fw-bold">PayPal</div>
+                                                <div class="text-muted small">Pay with your PayPal account</div>
+                                            </div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Details Form -->
+                    <div id="cardDetailsForm" class="mt-4">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="cardNumber" 
+                                           name="card_number"
+                                           placeholder="1234 5678 9012 3456"
+                                           maxlength="19">
+                                    <label for="cardNumber">
+                                        <i class="fas fa-credit-card me-2"></i>Card Number
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="cardName" 
+                                           name="card_name"
+                                           placeholder="John Doe">
+                                    <label for="cardName">
+                                        <i class="fas fa-user me-2"></i>Name on Card
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="cardExpiry" 
+                                           name="card_expiry"
+                                           placeholder="MM/YY"
+                                           maxlength="5">
+                                    <label for="cardExpiry">Expiry</label>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-floating">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="cardCVV" 
+                                           name="card_cvv"
+                                           placeholder="123"
+                                           maxlength="4">
+                                    <label for="cardCVV">CVV</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Shipping
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                            Review Order <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Order Review -->
+                <div class="checkout-step p-4 mb-4" id="reviewStep">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="step-number me-3">3</div>
+                        <h4 class="mb-0">Review Your Order</h4>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Order Items</h6>
+                        {% for item in cart_items %}
+                        <div class="d-flex align-items-center gap-3 mb-3 p-3 border rounded">
+                            {% if item.product.images.first %}
+                                <img src="{{ item.product.images.first.image.url }}" 
+                                     alt="{{ item.product.name }}" 
+                                     style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px;">
+                            {% else %}
+                                <div style="width: 60px; height: 60px; background: #f8f9fa; border-radius: 8px;" 
+                                     class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-image text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="flex-grow-1">
+                                <div class="fw-medium">{{ item.product.name }}</div>
+                                <div class="text-muted small">Quantity: {{ item.quantity }}</div>
+                            </div>
+                            <div class="fw-bold text-primary">${{ item.total_price }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Payment
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg" id="placeOrderBtn">
+                            <i class="fas fa-lock me-2"></i>Place Order
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="col-lg-4">
+            <div class="order-summary p-4">
+                <h5 class="mb-4">
+                    <i class="fas fa-receipt me-2"></i>Order Summary
+                </h5>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal ({{ cart_items|length }} items)</span>
+                    <span>${{ cart.total_price }}</span>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Shipping</span>
+                    <span class="text-success">Free</span>
+                </div>
+                
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Tax</span>
+                    <span>${{ cart.total_price|multiply:"0.08"|floatformat:2 }}</span>
+                </div>
+                
+                <hr>
+                
+                <div class="d-flex justify-content-between fw-bold fs-5 text-primary">
+                    <span>Total</span>
+                    <span>${{ cart.total_price|multiply:"1.08"|floatformat:2 }}</span>
+                </div>
+
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>SSL Secure</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Safe Payment</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                        <i class="fab fa-cc-visa fa-lg text-muted"></i>
+                        <i class="fab fa-cc-mastercard fa-lg text-muted"></i>
+                        <i class="fab fa-cc-amex fa-lg text-muted"></i>
+                        <i class="fab fa-paypal fa-lg text-muted"></i>
+                    </div>
+                    <small class="text-muted">Your payment information is secure</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Address Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addAddressForm">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="firstName" name="first_name" required>
+                                <label for="firstName">First Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="lastName" name="last_name" required>
+                                <label for="lastName">Last Name</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="company" name="company">
+                                <label for="company">Company (Optional)</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="addressLine1" name="address_line_1" required>
+                                <label for="addressLine1">Address Line 1</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="addressLine2" name="address_line_2">
+                                <label for="addressLine2">Address Line 2 (Optional)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="city" name="city" required>
+                                <label for="city">City</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="state" name="state_province" required>
+                                <label for="state">State</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="postalCode" name="postal_code" required>
+                                <label for="postalCode">Postal Code</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="tel" class="form-control" id="phone" name="phone">
+                                <label for="phone">Phone (Optional)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-check pt-4">
+                                <input class="form-check-input" type="checkbox" id="setDefault" name="is_default">
+                                <label class="form-check-label" for="setDefault">
+                                    Set as default address
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAddress()">Save Address</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentStep = 1;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Address card selection
+    document.querySelectorAll('.address-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+        });
+    });
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method').forEach(method => {
+        method.addEventListener('click', function() {
+            document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+            this.classList.add('selected');
+            this.querySelector('input[type="radio"]').checked = true;
+            
+            // Show/hide card details form
+            const cardForm = document.getElementById('cardDetailsForm');
+            if (this.dataset.method === 'card') {
+                cardForm.style.display = 'block';
+            } else {
+                cardForm.style.display = 'none';
+            }
+        });
+    });
+
+    // Card number formatting
+    document.getElementById('cardNumber').addEventListener('input', function() {
+        this.value = this.value.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    // Expiry date formatting
+    document.getElementById('cardExpiry').addEventListener('input', function() {
+        this.value = this.value.replace(/\D/g, '').replace(/(\d{2})(\d)/, '$1/$2');
+    });
+
+    // Form submission
+    document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        placeOrder();
+    });
+});
+
+function nextStep(step) {
+    if (step === 2) {
+        // Validate shipping address
+        const selectedAddress = document.querySelector('input[name="shipping_address"]:checked');
+        if (!selectedAddress) {
+            showAlert('error', 'Please select a shipping address');
+            return;
+        }
+    }
+    
+    if (step === 3) {
+        // Validate payment method
+        const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+        if (!selectedPayment) {
+            showAlert('error', 'Please select a payment method');
+            return;
+        }
+        
+        if (selectedPayment.value === 'card') {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardName = document.getElementById('cardName').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            const cardCVV = document.getElementById('cardCVV').value;
+            
+            if (!cardNumber || !cardName || !cardExpiry || !cardCVV) {
+                showAlert('error', 'Please fill in all card details');
+                return;
+            }
+        }
+    }
+    
+    currentStep = step;
+    updateStepDisplay();
+    updateProgress();
+}
+
+function prevStep(step) {
+    currentStep = step;
+    updateStepDisplay();
+    updateProgress();
+}
+
+function updateStepDisplay() {
+    // Hide all steps
+    document.querySelectorAll('.checkout-step').forEach(step => {
+        step.classList.remove('active');
+    });
+    
+    // Show current step
+    const steps = ['shippingStep', 'paymentStep', 'reviewStep'];
+    document.getElementById(steps[currentStep - 1]).classList.add('active');
+    
+    // Update step numbers
+    for (let i = 1; i <= 3; i++) {
+        const stepEl = document.getElementById(`step${i}`);
+        if (i < currentStep) {
+            stepEl.classList.add('completed');
+        } else {
+            stepEl.classList.remove('completed');
+        }
+    }
+}
+
+function updateProgress() {
+    const progress = document.getElementById('checkoutProgress');
+    const percentage = (currentStep / 3) * 100;
+    progress.style.width = `${percentage}%`;
+}
+
+function saveAddress() {
+    const formData = new FormData(document.getElementById('addAddressForm'));
+    
+    // Simulate address saving (in real app, would make AJAX call)
+    setTimeout(() => {
+        showAlert('success', 'Address saved successfully!');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addAddressModal'));
+        modal.hide();
+        
+        // In a real app, you would reload addresses here
+        location.reload();
+    }, 1000);
+}
+
+function placeOrder() {
+    const submitBtn = document.getElementById('placeOrderBtn');
+    const originalText = submitBtn.innerHTML;
+    
+    // Show loading state
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing Order...';
+    submitBtn.disabled = true;
+    
+    // Simulate order processing
+    setTimeout(() => {
+        showAlert('success', 'Order placed successfully! Redirecting to confirmation...');
+        
+        // In a real app, you would submit the form and redirect to order confirmation
+        setTimeout(() => {
+            window.location.href = '/order-confirmation/';
+        }, 2000);
+    }, 3000);
+}
+
+function showAlert(type, message) {
+    const alertClass = type === 'success' ? 'alert-success' : 
+                     type === 'error' ? 'alert-danger' : 'alert-info';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 
+                type === 'error' ? 'fas fa-exclamation-triangle' : 'fas fa-info-circle';
+    
+    const alertHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Insert alert at top of container
+    const container = document.querySelector('.container');
+    const alertDiv = document.createElement('div');
+    alertDiv.innerHTML = alertHTML;
+    container.insertBefore(alertDiv.firstElementChild, container.firstElementChild);
+    
+    // Auto-remove after 5 seconds
+    setTimeout(() => {
+        const alert = container.querySelector('.alert');
+        if (alert) {
+            alert.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %}
